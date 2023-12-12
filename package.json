@@ -1,0 +1,36 @@
+{
+  "name": "skoop-extension",
+  "version": "0.0.1",
+  "description": "skoop extension for video chatting ",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run prep",
+    "prep": "npm run exp && node out.js",
+    "exp": "next build && next export",
+    "run": "next start",
+    "dev": "next dev",
+    "watch": "npm-watch"
+  },
+  "watch": {
+    "build": {
+      "patterns": [
+        "src"
+      ],
+      "extensions": "js,jsx"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "axios": "^1.6.2",
+    "bootstrap": "^5.3.2",
+    "glob": "^10.2.3",
+    "next": "^13.4.1",
+    "next-auth": "^4.24.5",
+    "npm-watch": "^0.11.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
