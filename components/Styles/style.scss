@@ -1,0 +1,798 @@
+/* CSS */
+
+body {
+  margin: auto;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow: auto;
+  background: linear-gradient(315deg, rgb(255, 255, 255) 3%, rgb(164, 207, 250) 38%, rgb(160, 227, 223) 68%, rgb(182, 225, 238) 98%);
+  animation: gradient 15s ease infinite;
+  background-size: 400% 400%;
+  background-attachment: fixed;
+}
+
+@keyframes gradient {
+  0% {
+      background-position: 0% 0%;
+  }
+  50% {
+      background-position: 100% 100%;
+  }
+  100% {
+      background-position: 0% 0%;
+  }
+}
+
+
+.buttonsDiv{
+    text-align: center;
+}
+h5{
+    text-align: center;
+    color: #ffffff;
+}
+.Recordpanel{
+    text-align: center;
+}
+
+
+ nav{
+    display: inline-block;
+    margin-top: 5px;
+    background-color: black;
+}
+a{
+    text-decoration: none;
+    color:#ffffff;
+}
+.errorMsg{
+    color:#ffffff
+}
+.uploadingScreen{
+    text-align: center;
+}
+.progressCircle{
+    width: 50%;
+    margin: 0 auto;
+}
+.uploadingScreen>button{
+    margin-top: 10px;
+}
+//progress bar css
+//**********************************************************//
+@keyframes progress {
+    0% { --percentage: 0; }
+    100% { --percentage: var(--value); }
+  }
+  
+  @property --percentage {
+    syntax: '<number>';
+    inherits: true;
+    initial-value: 0;
+  }
+  
+  [role="progressbar"] {
+    --percentage: var(--value);
+    --primary: #0A66C2;
+    --secondary: rgb(255, 255, 255);
+    --size: 300px;
+    animation: progress 2s 0.5s forwards;
+    width: var(--size);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+  }
+  
+  [role="progressbar"]::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: conic-gradient(var(--primary) calc(var(--percentage) * 1%), var(--secondary) 0);
+    mask: radial-gradient(#0A66C2, transparent 0);
+    mask-mode: alpha;
+    -webkit-mask: radial-gradient(#0000 55%, #000 0);
+    -webkit-mask-mode: alpha;
+  }
+  
+  [role="progressbar"]::after {
+    counter-reset: percentage var(--value);
+    // content: counter(--value) '%';
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: calc(var(--size) / 5);
+    color: var(--primary);
+  }
+
+  #root{
+    display: block;
+  }
+
+
+.startapp{
+  position: relative;
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  border-style:solid;
+  border-color: white;
+  border-width: 2px;
+  background-image: url(./Skoop.png);
+  background-repeat: no-repeat;
+  background-position: 3px;
+  background-color:#0A66C2;
+  z-index: 999999;
+}
+.scrapeBtn{
+  position: relative;
+  height: 40px;
+  width: 40px;
+  color: #fff;
+  border-radius: 50%;
+  border-style:solid;
+  border-color:#0A66C2;
+  border-width: 1px;
+  background-image: url(./contact-information.png);
+  background-repeat: no-repeat;
+  background-position: 3px;
+  background-color:whitesmoke;
+  z-index: 999999999;
+}
+ #app_frame{
+    position: fixed;
+    right: 0px;
+    top: 0px;
+    z-index: 9999999;
+    width: 33%;
+    min-height: 50%;
+    box-shadow: rgba(0, 0, 0, 0.5) 2px 0px 4px;
+    background-color: #f8f5f0;
+    transition: width 0.35s ease 1s;
+    border-width: 2px;
+    border-color:#0A66C2;
+    overflow: auto; 
+}
+#none{
+    display: none;
+}
+
+//time out bar
+
+.containerForProgressBar {
+    position: relative;
+    width: 50%;
+    margin: 20px auto;
+    padding: 5px 5px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background: #ffffff40;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, .5);
+}
+.bar {
+    height: 20px;
+    background-color: #ffffff24;
+}
+
+.bar::before {
+    content: '';
+    display: block;
+    justify-content: end;
+    width: calc(var(--percent) * 1%);
+    height: 100%;
+    background: #2486ff;
+    white-space: nowrap;
+
+    background-image: linear-gradient(green, green),
+        linear-gradient(green, green),
+        linear-gradient(yellow, orange),
+        linear-gradient(orange, red),
+        linear-gradient(red, red);
+    background-size: calc((var(--percent) - 80) * 100%) 100%,
+        calc((var(--percent) - 60) * 100%) 100%,
+        calc((var(--percent) - 40) * 100%) 100%,
+        calc((var(--percent) - 20) * 100%) 100%,
+        100% 100%;
+}
+
+#skoop_icons {
+    font-size: 18px;
+  }
+
+  #mail_icons {
+    font-size: 20px;
+    color: #2486ff;
+  }
+
+
+#cgpt_icons {
+  border: none;
+  color: white;
+  padding: 1px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: '20px';
+}
+
+#back_arrow {
+ color: white; 
+}
+
+#Lib_icons {
+  color: #ffea00;
+ }
+
+.sbl-circ-ripple {
+  height: 56px;
+  width: 56px;
+  color: #00b48c; 
+  border-radius: 50%;
+  position: relative;
+  display: inline-block;
+  margin-top: 30px;
+}
+.sbl-circ-ripple::after,
+.sbl-circ-ripple::before {
+  content: '';
+  height: 0;
+  width: 0;
+  border: inherit;
+  border: 5px solid;
+  border-radius: inherit;
+  position: absolute;
+  animation: circle-ripple 1s linear infinite;
+}
+.sbl-circ-ripple::before {
+  animation-delay: -0.5s;
+}
+
+@keyframes circle-ripple {
+  0% {
+    height: 0;
+    width: 0;
+    left: 20px;
+    top: 20px;
+  }
+  100% {
+    height: 48px;
+    width: 48px;
+    left: -5px;
+    top: -5px;
+    opacity: 0;
+  }
+}
+
+.status_bar{
+    color: #0A66C2;
+}
+
+#skoop_record_button{
+  border-radius: 50%;
+  border:1px solid  #d10202;
+  outline:1px solid  #d10202;
+  outline-offset: 5px;
+  background-color: #d10202;
+  color: white;
+  width: 65px;
+  height: 65px;
+  padding: 2px;
+  margin-top: 7px;
+  margin-bottom: 10px;
+}
+
+#skoop_record_button_audio{
+  border-radius: 50%;
+  border:1px solid   #0A66C2;
+  outline:1px solid   #0A66C2;
+  outline-offset: 5px;
+  background-color:  #0A66C2;
+  color: white;
+  width: 65px;
+  height: 65px;
+  padding: 2px;
+  margin-top: 7px;
+  margin-bottom: 10px;
+}
+
+@-webkit-keyframes bg-scrolling-reverse {
+  100% {
+    background-position: 50px 50px;
+  }
+}
+@-moz-keyframes bg-scrolling-reverse {
+  100% {
+    background-position: 50px 50px;
+  }
+}
+@-o-keyframes bg-scrolling-reverse {
+  100% {
+    background-position: 50px 50px;
+  }
+}
+@keyframes bg-scrolling-reverse {
+  100% {
+    background-position: 50px 50px;
+  }
+}
+@-webkit-keyframes bg-scrolling {
+  0% {
+    background-position: 50px 50px;
+  }
+}
+@-moz-keyframes bg-scrolling {
+  0% {
+    background-position: 50px 50px;
+  }
+}
+@-o-keyframes bg-scrolling {
+  0% {
+    background-position: 50px 50px;
+  }
+}
+@keyframes bg-scrolling {
+  0% {
+    background-position: 50px 50px;
+  }
+}
+
+/* Light Mode */
+.light-mode {
+  background-color: white;
+  color: black;
+}
+
+.light-mode .app-bar {
+  background: linear-gradient(315deg, rgb(31, 142, 222) 3%, rgb(4, 81, 136) 38%, rgb(73, 195, 239) 68%, rgb(5, 111, 149) 98%);
+}
+
+.light-mode .toolbar {
+  color: white;
+}
+
+/* Dark Mode */
+.dark-mode {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+.dark-mode .app-bar {
+  background: linear-gradient(315deg, #000000 3%, #000000 38%, #333333 68%, #1a1a1a 98%);
+}
+
+.dark-mode .toolbar {
+  color: #ffffff;
+}
+
+/* contact info card*/
+.contact-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  width: 100%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.update-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.update-button:hover {
+  background-color: #0056b3;
+}
+
+h1 {
+  font-size: 5px;
+  margin: 0;
+}
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.icon {
+  font-size: 20px;
+  margin-inline: 20px;
+}
+
+input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.notes {
+  margin-top: 10px;
+}
+
+h2 {
+  font-size: 5px;
+  margin: 0 0 10px 0;
+}
+
+textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.chat-container {
+  width: 90vw; /* 90% of the viewport width */
+  max-width: 470px; /* Set a maximum width for the container */
+  height: 50vh; /* 50% of the viewport height */
+  border: 1px solid #ccc;
+  position: absolute;
+  margin: 0 auto;
+  overflow: auto; /* Add vertical scrolling if content exceeds the container height */
+  font-size: 14px; /* You can adjust the base font size as needed */
+}
+
+.chat-container .message-box {
+  max-width: 70%; /* Adjust the width of the message boxes */
+  height: auto; /* Let the height adjust to the content */
+  margin: 10px; /* Add spacing around the message boxes */
+  padding: 10px; /* Add padding inside the message boxes */
+  border-radius: 8px;
+}
+
+
+
+.small-text {
+  font-size: 2px;
+}
+
+/* Main styles */
+#homeDiv {
+  color: #ed161685;
+  text-align: center; 
+  height: 100%;
+  /* img size is 50x50 */
+  background:  url(chrome-extension://gfhhbbnpgbmolehnkojmajandkgnbkna/images/soundWave.png) repeat 0 0;
+  background-position: center center;
+  animation: moveBackground 10s linear infinite alternate;
+}
+
+@keyframes moveBackground {
+  0% {
+    background-position: 0 center; /* Start position (left) */
+  }
+  100% {
+    background-position: 100% center; /* End position (right) */
+  }
+}
+#chat4 .form-control {
+  border-color: transparent;
+  }
+  
+  #chat4 .form-control:focus {
+  border-color: transparent;
+  box-shadow: inset 0px 0px 0px 1px transparent;
+  }
+  
+  .divider:after,
+  .divider:before {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #eee;
+  }
+
+  a.nav-link {
+    color: gray;
+    font-size: 18px;
+    padding: 0;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #e84118;
+    padding: 2px;
+    flex: none;
+}
+
+input:focus {
+    outline: 0px !important;
+    box-shadow: none !important;
+}
+
+.card-text {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+}
+
+/* Add this CSS to your component's stylesheet or a global CSS file */
+.tab-content-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px; /* Adjust the height as needed */
+}
+
+/* If you want to center the content horizontally within each tab-pane, you can do the following */
+.tab-content .tab-pane {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.name-font {
+  font-family: 'Source Sans Semibold ', sans-serif;
+  color: black;
+}
+
+.Section-heading {
+  font-family: 'Source Sans Semibold', sans-serif;
+  color: black;
+}
+
+.text-font {
+  font-family: 'Source Sans Light', sans-serif;
+  font-size: 16px;
+  color: black;
+}
+
+.chat-msg {
+  font-family: 'Source Sans Regular', sans-serif;
+  font-size: 14px;
+  color: black;
+}
+
+#navicon {
+  margin-left: '5px'
+}
+
+.fab-buttons {
+  position: absolute;
+  bottom: 50px;
+  right: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.fab-buttons button {
+  margin-bottom: 10px; 
+  font-size: 20px;
+}
+
+/* Emailcomposer tab */
+.custom-nav-link {
+  width: 100%; 
+  margin-right: 24px;
+}
+
+/* Chatwindow links preview*/
+
+.linkpreviewcard {
+  width: 100%;
+  border: 2px solid black;
+  border-radius: 5px;
+  margin-top: 4px;
+}
+
+.linkpreviewtext {
+  height: 60px;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+  font-size: 30px;
+  color: black;
+}
+
+
+/* custom scrollbar */
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d6dee1;
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a8bbbf;
+}
+
+
+/* Homepage */
+
+.icon-button {
+  margin-left: 6px;
+  border: none;
+  background-color: transparent;
+  color: black;
+}
+
+.nav-link {
+  padding-right: 15px;
+  margin-left: 15px;
+}
+
+.icon-style {
+  color: black;
+  font-size: 30px;
+}
+
+.icon-style-normal {
+  color: black;
+  font-size: 18px;
+}
+
+.nav-bar-bg {
+  background-color: #ECF2FF;
+}
+
+.background-color {
+  background-color: white;
+  min-height: 200%;
+}
+
+
+.brand-title {
+  font-size: 30px;
+  color: black;
+  margin-left: 15px;
+}
+
+.margin-auto {
+  margin-left: auto;
+}
+
+.padding-right {
+  padding-right: 15px;
+}
+
+.dropdown-menu-style {
+  z-index: 5000;
+  background-color: #ffffff;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Styles for the homepage button */
+.homepage-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background: none;
+  border: 2px solid #0a66c2; 
+  border-radius: 25px; 
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  color: #0a66c2; 
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Hover styles for the button */
+.homepage-button:hover {
+  background-color: #0a66c2; 
+  color: #ffffff; 
+}
+
+.homepage-button-red {
+  display: inline-block;
+  padding: 10px 20px;
+  background: none;
+  border: 2px solid red; 
+  border-radius: 25px; 
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  color: red; 
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Hover styles for the button */
+.homepage-button-red:hover {
+  background-color: red; 
+  color: #ffffff; 
+}
+
+.top-margins {
+  margin-top: 10px;
+}
+
+.explainer-card {
+  margin-top: 50px;
+}
+
+.paragraph-spacing {
+  margin-bottom: 10px; 
+}
+
+/* Record page */
+
+.record-page-navtext {
+  font-size: 22px;
+  color: black;
+  margin-left: 15px;
+}
+
+.brand-text {
+  font-size: 22px;
+  color: red;
+  margin-left: 15px;
+}
+
+/* Navbar.css */
+.custom-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: rgb(199, 199, 246);
+  color: #fff;
+}
+
+.nav-item {
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+.brand-title {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+}
+
+
+/*Back Button*/
+.square-outline-button {
+  display: inline-block;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 8px;
+  font-weight: bold;
+  border: 2px solid #333; /* Border color */
+  color: #333; /* Text color */
+  background-color: transparent; /* Transparent background */
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.square-outline-button:hover {
+  background-color: #333; /* Background color on hover */
+  color: #fff; /* Text color on hover */
+}
