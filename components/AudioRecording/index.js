@@ -1,17 +1,17 @@
 import React, { useState, useEffect,useContext } from 'react';
 import { AiFillAudio } from "react-icons/ai";
-import {UserInput} from './UserInput';
+import { UserInput } from '../UserInput/index.js';
 import { MdFileUpload } from "react-icons/md";
 import { IoMdDownload } from "react-icons/io";
 import { MdDeleteForever } from "react-icons/md";
 import { FaStop } from "react-icons/fa";
 import { IoLink } from "react-icons/io5";
-import API_ENDPOINTS from './apiConfig.js';
-import {getCurrentDateTimeString, replaceInvalidCharacters} from '../utils/helperFunctions.js';
-import { insertHtmlAtPositionInMail,insertIntoLinkedInMessageWindow } from '../utils/helperFunctions.js';
+import API_ENDPOINTS from '../apiConfig.js';
+import {getCurrentDateTimeString, replaceInvalidCharacters} from '../../utils/index.js';
+import { insertIntoLinkedInMessageWindow, insertHtmlAtPositionInMail } from '../../utils/index.js';
 import { PiExportFill } from "react-icons/pi";
-import GlobalStatesContext from '../contexts/GlobalStates.js'
-import Loader from './Loaders.js';
+import GlobalStatesContext from '../../contexts/GlobalStates.js';
+import Loader from '../Loaders/index.js';
 
 const VoiceVisualization = (props) => {
   const [mediaRecorder, setMediaRecorder] = useState(null);

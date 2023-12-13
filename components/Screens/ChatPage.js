@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
-import ChatComponent from './Chat'; 
 import { BsPersonX } from "react-icons/bs";
 import { BsArrowRightCircle } from 'react-icons/bs';
 

@@ -5,11 +5,13 @@ import { MdAccountCircle } from "react-icons/md";
 import { BsArrowRightCircle } from "react-icons/bs";
 import { FaRegCalendarCheck } from "react-icons/fa";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import EmailComposer from './EmailComposer';
 import API_ENDPOINTS from './apiConfig.js';
+import StartDiv from './StartDiv.js';
 import GlobalStatesContext from '../contexts/GlobalStates.js';
 import { AppBar, Toolbar, IconButton, Typography, Menu, MenuItem, ListItemText, Card, CardContent, Link, Container  } from '@mui/material';
-
+import RecordingButton from './VideoRecording/index.js';
+import VoiceVisualization from './AudioRecording/index.js';
+import EmailComposer from './EmailSection/index.js';
 
 const Homepage = (props) => {
 
@@ -73,10 +75,10 @@ const Homepage = (props) => {
     handleClose();
   };
 
-  const menuItems = document.querySelectorAll('.MuiMenuItem-root .MuiListItemText-primary');
-    menuItems.forEach(item => {
-      item.style.fontSize = fontSize;
-    });
+  //const menuItems = document.querySelectorAll('.MuiMenuItem-root .MuiListItemText-primary');
+    //menuItems.forEach(item => {
+    //  item.style.fontSize = fontSize;
+    //});
 
   useEffect(() => { 
     window.addEventListener('popstate',()=>{console.log("hi")});
@@ -88,7 +90,7 @@ const Homepage = (props) => {
     const rows = data.map(obj => Object.values(obj).join(',') + '\n');
     const csvContent= header + rows.join('');
     const blob = new Blob([csvContent], { type: 'text/csv' });
-    const link = document.createElement('a');
+    //const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = 'skoop_contacts_data.csv';
     link.click();

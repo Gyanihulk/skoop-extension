@@ -1,7 +1,9 @@
 import Footer from '../components/Footer';
 import Header from '../components/Header';
+import '../styles/style.css';
 import '../styles/globals.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { GlobalStatesProvider } from '../contexts/GlobalStates';
 
 
 
@@ -11,9 +13,11 @@ export default function App({ Component, pageProps }) {
     <script src="/jquery-3.2.1.slim.min.js"></script>
     <script src="/bootstrap.min.js"></script>
     <script src="/popper.min.js"></script>
+    <GlobalStatesProvider>
       <Header/>
       <Component {...pageProps} />
       <Footer />
+      </GlobalStatesProvider>
     </>
   );
 }

@@ -5,12 +5,12 @@ import { HiMiniGif } from "react-icons/hi2";
 import { RiMessage2Fill } from "react-icons/ri";
 import { PiCalendarCheckFill } from "react-icons/pi";
 import { MdVideoLibrary } from "react-icons/md";
-import ChatGpt from './ChatGpt';
-import GiphyWindow from './Giphy';
-import Library from './Library';
-import AI from './AIassistance';
-import API_ENDPOINTS from './apiConfig.js';
-import { insertHtmlAtPositionInMail } from '../utils/helperFunctions.js';
+import ChatGpt from '../Chatgpt/index.js';
+import GiphyWindow from '../Gif/index.js';
+import Library from '../Library/index.js';
+import AI from '../Pre-Determined-Msg/index.js';
+import API_ENDPOINTS from '../apiConfig.js';
+import { insertHtmlAtPositionInMail } from '../../utils/index.js';
 
 class EmailComposer extends Component{
   constructor(props){

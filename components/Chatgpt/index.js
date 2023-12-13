@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { MdOutlineScheduleSend } from "react-icons/md";
 import { Container, Card, Form, Row, Col, Button, ButtonGroup } from 'react-bootstrap';
-import API_ENDPOINTS from './apiConfig.js';
+import API_ENDPOINTS from '../apiConfig';
 
 class ChatGpt extends Component {
   constructor(props) {

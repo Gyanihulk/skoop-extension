@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import Index from '../components/Index';
 import New from '../components/New';
+import Homepage from '../components/Homepage';
 
 export default function Home() {
-  const [activePage, setActivePage] = useState('index');
+  const [activePage, setActivePage] = useState('home');
 
   const navigateToPage = (page) => {
     setActivePage(page);
@@ -13,6 +14,7 @@ export default function Home() {
     <>
       {activePage === 'index' && <Index navigateToPage={navigateToPage} />}
       {activePage === 'new' && <New navigateToPage={navigateToPage} />}
+      {activePage === 'home' && <Homepage changePage={navigateToPage} />}
     </>
   );
 }

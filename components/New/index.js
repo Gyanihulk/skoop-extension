@@ -12,7 +12,7 @@ export default function New({ navigateToPage}) {
           </p>
           <h1 className={styles.code}>New Page ./components/New/index.js</h1>
           <p>{"[ - This is New page content - ]"}</p>
-          <p onClick={() => navigateToPage('index')}>{"< Go Back"}</p>
+          <p onClick={() => navigateToPage('giphy')}>{"< Go Back"}</p>
         </main>
       </div>
     );

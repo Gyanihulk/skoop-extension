@@ -4,7 +4,7 @@ import { TbUserEdit } from "react-icons/tb";
 import { FaRegEdit } from "react-icons/fa";
 import { IoCheckmarkDoneSharp, IoArrowBack, IoClose } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
-import API_ENDPOINTS from './apiConfig.js'
+import API_ENDPOINTS from '../apiConfig.js';
 
 
 const AccountProfile = ({ userData }) => (

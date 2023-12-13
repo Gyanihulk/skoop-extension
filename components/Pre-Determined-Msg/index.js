@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import API_ENDPOINTS from './apiConfig.js';
+import API_ENDPOINTS from '../apiConfig';
 
 function AI(props) {
   const [selectedOption, setSelectedOption] = useState('Select Response');

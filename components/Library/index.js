@@ -8,9 +8,9 @@ import { FiTrash2 } from "react-icons/fi";
 import { MdOutlineFavorite } from "react-icons/md";
 import { FaRegStar } from "react-icons/fa";
 import { FaFolderPlus } from "react-icons/fa";
-import API_ENDPOINTS from './apiConfig.js'
-import {NewFolderInput} from './UserInput'
-import GlobalStatesContext from '../contexts/GlobalStates.js'
+import API_ENDPOINTS from '../apiConfig.js';
+import { NewFolderInput } from '../UserInput/index.js';
+import GlobalStatesContext from '../../contexts/GlobalStates.js';
 
 const Library = (props) => {
     const [links,setLinks]= useState([])

@@ -1,7 +1,7 @@
 import React, { useState, useEffect ,useContext} from 'react'
 import Webcam from "react-webcam"
-import {UserInput} from './UserInput'
-import API_ENDPOINTS from './apiConfig'
+import { UserInput } from '../UserInput/index.js';
+import API_ENDPOINTS from '../apiConfig.js';
 import { FaDownload } from "react-icons/fa6";
 import { FaUpload } from "react-icons/fa6";
 import { FaTimesCircle } from "react-icons/fa";
@@ -10,8 +10,8 @@ import { MdDeleteForever } from "react-icons/md";
 import { IoLinkSharp } from "react-icons/io5";
 import {getCurrentDateTimeString, insertHtmlAtPositionInMail,
         insertIntoLinkedInMessageWindow,
-        replaceInvalidCharacters} from '../utils/helperFunctions.js';
-import GlobalStatesContext from '../contexts/GlobalStates.js'
+        replaceInvalidCharacters} from '../../utils/index.js';
+import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import { PiExportFill } from "react-icons/pi";
 import toast, { Toaster } from 'react-hot-toast';
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Container, Row, Col, Form} from 'react-bootstrap';
 import { FaTimes } from 'react-icons/fa';
 import { TbListDetails } from "react-icons/tb";
-import API_ENDPOINTS from './apiConfig';
+import API_ENDPOINTS from '../apiConfig';
 // the timezones for calendar
 const timezones = [
   'UTC',
