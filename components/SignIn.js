@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Form, InputGroup, Card, Container, Row, Col, Button } from 'react-bootstrap';
 import { FaSignInAlt, FaTimes } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import API_ENDPOINTS from './apiConfig';
-import toast, { Toaster } from 'react-hot-toast';
+// import toast, { Toaster } from 'react-hot-toast';
 
 function Copyright() {
   return (
@@ -23,7 +23,6 @@ function Copyright() {
 }
 
 function SignIn(props) {
-  const [logInMode, setLogInMode] = useState(0);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -54,14 +53,47 @@ function SignIn(props) {
     }
   };
 
-  const handleSignIn = async (type) => {
+  const handleAuthCode = async (authCode, type) => {
+    const url = type === 1 ? API_ENDPOINTS.linkedInLogIn : API_ENDPOINTS.GoogleLogIn;
+    console.log("the  url",url);
     try {
-      if (type === 1) {
-        window.open(API_ENDPOINTS.linkedInAuthCode);
-        setLogInMode(1);
+      var result = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify({
+          code: authCode,
+        }),
+      });
+      console.log("the token",result);
+      result = await result.json();
+      //alert("the login was successfull check console for token");
+      // these are commented for now 
+      localStorage.setItem('accessToken', JSON.stringify(result.accessToken));
+      localStorage.setItem('skoopUsername', JSON.stringify(result.skoopUsername));
+      props.changePage('Home'); // this wont work as of now since there is not home component
+    } catch (err) {
+      console.log("the error",err);
+      alert("could not sign in")
+    }
+  }
+
+  const handleSignIn = async (type) => {
+    console.log(chrome.identity.getRedirectURL())
+    try {
+      if (type === 2) {
+        const GoogleAuthUrl=`https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=120051053340-6o9itlmoo5ruo2k8l0qi42sf3nagbmkv.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(chrome.identity.getRedirectURL())}&scope=profile%20email%20openid`
+        chrome.identity.launchWebAuthFlow({ url: GoogleAuthUrl, interactive: true },async function(redirectUrl) {
+          const code = new URL(redirectUrl).searchParams.get('code');
+          handleAuthCode(code,type);
+        });
       } else {
-        window.open(API_ENDPOINTS.GoogleAuthCode);
-        setLogInMode(2);
+        const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77au9mtqfad5jq&redirect_uri=${encodeURIComponent(chrome.identity.getRedirectURL())}&scope=openid%20profile%20email`;
+        chrome.identity.launchWebAuthFlow({ url: linkedInAuthUrl, interactive: true }, function(redirectUrl) {
+          const code = new URL(redirectUrl).searchParams.get('code');
+          handleAuthCode(code,type);
+        });
       }
     } catch (err) {
       console.log(err);
@@ -90,73 +122,7 @@ function SignIn(props) {
     })();
   }, []);
 
-  const handleAuthCode = async (event, type) => {
-    const url = type === 1 ? API_ENDPOINTS.linkedInLogIn : API_ENDPOINTS.GoogleLogIn;
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const authCode = data.get('authCode');
-    const loadingObj=toast.loading("uploading video...")
-    try {
-      var result = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-        },
-        body: JSON.stringify({
-          code: authCode,
-        }),
-      });
-      result = await result.json();
-      toast.success("video uploaded,encoding in progress",{
-        id: loadingObj
-      })
-      localStorage.setItem('accessToken', JSON.stringify(result.accessToken));
-      localStorage.setItem('skoopUsername', JSON.stringify(result.skoopUsername));
-      props.changePage('Home');
-    } catch (err) {
-      toast.dismiss();
-      toast.error("Sign in failed")
-    }
-  };
 
-  if (logInMode !== 0) {
-    return (
-      <Card style={{ height: 'max-content', width: '30rem', margin: 'auto', marginTop: '15rem' }}>
-        <Toaster/>
-        <Card.Body>
-          <Form onSubmit={(event) => handleAuthCode(event, logInMode)} noValidate>
-            <Form.Label>Enter the generated code</Form.Label>
-            <InputGroup className="mb-3">
-              <Form.Control
-                type="text"
-                id="authCode"
-                name="authCode"
-                autoComplete="authCode"
-                autoFocus
-                required
-              />
-              <button
-                variant="success"
-                type="button"
-                style={{background:'none', border:'none', color:'#83941f'}}
-                onClick={() =>
-                  navigator.clipboard.readText().then((text) => (document.getElementById('authCode').value = text))
-                }
-              >
-                Paste
-              </button>
-            </InputGroup>
-            <button type="submit" style={{ background:'none', border:'none', marginRight: '1rem', color:"#0a66c2" }}>
-              Sign In
-            </button>
-            <button type="button" style={{ background:'none', border:'none', color:"#000000", marginRight: '3rem'}} onClick={() => setLogInMode(0)}>
-              Back
-            </button>
-          </Form>
-        </Card.Body>
-      </Card>
-    );
-  }
 
   return (
     <div>
@@ -207,12 +173,12 @@ function SignIn(props) {
             </button>
             <br></br>
             <div className="d-flex justify-content-between mt-3">
-              <Link to="#" className="text-secondary">
+              <a to="#" className="text-secondary">
                 Forgot password?
-              </Link>
-              <Link to="#" onClick={() => props.changePage('SignUp')} className="text-secondary">
+              </a>
+              <a to="#" onClick={() => props.changePage('SignUp')} className="text-secondary">
                 Don't have an account? Sign Up
-              </Link>
+              </a>
             </div>
           </Form>
         </Col>

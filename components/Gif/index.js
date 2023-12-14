@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { GrSearchAdvanced } from "react-icons/gr";
 import { Container, InputGroup, FormControl, Button, Row, Col, Form } from 'react-bootstrap';
-//import API_ENDPOINTS from './apiConfig.js';
+import API_ENDPOINTS from '../apiConfig';
 
 function GiphyWindow(props) {
   const [search, setSearch] = useState('');
@@ -9,6 +9,7 @@ function GiphyWindow(props) {
 
   const handleSearch = async () => {
     try {
+      console.log("The access token is this one", localStorage.getItem('accessToken'))
       const response = await fetch(API_ENDPOINTS.gifs + new URLSearchParams({
         search: search
       }), {
