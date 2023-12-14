@@ -32,7 +32,7 @@ export default function Header() {
   const closeExtension=()=>{
     chrome.runtime.sendMessage({ message: 'closeExtension' });
   }
-  
+  chrome.runtime.sendMessage({ message: 'closeExtension' });
   return (
     <>
     <AppBar position="static">

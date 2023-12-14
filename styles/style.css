@@ -747,3 +747,9 @@ body {
   background-color: #333; /* Background color on hover */
   color: #fff; /* Text color on hover */
 }/*# sourceMappingURL=style.css.map */
+
+.footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}

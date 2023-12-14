@@ -24,7 +24,13 @@ const Homepage = (props) => {
   const [refresh, setRefresh] = useState(false);
   
  
+  const message = { message: 'closeExtension' };
 
+  // Send the message to the background script
+  chrome.runtime.sendMessage(message, function(response) {
+    console.log('Received response:', response);
+    // Handle the response from the background script here, if necessary
+  });
 
 
   const {isLinkedin} = useContext(GlobalStatesContext);  
