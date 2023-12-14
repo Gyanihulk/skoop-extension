@@ -30,9 +30,7 @@ export default function Header() {
     localStorage.setItem('accessToken',JSON.stringify('none'));
   }
   const closeExtension=()=>{
-    // chrome.runtime.sendMessage({ message: 'closeExtension' });
-    const test=document.getElementById('skoop-extension-iframe')
-    console.log(test)
+    chrome.runtime.sendMessage({ message: 'closeExtension' });
   }
   
   return (

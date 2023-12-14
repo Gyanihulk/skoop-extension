@@ -16,6 +16,7 @@ function injectIframe() {
   const iframe = document.createElement('iframe');
   iframe.id = 'skoop-extension-iframe';
   iframe.src = `chrome-extension://gplimcomjkejccjoafekbjedgmlclpag/index.html`;
+  iframe.setAttribute('allow', 'camera;microphone');
   iframe.style.border = 'none';
   iframe.style.position = 'fixed';
   iframe.style.top = '0';
@@ -52,6 +53,8 @@ function requestCameraAndMicrophonePermissions() {
           .then((stream) => {
               console.log('Camera and microphone access granted');
 
+
+              // Handle the stream here (e.g., display it in a video element)
           })
           .catch((err) => {
               console.error(`The following error occurred: ${err.name}`);
