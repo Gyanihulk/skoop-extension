@@ -90,7 +90,9 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
 
   const startCountdown=async()=>{
     try {
+      
       const permissionStatus = await navigator.permissions.query({ name: 'camera' });
+      console.log(permissionStatus)
       if (permissionStatus.state === 'granted') {
         setTime(0)
         setVideoId('')

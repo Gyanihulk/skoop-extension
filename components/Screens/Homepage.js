@@ -5,13 +5,11 @@ import { MdAccountCircle } from "react-icons/md";
 import { BsArrowRightCircle } from "react-icons/bs";
 import { FaRegCalendarCheck } from "react-icons/fa";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import API_ENDPOINTS from './apiConfig.js';
-import StartDiv from './StartDiv.js';
-import GlobalStatesContext from '../contexts/GlobalStates.js';
-import { AppBar, Toolbar, IconButton, Typography, Menu, MenuItem, ListItemText, Card, CardContent, Link, Container  } from '@mui/material';
-import RecordingButton from './VideoRecording/index.js';
-import VoiceVisualization from './AudioRecording/index.js';
-import EmailComposer from './EmailSection/index.js';
+import API_ENDPOINTS from '../apiConfig.js';
+import GlobalStatesContext from '../../contexts/GlobalStates.js';
+import RecordingButton from '../VideoRecording/index.js';
+import VoiceVisualization from '../AudioRecording/index.js';
+import EmailComposer from '../EmailSection/index.js';
 
 const Homepage = (props) => {
 
@@ -24,13 +22,11 @@ const Homepage = (props) => {
   const [latestVideoUrl,setLatestVideoUrl]=useState('')
   const [modeOfRecording,setModeOfRecording]=useState('Video')
   const [refresh, setRefresh] = useState(false);
-  const [selectedVideoStyle, setSelectedVideoStyle] = useState(null);
-  const [profileDropdownVisible, setProfileDropdownVisible] = useState(false);
+  
+ 
 
 
-  const toggleProfileDropdown = () => {
-    setProfileDropdownVisible(!profileDropdownVisible);
-  };
+
   const {isLinkedin} = useContext(GlobalStatesContext);  
 
   useEffect(()=>{
@@ -42,37 +38,15 @@ const Homepage = (props) => {
   const navBarColor = isLinkedin ? "#0a66c2":"#EA4335"
 
 
-  const handleClick = (event) => {
-    setAnchorEl((prevAnchorEl) => (prevAnchorEl ? null : event.currentTarget));
-  };  
+
   
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
-  const handleLogOut=()=>{
-    localStorage.setItem('accessToken',JSON.stringify('none'));
-    props.changePage("SignIn");
-  }
+
+ 
 
   const handleOpenSettings = () => {
     setOpenSettings(true);
-  };
-  const handleVideoStyleSelect = (style) => {
-    setSelectedVideoStyle(style);
-
-    if(style === 'Square'){
-      setAspectRatio(1);
-    }
-    else if(style === 'Vertical Mode'){
-      setAspectRatio(9/16);
-    }
-    else{
-      setAspectRatio(16/9);
-    }
-    console.log(`Selected Video Style: ${style}`);
-    handleClose();
   };
 
   //const menuItems = document.querySelectorAll('.MuiMenuItem-root .MuiListItemText-primary');
@@ -127,96 +101,7 @@ const Homepage = (props) => {
 
   return (
     <div className="background-color">  
-    <AppBar position="static">
-      <Toolbar style={{ justifyContent: 'space-between', background: '#ECF2FF' }}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <IconButton
-          edge="start"
-          aria-label="Close Skoop"
-          onClick={props.close}
-        >
-        <BsArrowRightCircle style={{color:'black'}} className="icon-style" />
-        </IconButton>
-
-        <Typography variant="h6" className="brand-title" style={TextStyles}>
-          Skoop
-        </Typography>
-      </div>
-      <div>
-        <IconButton edge="start" onClick={handleClick}>
-          <MdOutlineVideoSettings style={{color:'black'}} className="icon-style-normal" />
-        </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-        >
-          <MenuItem
-            selected={selectedVideoStyle === 'Vertical Mode'}
-            onClick={() => handleVideoStyleSelect('Vertical Mode')}
-          >
-            <ListItemText 
-              primary="Vertical (9:16)" 
-              style={{ fontSize: isLinkedin ? '20px' : '20px' }}
-            />
-          </MenuItem>
-
-          <MenuItem
-            selected={selectedVideoStyle === 'Horizontal'}
-            onClick={() => handleVideoStyleSelect('Horizontal')}
-          >
-            <ListItemText 
-              primary="Horizontal (16:9)" 
-              style={{ fontSize: isLinkedin ? '20px' : '20px' }}
-            />
-          </MenuItem>
-
-          <MenuItem
-            selected={selectedVideoStyle === 'Square'}
-            onClick={() => handleVideoStyleSelect('Square')}
-          >
-            <ListItemText 
-              primary="Square (1:1)" 
-              style={{ fontSize: isLinkedin ? '20px' : '20px' }}
-            />
-          </MenuItem>
-        </Menu>
-
-
-        <IconButton
-          onClick={() => { window.open(`${API_ENDPOINTS.skoopCalendarUrl}/index.php/user/login`, '_blank') }}
-        >
-          <FaRegCalendarCheck style={{color:'black'}} className="icon-style-normal" />
-        </IconButton>
-
-        <IconButton>
-            <MdNotificationsActive style={{color:'black'}} className="icon-style-normal" />
-        </IconButton>
-
-        <IconButton
-          onClick={toggleProfileDropdown}
-        >
-          <MdAccountCircle style={{color:'black'}} className="icon-style" />
-        </IconButton>
-        <Menu
-          anchorEl={profileDropdownVisible}
-          open={Boolean(profileDropdownVisible)}
-          onClose={() => setProfileDropdownVisible(false)}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        >
-          <MenuItem 
-          style={{ fontSize: dropdownTextFontSize }}
-          onClick={() => props.changePage("AccountSettings")}>
-            Account Settings
-          </MenuItem>
-          <MenuItem 
-          style={{ fontSize: dropdownTextFontSize }}
-          onClick={handleLogOut}>Logout</MenuItem>
-        </Menu>
-      </div>
-      </Toolbar>
-    </AppBar> 
+    
 
     <div className="d-flex my-4 justify-content-center mt-8">
       <RecordingButton

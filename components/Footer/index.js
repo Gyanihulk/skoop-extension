@@ -1,23 +1,32 @@
-import styles from './Footer.module.css';
+import React from 'react';
+import { Box, Typography, Link, Container } from '@mui/material';
 
-export default function Footer() {
+const MobileFooter = () => {
   return (
-    <footer className={styles.footer}>
-      <a
-        href="https://github.com/ibnzUK/next-chrome-starter"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Footer V.0.0.1
-        <span className={styles.logo}>
-          <img
-            src="icons/icon16.png"
-            alt="Logo"
-            width={16}
-            height={16}
-          />
-        </span>
-      </a>
-    </footer>
+    <Box
+      component="footer"
+      sx={{
+        width: '100%',
+        height: '50px',
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        bgcolor: 'primary.main',
+        color: 'primary.contrastText',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1201 // The z-index for AppBar is 1100
+      }}
+    >
+      <Container maxWidth="sm">
+        <Typography variant="body2" align="center">
+          © {new Date().getFullYear()} Skoop - 
+          <Link color="inherit" href="#">Privacy Policy</Link>
+        </Typography>
+      </Container>
+    </Box>
   );
-}
+};
+
+export default MobileFooter;

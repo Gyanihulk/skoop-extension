@@ -1,56 +1,130 @@
-import styles from './Header.module.css';
+import { AppBar, IconButton, ListItemText, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
+import { useContext, useState } from "react";
+import { BsArrowRightCircle } from "react-icons/bs";
+import { MdAccountCircle, MdNotificationsActive, MdOutlineVideoSettings } from "react-icons/md";
+import GlobalStatesContext from "../../contexts/GlobalStates";
+import { FaRegCalendarCheck } from "react-icons/fa";
+import ScreenContext from "../../contexts/ScreenContext";
+
 
 export default function Header() {
+  const {activePage}=useContext(ScreenContext)
+  if(activePage==="SignIn"||activePage==="SignUp"){
+    return <></>
+  }
+  const [anchorEl, setAnchorEl] = useState(false)
+  const {selectedVideoStyle,handleVideoStyleSelect}=useContext(GlobalStatesContext)
+  const [profileDropdownVisible, setProfileDropdownVisible] = useState(false);
+  const handleClick = (event) => {
+    setAnchorEl((prevAnchorEl) => (prevAnchorEl ? null : event.currentTarget));
+  };  
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const toggleProfileDropdown = () => {
+    setProfileDropdownVisible(!profileDropdownVisible);
+  };
+
+  const handleLogOut=()=>{
+    localStorage.setItem('accessToken',JSON.stringify('none'));
+  }
+  const closeExtension=()=>{
+    // chrome.runtime.sendMessage({ message: 'closeExtension' });
+    const test=document.getElementById('skoop-extension-iframe')
+    console.log(test)
+  }
+  
   return (
     <>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
-  <a className="navbar-brand" href="#">Navbar</a>
-  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span className="navbar-toggler-icon"></span>
-  </button>
-  <ul className="nav justify-content-end">
-  <li className="nav-item">
-    <a className="nav-link active" href="#">Active</a>
-  </li>
-  <li className="nav-item">
-    <a className="nav-link" href="#">Link</a>
-  </li>
-  <li className="nav-item">
-    <a className="nav-link" href="#">Link</a>
-  </li>
-  <li className="nav-item">
-    <a className="nav-link disabled" href="#">Disabled</a>
-  </li>
-</ul>
-  <div className="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul className="navbar-nav mr-auto">
-      <li className="nav-item active">
-        <a className="nav-link" href="#">Home <span className="sr-only">(current)</span></a>
-      </li>
-      <li className="nav-item">
-        <a className="nav-link" href="#">Link</a>
-      </li>
-      <li className="nav-item dropdown">
-        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown
-        </a>
-        <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a className="dropdown-item" href="#">Action</a>
-          <a className="dropdown-item" href="#">Another action</a>
-          <div className="dropdown-divider"></div>
-          <a className="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
-      <li className="nav-item">
-        <a className="nav-link disabled" href="#">Disabled</a>
-      </li>
-    </ul>
-    <form className="form-inline my-2 my-lg-0">
-      <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
-      <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
-  </div>
-</nav>
+    <AppBar position="static">
+      <Toolbar style={{ justifyContent: 'space-between', background: '#ECF2FF' }}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <IconButton
+          edge="start"
+          aria-label="Close Skoop"
+        >
+        <BsArrowRightCircle className="icon-header" onClick={closeExtension}/>
+        </IconButton>
+
+        <Typography variant="h6" className="brand-title">
+          Skoop
+        </Typography>
+      </div>
+      <div>
+        <IconButton edge="start" onClick={handleClick}>
+          <MdOutlineVideoSettings className="icon-header"/>
+        </IconButton>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+          <MenuItem
+            selected={selectedVideoStyle === 'Vertical Mode'}
+            onClick={() => handleVideoStyleSelect('Vertical Mode')}
+          >
+            <ListItemText 
+              primary="Vertical (9:16)" 
+              // style={{ fontSize: isLinkedin ? '20px' : '20px' }}
+            />
+          </MenuItem>
+
+          <MenuItem
+            selected={selectedVideoStyle === 'Horizontal'}
+            onClick={() => handleVideoStyleSelect('Horizontal')}
+          >
+            <ListItemText 
+              primary="Horizontal (16:9)" 
+              // style={{ fontSize: isLinkedin ? '20px' : '20px' }}
+            />
+          </MenuItem>
+
+          <MenuItem
+            selected={selectedVideoStyle === 'Square'}
+            onClick={() => handleVideoStyleSelect('Square')}
+          >
+            <ListItemText 
+              primary="Square (1:1)" 
+            />
+          </MenuItem>
+        </Menu>
+
+
+        <IconButton
+          onClick={() => { window.open(`${API_ENDPOINTS.skoopCalendarUrl}/index.php/user/login`, '_blank') }}
+        >
+          <FaRegCalendarCheck style={{color:'black'}} className="icon-style-normal" />
+        </IconButton>
+
+        <IconButton>
+            <MdNotificationsActive style={{color:'black'}} className="icon-style-normal" />
+        </IconButton>
+
+        <IconButton
+          onClick={toggleProfileDropdown}
+        >
+          <MdAccountCircle style={{color:'black'}} className="icon-style" />
+        </IconButton>
+        <Menu
+          anchorEl={profileDropdownVisible}
+          open={Boolean(profileDropdownVisible)}
+          onClose={() => setProfileDropdownVisible(false)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          <MenuItem 
+        
+          onClick={() => props.changePage("AccountSettings")}>
+            Account Settings
+          </MenuItem>
+          <MenuItem 
+
+          onClick={handleLogOut}>Logout</MenuItem>
+        </Menu>
+      </div>
+      </Toolbar>
+    </AppBar> 
     </>
   );
 }

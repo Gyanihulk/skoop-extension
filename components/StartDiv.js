@@ -1,5 +1,5 @@
 import React, { useState,useContext,useEffect } from 'react';
-import SignIn from './SignIn';
+import SignIn from './Screens/SignIn';
 import Homepage from './Homepage';
 import SignUp from './Screens/SignUp';
 import NewChatPage from './Screens/ChatPage';

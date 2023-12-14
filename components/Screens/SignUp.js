@@ -1,77 +1,120 @@
-import * as React from 'react';
-import { Container, Row, Col, Form} from 'react-bootstrap';
+import React, { useState, useEffect, useContext } from 'react';
+import { Container, Row, Col, Form } from 'react-bootstrap';
 import { FaTimes } from 'react-icons/fa';
-import { TbListDetails } from "react-icons/tb";
+import { TbListDetails } from 'react-icons/tb';
 import API_ENDPOINTS from '../apiConfig';
 import { timezones } from '../../lib/timezones';
-
+import AuthContext from '../../contexts/AuthContext';
+import ScreenContext from '../../contexts/ScreenContext';
 
 function Copyright() {
-  return (
-    <Container fluid>
-      <Row className="justify-content-center">
-        <Col xs="auto" className="text-secondary text-center">
-          {'Copyright © '}
-          <a href="https://appfoster.com/" className="text-inherit">
-            Skoop
-          </a>{' '}
-          {new Date().getFullYear()}
-          {'.'}
-        </Col>
-      </Row>
-    </Container>
-  );
+    return (
+        <Container fluid>
+            <Row className="justify-content-center">
+                <Col xs="auto" className="text-secondary text-center">
+                    {'Copyright © '}
+                    <a href="https://appfoster.com/" className="text-inherit">
+                        Skoop
+                    </a>{' '}
+                    {new Date().getFullYear()}
+                    {'.'}
+                </Col>
+            </Row>
+        </Container>
+    );
 }
 
 export default function SignUp(props) {
-  const [selectedOption,setSelectedOption]=React.useState("")
-  const handleSubmit = async(event) => {
-    event.preventDefault();
-    try{
-      const data = new FormData(event.currentTarget);
-      if(data.get("password")!==data.get("confirmPassword")){
-        alert("Password fields do not match try again")
-        return ;
-      }
-      if(data.get("timezone")=="Select Timezone"){
-        alert("please select a timezone")
-        return ;
-      }
-      const res=await fetch(API_ENDPOINTS.signUp,{
-          method: "POST",
-          body: JSON.stringify({
-              password : data.get("password"),
-              first_name: data.get("firstName"),
-              last_name: data.get("lastName"),
-              email: data.get("email"),
-              timezone: data.get("timezone"),
-              services: [1,2,3]
-          }),
-          headers:{
-              "Content-type": "application/json; charset=UTF-8"
-          }
-      })
-      if(res.ok){
-          alert("sign-up was successfull")
-      }
-      else alert("username already exists pick a different username")
-    }catch(err){
-      console.log(err)
-      alert("some error occurred")
-    }
-  };
+    const [selectedOption, setSelectedOption] = React.useState('');
 
-  return (
-    <div>
-    <FaTimes style={{ cursor: 'pointer', fontSize: '2rem', position: 'absolute', top: '2', right: '3' }} onClick={props.close} />
-    <Container style={{ maxWidth: '90%', height: '70%', marginTop: '7rem', borderRadius: '1rem', position: 'relative' }}>
+    const { handleRegister } = useContext(AuthContext);
+    const { navigateToPage } = useContext(ScreenContext);
+    return (
+        <div>
+            <div className="container">
+                <div className="row">
+                    <div className="col-md-6 offset-md-3">
+                        <div className="card my-5">
+                            <form
+                                className="card-body cardbody-color p-lg-5"
+                                onSubmit={handleRegister}
+                            >
+                                <h2 className="text-center text-dark mt-5">Sign Up</h2>
+                                <div className="mb-3">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="first-name"
+                                        placeholder="First Name"
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        id="last-name"
+                                        placeholder="Last Name"
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <input
+                                        type="email"
+                                        className="form-control"
+                                        id="email"
+                                        placeholder="Email Address"
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <input
+                                        type="password"
+                                        className="form-control"
+                                        id="password"
+                                        placeholder="Password"
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <input
+                                        type="password"
+                                        className="form-control"
+                                        id="confirm-password"
+                                        placeholder="Confirm Password"
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <select className="form-select" id="timezone">
+                                        <option selected>Select Timezone</option>
+                                        {/* Add timezone options here */}
+                                    </select>
+                                </div>
+                                <div className="text-center">
+                                    <button type="submit" className="btn btn-color px-5 mb-5 w-100">
+                                        Sign Up
+                                    </button>
+                                </div>
+
+                                <div className="form-text text-center mb-5 text-dark">
+                                    Already have an account?{' '}
+                                    <a
+                                        href="#"
+                                        onClick={() => navigateToPage('SignIn')}
+                                        className="text-dark fw-bold"
+                                    >
+                                        Sign in
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/* <Container style={{ maxWidth: '90%', height: '70%', marginTop: '7rem', borderRadius: '1rem', position: 'relative' }}>
       <Row className="justify-content-md-center">
       <Col xs={12} md={10}>
       <div className="text-center mb-4">
             <TbListDetails style={{ fontSize:"16px" }}/> 
             <h2>Sign Up</h2>
           </div>
-          <Form noValidate onSubmit={handleSubmit}>
+          <Form noValidate onSubmit={handleRegister}>
             <Form.Group className="mb-3" controlId="firstName">
               <Form.Control
                 type="text"
@@ -150,7 +193,7 @@ export default function SignUp(props) {
                 href="#"
                 className="text-secondary"
                 onClick={() => {
-                  props.changePage('SignIn');
+                  navigateToPage('SignIn');
                 }}
               >
                 Sign in
@@ -159,7 +202,7 @@ export default function SignUp(props) {
         </Col>
       </Row>
       <Copyright/>
-    </Container>
-    </div>
-  );
+    </Container> */}
+        </div>
+    );
 }

@@ -4,6 +4,8 @@ import '../styles/style.css';
 import '../styles/globals.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { GlobalStatesProvider } from '../contexts/GlobalStates';
+import { ScreenProvider } from '../contexts/ScreenContext';
+import { AuthProvider } from '../contexts/AuthContext';
 
 
 
@@ -14,9 +16,15 @@ export default function App({ Component, pageProps }) {
     <script src="/bootstrap.min.js"></script>
     <script src="/popper.min.js"></script>
     <GlobalStatesProvider>
-      <Header/>
-      <Component {...pageProps} />
-      <Footer />
+      <ScreenProvider>
+        <AuthProvider>
+
+            <Header/>
+            <Component {...pageProps} />
+            <Footer />
+
+        </AuthProvider>
+      </ScreenProvider>
       </GlobalStatesProvider>
     </>
   );
