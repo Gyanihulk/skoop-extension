@@ -5,9 +5,9 @@ import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import RecordingButton from '../VideoRecording/index.js';
 import VoiceVisualization from '../AudioRecording/index.js';
 import EmailComposer from '../EmailSection/index.js';
-
+import ChatWindowSelection from '../ChatWindowSelection/index.js'
 const Homepage = (props) => {
-  const {setIsLinkedin,isLinkedin} = useContext(GlobalStatesContext);  
+  const {setIsLinkedin,isLinkedin,setLatestVideoUrl,latestVideoUrl} = useContext(GlobalStatesContext);  
 
 
   const [aspectRatio,setAspectRatio]=useState(9/16)
@@ -94,7 +94,7 @@ const Homepage = (props) => {
     {!isLinkedin && <EmailComposer />}
       {isLinkedin  &&
           <>
-          LInkedn components
+          <ChatWindowSelection/>
           {/* <button
             type="button" 
             className="mx-auto d-block mt-4 homepage-button" 

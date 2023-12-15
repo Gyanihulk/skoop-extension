@@ -1,15 +1,15 @@
 
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useState } from 'react';
 
 const GlobalStatesContext = createContext();
 
 export const GlobalStatesProvider = ({ children }) => {
-  
+  const [latestVideoUrl,setLatestVideoUrl]=useState('')
   const [globalRefresh, setGlobalRefresh] = useState(false);
   const [isLinkedin,setIsLinkedin] = useState(false);
   const [selectedVideoStyle, setSelectedVideoStyle] = useState(null);
   const [aspectRatio,setAspectRatio]=useState(9/16)
-  
+  const [selectedChatWindows, setSelectedChatWindows] = useState([]);
 
  
   const handleVideoStyleSelect = (style) => {
@@ -30,7 +30,9 @@ export const GlobalStatesProvider = ({ children }) => {
   
 
   return (
-    <GlobalStatesContext.Provider value={{ globalRefresh, setGlobalRefresh ,isLinkedin,setIsLinkedin,selectedVideoStyle,handleVideoStyleSelect}}>
+    <GlobalStatesContext.Provider value={{ globalRefresh, setGlobalRefresh ,isLinkedin,
+    setIsLinkedin,selectedVideoStyle,
+    handleVideoStyleSelect ,selectedChatWindows,setSelectedChatWindows,setLatestVideoUrl,latestVideoUrl}}>
       {children}
     </GlobalStatesContext.Provider>
   );

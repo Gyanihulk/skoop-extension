@@ -5,7 +5,7 @@ import { BsArrowRightCircle } from 'react-icons/bs';
 
 const NewChatPage = (props) => {
 
-    const [latestVideoUrl,setLatestVideoUrl]=useState('')
+  const {latestVideoUrl} = useContext(GlobalStatesContext);  
     const [isChatComponentVisible, setIsChatComponentVisible] = useState(false);
 
   const handleGetStartedClick = () => {

@@ -168,6 +168,7 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
           body: formData
         })
         response=await response.json();
+        console.log(response,"response of video ");
         toast.success("video uploaded,encoding in progress",{
           id: loadingObj
         })
@@ -178,6 +179,7 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
         setGlobalRefresh(true)
       }catch(err){
         toast.dismiss()
+        console.log(err,"err of video upload")
         toast.error("could not upload")
       }
     }
@@ -295,7 +297,6 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
             onClick={handleClick2}
             size='small'
             disabled={isUploading} 
-            id='skoop_record_button'
           >
             {capturing ? 'Stop' : 'Rec'}
           </button>

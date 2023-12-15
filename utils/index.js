@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import GlobalStatesContext from "../contexts/GlobalStates";
 
 export const replaceInvalidCharacters=(inputString)=>{
     // Define a regular expression to match invalid, reserved, and whitespace characters
@@ -10,23 +12,45 @@ export const replaceInvalidCharacters=(inputString)=>{
 }
 
 export const insertIntoLinkedInMessageWindow=(html)=>{
-
-    var contentEditableDiv=document.getElementsByClassName("msg-form__contenteditable")[0];
-   
-    const placeHolder = document.getElementsByClassName('msg-form__placeholder')[0];
-    if(placeHolder){
-      placeHolder.remove();
+      const {selectedChatWindows} = useContext(GlobalStatesContext);
+      const executeInsertionIntoWindow=(arr,htmlToInsert)=>{
+      const messageWindows = Array.from(document.getElementsByClassName("msg-form__contenteditable"));
+      arr.forEach(item=>{
+        const contentEditableDiv=messageWindows[item.index];
+        contentEditableDiv.removeAttribute('aria-label');
+        contentEditableDiv.innerHTML=htmlToInsert;
+        const dummyInput = new Event('input', {
+            bubbles: true,
+            cancelable: true,
+        });
+        contentEditableDiv.dispatchEvent(dummyInput);
+      })
     }
 
-    if(contentEditableDiv){
-      contentEditableDiv.removeAttribute('aria-label');
-      contentEditableDiv.innerHTML=html
+    try{
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const targetTab=tabs[0];
+        console.log("the target tab",targetTab);
+        if (targetTab && targetTab.status === 'complete') {
+          console.log("the tab exists")
+          try{
+            chrome.scripting.executeScript({
+              target : {tabId : targetTab.id},
+              func: executeInsertionIntoWindow,
+              args: [selectedChatWindows,html]
+            })
+          }catch(err){
+            console.log("some error occured in executing script",err)
+          }
+        }
+        else{
+          console.log("the target tab is not accessible");
+        }
+      });
+    }catch(err){
+      console.log("error during insertion to chat",err);
     }
-    const dummyInput = new Event('input', {
-        bubbles: true,
-        cancelable: true,
-    });
-    contentEditableDiv.dispatchEvent(dummyInput);
+    
 }
 
 export const insertHtmlAtPositionInMail=(textInput) => {

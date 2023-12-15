@@ -15,7 +15,7 @@ import API_ENDPOINTS from './apiConfig.js';
 import { MdOutlineGifBox } from "react-icons/md";
 import { RiVideoFill } from "react-icons/ri";
 import { IoCalendar } from "react-icons/io5";
-import { insertIntoLinkedInMessageWindow } from '../utils/helperFunctions.js';
+import { insertIntoLinkedInMessageWindow } from '../utils';
 
 const ChatComponent = (props) => {
   const [message, setMessage] = useState('');

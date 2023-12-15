@@ -8,7 +8,7 @@ import ScreenContext from "../../contexts/ScreenContext";
 
 
 export default function Header() {
-  const {activePage}=useContext(ScreenContext)
+  const {activePage,navigateToPage}=useContext(ScreenContext)
   if(activePage==="SignIn"||activePage==="SignUp"){
     return <></>
   }
@@ -28,6 +28,7 @@ export default function Header() {
 
   const handleLogOut=()=>{
     localStorage.setItem('accessToken',JSON.stringify('none'));
+    navigateToPage("SignIn")
   }
   const closeExtension=()=>{
     chrome.runtime.sendMessage({ message: 'closeExtension' });
@@ -113,7 +114,7 @@ export default function Header() {
         >
           <MenuItem 
         
-          onClick={() => props.changePage("AccountSettings")}>
+          onClick={() => navigateToPage("AccountSettings")}>
             Account Settings
           </MenuItem>
           <MenuItem 
