@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Form, InputGroup, Card, Container, Row, Col, Button } from 'react-bootstrap';
 import { FaSignInAlt, FaTimes } from 'react-icons/fa';
-// import { Link } from 'react-router-dom';
-import API_ENDPOINTS from '../apiConfig';
+
 import AuthContext from '../../contexts/AuthContext';
 import ScreenContext from '../../contexts/ScreenContext';
 // import toast, { Toaster } from 'react-hot-toast';
 import { FaGoogle } from 'react-icons/fa6';
 import { FaLinkedin } from 'react-icons/fa';
 function SignIn() {
-    const { handleSkoopLogin, handleSocialLogin } = useContext(AuthContext);
+    const { handleSkoopLogin, handleSocialLogin,verifyToken } = useContext(AuthContext);
     const { navigateToPage } = useContext(ScreenContext);
-    // useEffect(() => {
-    //   (async () => {
-    //     const res = await verifyToken();
-    //     if (res.ok) props.changePage('Home');
-    //   })();
-    // }, []);
+
+    useEffect(() => {
+      (async () => {
+        const res = await verifyToken();
+        if (res.ok) navigateToPage('Home');
+      })();
+    }, []);
 
     return (
-        <div>
+        <div className="SignIn">
             <div className="container">
                 <div className="row">
                     <div className="col-md-6 offset-md-3">

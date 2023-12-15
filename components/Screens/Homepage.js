@@ -13,7 +13,7 @@ const Homepage = (props) => {
   const [aspectRatio,setAspectRatio]=useState(9/16)
  
  
-  const message = { message: 'HomePage',width:"750px",height:"300px" };
+  const message = { message: 'HomePage',width:"500px",height:"600px" };
 
   // Send the message to the background script
   chrome.runtime.sendMessage(message, function(response) {

@@ -248,7 +248,7 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
     }
   }, [recordedChunks]);
   
-  const handleClick=()=>{
+  const handleClick2=()=>{
     if(capturing){
       sendMessageToBackgroundScript({ message: 'stopRecording' });
     }
@@ -264,12 +264,17 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
   function sendMessageToBackgroundScript(message) {
     chrome.runtime.sendMessage(message);
   }
-
+  const handleClick=()=>{
+    if(capturing){
+      handleStopCaptureClick()
+    }
+    else startCountdown()
+  }
   return (
     <div id="homeDiv">
       <div>
         <Toaster position='top-right'/>
-        {!countdown && 
+        {!countdown && <>
             <button
             variant="outlined"
             color={capturing ? 'secondary' : 'primary'}
@@ -277,11 +282,25 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
             size='small'
             disabled={isUploading} 
             id='skoop_record_button'
+            >
+            {capturing ? 'Stop' : 'Rec'}
+          </button>
+          
+          </>
+          
+        }
+        <button
+            variant="outlined"
+            color={capturing ? 'secondary' : 'primary'}
+            onClick={handleClick2}
+            size='small'
+            disabled={isUploading} 
+            id='skoop_record_button'
           >
             {capturing ? 'Stop' : 'Rec'}
           </button>
-        }
       </div>
+      
 
       <div style={{
         position: 'fixed',

@@ -10,7 +10,7 @@ import GiphyWindow from '../Gif/index.js';
 import Library from '../Library/index.js';
 import AI from '../Pre-Determined-Msg/index.js';
 import API_ENDPOINTS from '../apiConfig.js';
-import { insertHtmlAtPositionInMail } from '../../utils/index.js';
+import {insertHtmlAtPositionInMail} from '../../utils'
 
 class EmailComposer extends Component{
   constructor(props){
@@ -100,7 +100,8 @@ class EmailComposer extends Component{
   }
 
  handleInsertion(text){
-    insertHtmlAtPositionInMail(text);
+  console.log("handle insertion end of procedure");
+  insertHtmlAtPositionInMail(text);
  }
 
   componentDisplaySwitch(input) {
@@ -176,8 +177,8 @@ class EmailComposer extends Component{
 
   render() {
     return (
-      <Box sx={{ mt: 4 }}>
-        <Box sx={{ display: 'flex' }}>
+      <Box sx={{ mt: 4 ,display: 'flex'}}>
+        
           <Box sx={{ width: '20%' }}>
             <Tabs
               value={this.state.displayComp}
@@ -211,7 +212,7 @@ class EmailComposer extends Component{
               </Paper>
             )}
           </Box>
-        </Box>
+        
       </Box>
     );
   }

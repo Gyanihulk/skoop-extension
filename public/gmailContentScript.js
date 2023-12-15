@@ -36,11 +36,11 @@ function injectIframe() {
   closeButton.className = 'extension-close-button';
   closeButton.style.position = 'absolute';
   closeButton.style.top = '10px';
-  closeButton.style.right = '10px';
+  closeButton.style.left = '10px';
   closeButton.style.width = '5px';
   closeButton.style.height = '5px';
   closeButton.style.cursor = 'pointer';
-  closeButton.textContent = 'X';
+  closeButton.textContent = '=>';
   closeButton.addEventListener('click', function close() {
       container.style.display = 'none';
   });
