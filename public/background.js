@@ -32,6 +32,29 @@ if (request.message === 'HomePage') {
     }
   });
 }
+if (request.message === 'startRecording' || request.message === 'stopRecording') {
+  // Relay message to the active tab
+  console.log("background screen recording")
+  chrome.tabs.query({}, (tabs) => {
+    const urlToFindGoogle = "https://mail.google.com/mail";
+    const urlToFindLinkedIn = "https://www.linkedin.com/";
+    
+
+    // Find the tab with either the Google Mail URL or the LinkedIn URL
+    const targetTab = tabs.find(tab => tab.active && (tab.url.startsWith(urlToFindGoogle) || tab.url.startsWith(urlToFindLinkedIn)));    
+
+    if (targetTab) {
+      chrome.tabs.sendMessage(targetTab.id, { action: request.message }, (response) => {
+        if (response) {
+          console.log(response)
+          sendResponse(response)
+        }
+      });
+    
+    }
+  });
+  
+}
 return true;
 }
 );

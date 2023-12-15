@@ -99,7 +99,7 @@ function createButton() {
     buttonContainer.style.backgroundSize = 'cover';
     buttonContainer.style.backgroundPosition = 'center';
     buttonContainer.style.backgroundRepeat = 'no-repeat';
-    buttonContainer.style.zIndex = '9999';
+    buttonContainer.style.zIndex = '9998';
     buttonContainer.style.display = 'flex';
     buttonContainer.style.alignItems = 'center';
     buttonContainer.style.justifyContent = 'center';
@@ -151,6 +151,76 @@ function resizeIframe(newWidth, newHeight) {
   }
 }
 
+function createWebcamContainer() {
+  const container = document.createElement('div');
+  container.id = 'webcam-container';
+  container.style.position = 'fixed';
+  container.style.top = '10px';
+  container.style.right = '10px';
+  container.style.zIndex = '10000';
+  container.style.display = 'none';
+  container.style.height = '120px';
+  container.style.width = '210px';
+  document.body.appendChild(container);
+
+    // Drag functionality
+    let isDragging = false;
+    let dragStartX, dragStartY;
+  
+    const dragStart = (e) => {
+      isDragging = true;
+      dragStartX = e.clientX - container.offsetLeft;
+      dragStartY = e.clientY - container.offsetTop;
+      document.addEventListener('mousemove', dragMove);
+      document.addEventListener('mouseup', dragEnd);
+    };
+  
+    const dragMove = (e) => {
+      if (isDragging) {
+        container.style.left = `${e.clientX - dragStartX}px`;
+        container.style.top = `${e.clientY - dragStartY}px`;
+      }
+    };
+  
+    const dragEnd = () => {
+      isDragging = false;
+      document.removeEventListener('mousemove', dragMove);
+      document.removeEventListener('mouseup', dragEnd);
+    };
+  
+    container.addEventListener('mousedown', dragStart);
+    
+  return container;
+}
+
+// Function to start the webcam
+function startWebcam(container) {
+  console.log("starting webcam")
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then((stream) => {
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.autoplay = true;
+      video.style.height = '120px';
+      video.style.width = '210px';
+      video.style.zIndex = '9998';
+      container.appendChild(video);
+    })
+    .catch((error) => {
+      console.error('Error accessing the webcam', error);
+    });
+}
+
+// Function to stop the webcam
+function stopWebcam(container) {
+  if (container.firstChild) {
+    const video = container.firstChild;
+    video.srcObject.getTracks().forEach(track => track.stop());
+    container.removeChild(video);
+  }
+}
+
+const container = createWebcamContainer();
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "collectClasses") {
@@ -165,7 +235,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     resizeIframe(request.width, request.height);
     sendResponse({ result: 'Iframe resized' });
   }
-
+  if (request.action === 'startRecording') {
+    container.style.display = 'block';
+    startWebcam(container);
+  } else if (request.action === 'stopRecording') {
+    container.style.display = 'none';
+    stopWebcam(container);
+  }
  
   return true; 
 });

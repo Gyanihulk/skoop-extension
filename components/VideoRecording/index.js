@@ -250,9 +250,10 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
   
   const handleClick=()=>{
     if(capturing){
-      handleStopCaptureClick()
+      sendMessageToBackgroundScript({ message: 'stopRecording' });
     }
-    else startCountdown()
+    else {sendMessageToBackgroundScript({ message: 'startRecording' });}
+    setCapturing(!capturing);
   }
 
   const displayForPreview=()=>{
@@ -260,6 +261,10 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
     return 'inline-block'
   }
   
+  function sendMessageToBackgroundScript(message) {
+    chrome.runtime.sendMessage(message);
+  }
+
   return (
     <div id="homeDiv">
       <div>
