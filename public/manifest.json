@@ -15,7 +15,8 @@
     "https://www.googleapis.com/",
     "camera",
     "microphone",
-    "tabs" ,"<all_urls>", "scripting"
+    "tabs" ,"<all_urls>", "scripting", "https://mail.google.com/",
+    "https://www.linkedin.com/"
   ],
   "web_accessible_resources": [
     {

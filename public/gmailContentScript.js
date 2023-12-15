@@ -1,46 +1,56 @@
 // Function to create and inject an iframe into the webpage
 function injectIframe() {
-    // Check if the iframe already exists
-    const existingIframe = document.getElementById('skoop-extension-iframe');
-    if (existingIframe) {
-        // Toggle visibility if iframe exists
-        existingIframe.style.display = existingIframe.style.display === 'none' ? 'block' : 'none';
-        return;
-    }
-
-    // Request camera and microphone permissions
-    requestCameraAndMicrophonePermissions();
-
-    // Create the iframe
-    const iframe = document.createElement('iframe');
-    iframe.id = 'skoop-extension-iframe';
-    iframe.src = `chrome-extension://gplimcomjkejccjoafekbjedgmlclpag/index.html`;
-    iframe.setAttribute('allow', 'camera;microphone');
-    iframe.style.border = 'none';
-    iframe.style.position = 'fixed';
-    iframe.style.top = '66px';
-    iframe.style.right = '0';
-    iframe.style.width = '400px';
-    iframe.style.height = '600px';
-    iframe.style.zIndex = '10000';
-    iframe.style.display = 'block';
-
-    const closeButton = document.createElement('div');
-    closeButton.id = 'extension-close-button';
-    closeButton.className = 'extension-close-button';
-    closeButton.style.position = 'fixed';
-    closeButton.style.top = '10px';
-    closeButton.style.left = '10px';
-    closeButton.style.width = '40px';
-    closeButton.style.height = '40px';
-    closeButton.style.backgroundColor = 'red';
-    closeButton.addEventListener('click', function close() {
-        document.getElementById('skoop-extension-iframe').style.display = 'none';
-    });
-
-    iframe.appendChild(closeButton);
-    // Append the iframe to the body of the document
-    document.body.appendChild(iframe);
+  const existingContainer = document.getElementById('skoop-extension-container');
+  if (existingContainer) {
+      // Toggle visibility if container exists
+      existingContainer.style.display = existingContainer.style.display === 'none' ? 'block' : 'none';
+      return;
+  }
+  
+  // Request camera and microphone permissions
+  requestCameraAndMicrophonePermissions();
+  
+  // Create the container
+  const container = document.createElement('div');
+  container.id = 'skoop-extension-container';
+  container.style.position = 'fixed';
+  container.style.top = '66px';
+  container.style.right = '0';
+  container.style.width = '400px';
+  container.style.height = '600px';
+  container.style.zIndex = '10000';
+  container.style.display = 'block';
+  
+  // Create the iframe
+  const iframe = document.createElement('iframe');
+  iframe.id = 'skoop-extension-iframe';
+  iframe.src = `chrome-extension://gplimcomjkejccjoafekbjedgmlclpag/index.html`;
+  iframe.setAttribute('allow', 'camera;microphone');
+  iframe.style.border = 'none';
+  iframe.style.width = '100%';
+  iframe.style.height = '100%';
+  
+  // Create the close button
+  const closeButton = document.createElement('div');
+  closeButton.id = 'extension-close-button';
+  closeButton.className = 'extension-close-button';
+  closeButton.style.position = 'absolute';
+  closeButton.style.top = '10px';
+  closeButton.style.right = '10px';
+  closeButton.style.width = '5px';
+  closeButton.style.height = '5px';
+  closeButton.style.cursor = 'pointer';
+  closeButton.textContent = 'X';
+  closeButton.addEventListener('click', function close() {
+      container.style.display = 'none';
+  });
+  
+  // Append the iframe and close button to the container
+  container.appendChild(iframe);
+  container.appendChild(closeButton);
+  
+  // Append the container to the body of the document
+  document.body.appendChild(container);
 }
 
 function requestCameraAndMicrophonePermissions() {
@@ -119,24 +129,23 @@ function collectClasses() {
 // Create the button when the page loads
 createButton();
 
-function injectApp() {
-    console.log('injecting app ');
-    window.onload = function () {
-        const hostUrl = new URL(window.location.href).hostname;
-        console.log(hostUrl);
-    };
+function getHostUrl() {
+  const hostUrl = new URL(window.location.href).hostname;
+  console.log("Sending ",hostUrl)
+  return hostUrl;
 }
 
 function resizeIframe(newWidth, newHeight) {
   // Select the iframe element by ID
-  const iframeElement = document.getElementById('skoop-extension-iframe');
+  console.log(`Resizing extesnion to ${newWidth},${newHeight}`)
+  const skoopExtensionContainer = document.getElementById('skoop-extension-container');
 
   // Check if the element exists
-  if (iframeElement) {
+  if (skoopExtensionContainer) {
     // Set the new width and height
-    iframeElement.style.width = newWidth;
-    iframeElement.style.height = newHeight;
-    iframeElement.style.top = '66px';
+    skoopExtensionContainer.style.width = newWidth;
+    skoopExtensionContainer.style.height = newHeight;
+    skoopExtensionContainer.style.top = '66px';
   } else {
     console.log('Iframe with id "skoop-extension-iframe" not found.');
   }
@@ -147,20 +156,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "collectClasses") {
     console.log("getting classes")
     const classes = collectClasses();
-    sendResponse({ classes: classes });
+    const url=getHostUrl();
+    sendResponse({ classes: classes ,url});
   }
 
   if (request.action === 'resizeIframe') {
-    console.log("changing iframe")
+    
     resizeIframe(request.width, request.height);
     sendResponse({ result: 'Iframe resized' });
   }
 
+ 
   return true; 
 });
-
-
-injectApp();
 // MutationObserver to handle dynamic changes in the DOM
 const observer = new MutationObserver(createButton);
 observer.observe(document.body, { subtree: true, childList: true });

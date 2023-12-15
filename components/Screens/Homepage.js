@@ -7,66 +7,24 @@ import VoiceVisualization from '../AudioRecording/index.js';
 import EmailComposer from '../EmailSection/index.js';
 
 const Homepage = (props) => {
+  const {setIsLinkedin,isLinkedin} = useContext(GlobalStatesContext);  
 
-  const [anchorEl, setAnchorEl] = useState(false)
+
   const [aspectRatio,setAspectRatio]=useState(9/16)
-  const [openSettings, setOpenSettings] = useState(false)
-  const [openLibrary, setOpenLibrary] = useState(false)
-  const [isChatbotOpen, setIsChatbotOpen] = useState(false)
-  const [darkMode, setDarkMode] = useState(false);
-  const [latestVideoUrl,setLatestVideoUrl]=useState('')
-  const [modeOfRecording,setModeOfRecording]=useState('Video')
-  const [refresh, setRefresh] = useState(false);
-  
+ 
  
   const message = { message: 'HomePage',width:"750px",height:"300px" };
 
   // Send the message to the background script
   chrome.runtime.sendMessage(message, function(response) {
     console.log('Received response:', response);
-    
-  });
-  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === 'returnClasses') {
-      console.log('Received classes:', request.classes);
-      // Handle the received classes here
-      // For example, update the state or display the classes in the UI
-  
-      // Optional: Send a response back to the background script
-      sendResponse({ status: 'Classes received' });
+    if(response && response?.url.startsWith("www.linkedin.com")){
+      setIsLinkedin(true)
     }
   });
-
-  const {isLinkedin} = useContext(GlobalStatesContext);  
-
-  useEffect(()=>{
-    setRefresh(window.location.href.includes('linkedin.com/in/'));
-  },[])
-
-  //const navBarColor = props.isLinkedin ? "#0a66c2":"#EA4335"
-
-  const navBarColor = isLinkedin ? "#0a66c2":"#EA4335"
-
-
-
-  
-
-
-
  
 
-  const handleOpenSettings = () => {
-    setOpenSettings(true);
-  };
-
-  //const menuItems = document.querySelectorAll('.MuiMenuItem-root .MuiListItemText-primary');
-    //menuItems.forEach(item => {
-    //  item.style.fontSize = fontSize;
-    //});
-
-  useEffect(() => { 
-    window.addEventListener('popstate',()=>{console.log("hi")});
-  }, []); 
+ 
 
   
   function convertArrayOfObjectsToCSV(data) {
@@ -105,10 +63,16 @@ const Homepage = (props) => {
     setRefresh(window.location.href.includes('linkedin.com/in/'));
   };
   
-  const fontSize = isLinkedin ? '20px' : '20px'
-  const dropdownTextFontSize = isLinkedin ? '18px' : '18px';
-  const TextStyles = isLinkedin ? { fontSize: '20px', fontWeight: 'bold' } : { fontSize: '20px', fontWeight: 'bold' };
-
+ 
+ 
+   const hostUrl = new URL(window.location.href).hostname;
+    console.log(window.location.href)
+      if(hostUrl.startsWith("www.linkedin.com")){
+    
+        setIsLinkedin(true)
+        console.log(hostUrl,"setting linkein true",isLinkedin);
+      }
+   console.log(isLinkedin,"linkedin")
   return (
     <div className="background-color">  
     
@@ -130,7 +94,8 @@ const Homepage = (props) => {
     {!isLinkedin && <EmailComposer />}
       {isLinkedin  &&
           <>
-          <button
+          LInkedn components
+          {/* <button
             type="button" 
             className="mx-auto d-block mt-4 homepage-button" 
             onClick={() => props.changePage("NewChatPage")}
@@ -162,7 +127,7 @@ const Homepage = (props) => {
                 </CardContent>
               </Card>
             </div>
-          </Container>
+          </Container> */}
           </>
       } 
     </div>
