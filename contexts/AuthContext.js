@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
           result = await result.json();
           //alert("the login was successfull check console for token");
           // these are commented for now 
-          localStorage.setItem('accessToken', JSON.stringify(result.accessToken));
+          localStorage.setItem('skoopAccessToken', JSON.stringify(result.accessToken));
           localStorage.setItem('skoopUsername', JSON.stringify(result.skoopUsername));
           navigateToPage('Home'); 
         } catch (err) {
@@ -127,7 +127,7 @@ export const AuthProvider = ({ children }) => {
           const res = await fetch(API_ENDPOINTS.tokenStatus, {
             method: 'GET',
             headers: {
-              authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+              authorization: `Bearer ${JSON.parse(localStorage.getItem('skoopAccessToken'))}`,
             },
           });
           return res;

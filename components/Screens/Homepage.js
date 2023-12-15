@@ -1,9 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { MdOutlineVideoSettings } from "react-icons/md";
-import { MdNotificationsActive } from "react-icons/md";
-import { MdAccountCircle } from "react-icons/md";
-import { BsArrowRightCircle } from "react-icons/bs";
-import { FaRegCalendarCheck } from "react-icons/fa";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import API_ENDPOINTS from '../apiConfig.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
@@ -24,14 +19,23 @@ const Homepage = (props) => {
   const [refresh, setRefresh] = useState(false);
   
  
-  const message = { message: 'closeExtension' };
+  const message = { message: 'HomePage',width:"750px",height:"300px" };
 
   // Send the message to the background script
   chrome.runtime.sendMessage(message, function(response) {
     console.log('Received response:', response);
-    // Handle the response from the background script here, if necessary
+    
   });
-
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === 'returnClasses') {
+      console.log('Received classes:', request.classes);
+      // Handle the received classes here
+      // For example, update the state or display the classes in the UI
+  
+      // Optional: Send a response back to the background script
+      sendResponse({ status: 'Classes received' });
+    }
+  });
 
   const {isLinkedin} = useContext(GlobalStatesContext);  
 
