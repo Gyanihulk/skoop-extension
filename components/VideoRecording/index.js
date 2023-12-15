@@ -39,6 +39,7 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
 
   const handleInsertion=()=>{
     if(isLinkedin){
+      console.log("calling insertIntoLinkedInMessageWindow function ")
       insertIntoLinkedInMessageWindow(`<p>https://share.vidyard.com/watch/${videoId}</p>`)
     }
     else{

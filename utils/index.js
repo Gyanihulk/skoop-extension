@@ -13,6 +13,7 @@ export const replaceInvalidCharacters=(inputString)=>{
 
 export const insertIntoLinkedInMessageWindow=(html)=>{
       const {selectedChatWindows} = useContext(GlobalStatesContext);
+      console.log("insert linekd inject call")
       const executeInsertionIntoWindow=(arr,htmlToInsert)=>{
       const messageWindows = Array.from(document.getElementsByClassName("msg-form__contenteditable"));
       arr.forEach(item=>{
@@ -26,7 +27,7 @@ export const insertIntoLinkedInMessageWindow=(html)=>{
         contentEditableDiv.dispatchEvent(dummyInput);
       })
     }
-
+console.log("chrom script start")
     try{
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         const targetTab=tabs[0];

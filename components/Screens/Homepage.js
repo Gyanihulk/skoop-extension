@@ -6,7 +6,8 @@ import RecordingButton from '../VideoRecording/index.js';
 import VoiceVisualization from '../AudioRecording/index.js';
 import EmailComposer from '../EmailSection/index.js';
 import ChatWindowSelection from '../ChatWindowSelection/index.js'
-const Homepage = (props) => {
+import LindedInCom from '../LinkedInScreen/index.js'
+const Homepage = () => {
   const {setIsLinkedin,isLinkedin,setLatestVideoUrl,latestVideoUrl} = useContext(GlobalStatesContext);  
 
 
@@ -95,6 +96,7 @@ const Homepage = (props) => {
       {isLinkedin  &&
           <>
           <ChatWindowSelection/>
+          <LindedInCom/>
           {/* <button
             type="button" 
             className="mx-auto d-block mt-4 homepage-button" 
