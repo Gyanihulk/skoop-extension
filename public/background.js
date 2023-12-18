@@ -31,6 +31,7 @@ if (request.message === 'HomePage') {
       });       
     }
   });
+  return true
 }
 if (request.message === 'startRecording' || request.message === 'stopRecording') {
   // Relay message to the active tab
@@ -53,6 +54,7 @@ if (request.message === 'startRecording' || request.message === 'stopRecording')
     
     }
   });
+  return true
 }
 return true;
 }

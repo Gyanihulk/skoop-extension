@@ -1,4 +1,8 @@
+
+
+
 // Function to create and inject an iframe into the webpage
+
 function injectIframe() {
   const existingContainer = document.getElementById('skoop-extension-container');
   if (existingContainer) {
@@ -8,7 +12,7 @@ function injectIframe() {
   }
   
   // Request camera and microphone permissions
-  requestCameraAndMicrophonePermissions();
+
   
   // Create the container
   const container = document.createElement('div');
@@ -204,6 +208,7 @@ function startWebcam(container) {
       video.style.height = '120px';
       video.style.width = '210px';
       video.style.zIndex = '9998';
+      video.className="skoop-video-recorder"
       container.appendChild(video);
     })
     .catch((error) => {
@@ -239,27 +244,40 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'startRecording') {
     container.style.display = 'block';
     startWebcam(container);
-    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-      mediaRecorder = new MediaRecorder(stream);
-      mediaRecorder.ondataavailable = event => {
-        if (event.data.size > 0) recordedChunks.push(event.data);
-      };
-      mediaRecorder.start();
-    });
-  } else if (request.action === 'stopRecording') {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = event => {
+          if (event.data.size > 0) recordedChunks.push(event.data);
+        };
+        mediaRecorder.start();
+      }).catch((err) => {
+        console.error(`[Creating web cam in website]: ${err}`);
+        // Handle the error here (e.g., show a message to the user)
+      });
+
+    }else{  
+      console.log('getUserMedia not supported');
+    }
+    
+  } 
+  
+  if (request.action === 'stopRecording') {
     container.style.display = 'none';
     stopWebcam(container);
     mediaRecorder.stop();
     mediaRecorder.onstop = () => {
       const blob = new Blob(recordedChunks, { type: 'video/webm' });
       console.log(blob,"from content script")
-      recordedChunks = [];
-      sendResponse({ videoBlob: blob });
+      sendResponse({ videoBlob: blob ,recordedChunks});
+      recordedChunks=[]
     };
+    return true;
   }
  
   return true; 
 });
+
 // MutationObserver to handle dynamic changes in the DOM
 const observer = new MutationObserver(createButton);
 observer.observe(document.body, { subtree: true, childList: true });

@@ -2,16 +2,15 @@ import React, { useState, useEffect ,useContext,useRef} from 'react'
 import Webcam from "react-webcam"
 import API_ENDPOINTS from '../apiConfig.js';
 import { FaDownload } from "react-icons/fa6";
-import { FaUpload } from "react-icons/fa6";
 import { FaTimesCircle } from "react-icons/fa";
 import { FaRegCirclePlay} from "react-icons/fa6";
 import { MdDeleteForever } from "react-icons/md";
-import { IoLinkSharp } from "react-icons/io5";
+
 import {getCurrentDateTimeString, insertHtmlAtPositionInMail,
         insertIntoLinkedInMessageWindow,
         replaceInvalidCharacters} from '../../utils/index.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
-import { PiExportFill } from "react-icons/pi";
+
 import toast, { Toaster } from 'react-hot-toast';
 
 const RecordingButton = ({ aspectR,setUrlAtHome }) => {
@@ -144,50 +143,49 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
   }, [mediaRecorderRef, webcamRef, setCapturing])
 
   const handleShare =async(file,videoTitle,directoryName)=>{
-    if(recordedChunks.length){
-      console.log("uploading the video")
-      try{
-        // const blob = new Blob(recordedChunks, {
-        //   type: 'video/webm'
-        // });
-        console.log(blob,"file in handle shregit")
-        var title1=videoTitle
-        videoTitle=replaceInvalidCharacters(videoTitle+`_${Date.now()}`)
-        const formData = new FormData()
-        // let file = new File([blob], 'recording')
-        formData.append('data', file,`${videoTitle}.webm`)
-        const customHeaders = new Headers();
-        customHeaders.append('title', videoTitle)
-        customHeaders.append('directory_name', directoryName)
-        customHeaders.append('type', 'webm')
-        customHeaders.append('authorization', `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`)
-        customHeaders.append('title1',title1)
-        setIsUploading(true);
-        const loadingObj=toast.loading("uploading video...")
-        var response=await fetch(API_ENDPOINTS.vidyardUpload,{
-          method: "POST",
-          headers: customHeaders,
-          body: formData
-        })
-        response=await response.json();
-        console.log(response,"response of video ");
-        toast.success("video uploaded,encoding in progress",{
-          id: loadingObj
-        })
-        setIsUploading(false);
-        setUrlAtHome(`https://play.vidyard.com/${response.facade_player_uuid}`)
-        setVideoId(response.facade_player_uuid)
-        console.log("the response after vidyard upload request",response)
-        setGlobalRefresh(true)
-      }catch(err){
-        toast.dismiss()
-        console.log(err,"err of video upload")
-        toast.error("could not upload")
-      }
+    try{
+     console.log(file,"file in handle share")
+      var title1=videoTitle
+      videoTitle=replaceInvalidCharacters(videoTitle+`_${Date.now()}`)
+      const formData = new FormData()
+      // let file = new File([blob], 'recording')
+      formData.append('data', file,`${videoTitle}.webm`)
+      const customHeaders = new Headers();
+      customHeaders.append('title', videoTitle)
+      customHeaders.append('directory_name', directoryName)
+      customHeaders.append('type', 'webm')
+      customHeaders.append('authorization', `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`)
+      customHeaders.append('title1',title1)
+      setIsUploading(true);
+      const loadingObj=toast.loading("uploading video...")
+      var response=await fetch(API_ENDPOINTS.vidyardUpload,{
+        method: "POST",
+        headers: customHeaders,
+        body: formData
+      })
+      response=await response.json();
+      console.log(response,"response of video ");
+      toast.success("video uploaded,encoding in progress",{
+        id: loadingObj
+      })
+      setIsUploading(false);
+      setUrlAtHome(`https://play.vidyard.com/${response.facade_player_uuid}`)
+      setVideoId(response.facade_player_uuid)
+      console.log("the response after vidyard upload request",response)
+      setGlobalRefresh(true)
+    }catch(err){
+      toast.dismiss()
+      console.log(err,"err of video upload")
+      toast.error("could not upload")
     }
-    else {
-      console.log("recorded chunks not available yet")
-    }
+   
+    // if(recordedChunks.length){
+    //   console.log("uploading the video")
+      
+    // }
+    // else {
+    //   console.log("recorded chunks not available yet")
+    // }
   }
 
   const preview=()=>{
