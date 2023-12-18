@@ -143,17 +143,18 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
     setInit(false)
   }, [mediaRecorderRef, webcamRef, setCapturing])
 
-  const handleShare =async(videoTitle,directoryName)=>{
+  const handleShare =async(file,videoTitle,directoryName)=>{
     if(recordedChunks.length){
       console.log("uploading the video")
       try{
-        const blob = new Blob(recordedChunks, {
-          type: 'video/webm'
-        });
+        // const blob = new Blob(recordedChunks, {
+        //   type: 'video/webm'
+        // });
+        console.log(blob,"file in handle shregit")
         var title1=videoTitle
         videoTitle=replaceInvalidCharacters(videoTitle+`_${Date.now()}`)
         const formData = new FormData()
-        let file = new File([blob], 'recording')
+        // let file = new File([blob], 'recording')
         formData.append('data', file,`${videoTitle}.webm`)
         const customHeaders = new Headers();
         customHeaders.append('title', videoTitle)
@@ -271,7 +272,7 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
   function handleVideoBlob(response) {
     if (response.videoBlob) {
       console.log(response,"from the recording component")
-      // handleShare(response.videoBlob);
+      handleShare(response.videoBlob,getCurrentDateTimeString(),"Media");
     }
   }
   
