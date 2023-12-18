@@ -193,7 +193,7 @@ function createWebcamContainer() {
   return container;
 }
 
-// Function to start the webcam
+
 function startWebcam(container) {
   console.log("starting webcam")
   navigator.mediaDevices.getUserMedia({ video: true })
@@ -221,7 +221,8 @@ function stopWebcam(container) {
 }
 
 const container = createWebcamContainer();
-
+let mediaRecorder;
+let recordedChunks = [];
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "collectClasses") {
     console.log("getting classes")
@@ -238,9 +239,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'startRecording') {
     container.style.display = 'block';
     startWebcam(container);
+    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = event => {
+        if (event.data.size > 0) recordedChunks.push(event.data);
+      };
+      mediaRecorder.start();
+    });
   } else if (request.action === 'stopRecording') {
     container.style.display = 'none';
     stopWebcam(container);
+    mediaRecorder.stop();
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordedChunks, { type: 'video/webm' });
+      console.log(blob,"from content script")
+      recordedChunks = [];
+      sendResponse({ videoBlob: blob });
+    };
   }
  
   return true; 

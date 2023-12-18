@@ -11,7 +11,7 @@ import AI from './AIassistance.js';
 import {RiSendPlaneFill} from 'react-icons/ri'
 import { MdVideoChat } from "react-icons/md";
 import { BsRobot } from "react-icons/bs";
-import API_ENDPOINTS from './apiConfig.js';
+import API_ENDPOINTS from '../apiConfig.js';
 import { MdOutlineGifBox } from "react-icons/md";
 import { RiVideoFill } from "react-icons/ri";
 import { IoCalendar } from "react-icons/io5";

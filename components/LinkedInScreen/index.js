@@ -1,13 +1,15 @@
-import React from 'react';
+import React ,{useContext} from 'react';
 import { Container, Card, CardContent, Typography, Link } from '@material-ui/core';
+import ScreenContext from '../../contexts/ScreenContext';
 
 const LindedInCom = (props) => {
+    const {navigateToPage}=useContext(ScreenContext)
   return (
     <>
       <button
         type="button"
         className="mx-auto d-block mt-4 homepage-button"
-        onClick={() => props.changePage("NewChatPage")}
+        onClick={() => navigateToPage("NewChatPage")}
       >
         Customized DM Message Options
       </button>
@@ -15,7 +17,7 @@ const LindedInCom = (props) => {
       <button
         type="button"
         className="mx-auto d-block mt-4 mb-8 homepage-button"
-        onClick={() => props.changePage("NewContactPage")}
+        onClick={() => navigateToPage("NewContactPage")}
       >
         Linked Profile Info Scraper
       </button>

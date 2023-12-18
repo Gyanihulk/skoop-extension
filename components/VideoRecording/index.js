@@ -1,6 +1,5 @@
-import React, { useState, useEffect ,useContext} from 'react'
+import React, { useState, useEffect ,useContext,useRef} from 'react'
 import Webcam from "react-webcam"
-import { UserInput } from '../UserInput/index.js';
 import API_ENDPOINTS from '../apiConfig.js';
 import { FaDownload } from "react-icons/fa6";
 import { FaUpload } from "react-icons/fa6";
@@ -17,8 +16,8 @@ import toast, { Toaster } from 'react-hot-toast';
 
 const RecordingButton = ({ aspectR,setUrlAtHome }) => {
 
-  const webcamRef = React.useRef(null)
-  const mediaRecorderRef = React.useRef(null)
+  const webcamRef = useRef(null)
+  const mediaRecorderRef = useRef(null)
   const [capturing, setCapturing] = useState(false)
   const [recordedChunks, setRecordedChunks] = useState([])
   const [prev,setPrev]=useState('')
@@ -38,6 +37,7 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
   const { globalRefresh, setGlobalRefresh,isLinkedin } = useContext(GlobalStatesContext)
 
   const handleInsertion=()=>{
+    console.log(isLinkedin,"test linkedin ")
     if(isLinkedin){
       console.log("calling insertIntoLinkedInMessageWindow function ")
       insertIntoLinkedInMessageWindow(`<p>https://share.vidyard.com/watch/${videoId}</p>`)
@@ -251,22 +251,36 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
     }
   }, [recordedChunks]);
   
-  const handleClick2=()=>{
-    if(capturing){
-      sendMessageToBackgroundScript({ message: 'stopRecording' });
+  const handleClick2 = () => {
+    if (capturing) {
+      sendMessageToBackgroundScript({ message: 'stopRecording' }, handleVideoBlob);
+    } else {
+      sendMessageToBackgroundScript({ message: 'startRecording' });
     }
-    else {sendMessageToBackgroundScript({ message: 'startRecording' });}
     setCapturing(!capturing);
+  };
+  
+  function sendMessageToBackgroundScript(message, callback) {
+    chrome.runtime.sendMessage(message, (response) => {
+      if (callback && response) {
+        callback(response);
+      }
+    });
   }
-
+  
+  function handleVideoBlob(response) {
+    if (response.videoBlob) {
+      console.log(response,"from the recording component")
+      // handleShare(response.videoBlob);
+    }
+  }
+  
   const displayForPreview=()=>{
     if(prev=='' || capturing) return 'none'
     return 'inline-block'
   }
   
-  function sendMessageToBackgroundScript(message) {
-    chrome.runtime.sendMessage(message);
-  }
+ 
   const handleClick=()=>{
     if(capturing){
       handleStopCaptureClick()
@@ -320,8 +334,8 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
               </div>
             )}
            {init === true && (
-            <div className="card" style={{ zIndex: '10000', textAlign: 'center',width: '100%' ,display: 'block', height: '150%'}}>
-            <Webcam audio={true} ref={webcamRef} videoConstraints={Constraints} muted style={{display :'block' , width: '100%', height: '100%', zindex: "30000"}} />
+            <div className="card" style={{ zIndex: '10000', textAlign: 'center' ,display: 'block'}}>
+            <Webcam audio={true} ref={webcamRef} videoConstraints={Constraints} muted style={{display :'block' , width: '50%', height: '50%', zindex: "30000"}} />
             <h4>
             {`Time remaining: ${60 - time} Seconds`}
             </h4>

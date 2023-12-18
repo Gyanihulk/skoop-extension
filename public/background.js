@@ -46,14 +46,13 @@ if (request.message === 'startRecording' || request.message === 'stopRecording')
     if (targetTab) {
       chrome.tabs.sendMessage(targetTab.id, { action: request.message }, (response) => {
         if (response) {
-          console.log(response)
+          console.log(response,"background script")
           sendResponse(response)
         }
       });
     
     }
   });
-  
 }
 return true;
 }

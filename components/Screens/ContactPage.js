@@ -3,7 +3,7 @@ import { Navbar, Nav } from 'react-bootstrap';
 import { BsPersonX } from "react-icons/bs";
 import { BsArrowRightCircle } from 'react-icons/bs';
 
-const NewContactPage = (props) => {
+const ContactPage = () => {
   const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
@@ -54,7 +54,7 @@ const NewContactPage = (props) => {
         <ContactInfoCard />
       ) : (
         <>
-          <WelcomeCard />
+          {/* <WelcomeCard /> */}
             <div className="explainer-card"> 
                 <button
                     type="button" 
@@ -71,4 +71,4 @@ const NewContactPage = (props) => {
   );
 };
 
-export default NewContactPage;
+export default ContactPage;

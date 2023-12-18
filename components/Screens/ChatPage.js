@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState , useContext } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
-import { BsPersonX } from "react-icons/bs";
 import { BsArrowRightCircle } from 'react-icons/bs';
-
+import GlobalStatesContext from '../../contexts/GlobalStates';
+import ChatComponent from '../ChatWindow'
 const NewChatPage = (props) => {
 
   const {latestVideoUrl} = useContext(GlobalStatesContext);  
@@ -39,7 +39,9 @@ const NewChatPage = (props) => {
           </Navbar>
           <div>
         {isChatComponentVisible ? (
-          <ChatComponent latestVideo={latestVideoUrl} className="top-margins" />
+          // <ChatComponent latestVideo={latestVideoUrl} className="top-margins" />
+          <>
+          </>
         ) : (
         <div className="explainer-card">    
           <div className="row justify-content-center">

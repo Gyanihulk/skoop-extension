@@ -34,6 +34,8 @@ export default function Home() {
             {activePage === 'SignIn' && <SignIn />}
             {activePage === 'SignUp' && <SignUp />}
             {activePage === 'AccountSettings' && <AccountSettings />}
+            {/* {activePage === 'NewChatPage' && <ChatPage />}
+            {activePage === 'NewContactPage' && <ContactPage />} */}
         </>
     );
 }
