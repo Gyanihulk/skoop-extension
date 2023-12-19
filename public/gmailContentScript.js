@@ -20,7 +20,7 @@ function injectIframe() {
     container.style.right = '0';
     container.style.width = '400px';
     container.style.height = '600px';
-    container.style.zIndex = '10000';
+    // container.style.zIndex = '10000';
     container.style.display = 'block';
 
     // Create the iframe
@@ -165,7 +165,22 @@ function createWebcamContainer() {
     container.style.display = 'none';
     container.style.height = '120px';
     container.style.width = '210px';
-    document.body.appendChild(container);
+    
+
+    const stopButton = document.createElement('button');
+    stopButton.innerText = 'Stop Recording';
+    stopButton.style.position = 'absolute';
+    stopButton.style.bottom = '10px';
+    stopButton.style.right = '10px';
+    container.appendChild(stopButton);
+
+    // Create timer display
+    const timerDisplay = document.createElement('span');
+    timerDisplay.style.position = 'absolute';
+    timerDisplay.style.top = '10px';
+    timerDisplay.style.right = '10px';
+    timerDisplay.innerText = '00:00';
+    container.appendChild(timerDisplay);
 
     // Drag functionality
     let isDragging = false;
@@ -191,9 +206,9 @@ function createWebcamContainer() {
         document.removeEventListener('mousemove', dragMove);
         document.removeEventListener('mouseup', dragEnd);
     };
-
+ 
     container.addEventListener('mousedown', dragStart);
-
+    document.body.appendChild(container);
     return container;
 }
 
@@ -210,6 +225,21 @@ function startWebcam(container) {
             video.style.zIndex = '9998';
             video.className = 'skoop-video-recorder';
             container.appendChild(video);
+            let seconds = 0;
+            const timer = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const secs = (seconds % 60).toString().padStart(2, '0');
+                timerDisplay.innerText = `${mins}:${secs}`;
+            }, 1000);
+
+            // Stop recording event
+            stopButton.onclick = () => {
+                stopWebcam(container);
+                clearInterval(timer);
+                timerDisplay.innerText = '00:00';
+            };
+       
         })
         .catch((error) => {
             console.error('Error accessing the webcam', error);
