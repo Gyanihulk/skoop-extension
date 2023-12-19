@@ -7,17 +7,26 @@ const ChatWindowSelection = () => {
     const {selectedChatWindows,setSelectedChatWindows} = useContext(GlobalStatesContext);
     const [localRefresh,setLocalRefresh]=useState(0);
 
-    const setUpInitialArray=()=>{
-        const recipients = Array.from(document.querySelectorAll('.msg-overlay-conversation-bubble-header--fade-in > div:nth-child(2)>h2>a>span'));
+    function checkForExistenceOfMessageWindow(element) {
+        return element.querySelector('.msg-form__contenteditable')!=null
+    }
 
-        const combinedArray = recipients.map((recipient, index) => {
+    const setUpInitialArray=()=>{
+        const allChatWindows = Array.from(document.getElementsByClassName('msg-convo-wrapper'));
+        const validChatWindows=allChatWindows.filter(element=>checkForExistenceOfMessageWindow(element));
+        var combinedArray=validChatWindows.map((item,index)=>{
+            var nameOfRecipient;
+            if(item.querySelector('h2').innerText=='New message'){
+                nameOfRecipient=item.querySelector('.app-aware-link').innerText
+            }
+            else nameOfRecipient=item.querySelector('h2').innerText
             return {
-                name: recipient.innerText,
+                name: nameOfRecipient,
                 index: index
-            };
-        });
-       console.log("the combined array in setUpInitial array",combinedArray);
-       return combinedArray;
+            }
+        })
+        return Array.from(new Set(combinedArray.map(obj => obj.name)))
+    .map(name => combinedArray.find(obj => obj.name === name));
     }
 
     useEffect(()=>{
@@ -34,7 +43,7 @@ const ChatWindowSelection = () => {
                     }).then((response) => {
                         if (!chrome.runtime.lastError) {
                             var combinedArray = response[0].result;
-                        
+
                             setInitialItems(combinedArray);
                             const filteredArray = combinedArray.filter(item =>
                                 selectedChatWindows.some(secondItem => secondItem.name === item.name)
