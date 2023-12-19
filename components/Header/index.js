@@ -5,10 +5,13 @@ import { MdAccountCircle, MdNotificationsActive, MdOutlineVideoSettings } from "
 import GlobalStatesContext from "../../contexts/GlobalStates";
 import { FaRegCalendarCheck } from "react-icons/fa";
 import ScreenContext from "../../contexts/ScreenContext";
+import API_ENDPOINTS from "../apiConfig";
 
 
 export default function Header() {
-  const {activePage,navigateToPage}=useContext(ScreenContext)
+  const {activePage}=useContext(ScreenContext)
+  const { navigateToPage } = useContext(ScreenContext);
+
   if(activePage==="SignIn"||activePage==="SignUp"){
     return <></>
   }
@@ -28,8 +31,9 @@ export default function Header() {
 
   const handleLogOut=()=>{
     localStorage.setItem('accessToken',JSON.stringify('none'));
-    navigateToPage("SignIn")
+    navigateToPage("SignIn");
   }
+
   const closeExtension=()=>{
     chrome.runtime.sendMessage({ message: 'closeExtension' });
   }
@@ -43,7 +47,7 @@ export default function Header() {
           edge="start"
           aria-label="Close Skoop"
         >
-        <BsArrowRightCircle className="icon-header" onClick={closeExtension}/>
+        <BsArrowRightCircle className="icon-header" onClick={() => { navigateToPage("Home") }}/>
         </IconButton>
 
         <Typography variant="h6" className="brand-title">
@@ -52,7 +56,7 @@ export default function Header() {
       </div>
       <div>
         <IconButton edge="start" onClick={handleClick}>
-          <MdOutlineVideoSettings className="icon-header"/>
+          <MdOutlineVideoSettings className="icon-header" style={{color:'black'}}/>
         </IconButton>
         <Menu
           anchorEl={anchorEl}

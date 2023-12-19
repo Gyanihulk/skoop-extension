@@ -234,7 +234,7 @@ function startWebcam(container) {
             }, 1000);
 
             // Stop recording event
-            skoopExtensionContainer.stopButton.onclick = () => {
+            skoopVideoContainer.stopButton.onclick = () => {
                 stopWebcam(skoopVideoContainer.container);
                 clearInterval(timer);
                 skoopVideoContainer.timerDisplay.innerText = '00:00';

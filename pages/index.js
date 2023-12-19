@@ -2,8 +2,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import Homepage from '../components/Screens/Homepage';
 import SignIn from '../components/Screens/SignIn';
 import SignUp from '../components/Screens/SignUp';
-import AccountSettings from '../components/Screens/AccountSettings';
 import ScreenContext from '../contexts/ScreenContext';
+import ChatPage from '../components/Screens/ChatPage';
+import ContactPage from '../components/Screens/ContactPage';
+import LinkedInCom from '../components/LinkedInCom';
+import AccountSettings from '../components/Screens/AccountSettings';
 
 export default function Home() {
     const { activePage } = useContext(ScreenContext);
@@ -34,8 +37,9 @@ export default function Home() {
             {activePage === 'SignIn' && <SignIn />}
             {activePage === 'SignUp' && <SignUp />}
             {activePage === 'AccountSettings' && <AccountSettings />}
-            {/* {activePage === 'NewChatPage' && <ChatPage />}
-            {activePage === 'NewContactPage' && <ContactPage />} */}
+            {activePage=='ChatPage' && <ChatPage/>}
+            {activePage=='ContactPage' && <ContactPage/>}
+            {activePage=='LinkedInCom' && <LinkedInCom/>}
         </>
     );
 }

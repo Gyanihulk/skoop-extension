@@ -3,9 +3,7 @@ import { Container, Navbar, Nav, Button } from 'react-bootstrap';
 import { TbUserEdit } from "react-icons/tb";
 import { FaRegEdit } from "react-icons/fa";
 import { IoCheckmarkDoneSharp, IoArrowBack, IoClose } from "react-icons/io5";
-import { useNavigate } from 'react-router-dom';
-import API_ENDPOINTS from '../apiConfig.js';
-
+import API_ENDPOINTS from '../apiConfig'
 
 const AccountProfile = ({ userData }) => (
   <div className="card" style={{ border: '2px solid grey' }}>
@@ -279,7 +277,6 @@ const SettingsPassword = () => {
 
 function AccountSettings(props) {
   const [profileData, setProfileData] = useState({});
-  const navigate = useNavigate();
 
   const handleProfileUpdate = (newProfileData) => {
     setProfileData((prevData) => ({
@@ -317,7 +314,7 @@ function AccountSettings(props) {
 
   return (
     <>
-    <Navbar
+    {/*<Navbar
       expand="lg"
       style={{
         background: '#0a66c2',
@@ -353,7 +350,7 @@ function AccountSettings(props) {
           </Nav>
         </Navbar.Collapse>
       </Container>
-    </Navbar>
+    </Navbar> */}
 
     <Container fluid className="mt-2 p-2">
       <div>

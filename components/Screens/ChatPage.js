@@ -1,21 +1,32 @@
-import React, { useState , useContext } from 'react';
-import { Navbar, Nav } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Navbar, Nav, Button } from 'react-bootstrap';
+import { BsPersonX } from "react-icons/bs";
 import { BsArrowRightCircle } from 'react-icons/bs';
-import GlobalStatesContext from '../../contexts/GlobalStates';
-import ChatComponent from '../ChatWindow'
-const NewChatPage = (props) => {
+import ChatComponent from '../ChatWindow';
 
-  const {latestVideoUrl} = useContext(GlobalStatesContext);  
+const ChatPage = (props) => {
+
+    const [latestVideoUrl,setLatestVideoUrl]=useState('')
     const [isChatComponentVisible, setIsChatComponentVisible] = useState(false);
 
   const handleGetStartedClick = () => {
     setIsChatComponentVisible(true);
   };
 
+  const message = { message: 'ChatPage',width:"400px",height:"600px" };
+
+  // Send the message to the background script
+  chrome.runtime.sendMessage(message, function(response) {
+    console.log('Received response:', response);
+    if(response && response?.url.startsWith("www.linkedin.com")){
+      setIsLinkedin(true)
+    }
+  });
+
 
   return (
     <div className="background-color">
-    <Navbar className="nav-bar" expand="lg">
+    {/*<Navbar className="nav-bar" expand="lg">
       <Navbar.Toggle aria-controls="navbar-nav" />
             <Navbar.Collapse id="navbar-nav">
             <Nav.Link
@@ -36,7 +47,7 @@ const NewChatPage = (props) => {
             </Navbar.Brand>
 
             </Navbar.Collapse>
-          </Navbar>
+            </Navbar> */}
           <div>
         {isChatComponentVisible ? (
           // <ChatComponent latestVideo={latestVideoUrl} className="top-margins" />
@@ -48,11 +59,12 @@ const NewChatPage = (props) => {
             <div className="card col-md-10 mt-15">
               <div className="card-body text-center mb-6">
                 <p className="paragraph-spacing">Open Messaging tab on Linkedin & then click on <strong>'Get started'</strong> button</p>
-                <button 
-                    className="mx-auto d-block mt-6 homepage-button"
+                <Button 
+                    variant="outline-primary"
+                    className="mx-auto d-block mt-6"
                     onClick={handleGetStartedClick}>
                     Get Started
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -63,4 +75,4 @@ const NewChatPage = (props) => {
   );
 };
 
-export default NewChatPage;
+export default ChatPage;

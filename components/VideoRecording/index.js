@@ -5,7 +5,8 @@ import { FaDownload } from "react-icons/fa6";
 import { FaTimesCircle } from "react-icons/fa";
 import { FaRegCirclePlay} from "react-icons/fa6";
 import { MdDeleteForever } from "react-icons/md";
-
+import { IoLinkSharp } from "react-icons/io5";
+import { Button } from 'react-bootstrap';
 import {getCurrentDateTimeString, insertHtmlAtPositionInMail,
         insertIntoLinkedInMessageWindow,
         replaceInvalidCharacters} from '../../utils/index.js';
@@ -38,7 +39,6 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
   const handleInsertion=()=>{
     console.log(isLinkedin,"test linkedin ")
     if(isLinkedin){
-      console.log("calling insertIntoLinkedInMessageWindow function ")
       insertIntoLinkedInMessageWindow(`<p>https://share.vidyard.com/watch/${videoId}</p>`)
     }
     else{
@@ -256,8 +256,7 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
       sendMessageToBackgroundScript({ message: 'startRecording' });
     }
     setCapturing(!capturing);
-  };
-  
+  }; 
   function sendMessageToBackgroundScript(message, callback) {
     chrome.runtime.sendMessage(message, (response) => {
       if (callback && response) {
@@ -295,6 +294,10 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
     return 'inline-block'
   }
   
+  function sendMessageToBackgroundScript(message) {
+    chrome.runtime.sendMessage(message);
+  }
+
  
   const handleClick=()=>{
     if(capturing){
@@ -306,7 +309,7 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
     <div id="homeDiv">
       <div>
         <Toaster position='top-right'/>
-        {!countdown && <>
+        {!countdown && 
             <button
             variant="outlined"
             color={capturing ? 'secondary' : 'primary'}
@@ -314,12 +317,9 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
             size='small'
             disabled={isUploading} 
             id='skoop_record_button'
-            >
+          >
             {capturing ? 'Stop' : 'Rec'}
           </button>
-          
-          </>
-          
         }
         <button
             variant="outlined"
@@ -331,7 +331,6 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
             {capturing ? 'Stop' : 'Rec'}
           </button>
       </div>
-      
 
       <div style={{
         position: 'fixed',
@@ -394,15 +393,15 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
 
             {videoId !== '' && (
               <>
-                <button 
+                <Button 
                   data-mdb-toggle="tooltip"
                   data-mdb-placement="bottom"
                   title="export to text area"
-                  className='homepage-button'
+                  variant="outline-primary"
                   onClick={handleInsertion}
                 >
                   Send to Chat
-                </button>
+                </Button>
               </>
             )}
           </>
@@ -443,7 +442,4 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
   );
 };
 
-export default RecordingButton
-
-
-
+export default RecordingButton;

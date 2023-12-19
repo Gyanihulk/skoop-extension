@@ -16,7 +16,7 @@ class ChatGpt extends Component {
       [event.target.name]: event.target.value,
     });
   }
-  
+
   componentDidUpdate(prevProps, prevState) {
     const {prompt,loading, loadingTime } = this.state;
   
@@ -88,86 +88,87 @@ class ChatGpt extends Component {
   render() {
     return (
       <div>
-        <Card class="card-body" style={{ padding: '10px', textAlign: 'center' }}>
-            <Form onSubmit={this.sendPrompt}>
-              <Form.Group as={Row} className="align-items-center">
-                <Col sm={10}>
-                  <Form.Control
-                    type="text"
-                    placeholder="Message ChatGPT..."
-                    name="cgpt"
-                    value={this.state.cgpt}
-                    onChange={this.handleChange}
-                  />
-                </Col>
-                <Col sm={2}>
-                  <button type="submit" style={{ fontSize: '24px', color: '#0d6efd', border:'none', background:'none' }}>
-                    <MdOutlineScheduleSend />
-                  </button>
-                </Col>
-              </Form.Group>
-
-              {this.state.loading ? (
-                <>
-                <div className="sbl-circ-ripple"></div>
-                <h6>{this.state.waitingMessage}</h6>
-                </>
-                
-              ) : null}
-
-              {this.state.prompt !== '' && !this.state.loading && (
-                <>
-                  <Form.Label className="mb-2 text-start">Response</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows="auto"
-                    name="prompt"
-                    value={this.state.prompt}
-                    onChange={this.handleChange}
-                    id="skoop_cgpt_response"
-                    style={{
-                      overflow: 'hidden',
-                      resize: 'none',
-                      fontSize: '16px',
-                      border:'none',
-                      height: 'auto', 
-                      }}
-                      onInput={(e) => {
-                        e.target.style.height = 'auto';  
-                        e.target.style.height = `${e.target.scrollHeight}px`; 
-                      }}
-                      />
-                  <Row>
-                    <Col sm={7}></Col>
-                    <Col sm={5} className="d-flex justify-content-end">
-                    
-                    </Col>
-                  </Row>
-                </>
-              )}
-            </Form>
-            {this.state.prompt !== '' && !this.state.loading && (
-            
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop:'4px' }}>
+        <Form onSubmit={this.sendPrompt}>
+        <div className="input-group">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Message ChatGPT..."
+              name="cgpt"
+              value={this.state.cgpt}
+              onChange={this.handleChange}
+            />
+            <div className="input-group-append">
               <button
-                style={{ fontSize: '14px', color: '#0d6efd', border: 'none', background: 'none' }}
-                onClick={() => {
-                  navigator.clipboard.writeText(this.state.prompt);
-                }}
+                className="btn btn-outline-primary"
+                type="submit"
+                //style={{ fontSize: '24px', color: '#0d6efd', border: 'none', background: 'none' }}
               >
-                Copy
-              </button>
-              <button
-                style={{ fontSize: '14px', color: '#0d6efd', border: 'none', background: 'none' }}
-                onClick={() => {
-                  this.props.appendToBody(this.state.prompt);
-                }}
-              >
-                Merge
+                <MdOutlineScheduleSend />
               </button>
             </div>
-            )}
-            </Card>
+          </div>
+
+          {this.state.loading ? (
+            <>
+              <div className="sbl-circ-ripple"></div>
+              <h6>{this.state.waitingMessage}</h6>
+            </>
+          ) : null}
+
+          {this.state.prompt !== '' && !this.state.loading && (
+            <>
+              <Form.Label className="mb-2 text-start">Response</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows="auto"
+                name="prompt"
+                value={this.state.prompt}
+                onChange={this.handleChange}
+                id="skoop_cgpt_response"
+                style={{
+                  overflow: 'hidden',
+                  resize: 'none',
+                  fontSize: '16px',
+                  border:'none',
+                  height: 'auto', 
+                }}
+                onInput={(e) => {
+                  e.target.style.height = 'auto';  
+                  e.target.style.height = `${e.target.scrollHeight}px`; 
+                }}
+              />
+              <Row>
+                <Col sm={7}></Col>
+                <Col sm={5} className="d-flex justify-content-end">
+                </Col>
+              </Row>
+            </>
+          )}
+        </Form>
+
+        {this.state.prompt !== '' && !this.state.loading && (
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop:'4px' }}>
+            <Button
+              variant="outline-primary"
+              style={{ fontSize: '14px'}}
+              onClick={() => {
+                navigator.clipboard.writeText(this.state.prompt);
+              }}
+            >
+              Copy
+            </Button>
+            <Button
+              variant="outline-primary"
+              style={{ fontSize: '14px'}}
+              onClick={() => {
+                this.props.appendToBody(this.state.prompt);
+              }}
+            >
+              Merge
+            </Button>
+          </div>
+        )}
         <br />
         <br />
       </div>

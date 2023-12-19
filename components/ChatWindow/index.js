@@ -4,10 +4,10 @@ import { FiMoreVertical } from "react-icons/fi";
 import { AiOutlineFileGif } from 'react-icons/ai';
 import { MdCalendarMonth } from 'react-icons/md';
 import { RiRobot2Line } from 'react-icons/ri';
-import GiphyWindow from './Giphy.js';
-import ChatGpt from './ChatGpt.js';
-import Library from './Library.js';
-import AI from './AIassistance.js';
+import GiphyWindow from '../Gif/index.js';
+import ChatGpt from '../Chatgpt/index.js';
+import Library from '../Library/index.js';
+import AI from '../Pre-Determined-Msg/index.js';
 import {RiSendPlaneFill} from 'react-icons/ri'
 import { MdVideoChat } from "react-icons/md";
 import { BsRobot } from "react-icons/bs";
@@ -15,7 +15,7 @@ import API_ENDPOINTS from '../apiConfig.js';
 import { MdOutlineGifBox } from "react-icons/md";
 import { RiVideoFill } from "react-icons/ri";
 import { IoCalendar } from "react-icons/io5";
-import { insertIntoLinkedInMessageWindow } from '../../utils';
+import { insertIntoLinkedInMessageWindow } from '../../utils/index.js';
 
 const ChatComponent = (props) => {
   const [message, setMessage] = useState('');
@@ -246,7 +246,7 @@ const handleInputChange = (e) => {
                         width: '50px',
                         height: '50px',
                         borderRadius: '50%',
-                        border: '2px solid #e84118',
+                        border: '3px solid #e84118',
                         padding: '2px',
                       }}
                     >
@@ -270,17 +270,6 @@ const handleInputChange = (e) => {
                 </a>
                 </li>
               </ul>
-              <ul className="navbar-nav ms-auto">
-                <li className="nav-item">
-                    <button className="nav-link" 
-                    data-mdb-toggle="tooltip"
-                    data-mdb-placement="bottom"
-                    title="Save the current chat on CRM"
-                    style={iconButtonStyle}>
-                    Save Chat
-                    </button>
-                </li>
-                </ul>
             </div>
           </div>
           <div className="card-body p-4" 
@@ -479,7 +468,7 @@ const handleInputChange = (e) => {
         
       {/* tabs start here */}
       <div style={{textAlign: 'center', marginTop: '8px', zIndex:'8000'}}>
-      <ul class="nav nav-pills mb-3 justify-content-center nav-fill" id="pills-tab" role="tablist">
+      <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
           <button
             class={`nav-link ${option === 'ChatGpt' ? 'active' : ''}`}

@@ -1,30 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import GlobalStatesContext from '../../contexts/GlobalStates';
-import { insertIntoLinkedInMessageWindow } from '../../utils';
+
 const ChatWindowSelection = () => {
 
     const [initialItems,setInitialItems]=useState([]); 
-    const {selectedChatWindows,setSelectedChatWindows}=useContext(GlobalStatesContext);
+    const {selectedChatWindows,setSelectedChatWindows} = useContext(GlobalStatesContext);
     const [localRefresh,setLocalRefresh]=useState(0);
-    const [mutationCount, setMutationCount] = useState(0);
-
-    // useEffect(() => {
-    //     const targetNode = document.body; // Or use the specific node you want to observe changes in
-
-    //     const observer = new MutationObserver(() => {
-    //         setMutationCount(prevCount => prevCount + 1);
-    //     });
-
-    //     observer.observe(targetNode, { childList: true, subtree: true });
-
-    //     return () => {
-    //     observer.disconnect();
-    //     };
-    // }, []);
 
     const setUpInitialArray=()=>{
         const recipients = Array.from(document.querySelectorAll('.msg-overlay-conversation-bubble-header--fade-in > div:nth-child(2)>h2>a>span'));
-        const messageWindows = Array.from(document.getElementsByClassName("msg-form__contenteditable"));
 
         const combinedArray = recipients.map((recipient, index) => {
             return {
@@ -47,16 +31,14 @@ const ChatWindowSelection = () => {
                     chrome.scripting.executeScript({
                       target : {tabId : targetTab.id},
                       func: setUpInitialArray
-                    }).then(async (response) => {
+                    }).then((response) => {
                         if (!chrome.runtime.lastError) {
                             var combinedArray = response[0].result;
-                            console.log("Received combinedArray:", combinedArray);
                         
                             setInitialItems(combinedArray);
                             const filteredArray = combinedArray.filter(item =>
                                 selectedChatWindows.some(secondItem => secondItem.name === item.name)
                             );
-                            console.log("the filtered array")
                             setSelectedChatWindows(filteredArray);
                         } else {
                           console.error("Error retrieving combinedArray:", chrome.runtime.lastError);

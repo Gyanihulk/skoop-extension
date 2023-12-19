@@ -40,12 +40,12 @@ function AI(props) {
       data-mdb-toggle="tooltip"
       data-mdb-placement="top"
       title="Dropdown for pre determined custom responses to send directly on DM"
-      style={{ width: '92%', margin: '4px', backgroundColor:'#edf4fa'}} className="mx-auto">
+      style={{width:'92%', backgroundColor:'#edf4fa', marginTop: "15px", marginBottom: "5px"}} className="mx-auto">
         <Form.Select
           value={selectedOption}
           variant="primary"
           onChange={handleDropdownChange}
-          size="lg"
+          size="sm"
         >
           <option value="Select Response">Select Response</option>
           {messageOptions.map((option) => (
