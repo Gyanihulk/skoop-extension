@@ -1,6 +1,6 @@
 
 // Function to create and inject an iframe into the webpage
-
+const skoopVideoContainer = createWebcamContainer();
 function injectIframe() {
     const existingContainer = document.getElementById('skoop-extension-container');
     if (existingContainer) {
@@ -209,7 +209,7 @@ function createWebcamContainer() {
  
     container.addEventListener('mousedown', dragStart);
     document.body.appendChild(container);
-    return container;
+    return { container, stopButton, timerDisplay };
 }
 
 function startWebcam(container) {
@@ -224,20 +224,20 @@ function startWebcam(container) {
             video.style.width = '210px';
             video.style.zIndex = '9998';
             video.className = 'skoop-video-recorder';
-            container.appendChild(video);
+            skoopVideoContainer.container.appendChild(video);
             let seconds = 0;
             const timer = setInterval(() => {
                 seconds++;
                 const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
                 const secs = (seconds % 60).toString().padStart(2, '0');
-                timerDisplay.innerText = `${mins}:${secs}`;
+                skoopVideoContainer.timerDisplay.innerText = `${mins}:${secs}`;
             }, 1000);
 
             // Stop recording event
-            stopButton.onclick = () => {
-                stopWebcam(container);
+            skoopExtensionContainer.stopButton.onclick = () => {
+                stopWebcam(skoopVideoContainer.container);
                 clearInterval(timer);
-                timerDisplay.innerText = '00:00';
+                skoopVideoContainer.timerDisplay.innerText = '00:00';
             };
        
         })
@@ -248,11 +248,24 @@ function startWebcam(container) {
 
 // Function to stop the webcam
 function stopWebcam(container) {
-    if (container.firstChild) {
-        const video = container.firstChild;
+  if (container && container.hasChildNodes()) {
+    // Retrieve all video elements within the container
+    const videos = container.getElementsByTagName('video');
+    // Select the last video element
+    const video = videos[videos.length - 1]; // Last video element
+
+    // Make sure the selected video element is not undefined
+    if (video && video.srcObject) {
+        // Stop all tracks of the video's srcObject
         video.srcObject.getTracks().forEach((track) => track.stop());
+        // Remove the video element after stopping the tracks
         container.removeChild(video);
+    } else {
+        console.error('The last video element is undefined, or srcObject is null.');
     }
+} else {
+    console.error('Container is null, or there are no video elements.');
+}
 }
 
 function getCurrentDateTimeString() {
@@ -271,7 +284,7 @@ function getCurrentDateTimeString() {
   return dateString;
 }
 
-const container = createWebcamContainer();
+
 let mediaRecorder;
 let recordedChunks = [];
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -287,8 +300,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse({ result: 'Iframe resized' });
     }
     if (request.action === 'startRecording') {
-        container.style.display = 'block';
-        startWebcam(container);
+        skoopVideoContainer.container.style.display = 'block';
+        startWebcam(skoopVideoContainer.container);
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices
                 .getUserMedia({ video: true })
@@ -309,8 +322,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 
     if (request.action === 'stopRecording') {
-        container.style.display = 'none';
-        stopWebcam(container);
+        skoopVideoContainer.container.style.display = 'none';
+        stopWebcam(skoopVideoContainer.container);
+        skoopVideoContainer.timerDisplay.innerText = '00:00';
         mediaRecorder.stop();
         mediaRecorder.onstop = () => {
             const blob = new Blob(recordedChunks, { type: 'video/webm' });
@@ -359,6 +373,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             });
             sendResponse({ videoBlob: blob, url: blobUrl });
         };
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+          navigator.mediaDevices
+              .getUserMedia({ video: true })
+              .then((stream) => {
+                  mediaRecorder = new MediaRecorder(stream);
+                  mediaRecorder.ondataavailable = (event) => {
+                      if (event.data.size > 0) recordedChunks.push(event.data);
+                  };
+                  mediaRecorder.stop();
+              })
+              .catch((err) => {
+                  console.error(`[closing web cam in website]: ${err}`);
+                  // Handle the error here (e.g., show a message to the user)
+              });
+      } else {
+          console.log('getUserMedia not supported');
+      }
         return true;
     }
 
