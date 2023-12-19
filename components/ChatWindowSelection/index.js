@@ -89,7 +89,6 @@ const ChatWindowSelection = () => {
             </label>
             </div>
         ))}
-        <button onClick={insertIntoLinkedInMessageWindow("<p>test</p>")}>add to window</button>
         </div>
     );
 };

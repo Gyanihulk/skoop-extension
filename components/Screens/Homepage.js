@@ -6,7 +6,7 @@ import RecordingButton from '../VideoRecording/index.js';
 import VoiceVisualization from '../AudioRecording/index.js';
 import EmailComposer from '../EmailSection/index.js';
 import LinkedInCom from '../LinkedInCom/index.js';
-
+import ChatComponent from '../ChatWindow/index.js'
 const Homepage = (props) => {
   const {setIsLinkedin,isLinkedin,setLatestVideoUrl} = useContext(GlobalStatesContext);  
 
@@ -85,6 +85,7 @@ const Homepage = (props) => {
     {!isLinkedin && <EmailComposer />}
       {isLinkedin  &&
           <>
+          <ChatComponent/>
           <LinkedInCom/>
           </>
       } 

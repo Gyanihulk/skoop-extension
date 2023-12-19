@@ -20,7 +20,7 @@ function injectIframe() {
     container.style.right = '0';
     container.style.width = '400px';
     container.style.height = '600px';
-    container.style.zIndex = '10';
+    container.style.zIndex = '10000';
     container.style.display = 'block';
 
     // Create the iframe

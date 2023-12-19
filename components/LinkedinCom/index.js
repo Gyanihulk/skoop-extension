@@ -19,7 +19,7 @@ const LinkedInCom = () => {
       <Button
         variant="outline-success"
         className="mx-auto d-block mt-4 mb-8"
-        onClick={() => navigateToPage("NewContactPage")}
+        onClick={() => navigateToPage("ContactPage")}
       >
         LinkedIn Profile Info Scraper
       </Button>

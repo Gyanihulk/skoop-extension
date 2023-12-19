@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import { BsPersonX } from "react-icons/bs";
 import { BsArrowRightCircle } from 'react-icons/bs';
-
+import ContactInfoCard from "../ContactInfo/index.js"
 const ContactPage = () => {
   const [refresh, setRefresh] = useState(false);
 
@@ -16,40 +16,10 @@ const ContactPage = () => {
 
   return (
     <div className="background-color">
-        <Navbar className="nav-bar" expand="lg">
-      <Navbar.Toggle aria-controls="navbar-nav" />
-            <Navbar.Collapse id="navbar-nav">
-            <Nav.Link
-              data-mdb-toggle="tooltip"
-              data-mdb-placement="bottom"
-              title="Back to Home"
-              onClick={() => props.changePage("Home")}
-              style={{
-                paddingRight: '15px', 
-                marginLeft: '15px', 
-              }}
-            >
-              <BsArrowRightCircle id="skoop_icons" style={{ fontSize: '30px' }} />
-            </Nav.Link>
-
-            <Navbar.Brand style={{ fontSize: '22px', color: 'black', marginLeft: '15px' }}>
-              Scrape Contact
-            </Navbar.Brand>
-            <Nav className="margin-auto">
-
-            <Nav.Link 
-            data-mdb-toggle="tooltip"
-            data-mdb-placement="bottom"
-            title="Blacklist the profile"
-            className="icon-button">
-              <BsPersonX id='icon-style' />
-            </Nav.Link>
-            </Nav>
-
-            </Navbar.Collapse>
-          </Navbar>
+       
     
     <>
+    <ContactInfoCard />
       {refresh ? (
         <ContactInfoCard />
       ) : (

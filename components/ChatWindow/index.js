@@ -1,4 +1,4 @@
-import React, { useState, useRef ,useEffect} from 'react';
+import React, { useState, useRef ,useEffect, useContext} from 'react';
 import { MdOutlineVideoLibrary } from 'react-icons/md';
 import { FiMoreVertical } from "react-icons/fi";
 import { AiOutlineFileGif } from 'react-icons/ai';
@@ -16,12 +16,13 @@ import { MdOutlineGifBox } from "react-icons/md";
 import { RiVideoFill } from "react-icons/ri";
 import { IoCalendar } from "react-icons/io5";
 import { insertIntoLinkedInMessageWindow } from '../../utils/index.js';
+import GlobalStatesContext from '../../contexts/GlobalStates.js';
 
 const ChatComponent = (props) => {
   const [message, setMessage] = useState('');
   const [option, setOption] = useState('null');
   const [targetPerson,setTargetPerson] = useState('');
-
+ const {selectedChatWindows}=useContext(GlobalStatesContext)
   const [messages, setMessages] = useState([
     { text: 'Hi there! Click on the message box to detect receiver', profilePicture: "https://pbs.twimg.com/media/FjU2lkcWYAgNG6d.jpg", sender: 'receiver' },
   ]);
@@ -90,7 +91,7 @@ const ChatComponent = (props) => {
     const newMessage = { text: temp.replace(/\n/g, '\n'), sender: 'me', profilePicture: "https://w7.pngwing.com/pngs/782/115/png-transparent-avatar-boy-man-avatar-vol-1-icon-thumbnail.png" };
     setMessages([...messages, newMessage]);
        
-    insertIntoLinkedInMessageWindow(`<p>${tempText}</p>`);
+    insertIntoLinkedInMessageWindow(`<p>${tempText}</p>`,selectedChatWindows);
 
     const txtarea=document.getElementById('skoop_chat_input');
     txtarea.style.height='49px';

@@ -12,7 +12,7 @@ import {getCurrentDateTimeString, insertHtmlAtPositionInMail,
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
 
 import toast, { Toaster } from 'react-hot-toast';
-
+import ChatWindowSelection from '../ChatWindowSelection/index.js'
 const RecordingButton = ({ aspectR,setUrlAtHome }) => {
 
   const webcamRef = useRef(null)
@@ -33,13 +33,13 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
   const [currentY, setCurrentY] = useState(-1*200/8)
   const [init,setInit] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false);
-  const { globalRefresh, setGlobalRefresh,isLinkedin } = useContext(GlobalStatesContext)
+  const { globalRefresh, setGlobalRefresh,isLinkedin,selectedChatWindows } = useContext(GlobalStatesContext)
 
   const handleInsertion=()=>{
     console.log(isLinkedin,"test linkedin ")
     if(isLinkedin){
       console.log("calling insertIntoLinkedInMessageWindow function ")
-      insertIntoLinkedInMessageWindow(`<p>https://share.vidyard.com/watch/${videoId}</p>`)
+      insertIntoLinkedInMessageWindow(`<p>https://share.vidyard.com/watch/${videoId}</p>`,selectedChatWindows)
     }
     else{
       insertHtmlAtPositionInMail(`<a href=https://share.vidyard.com/watch/${videoId}>Play</a>`)
@@ -306,6 +306,7 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
     <div id="homeDiv">
       <div>
         <Toaster position='top-right'/>
+        <ChatWindowSelection />
         {!countdown && <>
             <button
             variant="outlined"
