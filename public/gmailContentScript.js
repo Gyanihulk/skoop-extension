@@ -1,60 +1,58 @@
 
-
-
 // Function to create and inject an iframe into the webpage
 
 function injectIframe() {
-  const existingContainer = document.getElementById('skoop-extension-container');
-  if (existingContainer) {
-      // Toggle visibility if container exists
-      existingContainer.style.display = existingContainer.style.display === 'none' ? 'block' : 'none';
-      return;
-  }
-  
-  // Request camera and microphone permissions
+    const existingContainer = document.getElementById('skoop-extension-container');
+    if (existingContainer) {
+        // Toggle visibility if container exists
+        existingContainer.style.display =
+            existingContainer.style.display === 'none' ? 'block' : 'none';
+        return;
+    }
 
-  
-  // Create the container
-  const container = document.createElement('div');
-  container.id = 'skoop-extension-container';
-  container.style.position = 'fixed';
-  container.style.top = '66px';
-  container.style.right = '0';
-  container.style.width = '400px';
-  container.style.height = '600px';
-  container.style.zIndex = '10000';
-  container.style.display = 'block';
-  
-  // Create the iframe
-  const iframe = document.createElement('iframe');
-  iframe.id = 'skoop-extension-iframe';
-  iframe.src = `chrome-extension://gplimcomjkejccjoafekbjedgmlclpag/index.html`;
-  iframe.setAttribute('allow', 'camera;microphone');
-  iframe.style.border = 'none';
-  iframe.style.width = '100%';
-  iframe.style.height = '100%';
-  
-  // Create the close button
-  const closeButton = document.createElement('div');
-  closeButton.id = 'extension-close-button';
-  closeButton.className = 'extension-close-button';
-  closeButton.style.position = 'absolute';
-  closeButton.style.top = '10px';
-  closeButton.style.left = '10px';
-  closeButton.style.width = '5px';
-  closeButton.style.height = '5px';
-  closeButton.style.cursor = 'pointer';
-  closeButton.textContent = '=>';
-  closeButton.addEventListener('click', function close() {
-      container.style.display = 'none';
-  });
-  
-  // Append the iframe and close button to the container
-  container.appendChild(iframe);
-  container.appendChild(closeButton);
-  
-  // Append the container to the body of the document
-  document.body.appendChild(container);
+    // Request camera and microphone permissions
+
+    // Create the container
+    const container = document.createElement('div');
+    container.id = 'skoop-extension-container';
+    container.style.position = 'fixed';
+    container.style.top = '66px';
+    container.style.right = '0';
+    container.style.width = '400px';
+    container.style.height = '600px';
+    container.style.zIndex = '10000';
+    container.style.display = 'block';
+
+    // Create the iframe
+    const iframe = document.createElement('iframe');
+    iframe.id = 'skoop-extension-iframe';
+    iframe.src = `chrome-extension://gplimcomjkejccjoafekbjedgmlclpag/index.html`;
+    iframe.setAttribute('allow', 'camera;microphone');
+    iframe.style.border = 'none';
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+
+    // Create the close button
+    const closeButton = document.createElement('div');
+    closeButton.id = 'extension-close-button';
+    closeButton.className = 'extension-close-button';
+    closeButton.style.position = 'absolute';
+    closeButton.style.top = '10px';
+    closeButton.style.left = '10px';
+    closeButton.style.width = '5px';
+    closeButton.style.height = '5px';
+    closeButton.style.cursor = 'pointer';
+    closeButton.textContent = '=>';
+    closeButton.addEventListener('click', function close() {
+        container.style.display = 'none';
+    });
+
+    // Append the iframe and close button to the container
+    container.appendChild(iframe);
+    container.appendChild(closeButton);
+
+    // Append the container to the body of the document
+    document.body.appendChild(container);
 }
 
 function requestCameraAndMicrophonePermissions() {
@@ -126,156 +124,215 @@ function createButton() {
     // }
 }
 function collectClasses() {
-  const allElements = document.querySelectorAll('*');
-  const classes = Array.from(allElements).map(el => el.className).filter(Boolean);
-  return [...new Set(classes)]; // Return unique classes only
+    const allElements = document.querySelectorAll('*');
+    const classes = Array.from(allElements)
+        .map((el) => el.className)
+        .filter(Boolean);
+    return [...new Set(classes)]; // Return unique classes only
 }
 // Create the button when the page loads
 createButton();
 
 function getHostUrl() {
-  const hostUrl = new URL(window.location.href).hostname;
-  console.log("Sending ",hostUrl)
-  return hostUrl;
+    const hostUrl = new URL(window.location.href).hostname;
+    console.log('Sending ', hostUrl);
+    return hostUrl;
 }
 
 function resizeIframe(newWidth, newHeight) {
-  // Select the iframe element by ID
-  console.log(`Resizing extesnion to ${newWidth},${newHeight}`)
-  const skoopExtensionContainer = document.getElementById('skoop-extension-container');
+    // Select the iframe element by ID
+    console.log(`Resizing extesnion to ${newWidth},${newHeight}`);
+    const skoopExtensionContainer = document.getElementById('skoop-extension-container');
 
-  // Check if the element exists
-  if (skoopExtensionContainer) {
-    // Set the new width and height
-    skoopExtensionContainer.style.width = newWidth;
-    skoopExtensionContainer.style.height = newHeight;
-    skoopExtensionContainer.style.top = '66px';
-  } else {
-    console.log('Iframe with id "skoop-extension-iframe" not found.');
-  }
+    // Check if the element exists
+    if (skoopExtensionContainer) {
+        // Set the new width and height
+        skoopExtensionContainer.style.width = newWidth;
+        skoopExtensionContainer.style.height = newHeight;
+        skoopExtensionContainer.style.top = '66px';
+    } else {
+        console.log('Iframe with id "skoop-extension-iframe" not found.');
+    }
 }
 
 function createWebcamContainer() {
-  const container = document.createElement('div');
-  container.id = 'webcam-container';
-  container.style.position = 'fixed';
-  container.style.top = '10px';
-  container.style.right = '10px';
-  container.style.zIndex = '10000';
-  container.style.display = 'none';
-  container.style.height = '120px';
-  container.style.width = '210px';
-  document.body.appendChild(container);
+    const container = document.createElement('div');
+    container.id = 'webcam-container';
+    container.style.position = 'fixed';
+    container.style.top = '10px';
+    container.style.right = '10px';
+    container.style.zIndex = '10000';
+    container.style.display = 'none';
+    container.style.height = '120px';
+    container.style.width = '210px';
+    document.body.appendChild(container);
 
     // Drag functionality
     let isDragging = false;
     let dragStartX, dragStartY;
-  
+
     const dragStart = (e) => {
-      isDragging = true;
-      dragStartX = e.clientX - container.offsetLeft;
-      dragStartY = e.clientY - container.offsetTop;
-      document.addEventListener('mousemove', dragMove);
-      document.addEventListener('mouseup', dragEnd);
+        isDragging = true;
+        dragStartX = e.clientX - container.offsetLeft;
+        dragStartY = e.clientY - container.offsetTop;
+        document.addEventListener('mousemove', dragMove);
+        document.addEventListener('mouseup', dragEnd);
     };
-  
+
     const dragMove = (e) => {
-      if (isDragging) {
-        container.style.left = `${e.clientX - dragStartX}px`;
-        container.style.top = `${e.clientY - dragStartY}px`;
-      }
+        if (isDragging) {
+            container.style.left = `${e.clientX - dragStartX}px`;
+            container.style.top = `${e.clientY - dragStartY}px`;
+        }
     };
-  
+
     const dragEnd = () => {
-      isDragging = false;
-      document.removeEventListener('mousemove', dragMove);
-      document.removeEventListener('mouseup', dragEnd);
+        isDragging = false;
+        document.removeEventListener('mousemove', dragMove);
+        document.removeEventListener('mouseup', dragEnd);
     };
-  
+
     container.addEventListener('mousedown', dragStart);
-    
-  return container;
+
+    return container;
 }
 
-
 function startWebcam(container) {
-  console.log("starting webcam")
-  navigator.mediaDevices.getUserMedia({ video: true })
-    .then((stream) => {
-      const video = document.createElement('video');
-      video.srcObject = stream;
-      video.autoplay = true;
-      video.style.height = '120px';
-      video.style.width = '210px';
-      video.style.zIndex = '9998';
-      video.className="skoop-video-recorder"
-      container.appendChild(video);
-    })
-    .catch((error) => {
-      console.error('Error accessing the webcam', error);
-    });
+    console.log('starting webcam');
+    navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+            const video = document.createElement('video');
+            video.srcObject = stream;
+            video.autoplay = true;
+            video.style.height = '120px';
+            video.style.width = '210px';
+            video.style.zIndex = '9998';
+            video.className = 'skoop-video-recorder';
+            container.appendChild(video);
+        })
+        .catch((error) => {
+            console.error('Error accessing the webcam', error);
+        });
 }
 
 // Function to stop the webcam
 function stopWebcam(container) {
-  if (container.firstChild) {
-    const video = container.firstChild;
-    video.srcObject.getTracks().forEach(track => track.stop());
-    container.removeChild(video);
-  }
+    if (container.firstChild) {
+        const video = container.firstChild;
+        video.srcObject.getTracks().forEach((track) => track.stop());
+        container.removeChild(video);
+    }
+}
+
+function getCurrentDateTimeString() {
+  const now = new Date();
+
+  const day = now.getDate().toString().padStart(2, '0');
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const year = now.getFullYear();
+
+  const hours = now.getHours().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  const seconds = now.getSeconds().toString().padStart(2, '0');
+
+  const dateString = `${year}-${month}-${day} at ${hours}:${minutes}:${seconds}`;
+
+  return dateString;
 }
 
 const container = createWebcamContainer();
 let mediaRecorder;
 let recordedChunks = [];
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "collectClasses") {
-    console.log("getting classes")
-    const classes = collectClasses();
-    const url=getHostUrl();
-    sendResponse({ classes: classes ,url});
-  }
-
-  if (request.action === 'resizeIframe') {
-    
-    resizeIframe(request.width, request.height);
-    sendResponse({ result: 'Iframe resized' });
-  }
-  if (request.action === 'startRecording') {
-    container.style.display = 'block';
-    startWebcam(container);
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-        mediaRecorder = new MediaRecorder(stream);
-        mediaRecorder.ondataavailable = event => {
-          if (event.data.size > 0) recordedChunks.push(event.data);
-        };
-        mediaRecorder.start();
-      }).catch((err) => {
-        console.error(`[Creating web cam in website]: ${err}`);
-        // Handle the error here (e.g., show a message to the user)
-      });
-
-    }else{  
-      console.log('getUserMedia not supported');
+    if (request.action === 'collectClasses') {
+        console.log('getting classes');
+        const classes = collectClasses();
+        const url = getHostUrl();
+        sendResponse({ classes: classes, url });
     }
-    
-  } 
-  
-  if (request.action === 'stopRecording') {
-    container.style.display = 'none';
-    stopWebcam(container);
-    mediaRecorder.stop();
-    mediaRecorder.onstop = () => {
-      const blob = new Blob(recordedChunks, { type: 'video/webm' });
-      console.log(blob,"from content script")
-      sendResponse({ videoBlob: blob ,recordedChunks});
-      recordedChunks=[]
-    };
+
+    if (request.action === 'resizeIframe') {
+        resizeIframe(request.width, request.height);
+        sendResponse({ result: 'Iframe resized' });
+    }
+    if (request.action === 'startRecording') {
+        container.style.display = 'block';
+        startWebcam(container);
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices
+                .getUserMedia({ video: true })
+                .then((stream) => {
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.ondataavailable = (event) => {
+                        if (event.data.size > 0) recordedChunks.push(event.data);
+                    };
+                    mediaRecorder.start();
+                })
+                .catch((err) => {
+                    console.error(`[Creating web cam in website]: ${err}`);
+                    // Handle the error here (e.g., show a message to the user)
+                });
+        } else {
+            console.log('getUserMedia not supported');
+        }
+    }
+
+    if (request.action === 'stopRecording') {
+        container.style.display = 'none';
+        stopWebcam(container);
+        mediaRecorder.stop();
+        mediaRecorder.onstop = () => {
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            console.log(blob, 'from content script');
+            const blobUrl = URL.createObjectURL(blob);
+            console.log(blobUrl, 'Blob URL from content script');
+            const formData = new FormData();
+            const videoTitle=getCurrentDateTimeString()
+            let file = new File([blob], `${videoTitle}.webm`, { type: 'video/webm' });
+            formData.append('data', file);
+
+           
+            const config = {
+                headers: {
+                    title: videoTitle,
+                    directory_name: "Media",
+                    type: 'webm',
+                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                    title1: videoTitle,
+                },
+            };
+
+
+          //   script.onload = function() {
+             
+          //     axios
+          //     .post("https://skoop.sumits.in/vidyardUpload", formData, config)
+          //     .then((response) => {
+          //         console.log(response, 'response of video');
+          //         // Handle success here
+                
+          //     })
+          //     .catch((error) => {
+          //         console.error(error);
+          //         // Handle error here
+               
+          //     })
+          //     .finally(() => {
+                  
+          //     });
+          // };
+           
+            recordedChunks = [];
+            chrome.runtime.sendMessage({ message: 'recordedVideo' ,videoBlob: blob, url: blobUrl}, (response) => {
+             
+            });
+            sendResponse({ videoBlob: blob, url: blobUrl });
+        };
+        return true;
+    }
+
     return true;
-  }
- 
-  return true; 
 });
 
 // MutationObserver to handle dynamic changes in the DOM

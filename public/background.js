@@ -50,11 +50,13 @@ if (request.message === 'startRecording' || request.message === 'stopRecording')
           console.log(response,"background script")
           sendResponse(response)
         }
+        return true
       });
     
     }
+    return true
   });
-  return true
+
 }
 return true;
 }

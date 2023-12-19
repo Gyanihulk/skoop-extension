@@ -87,7 +87,6 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
   const Constraints={
       aspectRatio: aspectR
   };
-
   const startCountdown=async()=>{
     try {
       
@@ -266,11 +265,28 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
       }
     });
   }
-  
+  async function getBlobFromUrl(url) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const blob = await response.blob();
+        return blob;
+    } catch (error) {
+        console.error("Error fetching blob:", error);
+    }
+}
+
+
   function handleVideoBlob(response) {
     if (response.videoBlob) {
-      console.log(response,"from the recording component")
-      handleShare(response.videoBlob,getCurrentDateTimeString(),"Media");
+      getBlobFromUrl(response.url).then(blob => {
+        console.log("Retrieved Blob:", blob);
+        handleShare(blob,getCurrentDateTimeString(),"New"); 
+      });
+
+      
     }
   }
   
