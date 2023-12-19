@@ -8,7 +8,7 @@ import EmailComposer from '../EmailSection/index.js';
 import LinkedInCom from '../LinkedInCom/index.js';
 
 const Homepage = (props) => {
-  const {setIsLinkedin,isLinkedin} = useContext(GlobalStatesContext);  
+  const {setIsLinkedin,isLinkedin,setLatestVideoUrl} = useContext(GlobalStatesContext);  
 
 
   const [aspectRatio,setAspectRatio]=useState(9/16)

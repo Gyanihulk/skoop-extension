@@ -6,7 +6,7 @@ import ChatComponent from '../ChatWindow';
 
 const ChatPage = (props) => {
 
-    const [latestVideoUrl,setLatestVideoUrl]=useState('')
+ 
     const [isChatComponentVisible, setIsChatComponentVisible] = useState(false);
 
   const handleGetStartedClick = () => {
