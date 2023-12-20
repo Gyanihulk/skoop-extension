@@ -7,6 +7,7 @@ import ChatPage from '../components/Screens/ChatPage';
 import ContactPage from '../components/Screens/ContactPage';
 import LinkedInCom from '../components/LinkedinCom';
 import AccountSettings from '../components/Screens/AccountSettings';
+import ForgotPassword from '../components/Screens/ForgotPassword';
 
 export default function Home() {
     const { activePage } = useContext(ScreenContext);
@@ -40,6 +41,7 @@ export default function Home() {
             {activePage=='ChatPage' && <ChatPage/>}
             {activePage=='ContactPage' && <ContactPage/>}
             {activePage=='LinkedInCom' && <LinkedInCom/>}
+            {activePage=='ForgotPassword' && <ForgotPassword/>}
         </>
     );
 }

@@ -135,8 +135,47 @@ export const AuthProvider = ({ children }) => {
         }
       };
     
+      const getOtpForPasswordReset=async(username)=>{
+        try{
+          const responseCode=await fetch(API_ENDPOINTS.getOtpForPasswordReset+new URLSearchParams({ username: username }),{
+            method: "GET",
+            headers: {
+              "Content-type": "application/json; charset=UTF-8"
+            }
+          })
+          if(responseCode.ok) return true;
+          else return false;
+        }catch(err){
+          console.log("some error occured in getting the otp for password reset");
+          return false;
+        }
+      }
+
+      const resetPasswordUsingOtp=async(username,otp,newPassword)=>{
+        try{
+          const responseCode=await fetch(API_ENDPOINTS.resetPasswordUsingOtp,{
+            method: "POST",
+            headers:{
+              "Content-type": "application/json; charset=UTF-8"
+            },
+            body: JSON.stringify({
+              username: username,
+              otp: otp,
+              newPassword: newPassword
+            })
+          })
+          if(responseCode.ok) return true;
+          else return false;
+        }catch(err){
+          console.log("could not make the call to reset password",err)
+          return false;
+        }
+      }
+
   return (
-    <AuthContext.Provider value={{isAutheticated , user, handleSkoopLogin, handleSocialLogin,handleRegister,verifyToken}}>
+    <AuthContext.Provider value={{isAutheticated , user, handleSkoopLogin, 
+    handleSocialLogin,handleRegister,
+    verifyToken,getOtpForPasswordReset,resetPasswordUsingOtp}}>
       {children}
     </AuthContext.Provider>
   );

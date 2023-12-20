@@ -53,6 +53,7 @@ function SignIn() {
                                         id="email"
                                         aria-describedby="emailHelp"
                                         placeholder="Email"
+                                        name="username"
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -61,6 +62,7 @@ function SignIn() {
                                         className="form-control"
                                         id="password"
                                         placeholder="password"
+                                        name="password"
                                     />
                                 </div>
 
@@ -96,6 +98,19 @@ function SignIn() {
                                     >
                                         {' '}
                                         Create an Account
+                                    </a>
+                                </div>
+                                <div
+                                    id="emailHelp"
+                                    className="form-text text-center mb-5 text-dark"
+                                >
+                                    <a
+                                        href="#"
+                                        onClick={() => navigateToPage('ForgotPassword')}
+                                        className="text-dark fw-bold"
+                                    >
+                                        {' '}
+                                        ForgotPassword?
                                     </a>
                                 </div>
                             </form>

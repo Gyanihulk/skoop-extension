@@ -31,6 +31,8 @@ const API_ENDPOINTS = {
     GoogleLogIn: `${backendUrl}/SignInWithGoogle`, //POST
     toggleFavourite: `${backendUrl}/toggleFavourite`,// PATCH
     getThumbnail: `${backendUrl}/getThumbnail/`, //GET
+    getOtpForPasswordReset: `${backendUrl}/getOtpForPasswordReset?`, //GET
+    resetPasswordUsingOtp: `${backendUrl}/resetPasswordUsingOtp` //POST
 };
 
 // with POST or PATCH apis body is sent in JSON 

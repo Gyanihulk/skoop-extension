@@ -160,7 +160,9 @@ const Library = (props) => {
             props.appendToBody(ret)
         }
         else{
-            props.appendToMessage(`${link}`)
+            const url = link;
+            const facade_player_uuid = url.substring(url.lastIndexOf("/") + 1);
+            props.appendToMessage(`https://share.vidyard.com/watch/${facade_player_uuid}`);
         }
     }
 
