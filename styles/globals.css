@@ -314,3 +314,211 @@ border-radius: 8px;
 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/*Library*/
+
+.lib-button {
+  margin-top: 16px;
+  margin-right: 8px;
+  font-size: 16px;
+  color: #0d6efd;
+  border: none;
+  background: none;
+}
+
+.lib-button:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.lib-icon {
+  margin-right: 4px;
+  color: #0d6efd;
+}
+
+.customCard {
+  text-align: center;
+  display: inline-block;
+  padding: 6px;
+  margin: 6px;
+  width: 180px;
+  height: 50px;
+  background: transparent;
+  box-shadow: none;
+  border: none;
+}
+
+.customContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+}
+
+.customFlexContainer {
+  align-items: center;
+  display: flex;
+  flex: 1;
+}
+
+.customContainer1 {
+  display: flex;
+  align-items: center;
+}
+
+.customFolderIcon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 5px;
+}
+
+.customTextContainer {
+  margin-left: 7px;
+}
+
+.customDirectoryName {
+  margin: 0;
+}
+
+.new {
+  display: flex;
+  align-items: center;
+}
+
+.rename {
+  margin-left: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.customCloseButton {
+  color: #0d6efd;
+  border: none;
+  background: none;
+  cursor: pointer; 
+}
+
+.custom-Cards {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.LinkContainer {
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.mediacard {
+  width: 330px;
+  border-radius: 1%;
+  border: 1px solid black;
+  position: relative;
+}
+
+.bgcolour{
+  background-color: black;
+}
+
+.customCardBody {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.BodyContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mediaIcon {
+  color: #0d6efd;
+  border: none;
+  margin-right: 6px;
+  background-color: #FFFFFF;
+}
+
+/* pre determined msg */
+
+.dropDown {
+  width: 92%;
+  background-color: #edf4fa;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+/* UserInput */
+
+.customPosition {
+  position: relative;
+  z-index: 5000;
+}
+
+.customContainerFluid {
+  margin-top: 3px;
+  background: white;
+}
+
+.button-size {
+  font-size: '14px'
+}
+
+.save-button {
+  font-size: '14px';
+  color: '#0a66c2'
+}
+
+/* video recorder */
+
+.customH1 {
+  color: red;
+  font-size: 100px;
+  margin-top: 15px;
+}
+
+.Cardstyle {
+  z-index: 10000;
+  text-align: center;
+  display: block;
+}
+
+.customWebcam {
+  display: block;
+  width: 50%;
+  height: 50%;
+  z-index: 30000;
+}
+
+.options {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.videoOption {
+  border: none;
+  background: none;
+  margin-right: 10px;
+}
+
+.delete {
+  border: none;
+  background: none;
+}
+
+.previewCard {
+  text-align: center;
+  display: inline-block;
+}
+
+.customDynamicDisplay {
+  width: 100%;
+  height: 100%;
+}
+
+
+
+
+
+
+
+
+

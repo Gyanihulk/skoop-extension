@@ -56,8 +56,8 @@ export class UserInput extends Component{
   render(){
     if(this.state.loading==false){
       return(
-        <div style={{position: "relative",zIndex: '5000'}}>
-          <div className="container-fluid" style={{ marginTop: '3px', background: 'white' }}>
+        <div className="customPosition">
+          <div className="container-fluid customContainerFluid">
               <form onSubmit={this.handleSubmit}>
                 <div className="form-group">
                   <label htmlFor="videoTitle">Video Title</label>
@@ -109,10 +109,10 @@ export class UserInput extends Component{
                 )}
 
                 <div className="d-flex justify-content-end pt-3 gap-2">
-                  <button type="submit" className="btn btn-primary" style={{ fontSize: '14px' }}>
+                  <button type="submit" className="btn btn-primary button-size">
                     Upload
                   </button>
-                  <button type="button" className="btn btn-secondary" style={{ fontSize: '14px' }} onClick={this.props.cancelUpload}>
+                  <button type="button" className="btn btn-secondary button-size" onClick={this.props.cancelUpload}>
                     Cancel
                   </button>
                 </div>
@@ -208,7 +208,7 @@ export const NewFolderInput=(props)=>{
               style={{ width: '100%' }}
             />
             <div className="mt-4 d-flex justify-content-end">
-              <button type="submit" className="btn btn-link" style={{ fontSize: '14px', color: '#0a66c2' }}>
+              <button type="submit" className="btn btn-link save-button">
                 Save
               </button>
             </div>

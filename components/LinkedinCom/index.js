@@ -15,12 +15,14 @@ const LinkedInCom = () => {
 
       <button
         type="button"
-        className="btn btn-outline-success mx-auto d-block mt-4 mb-8"
+        className="btn btn-outline-success mx-auto d-block mb-8"
+        data-mdb-toggle="tooltip"
+        data-mdb-placement="top"
+        title="Go to any LinkedIn profile page & click this button to fetch its details."
         onClick={() => navigateToPage("ContactPage")}
       >
         LinkedIn Profile Info Scraper
       </button>
-
 
       <div className="container top-margins">
         <div className="row justify-content-center">

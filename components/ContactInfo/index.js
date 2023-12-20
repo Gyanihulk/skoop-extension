@@ -144,11 +144,11 @@ const ContactInfoCard = () => {
       <div className="row justify-content-center">
         <div className="col">
           <h3 className="mb-3 Section-heading">Contact Info: {profileName}</h3>
-          <p className="mb-4 blue-text">
+          <p className="mb-4 blue-text d-flex align-items-center">
             Extract Contact Information from Profiles
             <button
               type="button"
-              className="btn btn-primary refresh-button"
+              className="btn btn-primary refresh-button ml-2"
               onClick={() => setRefresh(!refresh)}
             >
               Refresh
@@ -156,7 +156,7 @@ const ContactInfoCard = () => {
           </p>
 
           {/* Row 1 */}
-          <div className="row mb-4">
+          <div className="row">
             <div className="col-md-6 mb-3">
               <div className="input-group">
                 <span className="input-group-text">
@@ -188,7 +188,7 @@ const ContactInfoCard = () => {
           </div>
 
           {/* Row 2 */}
-          <div className="row mb-4">
+          <div className="row mb-3">
             <div className="col-md-6 mb-3">
               <div className="input-group">
                 <span className="input-group-text">
@@ -203,7 +203,7 @@ const ContactInfoCard = () => {
                 />
               </div>
             </div>
-            <div className="col-md-6 mb-3">
+            <div className="col-md-6">
               <div className="input-group">
                 <span className="input-group-text">
                   <AiFillPhone />
@@ -220,7 +220,7 @@ const ContactInfoCard = () => {
           </div>
 
           {/* Row 3 */}
-          <div className="row mb-4">
+          <div className="row mb-3">
             <div className="col-md-6 mb-3">
               <div className="input-group">
                 <span className="input-group-text">
@@ -235,7 +235,7 @@ const ContactInfoCard = () => {
                 />
               </div>
             </div>
-            <div className="col-md-6 mb-3">
+            <div className="col-md-6">
               <div className="input-group">
                 <span className="input-group-text">
                   <FaAddressBook />
@@ -252,8 +252,8 @@ const ContactInfoCard = () => {
           </div>
 
           {/* Description and Notes */}
-          <div className="form-outline mb-4">
-            <h4 className="mb-3 Section-heading">Description</h4>
+          <div className="form-outline">
+            <h5 className="mb-2 Section-heading">Description</h5>
             <textarea
               type="text"
               className="form-control"
@@ -263,8 +263,8 @@ const ContactInfoCard = () => {
               onChange={handleInputChange}
             />
           </div>
-          <div className="form-outline mb-4">
-            <h4 className="mb-3 Section-heading">Notes</h4>
+          <div className="form-outline">
+            <h5 className="mb-2 Section-heading">Notes</h5>
             <textarea
               type="text"
               className="form-control"
@@ -276,7 +276,7 @@ const ContactInfoCard = () => {
           </div>
 
           {/* Save Button */}
-          <div className="d-flex justify-content-end pt-3 gap-2">
+          <div className="d-flex justify-content-end pt-3">
               <button
                 type="button"
                 className="btn btn-primary chatgpt-button"

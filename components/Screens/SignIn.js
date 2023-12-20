@@ -1,34 +1,41 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Form, InputGroup, Card, Container, Row, Col, Button } from 'react-bootstrap';
 import { FaSignInAlt, FaTimes } from 'react-icons/fa';
-
+// import { Link } from 'react-router-dom';
+import API_ENDPOINTS from '../apiConfig';
 import AuthContext from '../../contexts/AuthContext';
 import ScreenContext from '../../contexts/ScreenContext';
 // import toast, { Toaster } from 'react-hot-toast';
 import { FaGoogle } from 'react-icons/fa6';
 import { FaLinkedin } from 'react-icons/fa';
 function SignIn() {
-    const { handleSkoopLogin, handleSocialLogin,verifyToken } = useContext(AuthContext);
+    const { handleSkoopLogin, handleSocialLogin } = useContext(AuthContext);
     const { navigateToPage } = useContext(ScreenContext);
+    // useEffect(() => {
+    //   (async () => {
+    //     const res = await verifyToken();
+    //     if (res.ok) props.changePage('Home');
+    //   })();
+    // }, []);
 
-    useEffect(() => {
-      (async () => {
-        const res = await verifyToken();
-        if (res.ok) navigateToPage('Home');
-      })();
-    }, []);
+   {/*const message = { message: 'SignIn',width:"450px",height:"700px" };
+    chrome.runtime.sendMessage(message, function(response) {
+        console.log('Received response:', response);
+        if(response && response?.url.startsWith("www.linkedin.com")){
+          setIsLinkedin(true)
+        }
+      }); */}
 
     return (
-        <div className="SignIn">
+        <div>
             <div className="container">
                 <div className="row">
                     <div className="col-md-6 offset-md-3">
-                        <div className="card my-5">
+                        <div className="card my-1">
                             <form
                                 className="card-body cardbody-color p-lg-5"
                                 onSubmit={handleSkoopLogin}
                             >
-                                <h2 className="text-center text-dark mt-5">Sign In</h2>
+                                <h2 className="text-center text-dark mt-3">Sign In</h2>
 
                                 <div className="text-center">
                                     <img
@@ -79,7 +86,7 @@ function SignIn() {
                                 </div>
                                 <div
                                     id="emailHelp"
-                                    className="form-text text-center mb-5 text-dark"
+                                    className="form-text text-center mb-2 text-dark"
                                 >
                                     Not Registered?{' '}
                                     <a

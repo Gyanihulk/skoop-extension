@@ -18,21 +18,12 @@ const ContactPage = () => {
        
     
     <>
-    <ContactInfoCard />
+   <ContactInfoCard /> 
       {refresh ? (
         <ContactInfoCard />
       ) : (
         <>
           {/* <WelcomeCard /> */}
-            <div className="explainer-card"> 
-                <button
-                    type="button" 
-                    className="mx-auto d-block mt-6 homepage-button" 
-                    onClick={handleRefreshClick}
-                    >
-                    Load Profile Details        
-                </button>
-            </div>
         </>
       )}
     </>

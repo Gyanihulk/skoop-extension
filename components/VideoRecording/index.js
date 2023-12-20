@@ -355,14 +355,14 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
         >
            {countdown && (
               <div className="text-center">
-                <h1 style={{ color: 'red', fontSize: 100, marginTop:'15px' }}>
+                <h1 className="customH1">
                   {3 - countTimer}
                 </h1>
               </div>
             )}
            {init === true && (
-            <div className="card" style={{ zIndex: '10000', textAlign: 'center' ,display: 'block'}}>
-            <Webcam audio={true} ref={webcamRef} videoConstraints={Constraints} muted style={{display :'block' , width: '50%', height: '50%', zindex: "30000"}} />
+            <div className="card Cardstyle">
+            <Webcam audio={true} ref={webcamRef} videoConstraints={Constraints} muted className="customWebcam" />
             <h4>
             {`Time remaining: ${60 - time} Seconds`}
             </h4>
@@ -372,12 +372,12 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
         <div>
         {!capturing && !isUploading && recordedChunks.length > 0 && (
           <>
-            <div style={{ display: 'flex', marginBottom: '10px' }}>
+            <div className="options">
               <button 
                 data-mdb-toggle="tooltip"
                 data-mdb-placement="bottom"
                 title="Download the recorded video"
-                style={{ border: 'none', background: 'none', marginRight: '10px' }}
+                className="videoOption"
                 onClick={handleDownload}
               >
                 <FaDownload id='mail_icons'/>
@@ -387,7 +387,7 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
                 data-mdb-toggle="tooltip"
                 data-mdb-placement="bottom"
                 title={isPlaying ? 'Close the Preview video' : 'Play the recorded video'}
-                style={{ border: 'none', background: 'none', marginRight: '10px' }}
+                className="videoOption"
                 onClick={preview}
               >
                 {isPlaying ? <FaTimesCircle id="mail_icons" /> : <FaRegCirclePlay id="mail_icons" />}
@@ -397,7 +397,7 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
                 data-mdb-toggle="tooltip"
                 data-mdb-placement="bottom"
                 title="Delete the video"
-                style={{ border: 'none', background: 'none' }}
+                className='delete'
                 onClick={() => {setPrev(''); setRecordedChunks([])}}
               >
                 <MdDeleteForever id='mail_icons'/>
@@ -424,14 +424,14 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
 {/* 
         <div>
           {prev!='' && 
-            <div style={{ textAlign: 'center', display: 'inline-block' }}>
+            <div className="previewCard">
             {prev !== '' && (
               <div className="card">
                 <div className="embed-responsive embed-responsive-16by9">
                   <video
-                    className="embed-responsive-item"
+                    className="embed-responsive-item customDynamicDisplay"
                     src={prev}
-                    style={{ display: `${displayForPreview()}`, width: '100%', height: '100%' }}
+                    style={{ display: `${displayForPreview()}` }}
                     autoPlay
                     muted
                     loop
@@ -448,6 +448,3 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
 };
 
 export default RecordingButton
-
-
-

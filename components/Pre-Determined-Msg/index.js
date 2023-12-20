@@ -35,11 +35,10 @@ function AI(props) {
 
   return (
       <div
-        className="form-group mx-auto"
+        className="form-group mx-auto dropDown"
         data-mdb-toggle="tooltip"
         data-mdb-placement="top"
         title="Dropdown for pre-determined custom responses to send directly on DM"
-        style={{ width: '92%', backgroundColor: '#edf4fa', marginTop: '15px', marginBottom: '5px' }}
       >
         <select
           className="form-select"

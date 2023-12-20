@@ -185,23 +185,22 @@ const Library = (props) => {
 
   return (
     <div>
-    <div className="text-center" >
-    <button
-    style={{ marginTop: '16px', marginRight: '8px', fontSize: '16px', color: '#0d6efd', border:'none', background:'none' }}
-    onClick={() => { setOpenNewFolder(true) }}
->
-    <FaFolderPlus style={{ marginRight: '4px', color: '#0d6efd' }} />
-    Create new folder
-</button>
+        <div className="text-center" >
+            <button
+                className="lib-button"
+                onClick={() => { setOpenNewFolder(true) }}
+            >
+                <FaFolderPlus className="lib-icon" />
+                Create new folder
+            </button>
+            <button
+                className="lib-button"
+                onClick={getFavourites}
+            >
+                <FaRegStar className="lib-icon" />
+                Favourites
+            </button>
 
-<button
-    variant= 'outline-primary'
-    style={{ marginTop: '16px', marginLeft: '8px', fontSize: '16px', color: '#0d6efd', border:'none', background:'none' }}
-    onClick={getFavourites}
->
-    <FaRegStar style={{ marginRight: '4px', color: '#0d6efd' }} />
-    Favourites
-</button>
 
     <br />
     <br />
@@ -259,50 +258,34 @@ const Library = (props) => {
             return (
                     <div className="d-inline-block">
                         <div
-                            className="card"
-                            style={{
-                                textAlign: 'center',
-                                display: 'inline-block',
-                                padding: '6px',
-                                margin: '6px',
-                                width: '180px',
-                                height: '50px',
-                                background: 'transparent',
-                                boxShadow: 'none',
-                                border:'none'
-                            }}
+                            className="card customCard"
                             onMouseEnter={() => setHoveredDir(dir.directory_name)}
                             onMouseLeave={() => setHoveredDir(null)}
                         >
                             <div
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    alignItems: 'center',
-                                    height: '100%',
-                                }}
+                               className="customContainer"
                             >
                                 <div
                                     onClick={() => {
                                         handleOpen(dir.directory_name);
                                     }}
-                                    style={{ alignItems: 'center', display: 'flex', flex: 1 }}
+                                    className="customFlexContainer"
                                 >
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <FcFolder style={{ width: '48px', height: '48px', marginBottom: '5px' }} />
+                                    <div className="customContainer1">
+                                        <FcFolder className="customFolderIcon" />
                                     </div>
-                                    <div style={{ marginLeft: '7px' }}>
-                                        <h7 style={{ margin: 0 }}>{dir.directory_name}</h7>
+                                    <div className="customTextContainer">
+                                        <h7 className="customDirectoryName">{dir.directory_name}</h7>
                                     </div>
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <div className="new">
                                     {/* Rename button */}
                                     {hoveredDir === dir.directory_name && (
                                     <button
                                         onClick={() => {
                                             setDirToRename(dir.directory_name);
                                         }}
-                                        style={{ marginLeft: '10px', background: 'transparent', border: 'none', cursor: 'pointer' }}
+                                        className="rename"
                                         data-mdb-toggle="tooltip"
                                         data-mdb-placement="bottom"
                                         title="Rename this video"
@@ -317,7 +300,7 @@ const Library = (props) => {
                                         onClick={async () => {
                                             await deleteDirectory(dir.directory_name);
                                         }}
-                                        style={{ marginLeft: '10px', background: 'transparent', border: 'none', cursor: 'pointer' }}
+                                        className="rename"
                                         data-mdb-toggle="tooltip"
                                         data-mdb-placement="bottom"
                                         title="Delete this video"
@@ -334,42 +317,36 @@ const Library = (props) => {
         }
        {(currentDirectory !== '' || fav) && (
         <div className="mt-2"> 
-            <button style={{color: '#0d6efd', border:'none', background:'none'}} onClick={handleClose}>
+            <button className='customCloseButton'>
             Close Folder
             </button>
         </div>
 )}
-        <div style={{ maxHeight: '250px', overflowY: 'auto' }}>
-        {(currentDirectory !== '' || fav) &&
-            links.map((item) => (
-            <div style={{ display: 'inline-block', marginTop: '10px' }} key={item.id}>
-                <div
-                className="card"
-                style={{
-                    width: '330px',
-                    borderRadius: '1%',
-                    border: '1px solid black',
-                    position: 'relative',
-                }}
-                onMouseEnter={() => setHovered(true)}
-                onMouseLeave={() => setHovered(false)}
-                >
+        <div className="custom-Cards">
+                {(currentDirectory !== '' || fav) &&
+                    links.map((item) => (
+                    <div className="LinkContainer" key={item.id}>
+                        <div
+                        className= "mediacard card"
+                        onMouseEnter={() => setHovered(true)}
+                        onMouseLeave={() => setHovered(false)}
+                        >
                 <iframe
                     title={item.video_title}
                     width="100%"
                     height="auto"
                     src={item.link}
                     allow="autoplay; fullscreen; picture-in-picture"
-                    style={{ backgroundColor: 'black' }}
+                    className='bgcolour'
                 />
-                    <div className="card-body" style={{ paddingTop: '0', paddingBottom: '0' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div className="card-body customCardBody">
+                        <div className="BodyContainer">
                         <h6 className="card-title">{item.video_title}</h6>
                         {hovered && ( 
                         <div className="btn-group" role="group" aria-label="Video actions">
                         <button
                             title="Insert link to mail body"
-                            style={{ color: '#0d6efd', border: 'none', marginRight: '6px', backgroundColor: '#FFFFFF' }}
+                            className="mediaIcon"
                             onClick={() => {
                             handleLinkInsertion(item.link, item.id);
                             }}
@@ -378,7 +355,7 @@ const Library = (props) => {
                         </button>
                         <button
                             title="Copy to clipboard"
-                            style={{ color: '#0d6efd', border: 'none', marginRight: '6px', backgroundColor: '#FFFFFF' }}
+                            className="mediaIcon"
                             onClick={() => {
                             navigator.clipboard.writeText(`${item.link}`);
                             }}
@@ -387,7 +364,7 @@ const Library = (props) => {
                         </button>
                         <button
                             title="Delete video"
-                            style={{ color: '#0d6efd', border: 'none', marginRight: '6px', backgroundColor: '#FFFFFF' }}
+                            className="mediaIcon"
                             onClick={async () => {
                             await deleteVideo(item.id, currentDirectory);
                             }}
@@ -396,7 +373,7 @@ const Library = (props) => {
                         </button>
                         <button
                             title="Add to favourites"
-                            style={{ color: '#0d6efd', border: 'none', marginRight: '6px', backgroundColor: '#FFFFFF' }}
+                            className="mediaIcon"
                             onClick={() => {
                             toggleFavourite(item.id);
                             }}

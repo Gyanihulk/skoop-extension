@@ -236,7 +236,7 @@ const handleInputChange = (e) => {
       appendToBody={appendToBody}/>
         <div className="card mx-auto" 
         style={chatContainerStyle} >
-          <div className="card-header bg-transparent">
+          {/*<div className="card-header bg-transparent">
             <div className="navbar navbar-expand p-0">
               <ul className="navbar-nav me-auto align-items-center">
                 <li className="nav-item">
@@ -384,7 +384,7 @@ const handleInputChange = (e) => {
               }  
               </div>
             ))}
-          </div>
+            </div> */}
 
           <div className="card-footer bg-white position-relative w-100 bottom-0 m-0 p-1">
           <div className="input-group">
