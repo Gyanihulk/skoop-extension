@@ -11,7 +11,7 @@ const Homepage = (props) => {
   const {setIsLinkedin,isLinkedin,setLatestVideoUrl} = useContext(GlobalStatesContext);  
 
 
-  const [aspectRatio,setAspectRatio]=useState(9/16)
+
  
  
   const message = { message: 'HomePage',width:"400px",height:"600px" };
@@ -70,7 +70,6 @@ const Homepage = (props) => {
 
     <div className="d-flex my-4 justify-content-center mt-8">
       <RecordingButton
-        aspectR={aspectRatio}
         setUrlAtHome={(input) => {
           setLatestVideoUrl(input);
         }}

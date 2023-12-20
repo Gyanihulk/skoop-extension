@@ -43,6 +43,7 @@ function injectIframe() {
     closeButton.style.height = '5px';
     closeButton.style.cursor = 'pointer';
     closeButton.textContent = 'x';
+    container.style.zIndex = '10000';
     closeButton.addEventListener('click', function close() {
         container.style.display = 'none';
     });
@@ -170,10 +171,12 @@ function createWebcamContainer(title,height,width) {
     
 
     const stopButton = document.createElement('button');
+    stopButton.id="video-stop-button"
     stopButton.innerText = 'Stop Recording';
     stopButton.style.position = 'absolute';
-    stopButton.style.bottom = '10px';
-    stopButton.style.right = '10px';
+    stopButton.style.top = '10px';
+    stopButton.style.left = '10px';
+    container.style.zIndex = '1100000';
     container.appendChild(stopButton);
 
     // Create timer display
@@ -228,21 +231,11 @@ function createWebcamContainer(title,height,width) {
 }
 
 function startWebcam(title,height,width) {
-    const skoopVideoContainer = createWebcamContainer(title,height,width);
-    skoopVideoContainer.style.display = 'block';
-    console.log('starting webcam',title,height,width);
+    
     navigator.mediaDevices
         .getUserMedia({ video: true })
         .then((stream) => {
-            const video = document.createElement('video');
-            video.id=title
-            video.srcObject = stream;
-            video.autoplay = true;
-            video.style.height = height;
-            video.style.width = width;
-            video.style.zIndex = '9998';
-            video.className = 'skoop-video-recorder';
-            skoopVideoContainer.appendChild(video);
+           
             
        
         })
@@ -254,6 +247,7 @@ function startWebcam(title,height,width) {
 // Function to stop the webcam
 function stopWebcam(container) {
   if (container && container.hasChildNodes()) {
+    container.style.display = 'none';
     // Retrieve all video elements within the container
     const videos = container.getElementsByTagName('video');
     // Select the last video element
@@ -262,7 +256,7 @@ function stopWebcam(container) {
     // Make sure the selected video element is not undefined
     if (video && video.srcObject) {
         // Stop all tracks of the video's srcObject
-        console.log("stopping feed")
+        
         video.srcObject.getTracks().forEach((track) => track.stop());
         // Remove the video element after stopping the tracks
         container.removeChild(video);
@@ -274,21 +268,6 @@ function stopWebcam(container) {
 }
 }
 
-function getCurrentDateTimeString() {
-  const now = new Date();
-
-  const day = now.getDate().toString().padStart(2, '0');
-  const month = (now.getMonth() + 1).toString().padStart(2, '0');
-  const year = now.getFullYear();
-
-  const hours = now.getHours().toString().padStart(2, '0');
-  const minutes = now.getMinutes().toString().padStart(2, '0');
-  const seconds = now.getSeconds().toString().padStart(2, '0');
-
-  const dateString = `${year}-${month}-${day} at ${hours}:${minutes}:${seconds}`;
-
-  return dateString;
-}
 
 
 let mediaRecorder;
@@ -307,16 +286,38 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
     if (request.action === 'startRecording') {
         console.log(request)
-        startWebcam("title",request.height,request.width);
+        // startWebcam("title",request.height,request.width);
+        const skoopVideoContainer = createWebcamContainer("title",request.height,request.width);
+        skoopVideoContainer.style.display = 'block';
+        console.log('starting webcam',request.height,request.width);
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices
-                .getUserMedia({ video: true })
+                .getUserMedia({ video: {width:{ideal:request.width},height:{ideal:request.height}} })
                 .then((stream) => {
+                    const video = document.createElement('video');
+                    video.id="title"
+                    video.srcObject = stream;
+                    video.autoplay = true;
+                    video.style.height = request.height+"px";
+                    video.style.width = request.width+"px";
+                    video.style.zIndex = '9998';
+                    video.className = 'skoop-video-recorder';
+                    skoopVideoContainer.appendChild(video);
                     mediaRecorder = new MediaRecorder(stream);
                     mediaRecorder.ondataavailable = (event) => {
                         if (event.data.size > 0) recordedChunks.push(event.data);
                     };
                     mediaRecorder.start();
+                    function stopStream() {
+                        stream.getTracks().forEach(track => track.stop());
+                    }
+            
+                   
+                    const stopButton = document.getElementById('video-stop-button');
+                    if (stopButton) {
+                        console.log("stop stream")
+                        stopButton.addEventListener('click', stopStream);
+                    }
                 })
                 .catch((err) => {
                     console.error(`[Creating web cam in website]: ${err}`);
@@ -329,9 +330,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     if (request.action === 'stopRecording') {
         const skoopVideoContainer=document.getElementById("skoop-webcam-container")
-        skoopVideoContainer.style.display = 'none';
+        
         stopWebcam(skoopVideoContainer);
-        // skoopVideoContainer.timerDisplay.innerText = '00:00';
+        
         mediaRecorder.stop();
         mediaRecorder.onstop = () => {
             const blob = new Blob(recordedChunks, { type: 'video/webm' });
@@ -341,6 +342,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             recordedChunks = [];
             sendResponse({ videoBlob: blob, url: blobUrl });
         };
+      
+        return true;
+    }
+    if (request.action === 'showVideoPreview') {
+        console.log(request)
       
         return true;
     }

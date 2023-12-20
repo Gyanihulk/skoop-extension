@@ -4,7 +4,7 @@ import API_ENDPOINTS from '../apiConfig.js';
 import { FaDownload } from "react-icons/fa6";
 import { FaTimesCircle } from "react-icons/fa";
 import { FaRegCirclePlay} from "react-icons/fa6";
-import { MdDeleteForever } from "react-icons/md";
+import { MdDeleteForever, MdOutlineVideoSettings } from "react-icons/md";
 
 import {getCurrentDateTimeString, insertHtmlAtPositionInMail,
         insertIntoLinkedInMessageWindow,
@@ -13,6 +13,7 @@ import GlobalStatesContext from '../../contexts/GlobalStates.js';
 
 import toast, { Toaster } from 'react-hot-toast';
 import ChatWindowSelection from '../ChatWindowSelection/index.js'
+const videoResizeConstant=25
 const RecordingButton = ({ aspectR,setUrlAtHome }) => {
 
   const webcamRef = useRef(null)
@@ -33,7 +34,30 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
   const [currentY, setCurrentY] = useState(-1*200/8)
   const [init,setInit] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false);
-  const { globalRefresh, setGlobalRefresh,isLinkedin,selectedChatWindows } = useContext(GlobalStatesContext)
+  const {  setGlobalRefresh,isLinkedin,selectedChatWindows } = useContext(GlobalStatesContext)
+
+  const [aspectRatio,setAspectRatio]=useState([9,16])
+  const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
+  const [selectedVideoStyle, setSelectedVideoStyle] = useState(null);
+  const handleVideoStyleSelect = (style) => {
+    setSelectedVideoStyle(style);
+
+    if(style === 'Square'){
+      setAspectRatio([10,10]);
+    }
+    else if(style === 'Vertical Mode'){
+      setAspectRatio([9,16]);
+    }
+    else{
+      setAspectRatio([16,9]);
+    }
+    toggleVideoSettings()
+    console.log(`Selected Video Style: ${style}`);
+  };
+  const toggleVideoSettings = () => {
+    setVideoSettingsOpen(!videoSettingsOpen);
+  };
+
 
   const handleInsertion=()=>{
     console.log(isLinkedin,"test linkedin ")
@@ -60,29 +84,13 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
     }
   };
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
+
 
   const toggleIcon = () => {
     setIsPlaying((prevIsPlaying) => !prevIsPlaying);
   };
 
-  useEffect(() => {
-    console.log(initialX,initialY,currentX,currentY)
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove)
-      document.addEventListener('mouseup', handleMouseUp)
-    } else {
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
-    }
 
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove)
-      document.removeEventListener('mouseup', handleMouseUp)
-    };
-  }, [isDragging]);
 
   const Constraints={
       aspectRatio: aspectR
@@ -144,17 +152,15 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
   const handleShare =async(file,videoTitle,directoryName)=>{
     try{
      console.log(file,"file in handle share")
-      var title1=videoTitle
       videoTitle=replaceInvalidCharacters(videoTitle+`_${Date.now()}`)
       const formData = new FormData()
-      // let file = new File([blob], 'recording')
       formData.append('data', file,`${videoTitle}.webm`)
       const customHeaders = new Headers();
       customHeaders.append('title', videoTitle)
       customHeaders.append('directory_name', directoryName)
       customHeaders.append('type', 'webm')
       customHeaders.append('authorization', `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`)
-      customHeaders.append('title1',title1)
+      customHeaders.append('title1',videoTitle)
       setIsUploading(true);
       const loadingObj=toast.loading("uploading video...")
       var response=await fetch(API_ENDPOINTS.vidyardUpload,{
@@ -172,19 +178,14 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
       setVideoId(response.facade_player_uuid)
       console.log("the response after vidyard upload request",response)
       setGlobalRefresh(true)
+      // setPrev(`blob:https://play.vidyard.com/${response.facade_player_uuid}`)
     }catch(err){
       toast.dismiss()
       console.log(err,"err of video upload")
       toast.error("could not upload")
     }
    
-    // if(recordedChunks.length){
-    //   console.log("uploading the video")
-      
-    // }
-    // else {
-    //   console.log("recorded chunks not available yet")
-    // }
+  
   }
 
   const preview=()=>{
@@ -250,10 +251,12 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
   }, [recordedChunks]);
   
   const handleClick2 = () => {
+    
     if (capturing) {
+      setPrev(null)
       sendMessageToBackgroundScript({ action: 'stopRecording' }, handleVideoBlob);
     } else {
-      sendMessageToBackgroundScript({ action: 'startRecording' ,height:"300px",width:"350px"});
+      sendMessageToBackgroundScript({ action: 'startRecording' ,height:(aspectRatio[0]*videoResizeConstant),width:(aspectRatio[1]*videoResizeConstant)});
     }
     setCapturing(!capturing);
   };
@@ -296,12 +299,7 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
   }
   
  
-  const handleClick=()=>{
-    if(capturing){
-      handleStopCaptureClick()
-    }
-    else startCountdown()
-  }
+ 
   return (
     <div id="homeDiv">
       <div>
@@ -318,7 +316,29 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
             >
             {capturing ? 'Stop' : 'Rec'}
           </button>
-          
+          <button className="btn btn-link" onClick={toggleVideoSettings}>
+                <MdOutlineVideoSettings className="icon-style-normal" />
+              </button>
+              <div className={`dropdown-menu ${videoSettingsOpen ? 'show' : ''}`}>
+                <button
+                  className={`dropdown-item ${selectedVideoStyle === 'Vertical Mode' ? 'active' : ''}`}
+                  onClick={() => handleVideoStyleSelect('Vertical Mode')}
+                >
+                  Vertical (9:16)
+                </button>
+                <button
+                  className={`dropdown-item ${selectedVideoStyle === 'Horizontal' ? 'active' : ''}`}
+                  onClick={() => handleVideoStyleSelect('Horizontal')}
+                >
+                  Horizontal (16:9)
+                </button>
+                <button
+                  className={`dropdown-item ${selectedVideoStyle === 'Square' ? 'active' : ''}`}
+                  onClick={() => handleVideoStyleSelect('Square')}
+                >
+                  Square (1:1)
+                </button>
+              </div>
           </>
           
         }
@@ -400,16 +420,8 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
           </>
         )}
       </div>
-           { /*<button 
-                  data-mdb-toggle="tooltip"
-                  data-mdb-placement="bottom"
-                  title="Copy video link"
-                  style={{ border: 'none', background: 'none', marginRight: '10px' }}
-                  onClick={() => {navigator.clipboard.writeText(`https://share.vidyard.com/watch/${videoId}`)}}
-                >
-                  <IoLinkSharp id='mail_icons'/>
-            </button>*/ }
-
+           
+{/* 
         <div>
           {prev!='' && 
             <div style={{ textAlign: 'center', display: 'inline-block' }}>
@@ -430,7 +442,7 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
             )}
           </div>
           }
-        </div>
+        </div> */}
     </div>
   );
 };

@@ -17,7 +17,7 @@ export default function Header() {
   const [anchorEl, setAnchorEl] = useState(false)
   const {selectedVideoStyle,handleVideoStyleSelect}=useContext(GlobalStatesContext)
   const [profileDropdownVisible, setProfileDropdownVisible] = useState(false);
-  const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
+  
   const [profileOpen, setProfileOpen] = useState(false);
 
   const handleClick = (event) => {
@@ -27,9 +27,7 @@ export default function Header() {
     setAnchorEl(null);
   };
 
-  const toggleVideoSettings = () => {
-    setVideoSettingsOpen(!videoSettingsOpen);
-  };
+  
 
   const toggleProfileDropdown = () => {
     setProfileOpen(!profileOpen);
@@ -58,7 +56,7 @@ export default function Header() {
 
           <div className="d-flex ml-auto align-items-center">
             {/* Video Settings Dropdown */}
-            <div className={`nav-item dropdown ${videoSettingsOpen ? 'show' : ''}`}>
+            {/* <div className={`nav-item dropdown ${videoSettingsOpen ? 'show' : ''}`}>
               <button className="btn btn-link" onClick={toggleVideoSettings}>
                 <MdOutlineVideoSettings className="icon-style-normal" />
               </button>
@@ -82,7 +80,7 @@ export default function Header() {
                   Square (1:1)
                 </button>
               </div>
-            </div>
+            </div> */}
 
             {/* Calendar Link */}
             <button className="btn btn-link" onClick={() => window.open(`${API_ENDPOINTS.skoopCalendarUrl}/index.php/user/login`, '_blank')}>
