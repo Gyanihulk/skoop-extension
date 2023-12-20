@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { MdOutlineScheduleSend } from "react-icons/md";
-import { Container, Card, Form, Row, Col, Button, ButtonGroup } from 'react-bootstrap';
 import API_ENDPOINTS from '../apiConfig';
 
 class ChatGpt extends Component {
@@ -88,8 +87,8 @@ class ChatGpt extends Component {
   render() {
     return (
       <div>
-        <Form onSubmit={this.sendPrompt}>
-        <div className="input-group">
+        <form onSubmit={this.sendPrompt}>
+          <div className="input-group mb-3">
             <input
               type="text"
               className="form-control"
@@ -102,7 +101,6 @@ class ChatGpt extends Component {
               <button
                 className="btn btn-outline-primary"
                 type="submit"
-                //style={{ fontSize: '24px', color: '#0d6efd', border: 'none', background: 'none' }}
               >
                 <MdOutlineScheduleSend />
               </button>
@@ -118,60 +116,54 @@ class ChatGpt extends Component {
 
           {this.state.prompt !== '' && !this.state.loading && (
             <>
-              <Form.Label className="mb-2 text-start">Response</Form.Label>
-              <Form.Control
-                as="textarea"
+              <label className="mb-2 text-start">Response</label>
+              <textarea
+                className="form-control"
                 rows="auto"
                 name="prompt"
                 value={this.state.prompt}
                 onChange={this.handleChange}
                 id="skoop_cgpt_response"
-                style={{
-                  overflow: 'hidden',
-                  resize: 'none',
-                  fontSize: '16px',
-                  border:'none',
-                  height: 'auto', 
-                }}
+                class="chatgpt-response"
                 onInput={(e) => {
-                  e.target.style.height = 'auto';  
-                  e.target.style.height = `${e.target.scrollHeight}px`; 
+                  e.target.style.height = 'auto';
+                  e.target.style.height = `${e.target.scrollHeight}px`;
                 }}
               />
-              <Row>
-                <Col sm={7}></Col>
-                <Col sm={5} className="d-flex justify-content-end">
-                </Col>
-              </Row>
+              <div className="row">
+                <div className="col-sm-7"></div>
+                <div className="col-sm-5 d-flex justify-content-end"></div>
+              </div>
             </>
           )}
-        </Form>
+        </form>
 
         {this.state.prompt !== '' && !this.state.loading && (
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop:'4px' }}>
-            <Button
-              variant="outline-primary"
-              style={{ fontSize: '14px'}}
+          <div className="d-flex justify-content-end gap-2 mt-4">
+            <button
+              type="button"
+              className="btn btn-outline-primary chatgpt-button"
               onClick={() => {
                 navigator.clipboard.writeText(this.state.prompt);
               }}
             >
               Copy
-            </Button>
-            <Button
-              variant="outline-primary"
-              style={{ fontSize: '14px'}}
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline-primary chatgpt-button"
+              style={{ fontSize: '14px' }}
               onClick={() => {
                 this.props.appendToBody(this.state.prompt);
               }}
             >
               Merge
-            </Button>
+            </button>
           </div>
         )}
         <br />
         <br />
-      </div>
+    </div>
     );
   }
 }

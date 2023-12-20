@@ -20,7 +20,7 @@ function injectIframe() {
     container.style.right = '0';
     container.style.width = '400px';
     container.style.height = '600px';
-    container.style.zIndex = '5';
+    container.style.zIndex = '10000';
     container.style.display = 'block';
 
     // Create the iframe
@@ -163,7 +163,7 @@ function createWebcamContainer(title,height,width) {
     container.style.top = '50%';
     container.style.left = '50%';
     container.style.transform = 'translate(-50%, -50%)';
-    container.style.zIndex = '10';
+    container.style.zIndex = '11000';
     container.style.display = 'none';
     container.style.height = '120px';
     container.style.width = '210px';

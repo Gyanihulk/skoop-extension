@@ -5,7 +5,7 @@ import SignUp from '../components/Screens/SignUp';
 import ScreenContext from '../contexts/ScreenContext';
 import ChatPage from '../components/Screens/ChatPage';
 import ContactPage from '../components/Screens/ContactPage';
-import LinkedInCom from '../components/LinkedInCom';
+import LinkedInCom from '../components/LinkedinCom';
 import AccountSettings from '../components/Screens/AccountSettings';
 
 export default function Home() {

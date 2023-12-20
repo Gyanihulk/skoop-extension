@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Navbar, Nav } from 'react-bootstrap';
 import { BsPersonX } from "react-icons/bs";
 import { BsArrowRightCircle } from 'react-icons/bs';
 import ContactInfoCard from "../ContactInfo/index.js"

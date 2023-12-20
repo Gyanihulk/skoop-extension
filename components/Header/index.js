@@ -1,4 +1,3 @@
-import { AppBar, IconButton, ListItemText, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
 import { useContext, useState } from "react";
 import { BsArrowRightCircle } from "react-icons/bs";
 import { MdAccountCircle, MdNotificationsActive, MdOutlineVideoSettings } from "react-icons/md";
@@ -18,6 +17,9 @@ export default function Header() {
   const [anchorEl, setAnchorEl] = useState(false)
   const {selectedVideoStyle,handleVideoStyleSelect}=useContext(GlobalStatesContext)
   const [profileDropdownVisible, setProfileDropdownVisible] = useState(false);
+  const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+
   const handleClick = (event) => {
     setAnchorEl((prevAnchorEl) => (prevAnchorEl ? null : event.currentTarget));
   };  
@@ -25,8 +27,12 @@ export default function Header() {
     setAnchorEl(null);
   };
 
+  const toggleVideoSettings = () => {
+    setVideoSettingsOpen(!videoSettingsOpen);
+  };
+
   const toggleProfileDropdown = () => {
-    setProfileDropdownVisible(!profileDropdownVisible);
+    setProfileOpen(!profileOpen);
   };
 
   const handleLogOut=()=>{
@@ -40,94 +46,71 @@ export default function Header() {
   chrome.runtime.sendMessage({ message: 'closeExtension' });
   return (
     <>
-    <AppBar position="static">
-      <Toolbar style={{ justifyContent: 'space-between', background: '#ECF2FF' }}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <IconButton
-          edge="start"
-          aria-label="Close Skoop"
-        >
-        <BsArrowRightCircle className="icon-header" onClick={() => { navigateToPage("Home") }}/>
-        </IconButton>
+      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <div className="container-fluid">
+          <BsArrowRightCircle
+            className="icon-style"
+            onClick={() => {
+              navigateToPage("Home");
+            }}
+          />
+          <span className="navbar-brand brand-text">Skoop</span>
 
-        <Typography variant="h6" className="brand-title">
-          Skoop
-        </Typography>
-      </div>
-      <div>
-        <IconButton edge="start" onClick={handleClick}>
-          <MdOutlineVideoSettings className="icon-header" style={{color:'black'}}/>
-        </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-        >
-          <MenuItem
-            selected={selectedVideoStyle === 'Vertical Mode'}
-            onClick={() => handleVideoStyleSelect('Vertical Mode')}
-          >
-            <ListItemText 
-              primary="Vertical (9:16)" 
-              // style={{ fontSize: isLinkedin ? '20px' : '20px' }}
-            />
-          </MenuItem>
+          <div className="d-flex ml-auto align-items-center">
+            {/* Video Settings Dropdown */}
+            <div className={`nav-item dropdown ${videoSettingsOpen ? 'show' : ''}`}>
+              <button className="btn btn-link" onClick={toggleVideoSettings}>
+                <MdOutlineVideoSettings className="icon-style-normal" />
+              </button>
+              <div className={`dropdown-menu ${videoSettingsOpen ? 'show' : ''}`}>
+                <button
+                  className={`dropdown-item ${selectedVideoStyle === 'Vertical Mode' ? 'active' : ''}`}
+                  onClick={() => handleVideoStyleSelect('Vertical Mode')}
+                >
+                  Vertical (9:16)
+                </button>
+                <button
+                  className={`dropdown-item ${selectedVideoStyle === 'Horizontal' ? 'active' : ''}`}
+                  onClick={() => handleVideoStyleSelect('Horizontal')}
+                >
+                  Horizontal (16:9)
+                </button>
+                <button
+                  className={`dropdown-item ${selectedVideoStyle === 'Square' ? 'active' : ''}`}
+                  onClick={() => handleVideoStyleSelect('Square')}
+                >
+                  Square (1:1)
+                </button>
+              </div>
+            </div>
 
-          <MenuItem
-            selected={selectedVideoStyle === 'Horizontal'}
-            onClick={() => handleVideoStyleSelect('Horizontal')}
-          >
-            <ListItemText 
-              primary="Horizontal (16:9)" 
-              // style={{ fontSize: isLinkedin ? '20px' : '20px' }}
-            />
-          </MenuItem>
+            {/* Calendar Link */}
+            <button className="btn btn-link" onClick={() => window.open(`${API_ENDPOINTS.skoopCalendarUrl}/index.php/user/login`, '_blank')}>
+              <FaRegCalendarCheck className="icon-style-normal" />
+            </button>
 
-          <MenuItem
-            selected={selectedVideoStyle === 'Square'}
-            onClick={() => handleVideoStyleSelect('Square')}
-          >
-            <ListItemText 
-              primary="Square (1:1)" 
-            />
-          </MenuItem>
-        </Menu>
+            {/* Notifications */}
+            <button className="btn btn-link">
+              <MdNotificationsActive className="icon-style-normal" />
+            </button>
 
-
-        <IconButton
-          onClick={() => { window.open(`${API_ENDPOINTS.skoopCalendarUrl}/index.php/user/login`, '_blank') }}
-        >
-          <FaRegCalendarCheck style={{color:'black'}} className="icon-style-normal" />
-        </IconButton>
-
-        <IconButton>
-            <MdNotificationsActive style={{color:'black'}} className="icon-style-normal" />
-        </IconButton>
-
-        <IconButton
-          onClick={toggleProfileDropdown}
-        >
-          <MdAccountCircle style={{color:'black'}} className="icon-style" />
-        </IconButton>
-        <Menu
-          anchorEl={profileDropdownVisible}
-          open={Boolean(profileDropdownVisible)}
-          onClose={() => setProfileDropdownVisible(false)}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        >
-          <MenuItem 
-        
-          onClick={() => navigateToPage("AccountSettings")}>
-            Account Settings
-          </MenuItem>
-          <MenuItem 
-
-          onClick={handleLogOut}>Logout</MenuItem>
-        </Menu>
-      </div>
-      </Toolbar>
-    </AppBar> 
+            {/* Profile Dropdown */}
+            <div className={`nav-item dropdown custom ${profileOpen ? 'show' : ''}`}>
+              <button className="btn btn-link dropstart" onClick={toggleProfileDropdown}>
+                <MdAccountCircle className="icon-style" />
+              </button>
+              <div className={`dropdown-menu ${profileOpen ? 'show' : ''}`} style={{ marginLeft: '-120px' }}>
+                <button className="dropdown-item" onClick={() => navigateToPage("AccountSettings")}>
+                  Account Settings
+                </button>
+                <button className="dropdown-item" onClick={handleLogOut}>
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
     </>
   );
 }

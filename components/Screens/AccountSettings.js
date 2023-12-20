@@ -1,5 +1,4 @@
 import React, { useCallback, useState ,useEffect } from 'react';
-import { Container, Navbar, Nav, Button } from 'react-bootstrap';
 import { TbUserEdit } from "react-icons/tb";
 import { FaRegEdit } from "react-icons/fa";
 import { IoCheckmarkDoneSharp, IoArrowBack, IoClose } from "react-icons/io5";
@@ -314,61 +313,23 @@ function AccountSettings(props) {
 
   return (
     <>
-    {/*<Navbar
-      expand="lg"
-      style={{
-        background: '#0a66c2',
-      }}
-    >
-      <Container fluid>
-        <Navbar.Brand>
-          <button
-            variant="link"
-            onClick={() => { props.changePage("Home") }}
-            style={{ color: 'white', border:'none', background:'none' }}
-          >
-            <IoArrowBack id="back_arrow" />
-          </button>
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="navbar-nav" />
-        <Navbar.Collapse id="navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Item>
-              <Nav.Link href="#" style={{ color: 'white' }}>Account Settings</Nav.Link>
-            </Nav.Item>
-          </Nav>
-          <Nav className="ms-auto">
-            <Nav.Item>
-              <button
-                variant="link"
-                onClick={props.close} 
-                style={{ color: 'white', border:'none', background:'none' }}
-              >
-                <IoClose id="close_icon" />
-              </button>
-            </Nav.Item>
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar> */}
-
-    <Container fluid className="mt-2 p-2">
-      <div>
-        <AccountProfile userData={profileData} />
+      <div className="container-fluid mt-2 p-2">
+        <div>
+          <AccountProfile userData={profileData} />
+        </div>
+        <div className="mt-1">
+          <AccountProfileDetails
+            userData={profileData}
+            onUpdateProfile={handleProfileUpdate}
+          />
+        </div>
+        <div className="mt-2">
+          <SettingsPassword />
+        </div>
+        <div className="mt-2"></div>
+        <div className="d-flex justify-content-center align-items-center flex-grow-1"></div>
+        <div className="mt-2"></div>
       </div>
-      <div className="mt-1">
-        <AccountProfileDetails
-          userData={profileData}
-          onUpdateProfile={handleProfileUpdate}
-        />
-      </div>
-      <div className="mt-2">
-        <SettingsPassword />
-      </div>
-      <div className="mt-2" />
-      <div className="d-flex justify-content-center align-items-center flex-grow-1"></div>
-      <div className="mt-2" />
-    </Container>
   </>
   );
 }

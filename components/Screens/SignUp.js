@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Container, Row, Col, Form } from 'react-bootstrap';
 import { FaTimes } from 'react-icons/fa';
 import { TbListDetails } from 'react-icons/tb';
 import API_ENDPOINTS from '../apiConfig';
@@ -9,18 +8,18 @@ import ScreenContext from '../../contexts/ScreenContext';
 
 function Copyright() {
     return (
-        <Container fluid>
-            <Row className="justify-content-center">
-                <Col xs="auto" className="text-secondary text-center">
-                    {'Copyright © '}
-                    <a href="https://appfoster.com/" className="text-inherit">
-                        Skoop
-                    </a>{' '}
-                    {new Date().getFullYear()}
-                    {'.'}
-                </Col>
-            </Row>
-        </Container>
+      <div className="container-fluid">
+      <div className="row justify-content-center">
+        <div className="col-xs-auto text-secondary text-center">
+          {'Copyright © '}
+          <a href="https://appfoster.com/" className="text-inherit">
+            Skoop
+          </a>{' '}
+          {new Date().getFullYear()}
+          {'.'}
+        </div>
+      </div>
+    </div>
     );
 }
 

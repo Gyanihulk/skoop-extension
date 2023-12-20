@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { GrSearchAdvanced } from 'react-icons/gr';
-import { Container, InputGroup, FormControl, Button, Row, Col, Form, Spinner } from 'react-bootstrap';
 import API_ENDPOINTS from '../apiConfig';
 
 function GiphyWindow(props) {
@@ -47,9 +46,9 @@ function GiphyWindow(props) {
   }, [search]);
 
   return (
-    <Container style={{ width: '92%', padding: '10px', marginBottom: '20px', maxHeight: '320px', overflowY: 'auto' }}>
+    <div className="container gif-container">
       <div style={{ borderRadius: '5px' }}>
-        <Form onSubmit={(e) => e.preventDefault()}>
+        <form onSubmit={(e) => e.preventDefault()}>
           <div className="input-group mb-3">
             <input
               type="text"
@@ -66,32 +65,30 @@ function GiphyWindow(props) {
                 className="btn btn-outline-primary"
                 type="button"
                 onClick={handleSearch}
-                //style={{ fontSize: '20px', color: '#0d6efd' }}
               >
                 <GrSearchAdvanced />
               </button>
             </div>
           </div>
-        </Form>
-      {loading && <>
-        <div className="sbl-circ-ripple"></div>
-      </>
-      }
-      <Row style={{ whiteSpace: 'nowrap' }}>
-        {results.map((result) => (
-          <Col key={result.id} xs={12} sm={6} md={4} lg={4} style={{ cursor: 'pointer', display: 'inline-block', margin: '0', width: '25%' }}>
-            <img
-              src={result.images.downsized.url}
-              alt={result.title}
-              style={{ width: '100%', height: 'auto', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}
-              onClick={() => handleInsertion(result.images.downsized.url)}
-              loading="lazy"
-            />
-          </Col>
-       ))}
-       </Row>
-     </div>
-   </Container>
+        </form>
+        {loading && (
+          <div className="sbl-circ-ripple"></div>
+        )}
+        <div className="row" style={{ whiteSpace: 'nowrap' }}>
+          {results.map((result) => (
+            <div key={result.id} className="col-xs-12 col-sm-6 col-md-4 col-lg-4 gif-result" >
+              <img
+                src={result.images.downsized.url}
+                alt={result.title}
+                className="gif-img"
+                onClick={() => handleInsertion(result.images.downsized.url)}
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
  );
 }
 export default GiphyWindow;

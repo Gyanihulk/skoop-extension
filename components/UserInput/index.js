@@ -1,5 +1,4 @@
 import React,{ Component ,useEffect,useState} from 'react';
-import { Container, Form, Button, Col, Card} from 'react-bootstrap';
 import API_ENDPOINTS from '../apiConfig';
 
 export class UserInput extends Component{
@@ -58,68 +57,72 @@ export class UserInput extends Component{
     if(this.state.loading==false){
       return(
         <div style={{position: "relative",zIndex: '5000'}}>
-        <Container fluid style={{ marginTop: '3px', background: 'white'}}>
-          <Form onSubmit={this.handleSubmit}>
-            <Form.Group>
-              <Form.Label>Video Title</Form.Label>
-              <Form.Control
-                type="text"
-                name="videoTitle"
-                placeholder=""
-                value={this.state.videoTitle}
-                onChange={this.handleChange}
-              />
-            </Form.Group>
+          <div className="container-fluid" style={{ marginTop: '3px', background: 'white' }}>
+              <form onSubmit={this.handleSubmit}>
+                <div className="form-group">
+                  <label htmlFor="videoTitle">Video Title</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="videoTitle"
+                    name="videoTitle"
+                    placeholder=""
+                    value={this.state.videoTitle}
+                    onChange={this.handleChange}
+                  />
+                </div>
 
-            <Form.Group>
-              <Form.Label>Select Folder</Form.Label>
-              <Form.Control
-                as="select"
-                name="selectedOption"
-                value={this.state.selectedOption}
-                onChange={this.handleChange}
-              >
-                <option value="none">
-                  <em>Choose or Create Folder</em>
-                </option>
-                {this.state.listOfDirectories.map((item) => (
-                  <option key={item.directory_name} value={item.directory_name.toString()}>
-                    {item.directory_name.toString()}
-                  </option>
-                ))}
-              </Form.Control>
-            </Form.Group>
+                <div className="form-group">
+                  <label htmlFor="selectedOption">Select Folder</label>
+                  <select
+                    className="form-control"
+                    id="selectedOption"
+                    name="selectedOption"
+                    value={this.state.selectedOption}
+                    onChange={this.handleChange}
+                  >
+                    <option value="none">
+                      <em>Choose or Create Folder</em>
+                    </option>
+                    {this.state.listOfDirectories.map((item) => (
+                      <option key={item.directory_name} value={item.directory_name.toString()}>
+                        {item.directory_name.toString()}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-            {this.state.selectedOption === 'none' && (
-              <Form.Group>
-                <Form.Label>Enter New Folder Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="directoryName"
-                  placeholder=""
-                  value={this.state.directoryName}
-                  onChange={this.handleChange}
-                  required
-                />
-              </Form.Group>
-            )}
-            <div className="d-flex justify-content-end pt-3 gap-2">
-            <button style={{ fontSize: '14px', border:'none', background:'none', color:'#0a66c2' }} type="submit">
-              Upload
-            </button>
-            <button style={{ fontSize: '14px', border:'none', background:'none', color:'#000000' }} onClick={this.props.cancelUpload}>
-              Cancel
-            </button>
+                {this.state.selectedOption === 'none' && (
+                  <div className="form-group">
+                    <label htmlFor="directoryName">Enter New Folder Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="directoryName"
+                      name="directoryName"
+                      placeholder=""
+                      value={this.state.directoryName}
+                      onChange={this.handleChange}
+                      required
+                    />
+                  </div>
+                )}
+
+                <div className="d-flex justify-content-end pt-3 gap-2">
+                  <button type="submit" className="btn btn-primary" style={{ fontSize: '14px' }}>
+                    Upload
+                  </button>
+                  <button type="button" className="btn btn-secondary" style={{ fontSize: '14px' }} onClick={this.props.cancelUpload}>
+                    Cancel
+                  </button>
+                </div>
+              </form>
             </div>
-          </Form>
-        </Container>
+          <br />
         <br />
-        <br />
-      </div>
-        
+      </div>   
       )
     }
-    
   }
 }
 
@@ -190,28 +193,28 @@ export const NewFolderInput=(props)=>{
   }
 
   return(
-    <Card>
-  <Card.Body>
-    <Form onSubmit={handleSubmit}>
-      <Form.Group className="mb-3">
-        <Form.Label><strong>{props.oldDirectoryName?"Enter New Folder Name":"Add New Folder"}</strong></Form.Label>
-        <Form.Control
-          type="text"
-          name="directoryName"
-          onChange={handleChange}
-          value={values.directoryName}
-          placeholder="Enter folder Name"
-          style={{ width: '100%' }}
-        />
-        <div className="mt-4 d-flex justify-content-end">
-  <button type="submit" size="lg" style={{background:"none", border:"none", color:'#0a66c2'}}>
-    Save
-  </button>
-</div>
-
-      </Form.Group>
-    </Form>
-  </Card.Body>
-</Card>
+    <div className="card">
+      <div className="card-body">
+        <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            <label className="form-label"><strong>{props.oldDirectoryName ? "Enter New Folder Name" : "Add New Folder"}</strong></label>
+            <input
+              type="text"
+              className="form-control"
+              name="directoryName"
+              onChange={handleChange}
+              value={values.directoryName}
+              placeholder="Enter folder Name"
+              style={{ width: '100%' }}
+            />
+            <div className="mt-4 d-flex justify-content-end">
+              <button type="submit" className="btn btn-link" style={{ fontSize: '14px', color: '#0a66c2' }}>
+                Save
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
   )
 }

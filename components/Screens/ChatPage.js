@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Navbar, Nav, Button } from 'react-bootstrap';
 import { BsPersonX } from "react-icons/bs";
 import { BsArrowRightCircle } from 'react-icons/bs';
 import ChatComponent from '../ChatWindow';
@@ -26,28 +25,6 @@ const ChatPage = (props) => {
 
   return (
     <div className="background-color">
-    {/*<Navbar className="nav-bar" expand="lg">
-      <Navbar.Toggle aria-controls="navbar-nav" />
-            <Navbar.Collapse id="navbar-nav">
-            <Nav.Link
-              data-mdb-toggle="tooltip"
-              data-mdb-placement="bottom"
-              title="Back to Home"
-              onClick={() => props.changePage("Home")}
-              style={{
-                paddingRight: '15px', 
-                marginLeft: '15px', 
-              }}
-            >
-              <BsArrowRightCircle id="skoop_icons" style={{ fontSize: '30px' }} />
-            </Nav.Link>
-
-            <Navbar.Brand class='brand-text'>
-              Messaging Options
-            </Navbar.Brand>
-
-            </Navbar.Collapse>
-            </Navbar> */}
           <div>
         {isChatComponentVisible ? (
           // <ChatComponent latestVideo={latestVideoUrl} className="top-margins" />
@@ -59,12 +36,13 @@ const ChatPage = (props) => {
             <div className="card col-md-10 mt-15">
               <div className="card-body text-center mb-6">
                 <p className="paragraph-spacing">Open Messaging tab on Linkedin & then click on <strong>'Get started'</strong> button</p>
-                <Button 
-                    variant="outline-primary"
-                    className="mx-auto d-block mt-6"
-                    onClick={handleGetStartedClick}>
-                    Get Started
-                </Button>
+                <button
+                  type="button"
+                  className="btn btn-outline-primary mx-auto d-block mt-6"
+                  onClick={handleGetStartedClick}
+                >
+                  Get Started
+                </button>
               </div>
             </div>
           </div>

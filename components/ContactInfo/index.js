@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BiLogoGmail } from "react-icons/bi";
 import { AiFillPhone } from "react-icons/ai";
@@ -141,15 +140,19 @@ const ContactInfoCard = () => {
   };
 
   return (
-<div className="container py-5" style={{ backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', width: '92%' }}>
+<div className="container py-5 contact-container">
       <div className="row justify-content-center">
         <div className="col">
           <h3 className="mb-3 Section-heading">Contact Info: {profileName}</h3>
           <p className="mb-4 blue-text">
             Extract Contact Information from Profiles
-            <Button style={{ fontSize: '14px', marginLeft: '20px' }} variant="primary" onClick={() => setRefresh(!refresh)}>
+            <button
+              type="button"
+              className="btn btn-primary refresh-button"
+              onClick={() => setRefresh(!refresh)}
+            >
               Refresh
-            </Button>
+            </button>
           </p>
 
           {/* Row 1 */}
@@ -274,9 +277,13 @@ const ContactInfoCard = () => {
 
           {/* Save Button */}
           <div className="d-flex justify-content-end pt-3 gap-2">
-            <Button style={{ fontSize: '14px' }} variant="primary" onClick={handleSave}>
-              {profileId !== null ? 'Update' : 'Save'}
-            </Button>
+              <button
+                type="button"
+                className="btn btn-primary chatgpt-button"
+                onClick={handleSave}
+              >
+                {profileId !== null ? 'Update' : 'Save'}
+              </button>
           </div>
         </div>
       </div>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button } from 'react-bootstrap';
 import API_ENDPOINTS from '../apiConfig';
 
 function AI(props) {
@@ -35,15 +34,16 @@ function AI(props) {
   }, []);
 
   return (
-    <div >
-      <Form.Group 
-      data-mdb-toggle="tooltip"
-      data-mdb-placement="top"
-      title="Dropdown for pre determined custom responses to send directly on DM"
-      style={{width:'92%', backgroundColor:'#edf4fa', marginTop: "15px", marginBottom: "5px"}} className="mx-auto">
-        <Form.Select
+      <div
+        className="form-group mx-auto"
+        data-mdb-toggle="tooltip"
+        data-mdb-placement="top"
+        title="Dropdown for pre-determined custom responses to send directly on DM"
+        style={{ width: '92%', backgroundColor: '#edf4fa', marginTop: '15px', marginBottom: '5px' }}
+      >
+        <select
+          className="form-select"
           value={selectedOption}
-          variant="primary"
           onChange={handleDropdownChange}
           size="sm"
         >
@@ -53,9 +53,8 @@ function AI(props) {
               {option.heading}
             </option>
           ))}
-        </Form.Select>
-      </Form.Group>
-    </div>
+        </select>
+      </div>
   );
 }
 

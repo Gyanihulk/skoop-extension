@@ -311,7 +311,7 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
             <button
             variant="outlined"
             color={capturing ? 'secondary' : 'primary'}
-            onClick={handleClick}
+            onClick={handleClick2}
             size='small'
             disabled={isUploading} 
             id='skoop_record_button'
@@ -322,15 +322,6 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
           </>
           
         }
-        <button
-            variant="outlined"
-            color={capturing ? 'secondary' : 'primary'}
-            onClick={handleClick2}
-            size='small'
-            disabled={isUploading} 
-          >
-            {capturing ? 'Stop' : 'Rec'}
-          </button>
       </div>
       
 

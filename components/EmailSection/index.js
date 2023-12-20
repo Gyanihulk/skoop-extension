@@ -1,5 +1,4 @@
 import React,{ Component ,useEffect,useState} from 'react';
-import { Tabs, Tab, Tooltip, Link, Typography, Box, Paper } from '@mui/material';
 import { AiFillRobot } from "react-icons/ai";
 import { HiMiniGif } from "react-icons/hi2";
 import { RiMessage2Fill } from "react-icons/ri";
@@ -150,69 +149,64 @@ class EmailComposer extends Component{
     this.componentDisplaySwitch(eventKey);
   };
 
-  renderTooltip = (props, text) => (
-    <Tooltip {...props}>{text}</Tooltip>
+  renderTooltip = (text) => (
+    <div className="tooltip" role="tooltip">
+      <div className="tooltip-arrow"></div>
+      <div className="tooltip-inner">
+        {text}
+      </div>
+    </div>
   );
+  
 
   renderNavItem = (eventKey, icon, tooltipText) => (
-    <Tab
-      key={eventKey}
-      label={
-        <Tooltip title={tooltipText} placement="right">
-          <Link
-            component="div"
-            className={`custom-nav-link d-flex align-items-center justify-content-center ${
-              this.state.displayComp === eventKey ? 'active' : ''
-            } mb-3`}
-            onClick={() => this.handleIconClick(eventKey)}
-          >
-            {React.cloneElement(icon, { size: 30, color: '#0a66c2' })}
-          </Link>
-        </Tooltip>
-      }
-      value={eventKey}
-    />
+    <div className="nav flex-column" role="tablist">
+  <a
+    className={`nav-link custom-nav-link d-flex align-items-center justify-content-center ${this.state.displayComp === eventKey ? 'active' : ''} mb-3`}
+    onClick={() => this.handleIconClick(eventKey)}
+    data-bs-toggle="tooltip"
+    data-bs-placement="right"
+    title={tooltipText}
+  >
+    {React.cloneElement(icon, {size: 30})}
+  </a>
+</div>
+
   );
 
   render() {
     return (
-      <Box sx={{ mt: 4 }}>
-        <Box sx={{ display: 'flex' }}>
-          <Box sx={{ width: '20%' }}>
-            <Tabs
-              value={this.state.displayComp}
-              onChange={(event, newValue) => this.setState({ displayComp: newValue })}
-              orientation="vertical"
-            >
+      <div className="custom-container">
+      <div className="custom-sidebar">
+          <div className="nav flex-column" role="tablist" aria-orientation="vertical">
               {this.renderNavItem('Chatgpt', <AiFillRobot />, 'Send Chatgpt responses to Mail')}
               {this.renderNavItem('Giphy', <HiMiniGif />, 'Send your favorite GIFs to Mail')}
               {this.renderNavItem('AI', <RiMessage2Fill />, 'Send predetermined custom message responses.')}
               {this.renderNavItem('Calendar', <PiCalendarCheckFill />, 'Send Meeting scheduling calendar link')}
               {this.renderNavItem('Library', <MdVideoLibrary />, 'Send any recorded video or audio file')}
-            </Tabs>
-          </Box>
-          <Box sx={{ width: '5%' }}></Box>
-          <Box sx={{ width: '70%' }}>
+            </div>
+          </div>
+          <div className="custom-gap"></div>
+          <div className="custom-componentbar">
             {this.state.displayComp === 'Chatgpt' && <ChatGpt appendToBody={this.handleInsertion} />}
             {this.state.displayComp === 'Giphy' && <GiphyWindow appendToBody={this.handleInsertion} />}
             {this.state.displayComp === 'Library' && <Library appendToBody={this.handleInsertion} />}
             {this.state.displayComp === 'AI' && <AI appendToBody={this.handleInsertion} />}
 
             {this.state.displayComp === 'DefaultCard' && (
-              <Paper elevation={1} sx={{ p: 4, border: '1px solid #ccc', borderRadius: '4px' }}>
-                <Typography variant="h5" mb={4} sx={{ textAlign: 'center' }}>
-                  Welcome to Skoop
-                </Typography>
-                <Typography mb={4} sx={{ textAlign: 'center' }}>
-                  This is your default view. You can switch between different tabs on the left to explore various features.
-                  <br />
-                  Explore the features and make the most out of your Email Sending experience!
-                </Typography>
-              </Paper>
+              <div className="card mt-4">
+                <div className="card-body">
+                  <h5 className="card-title text-center">Welcome to Skoop</h5>
+                  <p className="card-text text-center">
+                    This is your default view. You can switch between different tabs on the left to explore various features.
+                    <br />
+                    Explore the features and make the most out of your Email Sending experience!
+                  </p>
+                </div>
+              </div>
             )}
-          </Box>
-        </Box>
-      </Box>
+          </div>
+        </div>
     );
   }
 }
