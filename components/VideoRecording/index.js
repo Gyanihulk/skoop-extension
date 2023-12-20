@@ -251,15 +251,15 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
   
   const handleClick2 = () => {
     if (capturing) {
-      sendMessageToBackgroundScript({ message: 'stopRecording' }, handleVideoBlob);
+      sendMessageToBackgroundScript({ action: 'stopRecording' }, handleVideoBlob);
     } else {
-      sendMessageToBackgroundScript({ message: 'startRecording' });
+      sendMessageToBackgroundScript({ action: 'startRecording' ,height:"300px",width:"350px"});
     }
     setCapturing(!capturing);
   };
   
-  function sendMessageToBackgroundScript(message, callback) {
-    chrome.runtime.sendMessage(message, (response) => {
+  function sendMessageToBackgroundScript(request, callback) {
+    chrome.runtime.sendMessage(request, (response) => {
       if (callback && response) {
         callback(response);
       }

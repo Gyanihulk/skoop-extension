@@ -31,7 +31,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   });
   return true
 }
-if (request.message === 'startRecording' || request.message === 'stopRecording') {
+if (request.action === 'startRecording' || request.action === 'stopRecording') {
   // Relay message to the active tab
   console.log("background screen recording")
   chrome.tabs.query({}, (tabs) => {
@@ -43,7 +43,7 @@ if (request.message === 'startRecording' || request.message === 'stopRecording')
     const targetTab = tabs.find(tab => tab.active && (tab.url.startsWith(urlToFindGoogle) || tab.url.startsWith(urlToFindLinkedIn)));    
 
     if (targetTab) {
-      chrome.tabs.sendMessage(targetTab.id, { action: request.message }, (response) => {
+      chrome.tabs.sendMessage(targetTab.id, request, (response) => {
         if (response) {
           console.log(response,"background script")
           sendResponse(response)
