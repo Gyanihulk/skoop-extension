@@ -1,23 +1,14 @@
-import styles from './Footer.module.css';
+import React from 'react';
 
-export default function Footer() {
+
+const MobileFooter = () => {
   return (
-    <footer className={styles.footer}>
-      <a
-        href="https://github.com/ibnzUK/next-chrome-starter"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Footer V.0.0.1
-        <span className={styles.logo}>
-          <img
-            src="icons/icon16.png"
-            alt="Logo"
-            width={16}
-            height={16}
-          />
-        </span>
-      </a>
+    <footer className="footer mt-auto py-3 bg-light">
+      <div className="container text-center">
+        <span className="text-muted">&copy; 2023 Skoop - Privacy Policy</span>
+      </div>
     </footer>
   );
-}
+};
+
+export default MobileFooter;

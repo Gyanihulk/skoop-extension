@@ -1,18 +1,47 @@
-import React, { useState } from 'react';
-import Index from '../components/Index';
-import New from '../components/New';
+import React, { useContext, useEffect, useState } from 'react';
+import Homepage from '../components/Screens/Homepage';
+import SignIn from '../components/Screens/SignIn';
+import SignUp from '../components/Screens/SignUp';
+import ScreenContext from '../contexts/ScreenContext';
+import ChatPage from '../components/Screens/ChatPage';
+import ContactPage from '../components/Screens/ContactPage';
+import LinkedInCom from '../components/LinkedinCom';
+import AccountSettings from '../components/Screens/AccountSettings';
+import ForgotPassword from '../components/Screens/ForgotPassword';
 
 export default function Home() {
-  const [activePage, setActivePage] = useState('index');
+    const { activePage } = useContext(ScreenContext);
+    async function requestAccess() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+            // Access granted, you can now use the stream
+        } catch (error) {
+            // Access denied or other error
+        }
+    }
+    // requestAccess()
+    useEffect(() => {
+        const iframeElement = document.getElementById('skoop-extension-iframe');
+        console.log(iframeElement);
+        if (iframeElement) {
+            const width = iframeElement.offsetWidth;
+            const height = iframeElement.offsetHeight;
 
-  const navigateToPage = (page) => {
-    setActivePage(page);
-  };
-
-  return (
-    <>
-      {activePage === 'index' && <Index navigateToPage={navigateToPage} />}
-      {activePage === 'new' && <New navigateToPage={navigateToPage} />}
-    </>
-  );
+            console.log('Width:', width, 'Height:', height);
+        } else {
+            console.log('Element not found');
+        }
+    }, []);
+    return (
+        <>
+            {activePage === 'Home' && <Homepage />}
+            {activePage === 'SignIn' && <SignIn />}
+            {activePage === 'SignUp' && <SignUp />}
+            {activePage === 'AccountSettings' && <AccountSettings />}
+            {activePage=='ChatPage' && <ChatPage/>}
+            {activePage=='ContactPage' && <ContactPage/>}
+            {activePage=='LinkedInCom' && <LinkedInCom/>}
+            {activePage=='ForgotPassword' && <ForgotPassword/>}
+        </>
+    );
 }

@@ -2,36 +2,49 @@
   "manifest_version": 3,
   "name": "Skoop",
   "short_name": "N-C-S",
-  "version": "0.0.1",
-  "description": "Next.js Chrome Extension Starter, Demo Example by ibnzUK. https://github.com/ibnzUK/next-chrome-starter",
+  "version": "0.0.2",
+  "description": "Skoop extension ",
   "icons": {
-    "16": "/icons/icon16.png",
-    "32": "/icons/icon32.png",
-    "48": "/icons/icon48.png",
-    "192": "/icons/icon192.png"
+    "16": "/icons/icon.png",
+    "32": "/icons/icon.png",
+    "48": "/icons/icon.png",
+    "128": "/icons/icon.png"
   },
   "permissions": [
     "identity",         
-    "https://www.googleapis.com/"  
+    "https://www.googleapis.com/",
+    "camera",
+    "microphone",
+    "tabs" ,"<all_urls>", "scripting", "https://mail.google.com/",
+    "https://www.linkedin.com/",
+    "activeTab",
+    "storage"
   ],
   "web_accessible_resources": [
     {
-      "resources": ["index.html"],
+      "resources": ["index.html","icons/icon.png"],
       "matches": ["<all_urls>"]
     }
   ],
   "content_scripts": [
     {
-      "matches": ["https://*/*", "http://*/*"],
-      "js": ["inject.js"]
+      "matches": ["*://mail.google.com/*","*://www.linkedin.com/*"],
+      "js": ["gmailContentScript.js"]
     }
   ],
   "oauth2": {
     "client_id": "148000187265-6rut37g649kj1tehe5o3mkpitdfhfk71.apps.googleusercontent.com",
     "scopes": ["openid", "profile", "email","https://www.googleapis.com/auth/contacts.readonly"]
   },
-  "host_permissions": ["<all_urls>"],
+  "host_permissions": ["<all_urls>", "https://mail.google.com/"],
   "action": {
     "default_popup": "index.html"
-  }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; media-src *"
+  },
+  "key":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApLS9BVBfb+UYbn3JeylNlZa5IpBbD9IUCd3k85A5KBEHDqSQ7Fo2jGzBJs8AI3ywzRECDuy4mA8Soj2YvvNbcRCBcl9vut3eWAHNs/3JK2Ys8qntDS7XycEN94MuT6I003L80HZobcb2oCXMYcL6c3c5NQUPYbV309m2QLR7a5ArYtwYU4WW6DGH8zDFZTvyrXtDSgTl1Wa9jmok0sTbsv33agZeiRqqbOK1BQ7qFMWGpKezzwkX+QAbPbiG6Of3G3/+IEEiwmpt6OW+NqsNtOBk8zAKbhLiMYybJEUgp4Rbh/R4eVg+BuD2Y9vC5lePGf1gQMtavNy4nYUFMKTjCwIDAQAB"
 }
