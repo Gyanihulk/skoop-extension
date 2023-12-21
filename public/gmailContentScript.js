@@ -376,3 +376,61 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // MutationObserver to handle dynamic changes in the DOM
 const observer = new MutationObserver(createButton);
 observer.observe(document.body, { subtree: true, childList: true });
+
+
+// Function to handle mutations
+function handleMutations(mutationsList) {
+    mutationsList.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        mutation.addedNodes.forEach((addedNode) => {
+          if (addedNode.nodeType === 1 && addedNode.classList && addedNode.classList.contains('msg-convo-wrapper')) {
+            // Send a message or perform actions for the added element
+            chrome.runtime.sendMessage({
+              action: 'elementAdded',
+              element: addedNode.outerHTML
+            });
+          }
+        });
+  
+        mutation.removedNodes.forEach((removedNode) => {
+          if (removedNode.nodeType === 1 && removedNode.classList && removedNode.classList.contains('msg-convo-wrapper')) {
+            // Send a message or perform actions for the removed element
+            chrome.runtime.sendMessage({
+              action: 'elementRemoved',
+              element: removedNode.outerHTML
+            });
+          }
+        });
+      }
+
+      mutation.removedNodes.forEach((removedNode) => {
+        if (removedNode.nodeType === 1) {
+          // Check if an h1 tag with inner text "Messaging" is removed
+          const h1Elements = removedNode.querySelectorAll('h1');
+          const MessagingTabFound=false;
+          h1Elements.forEach((h1) => {
+            if (h1.innerText == 'Messaging') {
+                MessagingTabFound=true;
+            }
+          });
+          if(MessagingTabFound==false){
+            console.log("the messaging tab not found")
+            chrome.runtime.sendMessage({
+                action: 'elementRemoved'
+            });
+          }
+        }
+      });
+
+    });
+  }
+  
+  // Create a Mutation Observer instance
+  const observerForCheckboxes = new MutationObserver(handleMutations);
+  
+  // Start observing the document
+  observerForCheckboxes.observe(document, {
+    childList: true,
+    subtree: true 
+  });
+  
