@@ -6,6 +6,7 @@ const ChatWindowSelection = () => {
     const [initialItems,setInitialItems]=useState([]); 
     const {selectedChatWindows,setSelectedChatWindows} = useContext(GlobalStatesContext);
     const [localRefresh,setLocalRefresh]=useState(0);
+    const [resetInitialItems,setResetInitialItems]=useState(0);
 
     function checkForExistenceOfMessageWindow(element) {
         return element.querySelector('.msg-form__contenteditable')!=null
@@ -25,16 +26,21 @@ const ChatWindowSelection = () => {
                 index: index
             }
         })
-        return Array.from(new Set(combinedArray.map(obj => obj.name)))
-    .map(name => combinedArray.find(obj => obj.name === name));
+        const windowUrl=window.location.href;
+        // check if the messaging tab is open
+        if(windowUrl.includes('messaging')){ 
+            combinedArray[0].name="Messaging Tab";
+        }
+        return combinedArray;
     }
+
 
     useEffect(()=>{
         try{
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 const targetTab=tabs[0];
                 console.log("the target tab",targetTab);
-                if (targetTab && targetTab.status === 'complete') {
+                if (targetTab) {
                   console.log("the tab exists")
                   try{
                     chrome.scripting.executeScript({
@@ -64,6 +70,23 @@ const ChatWindowSelection = () => {
         }catch(err){
             console.log("some error occured while setting up initial array")
         }
+    },[resetInitialItems])
+
+    const messageHandler = (message) => {
+        if (message.action === 'elementAdded') {
+            setResetInitialItems(Math.random());
+            console.log("chat window added");
+        } else if (message.action === 'elementRemoved') {
+            setResetInitialItems(Math.random());
+            console.log("chat window removed");
+        }
+    };
+
+    useEffect(()=>{
+        chrome.runtime.onMessage.addListener(messageHandler);
+        return () => {
+            chrome.runtime.onMessage.removeListener(messageHandler);
+        };
     },[])
 
     const handleCheckboxChange = (event) => {

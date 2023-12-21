@@ -38,7 +38,7 @@ const Scrape = async(commandType) => {
           phoneNumber=item.children[2].innerText
         }
       })
-      linkedinUrl=contactSections[0].children[2].innerText+"/";
+      linkedinUrl="https://www."+contactSections[0].children[2].innerText+"/";
       return [email,website,twitter,phoneNumber,linkedinUrl];
     }
 

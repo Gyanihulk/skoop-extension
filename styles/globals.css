@@ -515,10 +515,17 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 
+
 /* window selection */
 
 .selection-container {
   width: 92%;
+}
+.video-recorder {
+  display: flex;         
+  justify-content: center;
+  align-items: center;    
+  flex-direction: column;    
 }
 
 

@@ -111,18 +111,18 @@ function createButton() {
     // Add click event listener to the button
     buttonContainer.addEventListener('click', injectIframe);
 
-    // Inject the button container into the document body
-    document.body.appendChild(buttonContainer);
-    // const accountButtonParent = document.querySelector('.gb_0c');
+    // Gmail insertion 
+    // var accountButtonParent = document.querySelector(".gb_Pd");
 
-    // // Only proceed if the account button parent is found.
+    // // Append the new button to the right of the account button
     // if (accountButtonParent) {
-
-    //     // Insert your button before the account button parent in the DOM.
-    //     accountButtonParent.insertBefore(buttonContainer, accountButtonParent.firstChild);
+    //     accountButtonParent.appendChild(buttonContainer);
     // } else {
-    //     console.error('The account button parent element was not found.');
+    //     console.error("Account button parent element not found.");
     // }
+   
+    document.body.appendChild(buttonContainer);
+    
 }
 function collectClasses() {
     const allElements = document.querySelectorAll('*');
@@ -212,6 +212,7 @@ function createWebcamContainer(title,height,width) {
         document.removeEventListener('mouseup', dragEnd);
     };
     let seconds = 0;
+    let timerInterval = null;
     const updateTimer = () => {
         seconds++;
         const hours = Math.floor(seconds / 3600);
@@ -221,7 +222,24 @@ function createWebcamContainer(title,height,width) {
     };
 
     // Start the timer
-    let timerInterval = setInterval(updateTimer, 1000);
+    container.startTimer = () => {
+        if (timerInterval !== null) {
+            clearInterval(timerInterval); // Clear existing interval if any
+        }
+        seconds = 0; // Reset seconds on start
+        timerInterval = setInterval(updateTimer, 1000);
+    };
+
+    container.stopTimer = () => {
+        if (timerInterval !== null) {
+            clearInterval(timerInterval);
+            timerInterval = null; // Clear interval reference after stopping
+        }
+    };
+
+    container.resetTimer = () => {
+        seconds = 0;
+    };
 
     // Store the timer interval ID in the container for later reference
     container.timerInterval = timerInterval;
@@ -230,19 +248,7 @@ function createWebcamContainer(title,height,width) {
     return  container;
 }
 
-function startWebcam(title,height,width) {
-    
-    navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => {
-           
-            
-       
-        })
-        .catch((error) => {
-            console.error('Error accessing the webcam', error);
-        });
-}
+
 
 // Function to stop the webcam
 function stopWebcam(container) {
@@ -250,6 +256,15 @@ function stopWebcam(container) {
     container.style.display = 'none';
     // Retrieve all video elements within the container
     const videos = container.getElementsByTagName('video');
+    if (container.timerInterval) {
+        clearInterval(container.timerInterval); // Clear the timer interval
+        container.resetTimer(); // Reset the timer seconds count
+
+        const timer = container.getElementsByTagName('span')[0];
+        if (timer) {
+            timer.textContent = '00:00:00'; // Reset timer display
+        }
+    }
     // Select the last video element
     const video = videos[videos.length - 1]; // Last video element
     console.log(video)
@@ -272,6 +287,7 @@ function stopWebcam(container) {
 
 let mediaRecorder;
 let recordedChunks = [];
+let skoopVideoContainer;
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'collectClasses') {
         console.log('getting classes');
@@ -285,11 +301,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse({ result: 'Iframe resized' });
     }
     if (request.action === 'startRecording') {
-        console.log(request)
-        // startWebcam("title",request.height,request.width);
-        const skoopVideoContainer = createWebcamContainer("title",request.height,request.width);
+     
+        skoopVideoContainer=document.getElementById("skoop-webcam-container")
+        if(!skoopVideoContainer){
+            skoopVideoContainer = createWebcamContainer("title",request.height,request.width);
+        }
+        skoopVideoContainer.resetTimer();
+        skoopVideoContainer.startTimer();
         skoopVideoContainer.style.display = 'block';
-        console.log('starting webcam',request.height,request.width);
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices
                 .getUserMedia({ video: {width:{ideal:request.width},height:{ideal:request.height}} })
@@ -330,7 +349,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     if (request.action === 'stopRecording') {
         const skoopVideoContainer=document.getElementById("skoop-webcam-container")
-        
+        console.log(skoopVideoContainer)
         stopWebcam(skoopVideoContainer);
         
         mediaRecorder.stop();
@@ -357,3 +376,61 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // MutationObserver to handle dynamic changes in the DOM
 const observer = new MutationObserver(createButton);
 observer.observe(document.body, { subtree: true, childList: true });
+
+
+// Function to handle mutations
+function handleMutations(mutationsList) {
+    mutationsList.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        mutation.addedNodes.forEach((addedNode) => {
+          if (addedNode.nodeType === 1 && addedNode.classList && addedNode.classList.contains('msg-convo-wrapper')) {
+            // Send a message or perform actions for the added element
+            chrome.runtime.sendMessage({
+              action: 'elementAdded',
+              element: addedNode.outerHTML
+            });
+          }
+        });
+  
+        mutation.removedNodes.forEach((removedNode) => {
+          if (removedNode.nodeType === 1 && removedNode.classList && removedNode.classList.contains('msg-convo-wrapper')) {
+            // Send a message or perform actions for the removed element
+            chrome.runtime.sendMessage({
+              action: 'elementRemoved',
+              element: removedNode.outerHTML
+            });
+          }
+        });
+      }
+
+      mutation.removedNodes.forEach((removedNode) => {
+        if (removedNode.nodeType === 1) {
+          // Check if an h1 tag with inner text "Messaging" is removed
+          const h1Elements = removedNode.querySelectorAll('h1');
+          const MessagingTabFound=false;
+          h1Elements.forEach((h1) => {
+            if (h1.innerText == 'Messaging') {
+                MessagingTabFound=true;
+            }
+          });
+          if(MessagingTabFound==false){
+            console.log("the messaging tab not found")
+            chrome.runtime.sendMessage({
+                action: 'elementRemoved'
+            });
+          }
+        }
+      });
+
+    });
+  }
+  
+  // Create a Mutation Observer instance
+  const observerForCheckboxes = new MutationObserver(handleMutations);
+  
+  // Start observing the document
+  observerForCheckboxes.observe(document, {
+    childList: true,
+    subtree: true 
+  });
+  
