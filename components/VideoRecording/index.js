@@ -415,13 +415,13 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                             {videoId !== '' && (
                                 <>
                                     <button
-                                        data-mdb-toggle="tooltip"
-                                        data-mdb-placement="bottom"
-                                        title="export to text area"
-                                        className="homepage-button"
-                                        onClick={handleInsertion}
+                                      className="btn btn-outline-primary btn-sm"
+                                      data-bs-toggle="tooltip"
+                                      data-bs-placement="bottom"
+                                      title="Export to text area"
+                                      onClick={handleInsertion}
                                     >
-                                        Send to Chat
+                                      Send to Chat
                                     </button>
                                 </>
                             )}

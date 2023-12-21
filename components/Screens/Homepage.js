@@ -73,24 +73,21 @@ const Homepage = (props) => {
    console.log(isLinkedin,"linkedin")
    
   return (
-    <div className="background-color">  
+    <div className="background-color">
       <div className="d-flex my-4 justify-content-center mt-8">
-        <div 
-            className="d-flex align-items-center" 
-            data-mdb-toggle="tooltip" 
-            data-mdb-placement="bottom" 
-            title={isRecording ? "Switch to Audio recording" : "Switch to Video recording"}>
-                
-          {isRecording ? (
-            <RecordingButton setUrlAtHome={setLatestVideoUrlHandler} />
-          ) : (
-            <VoiceVisualization setUrlAtHome={setLatestVideoUrlHandler} />
-          )}
-          <div className="swapicon">
-            <PiSwap onClick={toggleComponent} />
-          </div>
-      </div>
+      <RecordingButton
+        setUrlAtHome={(input) => {
+        setLatestVideoUrl(input);
+        }}
+      />
+      <div className="mx-4"></div>
+        <VoiceVisualization
+        setUrlAtHome={(input) => {
+        setLatestVideoUrl(input);
+        }}
+      />
     </div>
+       
     {!isLinkedin && <EmailComposer />}
       {isLinkedin  &&
           <>
