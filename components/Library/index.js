@@ -11,6 +11,7 @@ import { FaFolderPlus } from "react-icons/fa";
 import API_ENDPOINTS from '../apiConfig.js';
 import { NewFolderInput } from '../UserInput/index.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
+import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
 
 const Library = (props) => {
     const [links,setLinks]= useState([])
@@ -22,6 +23,7 @@ const Library = (props) => {
     const [fav,setFav]=useState(false);
     const [hoveredDir, setHoveredDir] = useState(null);
     const { globalRefresh, setGlobalRefresh } = useContext(GlobalStatesContext)
+    const { getThumbnail } = useContext(MediaUtilsContext)
     const [hovered, setHovered] = useState(false);
 
     const handleOpen = (dir) => {
@@ -132,26 +134,32 @@ const Library = (props) => {
          }
     },[globalRefresh]);
 
-    const getThumbnail=async(id)=>{
-        try{
-            var response=await fetch(API_ENDPOINTS.getThumbnail+id,{
-                method: "GET",
-                headers:{
-                    "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            response=await response.json();
-            return response.url;
-        }catch(err){
-            console.log("error while fetching thumbnails",err);
-            return null
-        }
-    }
+    // const getThumbnail=async(id)=>{
+    //     try{
+    //         var response=await fetch(API_ENDPOINTS.getThumbnail+id,{
+    //             method: "GET",
+    //             headers:{
+    //                 "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+    //                 'Content-Type': 'application/json'
+    //             }
+    //         });
+    //         response=await response.json();
+    //         return response.url;
+    //     }catch(err){
+    //         console.log("error while fetching thumbnails",err);
+    //         return null
+    //     }
+    // }
 
     const handleLinkInsertion=async(link,id)=>{
         if(props.appendToBody){
+            if(getThumbnail){
+                console.log("get thumbnail is defined");
+            }
+            else console.log("getthumbnail not defined");
+
             const thumbnail_link=await getThumbnail(id);
+            console.log("the thumbnail link provided");
             var ret
             if(thumbnail_link!=undefined && thumbnail_link!=null){
                 ret=`<img src='${thumbnail_link}' style={{width: '200px' ,display: 'inline-block'}}/><br>`
