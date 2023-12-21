@@ -16,6 +16,7 @@ import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import toast, { Toaster } from 'react-hot-toast';
 
 import ChatWindowSelection from '../ChatWindowSelection/index.js';
+import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
 const videoResizeConstant = 25;
 const RecordingButton = ({ aspectR, setUrlAtHome }) => {
     const webcamRef = useRef(null);
@@ -24,7 +25,8 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
     const [recordedChunks, setRecordedChunks] = useState([]);
     const [prev, setPrev] = useState('');
     const [time, setTime] = useState(0);
-    const [videoId, setVideoId] = useState('');
+    const [videoPlayerId, setVideoPlayerId] = useState('');
+    const [videoId,setVideoId] = useState('')
     const [countdown, setCountdown] = useState(false);
     const [countTimer, setCountTimer] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
@@ -38,8 +40,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [bloburl, setBlobUrl] = useState(null);
     const { setGlobalRefresh, isLinkedin, selectedChatWindows } = useContext(GlobalStatesContext);
-
-
+    const { getThumbnail } = useContext(MediaUtilsContext);
     const [aspectRatio, setAspectRatio] = useState([9, 16]);
     const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
     const [selectedVideoStyle, setSelectedVideoStyle] = useState(null);
@@ -60,17 +61,21 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         setVideoSettingsOpen(!videoSettingsOpen);
     };
 
-    const handleInsertion = () => {
+    const handleInsertion = async() => {
         console.log(isLinkedin, 'test linkedin ');
         if (isLinkedin) {
-            console.log('calling insertIntoLinkedInMessageWindow function ');
             insertIntoLinkedInMessageWindow(
-                `<p>https://share.vidyard.com/watch/${videoId}</p>`,
+                `<p>https://share.vidyard.com/watch/${videoPlayerId}</p>`,
                 selectedChatWindows
             );
         } else {
+            const thumbnail_link=await getThumbnail(videoId);
+            var ret=''
+            if(thumbnail_link!=undefined && thumbnail_link!=null){
+                ret=`<img src='${thumbnail_link}' style={{width: '200px' ,display: 'inline-block'}}/><br>`
+            }
             insertHtmlAtPositionInMail(
-                `<a href=https://share.vidyard.com/watch/${videoId}>Play</a>`
+                ret+`<a href=https://share.vidyard.com/watch/${videoPlayerId}>Play</a>`
             );
         }
     };
@@ -102,7 +107,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
             console.log(permissionStatus);
             if (permissionStatus.state === 'granted') {
                 setTime(0);
-                setVideoId('');
+                setVideoPlayerId('');
                 setInit(true);
                 await new Promise((r) => setTimeout(r, 2000)); // to let the camera initialize
                 setRecordedChunks([]);
@@ -175,7 +180,8 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
             });
             setIsUploading(false);
             setUrlAtHome(`https://play.vidyard.com/${response.facade_player_uuid}`);
-            setVideoId(response.facade_player_uuid);
+            setVideoPlayerId(response.facade_player_uuid);
+            setVideoId(response.id);
             console.log('the response after vidyard upload request', response);
             setGlobalRefresh(true);
         } catch (err) {
@@ -412,7 +418,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                                 </button>
                             </div>
 
-                            {videoId !== '' && (
+                            {videoPlayerId !== '' && (
                                 <>
                                     <button
                                       className="btn btn-outline-primary btn-sm"

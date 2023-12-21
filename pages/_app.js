@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { GlobalStatesProvider } from '../contexts/GlobalStates';
 import { ScreenProvider } from '../contexts/ScreenContext';
 import { AuthProvider } from '../contexts/AuthContext';
-
+import { MediaUtilsProvider } from '../contexts/MediaUtilsContext';
 
 export default function App({ Component, pageProps }) {
   return (
@@ -13,6 +13,7 @@ export default function App({ Component, pageProps }) {
     <script src="/jquery-3.2.1.slim.min.js"></script>
     <script src="/bootstrap.min.js"></script>
     <script src="/popper.min.js"></script>
+    <MediaUtilsProvider>
     <GlobalStatesProvider>
       <ScreenProvider>
         <AuthProvider>
@@ -24,6 +25,7 @@ export default function App({ Component, pageProps }) {
         </AuthProvider>
       </ScreenProvider>
       </GlobalStatesProvider>
+      </MediaUtilsProvider>
     </>
   );
 }

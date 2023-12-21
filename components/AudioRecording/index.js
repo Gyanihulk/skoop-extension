@@ -12,6 +12,7 @@ import { insertIntoLinkedInMessageWindow, insertHtmlAtPositionInMail } from '../
 import { PiExportFill } from "react-icons/pi";
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import toast, { Toaster } from 'react-hot-toast';
+import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
 
 const VoiceVisualization = (props) => {
   const [mediaRecorder, setMediaRecorder] = useState(null);
@@ -22,9 +23,11 @@ const VoiceVisualization = (props) => {
   const [showSuccess,setShowSuccess]= useState(false);
   const [time,setTime]=useState(0);
   const [duration,setDuration]=useState(0);
-  const [videoId,setVideoId]=useState(null);
+  const [videoPlayerId,setVideoPlayerId]=useState(null);
+  const [videoId,setVideoId] = useState('');
   const { globalRefresh, setGlobalRefresh,isLinkedin } = useContext(GlobalStatesContext)
-
+  const { getThumbnail } = useContext(MediaUtilsContext);
+  
   useEffect(() => {
     let intervalId
     if (isRecording) {
@@ -43,12 +46,19 @@ const VoiceVisualization = (props) => {
     }
   },[visualizationUrl])
   
-  const handleInsertion=()=>{
+  const handleInsertion=async()=>{
     if(isLinkedin){
-      insertIntoLinkedInMessageWindow(`<p>https://share.vidyard.com/watch/${videoId}</p>`)
+      insertIntoLinkedInMessageWindow(`<p>https://share.vidyard.com/watch/${videoPlayerId}</p>`)
     }
     else{
-      insertHtmlAtPositionInMail(`<a href=https://share.vidyard.com/watch/${videoId}>Play</a>`)
+      const thumbnail_link=await getThumbnail(videoId);
+      var ret=''
+      if(thumbnail_link!=undefined && thumbnail_link!=null){
+          ret=`<img src='${thumbnail_link}' style={{width: '200px' ,display: 'inline-block'}}/><br>`
+      }
+      insertHtmlAtPositionInMail(
+          ret+`<a href=https://share.vidyard.com/watch/${videoPlayerId}>Play</a>`
+      );
     }
   }
 
@@ -81,8 +91,9 @@ const VoiceVisualization = (props) => {
       })
       setIsUploading(false)
       props.setUrlAtHome(`https://play.vidyard.com/${response.facade_player_uuid}`);
-      setVideoId(response.facade_player_uuid);
+      setVideoPlayerId(response.facade_player_uuid);
       console.log("the response after vidyard upload request",response);
+      setVideoId(response.id);
       setGlobalRefresh(true)
       setShowSuccess(true)
       setTimeout(()=>{setShowSuccess(false)},3000)
@@ -95,7 +106,7 @@ const VoiceVisualization = (props) => {
 
   const startRecording = async () => {
     try {
-        setVideoId(null)
+        setVideoPlayerId(null)
         const micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
         const chunks = [];
         const recorder = new MediaRecorder(micStream);
@@ -191,13 +202,13 @@ const VoiceVisualization = (props) => {
           title="Delete File"
           style={iconaudio} onClick={() => setVisualizationUrl('')} />
 
-          {videoId &&
+          {videoPlayerId &&
             <> 
               <IoLink
               data-mdb-toggle="tooltip"
               data-mdb-placement="bottom"
               title="Copy Link"
-              style={iconaudio} onClick={() => {navigator.clipboard.writeText(`https://share.vidyard.com/watch/${videoId}`)}}
+              style={iconaudio} onClick={() => {navigator.clipboard.writeText(`https://share.vidyard.com/watch/${videoPlayerId}`)}}
               />
 
               <PiExportFill
