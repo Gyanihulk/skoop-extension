@@ -294,7 +294,6 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         <div className='video-recorder'>
             <div>
                 <Toaster position="top-right" />
-                <ChatWindowSelection />
                 {!countdown && (
                     <>
                         <button
