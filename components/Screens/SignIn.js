@@ -8,22 +8,15 @@ import ScreenContext from '../../contexts/ScreenContext';
 import { FaGoogle } from 'react-icons/fa6';
 import { FaLinkedin } from 'react-icons/fa';
 function SignIn() {
-    const { handleSkoopLogin, handleSocialLogin } = useContext(AuthContext);
+    const { handleSkoopLogin, handleSocialLogin,verifyToken } = useContext(AuthContext);
     const { navigateToPage } = useContext(ScreenContext);
-    // useEffect(() => {
-    //   (async () => {
-    //     const res = await verifyToken();
-    //     if (res.ok) props.changePage('Home');
-    //   })();
-    // }, []);
-
-   {/*const message = { message: 'SignIn',width:"450px",height:"700px" };
-    chrome.runtime.sendMessage(message, function(response) {
-        console.log('Received response:', response);
-        if(response && response?.url.startsWith("www.linkedin.com")){
-          setIsLinkedin(true)
-        }
-      }); */}
+    
+    useEffect(() => {
+      (async () => {
+        const res = await verifyToken();
+        if (res.ok) navigateToPage('Home');
+      })();
+    }, []);
 
     return (
         <div>
