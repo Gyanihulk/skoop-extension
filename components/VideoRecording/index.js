@@ -13,8 +13,8 @@ import {
     replaceInvalidCharacters,
 } from '../../utils/index.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
-
 import toast, { Toaster } from 'react-hot-toast';
+
 import ChatWindowSelection from '../ChatWindowSelection/index.js';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
 const videoResizeConstant = 25;
@@ -295,11 +295,11 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         return 'inline-block';
     };
 
+
     return (
         <div className='video-recorder'>
             <div>
                 <Toaster position="top-right" />
-                <ChatWindowSelection />
                 {!countdown && (
                     <>
                         <button

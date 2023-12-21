@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { PiSwap } from "react-icons/pi";
 import API_ENDPOINTS from '../apiConfig.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import RecordingButton from '../VideoRecording/index.js';
@@ -7,13 +8,19 @@ import VoiceVisualization from '../AudioRecording/index.js';
 import EmailComposer from '../EmailSection/index.js';
 import LinkedInCom from '../LinkedinCom/index.js';
 import ChatComponent from '../ChatWindow/index.js'
+import ChatWindowSelection from '../ChatWindowSelection/index.js';
 const Homepage = (props) => {
-  const {setIsLinkedin,isLinkedin,setLatestVideoUrl} = useContext(GlobalStatesContext);  
+  const {setIsLinkedin,isLinkedin,setLatestVideoUrl} = useContext(GlobalStatesContext); 
+  const [isRecording, setIsRecording] = useState(true);
 
+  const toggleComponent = () => {
+    setIsRecording(!isRecording);
+  }; 
 
+  const setLatestVideoUrlHandler = (input) => {
+    setLatestVideoUrl(input);
+  };
 
- 
- 
   const message = { message: 'HomePage',width:"400px",height:"600px" };
 
   // Send the message to the background script
@@ -64,28 +71,32 @@ const Homepage = (props) => {
         console.log(hostUrl,"setting linkein true",isLinkedin);
       }
    console.log(isLinkedin,"linkedin")
+   
   return (
     <div className="background-color">  
-    
-
-    <div className="d-flex my-4 justify-content-center mt-8">
-      <RecordingButton
-        setUrlAtHome={(input) => {
-          setLatestVideoUrl(input);
-        }}
-      />
-      <div className="mx-4"></div>
-      <VoiceVisualization
-        setUrlAtHome={(input) => {
-          setLatestVideoUrl(input);
-        }}
-      />
+      <div className="d-flex my-4 justify-content-center mt-8">
+        <div 
+            className="d-flex align-items-center" 
+            data-mdb-toggle="tooltip" 
+            data-mdb-placement="bottom" 
+            title={isRecording ? "Switch to Audio recording" : "Switch to Video recording"}>
+                
+          {isRecording ? (
+            <RecordingButton setUrlAtHome={setLatestVideoUrlHandler} />
+          ) : (
+            <VoiceVisualization setUrlAtHome={setLatestVideoUrlHandler} />
+          )}
+          <div className="swapicon">
+            <PiSwap onClick={toggleComponent} />
+          </div>
+      </div>
     </div>
     {!isLinkedin && <EmailComposer />}
       {isLinkedin  &&
           <>
-          <ChatComponent/>
           <LinkedInCom/>
+          <ChatWindowSelection/>
+          <ChatComponent/>
           </>
       } 
     </div>

@@ -83,12 +83,23 @@ export default function Header() {
             </div> */}
 
             {/* Calendar Link */}
-            <button className="btn btn-link" onClick={() => window.open(`${API_ENDPOINTS.skoopCalendarUrl}/index.php/user/login`, '_blank')}>
+            <button
+              className="btn btn-link"
+              onClick={() => window.open(`${API_ENDPOINTS.skoopCalendarUrl}/index.php/user/login`, '_blank')}
+              data-mdb-toggle="tooltip"
+              data-mdb-placement="bottom"
+              title="Go to your Meeting Calendar Schedular"
+            >
               <FaRegCalendarCheck className="icon-style-normal" />
             </button>
 
+
             {/* Notifications */}
-            <button className="btn btn-link">
+            <button className="btn btn-link"
+              data-mdb-toggle="tooltip"
+              data-mdb-placement="bottom"
+              title="Notifications"
+            >
               <MdNotificationsActive className="icon-style-normal" />
             </button>
 

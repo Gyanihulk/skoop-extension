@@ -76,7 +76,7 @@ function GiphyWindow(props) {
         )}
         <div className="row" style={{ whiteSpace: 'nowrap' }}>
           {results.map((result) => (
-            <div key={result.id} className="col-xs-12 col-sm-6 col-md-4 col-lg-4 gif-result" >
+            <div key={result.id} className="col-4 col-md-4 col-lg-4 gif-result">
               <img
                 src={result.images.downsized.url}
                 alt={result.title}

@@ -116,24 +116,31 @@ class ChatGpt extends Component {
 
           {this.state.prompt !== '' && !this.state.loading && (
             <>
-              <label className="mb-2 text-start">Response</label>
-              <textarea
-                className="form-control"
-                rows="auto"
-                name="prompt"
-                value={this.state.prompt}
-                onChange={this.handleChange}
-                id="skoop_cgpt_response"
-                class="chatgpt-response"
-                onInput={(e) => {
-                  e.target.style.height = 'auto';
-                  e.target.style.height = `${e.target.scrollHeight}px`;
-                }}
-              />
+             <div className="container">
               <div className="row">
-                <div className="col-sm-7"></div>
-                <div className="col-sm-5 d-flex justify-content-end"></div>
+                <div className="col-md-6 offset-md-3">
+                  <label className="mb-2 text-center">Response</label>
+                  <textarea
+                    className="form-control"
+                    aria-multiline="auto"
+                    name="prompt"
+                    value={this.state.prompt}
+                    onChange={this.handleChange}
+                    //id="skoop_cgpt_response"
+                    //className="chatgpt-response"
+                    onInput={(e) => {
+                      e.target.style.height = 'auto';
+                      e.target.style.height = `${e.target.scrollHeight}px`;
+                    }}
+                  />
+                  <div className="row">
+                    <div className="col-sm-7"></div>
+                    <div className="col-sm-5 d-flex justify-content-end"></div>
+                  </div>
+                </div>
               </div>
+            </div>
+
             </>
           )}
         </form>

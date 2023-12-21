@@ -515,6 +515,12 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 
+
+/* window selection */
+
+.selection-container {
+  width: 92%;
+}
 .video-recorder {
   display: flex;         
   justify-content: center;
@@ -523,7 +529,12 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 
-
+/*home page audio/video toggle icon*/
+.swapicon {
+  font-size: 30px;
+  margin-left: 20px;
+  cursor: pointer;
+}
 
 
 
