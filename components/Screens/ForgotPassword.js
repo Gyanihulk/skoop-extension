@@ -41,52 +41,126 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div>
-      {step === 1 && (
-        <form onSubmit={handleSubmitForm1}>
-          <h2>Step 1</h2>
-          <input
-            type="text"
-            placeholder="enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <button type="submit">Next</button>
-        </form>
-      )}
-      {step === 2 && (
-        <div>
-        <form onSubmit={handleSubmitForm2}>
-          <h2>Step 2</h2>
-          <input
-            type="text"
-            placeholder="enter new password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="confirm password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="enter OTP"
-            value={OTP}
-            onChange={(e) => setOTP(e.target.value)}
-            required
-          />
-          <button type="submit">Submit</button>
-        </form>
-        <button onClick={handleSubmitForm1}>send otp again</button>
-        <button onClick={()=>setStep(1)}>back</button>
+    <div className="container">
+  <div className="row">
+    <div className="col-md-6 offset-md-3">
+      <div className="card my-1">
+        {step === 1 && (
+          <form
+            className="card-body cardbody-color p-lg-5"
+            onSubmit={handleSubmitForm1}
+          >
+            <h2 className="text-center text-dark mt-3">Forgot Password ?</h2>
+            <p className="text-center">You can reset your password here.</p>
+            <div className="text-center">
+             <img
+                src="chrome-extension://gplimcomjkejccjoafekbjedgmlclpag/icons/icon.png"
+                className="img-fluid profile-image-pic img-thumbnail rounded-circle my-2"
+                width="100px"
+                alt="profile"
+              />          
+            </div>
+            <h4 className="text-center text-dark text-decoration-underline mb-3">Step 1</h4>
+            <div className="mb-3">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="text-center">
+              <button type="submit" className="btn btn-primary mb-2 w-100">
+                Next
+              </button>
+            </div>
+          </form>
+        )}
+
+        {step === 2 && (
+          <div>
+            <form
+              className="card-body cardbody-color p-lg-5"
+              onSubmit={handleSubmitForm2}
+            >
+              <div className="text-center">
+              <img
+                  src="chrome-extension://gplimcomjkejccjoafekbjedgmlclpag/icons/icon.png"
+                  className="img-fluid profile-image-pic img-thumbnail rounded-circle my-3"
+                  width="100px"
+                  alt="profile"
+                />          
+              </div>
+
+              <h2 className="text-center text-dark text-decoration-underline mb-3">Step 2</h2>
+              <div className="mb-3">
+                <input
+                  type="password"
+                  className="form-control"
+                  placeholder="Enter New Password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <input
+                  type="password"
+                  className="form-control"
+                  placeholder="Confirm Password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter OTP"
+                  value={OTP}
+                  onChange={(e) => setOTP(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="text-center">
+                <button type="submit" className="btn btn-primary w-100">
+                  Submit
+                </button>
+              </div>
+            </form>
+
+            <div className="text-center">
+              <button
+                onClick={handleSubmitForm1}
+                className="btn btn-link"
+              >
+                Send OTP Again
+              </button>
+              <button
+                onClick={() => setStep(1)}
+                className="btn btn-link text-dark"
+              >
+                Back
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="text-center mb-3">
+          <button
+            onClick={() => navigateToPage("SignIn")}
+            className="btn btn-outline-dark btn-sm"
+          >
+            Go to Sign In
+          </button>
         </div>
-      )}
-      <button onClick={()=>navigateToPage("SignIn")}>go to sign in</button>
+      </div>
     </div>
+  </div>
+</div>
+
   );
 };
 

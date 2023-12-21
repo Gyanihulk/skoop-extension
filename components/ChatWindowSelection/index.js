@@ -83,23 +83,35 @@ const ChatWindowSelection = () => {
         setLocalRefresh(!localRefresh);
     };
 
+    if (initialItems.length > 0) {
     return (
-        <div>
+        <div className="container selection-container p-4 my-2">
+      <h8 className="text-center mb-4 fw-bold fst-italic">
+        Tick the Boxes You Wish to Send Message to
+      </h8>
+      <div className="row row-cols-2 g-3 mt-2">
         {initialItems.map((item, index) => (
-            <div key={index}>
-            <label>
-                <input
-                type="checkbox"
-                value={item.name}
-                checked={selectedChatWindows.some(checkedItem => checkedItem.name === item.name)}
-                onChange={handleCheckboxChange}
-                />
-                {item.name}
-            </label>
+          <div key={index} className="col">
+                <div className="form-check">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    value={item.name}
+                    checked={selectedChatWindows.some(
+                      (checkedItem) => checkedItem.name === item.name
+                    )}
+                    onChange={handleCheckboxChange}
+                  />
+                  <label className="form-check-label">{item.name}</label>
+                </div>
             </div>
-        ))}
+          ))}
         </div>
+      </div>
     );
+} else {
+    return null;
+  }
 };
 
 export default ChatWindowSelection;

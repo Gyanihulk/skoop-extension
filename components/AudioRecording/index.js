@@ -11,7 +11,7 @@ import {getCurrentDateTimeString, replaceInvalidCharacters} from '../../utils/in
 import { insertIntoLinkedInMessageWindow, insertHtmlAtPositionInMail } from '../../utils/index.js';
 import { PiExportFill } from "react-icons/pi";
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
-import Loader from '../Loaders/index.js';
+import toast, { Toaster } from 'react-hot-toast';
 
 const VoiceVisualization = (props) => {
   const [mediaRecorder, setMediaRecorder] = useState(null);
@@ -69,12 +69,16 @@ const VoiceVisualization = (props) => {
       customHeaders.append('authorization', `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`);
       customHeaders.append('title1',title1);
       setIsUploading(true)
+      const loadingObj=toast.loading("uploading Voice Memo...")
       var response=await fetch(API_ENDPOINTS.vidyardUpload,{
           method: "POST",
           headers: customHeaders,
           body: formData
       })
       response=await response.json();
+      toast.success("Voice Memo uploaded,encoding in progress",{
+        id: loadingObj
+      })
       setIsUploading(false)
       props.setUrlAtHome(`https://play.vidyard.com/${response.facade_player_uuid}`);
       setVideoId(response.facade_player_uuid);
@@ -83,8 +87,9 @@ const VoiceVisualization = (props) => {
       setShowSuccess(true)
       setTimeout(()=>{setShowSuccess(false)},3000)
     }catch(err){
-      console.log("error uploading voice memo ",err);
-      alert("could not upload the video");
+      toast.dismiss()
+      console.log(err,"err of Voice Memo upload")
+      toast.error("could not upload")
     }
   }
 
@@ -140,20 +145,16 @@ const VoiceVisualization = (props) => {
   }
 
   const iconaudio = {
-    fontSize: '30px',
+    fontSize: '18px',
     color: 'black',
     marginRight: '20px',
   };
 
-  if(isUploading){
-    return (
-      <Loader title="Uploading..."/>
-    )
-  }
 
   return (
     <div id="homeDiv">
         <div>
+        <Toaster position='top-right'/>
         <button
             onClick={isRecording ? stopRecording : startRecording}
             id='skoop_record_button_audio'
@@ -166,7 +167,7 @@ const VoiceVisualization = (props) => {
         </div>
         <div>
           {isRecording &&
-            <h1>{60-time} seconds left</h1>
+            <h6>{60-time} seconds left</h6>
           }
         </div>
         <div>
@@ -202,21 +203,14 @@ const VoiceVisualization = (props) => {
               <PiExportFill
               data-mdb-toggle="tooltip"
               data-mdb-placement="bottom"
-              title="Copy Link"
+              title="Append to Chat"
               style={iconaudio} onClick={handleInsertion}
               />
             </>
           }
-          {showSuccess && (
-        <div className="alert alert-success" role="alert" style={{ borderRadius: '4px'}}>
-          Audio Uploaded, Transcoding will take a few minutes
-        </div>
-      )}
       </>
       )}
-      
       </div>
-      
     </div>
   );
 };

@@ -10,9 +10,8 @@ import {getCurrentDateTimeString, insertHtmlAtPositionInMail,
         insertIntoLinkedInMessageWindow,
         replaceInvalidCharacters} from '../../utils/index.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
-
 import toast, { Toaster } from 'react-hot-toast';
-import ChatWindowSelection from '../ChatWindowSelection/index.js'
+
 const videoResizeConstant=25
 const RecordingButton = ({ aspectR,setUrlAtHome }) => {
 
@@ -304,7 +303,6 @@ const RecordingButton = ({ aspectR,setUrlAtHome }) => {
     <div id="homeDiv">
       <div>
         <Toaster position='top-right'/>
-        <ChatWindowSelection />
         {!countdown && <>
             <button
             variant="outlined"
