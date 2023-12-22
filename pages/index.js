@@ -8,32 +8,25 @@ import ContactPage from '../components/Screens/ContactPage';
 import LinkedInCom from '../components/LinkedinCom';
 import AccountSettings from '../components/Screens/AccountSettings';
 import ForgotPassword from '../components/Screens/ForgotPassword';
+import LoadingScreen from '../components/Screens/LoadingScreen';
+import AuthContext from '../contexts/AuthContext';
 
 export default function Home() {
-    const { activePage } = useContext(ScreenContext);
-    async function requestAccess() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-            // Access granted, you can now use the stream
-        } catch (error) {
-            // Access denied or other error
-        }
-    }
-    // requestAccess()
-    useEffect(() => {
-        const iframeElement = document.getElementById('skoop-extension-iframe');
-        console.log(iframeElement);
-        if (iframeElement) {
-            const width = iframeElement.offsetWidth;
-            const height = iframeElement.offsetHeight;
+ 
+    const { verifyToken } = useContext(AuthContext);
+    const { activePage,navigateToPage } = useContext(ScreenContext);
 
-            console.log('Width:', width, 'Height:', height);
-        } else {
-            console.log('Element not found');
-        }
-    }, []);
+    useEffect(() => {
+        (async () => {
+          const res = await verifyToken();
+          console.log(res,"from index")
+          if (res.ok) {navigateToPage('Home');} else{navigateToPage("SignIn")}
+        })();
+      }, []);
+ 
     return (
         <>
+            {activePage === ' ' && <LoadingScreen />}
             {activePage === 'Home' && <Homepage />}
             {activePage === 'SignIn' && <SignIn />}
             {activePage === 'SignUp' && <SignUp />}

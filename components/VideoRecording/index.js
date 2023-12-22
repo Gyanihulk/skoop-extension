@@ -50,9 +50,9 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         if (style === 'Square') {
             setAspectRatio([10, 10]);
         } else if (style === 'Vertical Mode') {
-            setAspectRatio([9, 16]);
-        } else {
             setAspectRatio([16, 9]);
+        } else {
+            setAspectRatio([9, 16]);
         }
         toggleVideoSettings();
         console.log(`Selected Video Style: ${style}`);
