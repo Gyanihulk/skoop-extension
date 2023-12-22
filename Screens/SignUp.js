@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import { TbListDetails } from 'react-icons/tb';
-import API_ENDPOINTS from '../apiConfig';
-import { timezones } from '../../lib/timezones';
-import AuthContext from '../../contexts/AuthContext';
-import ScreenContext from '../../contexts/ScreenContext';
+import API_ENDPOINTS from '../components/apiConfig';
+import { timezones } from '../lib/timezones';
+import AuthContext from '../contexts/AuthContext';
+import ScreenContext from '../contexts/ScreenContext';
 
 function Copyright() {
     return (

@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
-import Homepage from '../components/Screens/Homepage';
-import SignIn from '../components/Screens/SignIn';
-import SignUp from '../components/Screens/SignUp';
+import Homepage from '../Screens/Homepage';
+import SignIn from '../Screens/SignIn';
+import SignUp from '../Screens/SignUp';
 import ScreenContext from '../contexts/ScreenContext';
-import ChatPage from '../components/Screens/ChatPage';
-import ContactPage from '../components/Screens/ContactPage';
+import ChatPage from '../Screens/ChatPage';
+import ContactPage from '../Screens/ContactPage';
 import LinkedInCom from '../components/LinkedinCom';
-import AccountSettings from '../components/Screens/AccountSettings';
-import ForgotPassword from '../components/Screens/ForgotPassword';
-import LoadingScreen from '../components/Screens/LoadingScreen';
+import AccountSettings from '../Screens/AccountSettings';
+import ForgotPassword from '../Screens/ForgotPassword';
+import LoadingScreen from '../Screens/LoadingScreen';
 import AuthContext from '../contexts/AuthContext';
 
 export default function Home() {

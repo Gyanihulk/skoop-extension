@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BsPersonX } from "react-icons/bs";
 import { BsArrowRightCircle } from 'react-icons/bs';
-import ChatComponent from '../ChatWindow';
+import ChatComponent from '../components/ChatWindow';
 
 const ChatPage = (props) => {
 

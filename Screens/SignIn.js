@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { FaSignInAlt, FaTimes } from 'react-icons/fa';
-import API_ENDPOINTS from '../apiConfig';
-import AuthContext from '../../contexts/AuthContext';
-import ScreenContext from '../../contexts/ScreenContext';
+import API_ENDPOINTS from '../components/apiConfig';
+import AuthContext from '../contexts/AuthContext';
+import ScreenContext from '../contexts/ScreenContext';
 import { FaGoogle } from 'react-icons/fa6';
 import { FaLinkedin } from 'react-icons/fa';
 function SignIn() {

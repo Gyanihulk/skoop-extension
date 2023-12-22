@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
-import AuthContext from '../../contexts/AuthContext';
-import ScreenContext from '../../contexts/ScreenContext';
+import AuthContext from '../contexts/AuthContext';
+import ScreenContext from '../contexts/ScreenContext';
 
 const LoadingScreen = () => {
     return (
