@@ -13,7 +13,7 @@ import {
     replaceInvalidCharacters,
 } from '../../utils/index.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 import ChatWindowSelection from '../ChatWindowSelection/index.js';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
@@ -299,7 +299,6 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
     return (
         <div className='video-recorder'>
             <div>
-                <Toaster position="top-right" />
                 {!countdown && (
                     <>
                         <button

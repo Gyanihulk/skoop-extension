@@ -45,6 +45,7 @@ export default function SignUp(props) {
                                         className="form-control"
                                         id="first-name"
                                         placeholder="First Name"
+                                        name="firstName"
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -53,6 +54,7 @@ export default function SignUp(props) {
                                         className="form-control"
                                         id="last-name"
                                         placeholder="Last Name"
+                                        name="lastName"
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -61,6 +63,7 @@ export default function SignUp(props) {
                                         className="form-control"
                                         id="email"
                                         placeholder="Email Address"
+                                        name="email"
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -69,6 +72,7 @@ export default function SignUp(props) {
                                         className="form-control"
                                         id="password"
                                         placeholder="Password"
+                                        name="password"
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -77,12 +81,17 @@ export default function SignUp(props) {
                                         className="form-control"
                                         id="confirm-password"
                                         placeholder="Confirm Password"
+                                        name="confirmPassword"
                                     />
                                 </div>
                                 <div className="mb-3">
-                                    <select className="form-select" id="timezone">
+                                    <select className="form-select" id="timezone" name="timezone">
                                         <option selected>Select Timezone</option>
-                                        {/* Add timezone options here */}
+                                        {timezones.map((option, index) => (
+                                          <option key={index} value={option}>
+                                            {option}
+                                          </option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className="text-center">

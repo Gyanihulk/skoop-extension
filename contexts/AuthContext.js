@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import API_ENDPOINTS from '../components/apiConfig';
 import ScreenContext from './ScreenContext';
+import toast from 'react-hot-toast';
 
 const AuthContext = createContext();
 
@@ -15,6 +16,7 @@ export const AuthProvider = ({ children }) => {
         const data = new FormData(event.currentTarget);
         const username = data.get('username');
         const password = data.get('password');
+        const toastId=toast.loading("signing in...")
         try {
           const response = await fetch(API_ENDPOINTS.signIn, {
             method: 'POST',
@@ -27,15 +29,17 @@ export const AuthProvider = ({ children }) => {
             },
           });
           if (response.ok) {
+            toast.success("signed in",{id: toastId})
             const resjson = await response.json();
             localStorage.setItem('accessToken', JSON.stringify(resjson.accessToken));
             localStorage.setItem('skoopUsername', JSON.stringify(resjson.skoopUsername));
             navigateToPage('Home');
           } else {
-            alert('Incorrect username or password');
+            toast.error("incorrect username of password",{id: toastId});
           }
         } catch (err) {
-          alert('Something went wrong, please try again');
+          toast.dismiss();
+          toast.error('Something went wrong, please try again');
         }
       };
     
@@ -91,13 +95,14 @@ export const AuthProvider = ({ children }) => {
         try{
           const data = new FormData(event.currentTarget);
           if(data.get("password")!==data.get("confirmPassword")){
-            alert("Password fields do not match try again")
+            toast.error("The Password fields do not match")
             return ;
           }
           if(data.get("timezone")=="Select Timezone"){
-            alert("please select a timezone")
+            toast.error("Please select a timezone")
             return ;
           }
+          const toastId=toast.loading("signing up ...")
           const res=await fetch(API_ENDPOINTS.signUp,{
               method: "POST",
               body: JSON.stringify({
@@ -113,12 +118,13 @@ export const AuthProvider = ({ children }) => {
               }
           })
           if(res.ok){
-              alert("sign-up was successfull")
+            toast.success("Sign up was complete",{ id : toastId});
           }
-          else alert("username already exists pick a different username")
+          else toast.error("username already exists pick a different username",{ id : toastId})
         }catch(err){
           console.log(err)
-          alert("some error occurred")
+          toast.dismiss();
+          toast.error("something went wrong");
         }
       };
       const verifyToken = async () => {

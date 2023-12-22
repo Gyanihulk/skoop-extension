@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { FaSignInAlt, FaTimes } from 'react-icons/fa';
-// import { Link } from 'react-router-dom';
 import API_ENDPOINTS from '../apiConfig';
 import AuthContext from '../../contexts/AuthContext';
 import ScreenContext from '../../contexts/ScreenContext';
-// import toast, { Toaster } from 'react-hot-toast';
 import { FaGoogle } from 'react-icons/fa6';
 import { FaLinkedin } from 'react-icons/fa';
 function SignIn() {
