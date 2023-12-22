@@ -11,7 +11,7 @@ import {getCurrentDateTimeString, replaceInvalidCharacters} from '../../utils/in
 import { insertIntoLinkedInMessageWindow, insertHtmlAtPositionInMail } from '../../utils/index.js';
 import { PiExportFill } from "react-icons/pi";
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
 import { AiOutlineClose } from "react-icons/ai";
 
@@ -172,7 +172,6 @@ const VoiceVisualization = (props) => {
   return (
     <div id="homeDiv">
         <div>
-        <Toaster position='top-right'/>
         <button
             onClick={isRecording ? stopRecording : startRecording}
             id='skoop_record_button_audio'

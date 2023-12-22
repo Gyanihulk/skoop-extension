@@ -1,6 +1,6 @@
 import React, { useState,useContext } from 'react';
-import AuthContext from '../../contexts/AuthContext';
-import ScreenContext from '../../contexts/ScreenContext';
+import AuthContext from '../contexts/AuthContext';
+import ScreenContext from '../contexts/ScreenContext';
 
 const ForgotPassword = () => {
   const [step, setStep] = useState(1); // State to manage the current step

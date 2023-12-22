@@ -16,7 +16,7 @@ import {
     replaceInvalidCharacters,
 } from '../../utils/index.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 import ChatWindowSelection from '../ChatWindowSelection/index.js';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
@@ -55,9 +55,9 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         if (style === 'Square') {
             setAspectRatio([10, 10]);
         } else if (style === 'Vertical Mode') {
-            setAspectRatio([9, 16]);
-        } else {
             setAspectRatio([16, 9]);
+        } else {
+            setAspectRatio([9, 16]);
         }
         toggleVideoSettings();
         console.log(`Selected Video Style: ${style}`);
@@ -311,7 +311,6 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
     return (
         <div className='video-recorder'>
             <div>
-                <Toaster position="top-right" />
                 {!countdown && (
                     <>
                         <button

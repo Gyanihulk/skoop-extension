@@ -8,6 +8,7 @@ import API_ENDPOINTS from '../apiConfig';
 import Scrape from '../Scraper';
 import { FaAddressBook } from "react-icons/fa";
 import { FaRegUserCircle } from "react-icons/fa";
+import toast from 'react-hot-toast';
 
 const ContactInfoCard = () => {
   const [email1, setEmail1] = useState('');
@@ -24,6 +25,7 @@ const ContactInfoCard = () => {
 
   const handleSave = async () => {
     try {
+      const toastId=toast.loading("saving...");
       const response=await fetch(API_ENDPOINTS.CrmAddContactInfo, {
         method: "POST",
         headers: {
@@ -44,17 +46,21 @@ const ContactInfoCard = () => {
       });
       console.log("the response from backend",response)
       if(!response.ok) throw Error("")
-      alert("Contact saved successfully");
+      toast.success("saved successfully",{id: toastId});
     } catch (err) {
       console.log("the error in saving contact info",err);
-      alert("An error occurred while saving contact info. Please try again.");
+      toast.dismiss();
+      toast.error("some error occured")
     }
   };
 
   const getProfileDetails=async()=>{
     var linkedIn_url='';
     try{
-      const scrapedInfo = await Scrape("ProfilePage");
+      var scrapedInfo = await Scrape("ProfilePage");
+      scrapedInfo=scrapedInfo.map(item=>{
+        return item.replace(/[^\x00-\x7F]/g, '');
+      })
       setProfileName(scrapedInfo[0]);
       setProfileImage(scrapedInfo[1]);
       setProfileDesc(scrapedInfo[2]);
@@ -65,8 +71,10 @@ const ContactInfoCard = () => {
       console.log("error fetching scraped info from profile page")
     }
     try{
-      const scrapedInfo = await Scrape("ContactInfoOverlay");
-      console.log("the scraped info from overlay",scrapedInfo);
+      var scrapedInfo = await Scrape("ContactInfoOverlay");
+      scrapedInfo=scrapedInfo.map(item=>{
+        return item.replace(/[^\x00-\x7F]/g, '');
+      })
       setEmail1(scrapedInfo[0]);
       setWebsite1(scrapedInfo[1]);
       setPhone2(scrapedInfo[3]);
@@ -114,23 +122,6 @@ const ContactInfoCard = () => {
       await getProfileDetails();
     })();
 
-    var ContactInfoLink = document.querySelector(
-      'main > section:first-child > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > span:nth-child(2) > a'
-    );
-    if(ContactInfoLink==null){
-      ContactInfoLink=document.querySelector('main > section:nth-child(2) > div:nth-child(2) > div:nth-child(2)>div:nth-child(3)>span:nth-child(2)>a')
-    }
-    
-    if (ContactInfoLink) {
-      console.log('Event listener added');
-      ContactInfoLink.addEventListener('click', async function (event) {
-        const profileData = await Scrape();
-        
-        setEmail1(profileData[2]);
-        setProfileName(profileData[0]);
-        setWebsite1(profileData[3]);
-      });
-    }
   }, [refresh]);
 
   const handleInputChange = (e) => {

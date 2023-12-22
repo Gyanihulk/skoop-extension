@@ -1,23 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { FaSignInAlt, FaTimes } from 'react-icons/fa';
-// import { Link } from 'react-router-dom';
-import API_ENDPOINTS from '../apiConfig';
-import AuthContext from '../../contexts/AuthContext';
-import ScreenContext from '../../contexts/ScreenContext';
-// import toast, { Toaster } from 'react-hot-toast';
+import API_ENDPOINTS from '../components/apiConfig';
+import AuthContext from '../contexts/AuthContext';
+import ScreenContext from '../contexts/ScreenContext';
 import { FaGoogle } from 'react-icons/fa6';
 import { FaLinkedin } from 'react-icons/fa';
 function SignIn() {
-    const { handleSkoopLogin, handleSocialLogin,verifyToken } = useContext(AuthContext);
+    const { handleSkoopLogin, handleSocialLogin } = useContext(AuthContext);
     const { navigateToPage } = useContext(ScreenContext);
-    
-    useEffect(() => {
-      (async () => {
-        const res = await verifyToken();
-        if (res.ok) navigateToPage('Home');
-      })();
-    }, []);
-
     return (
         <div>
             <div className="container">
@@ -72,9 +62,10 @@ function SignIn() {
                                 <div className="mb-3">
                                     <div class="d-flex justify-content-around">
                                         {' '}
-                                        <FaGoogle size={64} onClick={() => handleSocialLogin(2)} />
+                                        <FaGoogle size={64} color="red" onClick={() => handleSocialLogin(2)} />
                                         <FaLinkedin
                                             size={64}
+                                            color="#0A66C2"
                                             onClick={() => handleSocialLogin(1)}
                                         />
                                     </div>

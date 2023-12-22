@@ -2,7 +2,7 @@ import React, { useCallback, useState ,useEffect } from 'react';
 import { TbUserEdit } from "react-icons/tb";
 import { FaRegEdit } from "react-icons/fa";
 import { IoCheckmarkDoneSharp, IoArrowBack, IoClose } from "react-icons/io5";
-import API_ENDPOINTS from '../apiConfig'
+import API_ENDPOINTS from '../components/apiConfig'
 
 const AccountProfile = ({ userData }) => (
   <div className="card" style={{ border: '2px solid grey' }}>

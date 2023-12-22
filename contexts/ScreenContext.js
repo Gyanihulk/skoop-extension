@@ -4,7 +4,7 @@ import React, { createContext, useState } from 'react';
 const ScreenContext = createContext();
 
 export const ScreenProvider = ({ children }) => {
-    const [activePage, setActivePage] = useState('SignIn');
+    const [activePage, setActivePage] = useState(' ');
 
     const navigateToPage = (page) => {
       setActivePage(page);

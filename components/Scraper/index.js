@@ -28,7 +28,7 @@ const Scrape = async(commandType) => {
         if(item.children[1].innerText=='Email'){
           email=item.children[2].innerText
         }
-        else if(item.children[1].innerText=='Website'){
+        else if(item.children[1].innerText=='Website' || item.children[1].innerText=='Websites'){
           website=(item.children[2].innerText).replace(/\n/g, "|")
         }
         else if(item.children[1].innerText=='Twitter'){
