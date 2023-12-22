@@ -51,7 +51,11 @@ const ChatWindowSelection = () => {
         var combinedArray=validChatWindows.map((item,index)=>{
             var nameOfRecipient;
             if(item.querySelector('h2').innerText=='New message'){
-                nameOfRecipient=item.querySelector('.app-aware-link').innerText
+              try{
+                nameOfRecipient=item.querySelectorAll('span')[2].innerText;
+              }catch(err){
+                nameOfRecipient="New Message"
+              }
             }
             else nameOfRecipient=item.querySelector('h2').innerText
             return {
