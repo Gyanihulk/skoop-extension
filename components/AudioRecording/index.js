@@ -13,6 +13,7 @@ import { PiExportFill } from "react-icons/pi";
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import toast, { Toaster } from 'react-hot-toast';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
+import { AiOutlineClose } from "react-icons/ai";
 
 const VoiceVisualization = (props) => {
   const [mediaRecorder, setMediaRecorder] = useState(null);
@@ -25,6 +26,7 @@ const VoiceVisualization = (props) => {
   const [duration,setDuration]=useState(0);
   const [videoPlayerId,setVideoPlayerId]=useState(null);
   const [videoId,setVideoId] = useState('');
+  const [iconsVisible, setIconsVisible] = useState(true);
   const { globalRefresh, setGlobalRefresh,isLinkedin,selectedChatWindows } = useContext(GlobalStatesContext)
   const { getThumbnail } = useContext(MediaUtilsContext);
   
@@ -106,6 +108,7 @@ const VoiceVisualization = (props) => {
 
   const startRecording = async () => {
     try {
+        setIconsVisible(true);
         setVideoPlayerId(null)
         const micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
         const chunks = [];
@@ -135,6 +138,10 @@ const VoiceVisualization = (props) => {
     setTime(0);
   };
   
+  const toggleIconsVisibility = () => {
+    setIconsVisible((prevVisible) => !prevVisible);
+  };
+
   const downloadAudio = () => {
     const a = document.createElement('a');
     a.href = visualizationUrl;
@@ -183,13 +190,14 @@ const VoiceVisualization = (props) => {
         </div>
         <div>
             {visualizationUrl && (
-                <video  controls src={visualizationUrl}></video>
+                <video  controls src={visualizationUrl} className="audio-preview" ></video>
             )}
         </div>
       <div>
       {visualizationUrl && (
         <>
-          
+        {iconsVisible && (
+        <> 
           <IoMdDownload 
           data-mdb-toggle="tooltip"
           data-mdb-placement="bottom"
@@ -217,8 +225,21 @@ const VoiceVisualization = (props) => {
               title="Append to Chat"
               style={iconaudio} onClick={handleInsertion}
               />
+
+              <AiOutlineClose
+              data-mdb-toggle="tooltip"
+              data-mdb-placement="bottom"
+              title="Close"
+              style={iconaudio}
+              onClick={() => {
+                setVisualizationUrl('');
+                setIconsVisible(false); 
+              }}
+              />
             </>
           }
+        </>
+        )}
       </>
       )}
       </div>

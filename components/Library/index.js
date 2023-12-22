@@ -219,7 +219,7 @@ const Library = (props) => {
             <div className="modal-content">
                 <div className="modal-header">
                     <h5 className="modal-title">Enter title</h5>
-                    <button type="button" className="close" onClick={() => { setOpenNewFolder(false) }}>
+                    <button type="button" className="btn btn-outline-dark btn-sm close" onClick={() => { setOpenNewFolder(false) }}>
                         <span>&times;</span>
                     </button>
                 </div>
@@ -227,7 +227,7 @@ const Library = (props) => {
                     <NewFolderInput closePopup={async () => { setOpenNewFolder(false); getDirs() }} />
                 </div>
                 <div className="modal-footer">
-                    <button type="button" onClick={async () => { setOpenNewFolder(false); getDirs() }}>
+                    <button type="button" className='btn btn-primary btn-sm' onClick={async () => { setOpenNewFolder(false); getDirs() }}>
                         Close
                     </button>
                 </div>

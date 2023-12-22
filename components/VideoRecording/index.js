@@ -4,7 +4,10 @@ import API_ENDPOINTS from '../apiConfig.js';
 import { FaDownload } from 'react-icons/fa6';
 import { FaTimesCircle } from 'react-icons/fa';
 import { FaRegCirclePlay } from 'react-icons/fa6';
-import { MdDeleteForever, MdOutlineVideoSettings } from 'react-icons/md';
+import { MdDeleteForever, MdOutlineVideoSettings, MdOutlineSendTimeExtension } from 'react-icons/md';
+import { AiOutlineClose } from "react-icons/ai";
+
+
 
 import {
     getCurrentDateTimeString,
@@ -44,6 +47,8 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
     const [aspectRatio, setAspectRatio] = useState([9, 16]);
     const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
     const [selectedVideoStyle, setSelectedVideoStyle] = useState(null);
+    const [iconsVisible, setIconsVisible] = useState(true);
+
     const handleVideoStyleSelect = (style) => {
         setSelectedVideoStyle(style);
 
@@ -125,6 +130,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         setCountTimer(0);
         setCapturing(true);
         setPrev('');
+        setIconsVisible(true);
         try {
             mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
                 mimeType: 'video/webm',
@@ -231,6 +237,12 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
             handleShare(getCurrentDateTimeString(), 'Media');
         }
     }, [recordedChunks]);
+
+    useEffect(() => {
+        if (capturing) {
+            setIconsVisible(true); 
+        }
+    }, [capturing]);
 
     const handleDownload = React.useCallback(() => {
         if (bloburl) {
@@ -375,66 +387,76 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                 <div>
                     {!capturing && !isUploading && bloburl && (
                         <>
-                            <div className="options">
-                                <button
-                                    data-mdb-toggle="tooltip"
-                                    data-mdb-placement="bottom"
-                                    title="Download the recorded video"
-                                    className="videoOption"
-                                    onClick={handleDownload}
-                                >
-                                    <FaDownload id="mail_icons" />
-                                </button>
-
-                                <button
-                                    data-mdb-toggle="tooltip"
-                                    data-mdb-placement="bottom"
-                                    title={
-                                        isPlaying
-                                            ? 'Close the Preview video'
-                                            : 'Play the recorded video'
-                                    }
-                                    className="videoOption"
-                                    onClick={preview}
-                                >
-                                    {isPlaying ? (
-                                        <FaTimesCircle id="mail_icons" />
-                                    ) : (
-                                        <FaRegCirclePlay id="mail_icons" />
-                                    )}
-                                </button>
-
-                                <button
-                                    data-mdb-toggle="tooltip"
-                                    data-mdb-placement="bottom"
-                                    title="Delete the video"
-                                    className="delete"
-                                    onClick={() => {
-                                        setPrev('');
-                                        setRecordedChunks([]);
-                                    }}
-                                >
-                                    <MdDeleteForever id="mail_icons" />
-                                </button>
-                            </div>
-
-                            {videoPlayerId !== '' && (
-                                <>
+                            {iconsVisible && (
+                                <div className="options">
                                     <button
-                                      className="btn btn-outline-primary btn-sm"
-                                      data-bs-toggle="tooltip"
-                                      data-bs-placement="bottom"
-                                      title="Export to text area"
-                                      onClick={handleInsertion}
+                                        data-mdb-toggle="tooltip"
+                                        data-mdb-placement="bottom"
+                                        title="Download the recorded video"
+                                        className="videoOption"
+                                        onClick={handleDownload}
                                     >
-                                      Send to Chat
+                                        <FaDownload id="mail_icons" />
                                     </button>
-                                </>
+
+                                    <button
+                                        data-mdb-toggle="tooltip"
+                                        data-mdb-placement="bottom"
+                                        title={
+                                            isPlaying
+                                                ? 'Close the Preview video'
+                                                : 'Play the recorded video'
+                                        }
+                                        className="videoOption"
+                                        onClick={preview}
+                                    >
+                                        {isPlaying ? (
+                                            <FaTimesCircle id="mail_icons" />
+                                        ) : (
+                                            <FaRegCirclePlay id="mail_icons" />
+                                        )}
+                                    </button>
+
+                                    <button
+                                        data-mdb-toggle="tooltip"
+                                        data-mdb-placement="bottom"
+                                        title="Delete the video"
+                                        className="delete"
+                                        onClick={() => {
+                                            setPrev('');
+                                            setRecordedChunks([]);
+                                        }}
+                                    >
+                                        <MdDeleteForever id="mail_icons" />
+                                    </button>
+
+                                    {videoPlayerId !== '' && (
+                                        <>
+                                            <button
+                                                className="videoOption"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="bottom"
+                                                title="Export to text area"
+                                                onClick={handleInsertion}
+                                            >
+                                                <MdOutlineSendTimeExtension id="mail_icons" />
+                                            </button>
+
+                                            <button
+                                                className="videoOption"
+                                                onClick={() => {
+                                                    setIconsVisible(false);
+                                                }}
+                                            >
+                                                <AiOutlineClose id="mail_icons"/>
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
                             )}
                         </>
                     )}
                 </div>
-
                 <div>
                     {prev != '' && (
                         <div className="previewCard">
