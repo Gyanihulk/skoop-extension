@@ -25,7 +25,7 @@ const VoiceVisualization = (props) => {
   const [duration,setDuration]=useState(0);
   const [videoPlayerId,setVideoPlayerId]=useState(null);
   const [videoId,setVideoId] = useState('');
-  const { globalRefresh, setGlobalRefresh,isLinkedin } = useContext(GlobalStatesContext)
+  const { globalRefresh, setGlobalRefresh,isLinkedin,selectedChatWindows } = useContext(GlobalStatesContext)
   const { getThumbnail } = useContext(MediaUtilsContext);
   
   useEffect(() => {
@@ -48,7 +48,7 @@ const VoiceVisualization = (props) => {
   
   const handleInsertion=async()=>{
     if(isLinkedin){
-      insertIntoLinkedInMessageWindow(`<p>https://share.vidyard.com/watch/${videoPlayerId}</p>`)
+      insertIntoLinkedInMessageWindow(`<p>https://share.vidyard.com/watch/${videoPlayerId}</p>`,selectedChatWindows)
     }
     else{
       const thumbnail_link=await getThumbnail(videoId);
