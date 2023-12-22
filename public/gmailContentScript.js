@@ -311,7 +311,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         skoopVideoContainer.style.display = 'block';
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices
-                .getUserMedia({ video: {width:{ideal:request.width},height:{ideal:request.height}} })
+                .getUserMedia({ video: {width:{ideal:request.width},height:{ideal:request.height}}, audio: true  })
                 .then((stream) => {
                     const video = document.createElement('video');
                     video.id="title"
