@@ -268,7 +268,7 @@ const Library = (props) => {
             return (
                     <div className="d-inline-block">
                         <div
-                            className="card customCard"
+                            className="customCard"
                             onMouseEnter={() => setHoveredDir(dir.directory_name)}
                             onMouseLeave={() => setHoveredDir(null)}
                         >
@@ -327,7 +327,8 @@ const Library = (props) => {
         }
        {(currentDirectory !== '' || fav) && (
         <div className="mt-2"> 
-            <button className='customCloseButton'>
+            <button className='customCloseButton'
+            onClick={handleClose}>
             Close Folder
             </button>
         </div>
@@ -388,7 +389,7 @@ const Library = (props) => {
                             toggleFavourite(item.id);
                             }}
                         >
-                            {item.is_favourite ? <MdOutlineFavorite className="text-primary" /> : <MdOutlineFavorite />}
+                            {item.is_favourite ? <FaRegStar className="text-primary" /> : <FaRegStar />}
                         </button>
                         </div>
                         )}

@@ -417,15 +417,14 @@ const handleInputChange = (e) => {
               <RiSendPlaneFill style={iconButtonStyle} />
             </button>
             <button
-            className="btn btn-light"
-            onClick={toggleFabButtons}
-            style={{ ...iconButtonStyle, fontSize: '16px' }}
-            data-mdb-toggle="tooltip"
-            data-mdb-placement="top"
-            title="Toggle FAB buttons"
-          >
-          <FiMoreVertical/>
-          </button>
+              className="btn btn-light"  
+              onClick={() => appendToBody(`${API_ENDPOINTS.skoopCalendarUrl}/?username=${JSON.parse(localStorage.getItem('skoopUsername'))}`)}
+              data-mdb-toggle="tooltip" 
+              data-mdb-placement="bottom" 
+              title="Send your Meeting Calendar Link to Chat"
+              >
+             <MdCalendarMonth style={iconButtonStyle} /> 
+             </button>
 
           {fabButtonsVisible && (
             <div className="fab-buttons">
@@ -453,15 +452,6 @@ const handleInputChange = (e) => {
               >
                 <BsRobot style={iconButtonStyle} />
               </button>
-              <button
-              className="btn btn-light"  
-              onClick={() => appendToBody(`${API_ENDPOINTS.skoopCalendarUrl}/?username=${JSON.parse(localStorage.getItem('skoopUsername'))}`)}
-              data-mdb-toggle="tooltip" 
-              data-mdb-placement="bottom" 
-              title="Access your meet schedule calendar. You can view and manage your upcoming meetings and appointments."
-              >
-             <MdCalendarMonth style={iconButtonStyle} /> 
-             </button>
             </div>
           )}
           </div>

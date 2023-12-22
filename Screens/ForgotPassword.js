@@ -1,43 +1,45 @@
-import React, { useState,useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import AuthContext from '../contexts/AuthContext';
 import ScreenContext from '../contexts/ScreenContext';
+import toast, { Toaster } from 'react-hot-toast';
 
 const ForgotPassword = () => {
-  const [step, setStep] = useState(1); // State to manage the current step
+  const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword,setConfirmPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [OTP, setOTP] = useState('');
-  const {getOtpForPasswordReset,resetPasswordUsingOtp} = useContext(AuthContext);
+  const { getOtpForPasswordReset, resetPasswordUsingOtp } = useContext(AuthContext);
   const { navigateToPage } = useContext(ScreenContext);
 
-  const handleSubmitForm1 =async (e) => {
-    e.preventDefault();
-    const isOtpSent=await getOtpForPasswordReset(email);
-    if(!isOtpSent){
-        // show error page
-        alert("could not send otp")
-        return ;
-    }
-    else alert("OTP sent")
-    setStep(2); // Move to step 2
+  const showToast = (message, type = 'success') => {
+    toast[type](message);
   };
 
-  const handleSubmitForm2 = async(e) => {
+  const handleSubmitForm1 = async (e) => {
     e.preventDefault();
-    if(confirmPassword!=newPassword){
-        alert("confirm password and new password fields do not match")
-        return ;
+    const isOtpSent = await getOtpForPasswordReset(email);
+    if (!isOtpSent) {
+      showToast('Could not send OTP', 'error');
+      return;
     }
-    const isPasswordReset=await resetPasswordUsingOtp(email,OTP,newPassword);
-    if(!isPasswordReset){
-        // show error page;
+    showToast('OTP sent');
+    setStep(2); 
+  };
+
+  const handleSubmitForm2 = async (e) => {
+    e.preventDefault();
+    if (confirmPassword !== newPassword) {
+      showToast('Confirm password and new password fields do not match', 'error');
+      return;
     }
-    else{
-        alert("password reset successfull");
-        navigateToPage("SignIn");
+    const isPasswordReset = await resetPasswordUsingOtp(email, OTP, newPassword);
+    if (!isPasswordReset) {
+      showToast('Password reset failed', 'error');
+    } else {
+      showToast('Password reset successful', 'success');
+      navigateToPage('SignIn');
     }
-    
   };
 
   return (
@@ -45,6 +47,7 @@ const ForgotPassword = () => {
   <div className="row">
     <div className="col-md-6 offset-md-3">
       <div className="card my-1">
+      <Toaster position="top-right" />
         {step === 1 && (
           <form
             className="card-body cardbody-color p-lg-5"

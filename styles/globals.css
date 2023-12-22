@@ -338,9 +338,9 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 .customCard {
   text-align: center;
   display: inline-block;
-  padding: 6px;
-  margin: 6px;
-  width: 180px;
+  padding: 3px;
+  margin: 15px;
+  width: 120px;
   height: 50px;
   background: transparent;
   box-shadow: none;
@@ -366,8 +366,8 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .customFolderIcon {
-  width: 48px;
-  height: 48px;
+  width: 24px;
+  height: 24px;
   margin-bottom: 5px;
 }
 
@@ -381,7 +381,7 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
 .new {
   display: flex;
-  align-items: center;
+  align-items: start;
 }
 
 .rename {
@@ -491,6 +491,7 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 .options {
   display: flex;
   margin-bottom: 10px;
+  text-align: center;
 }
 
 .videoOption {
@@ -525,7 +526,8 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;         
   justify-content: center;
   align-items: center;    
-  flex-direction: column;    
+  flex-direction: column;
+  text-align: center;    
 }
 
 
@@ -556,4 +558,9 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
-
+/* Your CSS file or style block */
+.swapicon {
+  font-size: 30px;
+  margin-left: 20px;
+  cursor: pointer;
+}

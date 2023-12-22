@@ -6,9 +6,6 @@ import { FaTimesCircle } from 'react-icons/fa';
 import { FaRegCirclePlay } from 'react-icons/fa6';
 import { MdDeleteForever, MdOutlineVideoSettings, MdOutlineSendTimeExtension } from 'react-icons/md';
 import { AiOutlineClose } from "react-icons/ai";
-
-
-
 import {
     getCurrentDateTimeString,
     insertHtmlAtPositionInMail,
@@ -409,7 +406,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                                         className="videoOption"
                                         onClick={preview}
                                     >
-                                        {isPlaying ? (
+                                        {displayForPreview()!="none"? (
                                             <FaTimesCircle id="mail_icons" />
                                         ) : (
                                             <FaRegCirclePlay id="mail_icons" />
