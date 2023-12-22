@@ -4,7 +4,12 @@ import API_ENDPOINTS from '../apiConfig.js';
 import { FaDownload } from 'react-icons/fa6';
 import { FaTimesCircle } from 'react-icons/fa';
 import { FaRegCirclePlay } from 'react-icons/fa6';
-import { MdDeleteForever, MdOutlineVideoSettings } from 'react-icons/md';
+import {
+    MdDeleteForever,
+    MdOutlineVideoSettings,
+    MdOutlineSendTimeExtension,
+} from 'react-icons/md';
+import { AiOutlineClose } from 'react-icons/ai';
 
 import {
     getCurrentDateTimeString,
@@ -26,7 +31,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
     const [prev, setPrev] = useState('');
     const [time, setTime] = useState(0);
     const [videoPlayerId, setVideoPlayerId] = useState('');
-    const [videoId,setVideoId] = useState('')
+    const [videoId, setVideoId] = useState('');
     const [countdown, setCountdown] = useState(false);
     const [countTimer, setCountTimer] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
@@ -44,6 +49,8 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
     const [aspectRatio, setAspectRatio] = useState([9, 16]);
     const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
     const [selectedVideoStyle, setSelectedVideoStyle] = useState(null);
+    const [iconsVisible, setIconsVisible] = useState(true);
+
     const handleVideoStyleSelect = (style) => {
         setSelectedVideoStyle(style);
 
@@ -61,7 +68,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         setVideoSettingsOpen(!videoSettingsOpen);
     };
 
-    const handleInsertion = async() => {
+    const handleInsertion = async () => {
         console.log(isLinkedin, 'test linkedin ');
         if (isLinkedin) {
             insertIntoLinkedInMessageWindow(
@@ -69,13 +76,13 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                 selectedChatWindows
             );
         } else {
-            const thumbnail_link=await getThumbnail(videoId);
-            var ret=''
-            if(thumbnail_link!=undefined && thumbnail_link!=null){
-                ret=`<img src='${thumbnail_link}' style={{width: '200px' ,display: 'inline-block'}}/><br>`
+            const thumbnail_link = await getThumbnail(videoId);
+            var ret = '';
+            if (thumbnail_link != undefined && thumbnail_link != null) {
+                ret = `<img src='${thumbnail_link}' style={{width: '200px' ,display: 'inline-block'}}/><br>`;
             }
             insertHtmlAtPositionInMail(
-                ret+`<a href=https://share.vidyard.com/watch/${videoPlayerId}>Play</a>`
+                ret + `<a href=https://share.vidyard.com/watch/${videoPlayerId}>Play</a>`
             );
         }
     };
@@ -125,6 +132,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         setCountTimer(0);
         setCapturing(true);
         setPrev('');
+        setIconsVisible(true);
         try {
             mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
                 mimeType: 'video/webm',
@@ -232,6 +240,12 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         }
     }, [recordedChunks]);
 
+    useEffect(() => {
+        if (capturing) {
+            setIconsVisible(true);
+        }
+    }, [capturing]);
+
     const handleDownload = React.useCallback(() => {
         if (bloburl) {
             const a = document.createElement('a');
@@ -295,9 +309,9 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         return 'inline-block';
     };
 
-
     return (
-        <div className='video-recorder'>
+                <>
+        <div className="video-recorder">
             <div>
                 {!countdown && (
                     <>
@@ -308,7 +322,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                             size="small"
                             disabled={isUploading}
                             id="skoop_record_button"
-                        >
+                            >
                             {capturing ? 'Stop' : 'Rec'}
                         </button>
                         <button className="btn btn-link" onClick={toggleVideoSettings}>
@@ -374,89 +388,107 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                 <div>
                     {!capturing && !isUploading && bloburl && (
                         <>
-                            <div className="options">
-                                <button
-                                    data-mdb-toggle="tooltip"
-                                    data-mdb-placement="bottom"
-                                    title="Download the recorded video"
-                                    className="videoOption"
-                                    onClick={handleDownload}
-                                >
-                                    <FaDownload id="mail_icons" />
-                                </button>
-
-                                <button
-                                    data-mdb-toggle="tooltip"
-                                    data-mdb-placement="bottom"
-                                    title={
-                                        isPlaying
-                                            ? 'Close the Preview video'
-                                            : 'Play the recorded video'
-                                    }
-                                    className="videoOption"
-                                    onClick={preview}
-                                >
-                                    {isPlaying ? (
-                                        <FaTimesCircle id="mail_icons" />
-                                    ) : (
-                                        <FaRegCirclePlay id="mail_icons" />
-                                    )}
-                                </button>
-
-                                <button
-                                    data-mdb-toggle="tooltip"
-                                    data-mdb-placement="bottom"
-                                    title="Delete the video"
-                                    className="delete"
-                                    onClick={() => {
-                                        setPrev('');
-                                        setRecordedChunks([]);
-                                    }}
-                                >
-                                    <MdDeleteForever id="mail_icons" />
-                                </button>
-                            </div>
-
-                            {videoPlayerId !== '' && (
-                                <>
+                            {iconsVisible && (
+                                <div className="options">
                                     <button
-                                      className="btn btn-outline-primary btn-sm"
-                                      data-bs-toggle="tooltip"
-                                      data-bs-placement="bottom"
-                                      title="Export to text area"
-                                      onClick={handleInsertion}
+                                        data-mdb-toggle="tooltip"
+                                        data-mdb-placement="bottom"
+                                        title="Download the recorded video"
+                                        className="videoOption"
+                                        onClick={handleDownload}
                                     >
-                                      Send to Chat
+                                        <FaDownload id="mail_icons" />
                                     </button>
-                                </>
+
+                                    <button
+                                        data-mdb-toggle="tooltip"
+                                        data-mdb-placement="bottom"
+                                        title={
+                                            isPlaying
+                                                ? 'Close the Preview video'
+                                                : 'Play the recorded video'
+                                        }
+                                        className="videoOption"
+                                        onClick={preview}
+                                    >
+                                        {isPlaying ? (
+                                            <FaTimesCircle id="mail_icons" />
+                                        ) : (
+                                            <FaRegCirclePlay id="mail_icons" />
+                                        )}
+                                    </button>
+
+                                    <button
+                                        data-mdb-toggle="tooltip"
+                                        data-mdb-placement="bottom"
+                                        title="Delete the video"
+                                        className="delete"
+                                        onClick={() => {
+                                            setPrev('');
+                                            setRecordedChunks([]);
+                                        }}
+                                    >
+                                        <MdDeleteForever id="mail_icons" />
+                                    </button>
+
+                                    {videoPlayerId !== '' && (
+                                        <>
+                                            <button
+                                                className="videoOption"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="bottom"
+                                                title="Export to text area"
+                                                onClick={handleInsertion}
+                                            >
+                                                <MdOutlineSendTimeExtension id="mail_icons" />
+                                            </button>
+
+                                            <button
+                                                className="videoOption"
+                                                onClick={() => {
+                                                    setIconsVisible(false);
+                                                }}
+                                            >
+                                                <AiOutlineClose id="mail_icons" />
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
                             )}
                         </>
                     )}
                 </div>
-
-                <div>
-                    {prev != '' && (
-                        <div className="previewCard">
-                            {prev !== '' && (
-                                <div className="card">
-                                    <div className="embed-responsive embed-responsive-16by9">
-                                        <video
-                                            className="embed-responsive-item customDynamicDisplay"
-                                            src={prev}
-                                            style={{ display: `${displayForPreview()}` }}
-                                            autoPlay
-                                            muted
-                                            loop
-                                            controls
-                                        ></video>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
+                
             </div>
+            {prev !== '' && (
+  <div className="modal-overlay" onClick={() => setPrev('')}>
+    <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content">
+        <div className="modal-header">
+          <button type="button" className="btn-close" onClick={preview}>
+          </button>
         </div>
+        <div className="modal-body">
+          <video
+            className="embed-responsive-item"
+            src={prev}
+            autoPlay
+            loop
+            controls
+            onClick={(e) => e.stopPropagation()} // Prevent clicks on the video from closing the modal
+          ></video>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+
+
+        </div>
+
+        
+        </>
     );
 };
 
