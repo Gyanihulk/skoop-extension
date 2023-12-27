@@ -145,10 +145,7 @@ const ChatWindowSelection = () => {
 
     if (initialItems.length > 0) {
     return (
-      <div className="container selection-container p-4 my-2">
-      <h8 className="text-center mb-4 fw-bold fst-italic">
-        Tick the Boxes You Wish to Send Message to
-      </h8>
+      <div className="container selection-container p-2">
       <div className="row row-cols-2 g-3 mt-2">
         {initialItems.map((item, index) => (
           <div key={index} className="col">

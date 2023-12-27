@@ -350,76 +350,17 @@ const Library = (props) => {
             </div>
         </div>
     </div>
-        {
-           dirs.map((dir) => {
-            return (
-                    <div className="d-inline-block">
-                        <div
-                            className="customCard"
-                            onMouseEnter={() => setHoveredDir(dir.directory_name)}
-                            onMouseLeave={() => setHoveredDir(null)}
-                        >
-                            <div
-                               className="customContainer"
-                            >
-                                <div
-                                    onClick={() => {
-                                        handleOpen(dir.directory_name);
-                                    }}
-                                    className="customFlexContainer"
-                                >
-                                    <div className="customContainer1">
-                                        <FcFolder className="customFolderIcon" />
-                                    </div>
-                                    <div className="customTextContainer">
-                                        <h7 className="customDirectoryName">{dir.directory_name}</h7>
-                                    </div>
-                                </div>
-                                <div className="new">
-                                    {/* Rename button */}
-                                    {hoveredDir === dir.directory_name && (
-                                    <button
-                                        onClick={() => {
-                                            setDirToRename(dir.directory_name);
-                                        }}
-                                        className="rename"
-                                        data-mdb-toggle="tooltip"
-                                        data-mdb-placement="bottom"
-                                        title="Rename this video"
-                                    >
-                                    <MdOutlineDriveFileRenameOutline/>
-                                    </button>
-                                    )}
-        
-                                    {/* Delete button */}
-                                    {hoveredDir === dir.directory_name && (
-                                    <button
-                                        onClick={async () => {
-                                            await deleteDirectory(dir.directory_name);
-                                        }}
-                                        className="rename"
-                                        data-mdb-toggle="tooltip"
-                                        data-mdb-placement="bottom"
-                                        title="Delete this video"
-                                    >
-                                    <RiDeleteBin6Line/>
-                                    </button>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            );
-        })
-        }
-       {(currentDirectory !== '' || fav) && (
-        <div className="mt-2"> 
-            <button className='customCloseButton mb-3'
-            onClick={handleClose}>
-            Close Folder
-            </button>
-        </div>
-)} */}
+
+    {activeTab === 'favorites' && (
+      <FavoritesTab
+      favorites={favorites}
+      handleLinkInsertion={handleLinkInsertion}
+    />
+ 
+)}
+
+    {activeTab === 'folders' && (
+      <div>
       {/* Render Video Cards for other tabs */}
       {activeTab !== 'favorites' && (
         <div className="container">
