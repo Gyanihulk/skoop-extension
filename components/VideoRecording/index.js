@@ -4,8 +4,13 @@ import API_ENDPOINTS from '../apiConfig.js';
 import { FaDownload } from 'react-icons/fa6';
 import { FaTimesCircle } from 'react-icons/fa';
 import { FaRegCirclePlay } from 'react-icons/fa6';
-import { MdDeleteForever, MdOutlineVideoSettings, MdOutlineSendTimeExtension } from 'react-icons/md';
-import { AiOutlineClose } from "react-icons/ai";
+import {
+    MdDeleteForever,
+    MdOutlineVideoSettings,
+    MdOutlineSendTimeExtension,
+} from 'react-icons/md';
+import { AiOutlineClose } from 'react-icons/ai';
+
 import {
     getCurrentDateTimeString,
     insertHtmlAtPositionInMail,
@@ -26,7 +31,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
     const [prev, setPrev] = useState('');
     const [time, setTime] = useState(0);
     const [videoPlayerId, setVideoPlayerId] = useState('');
-    const [videoId,setVideoId] = useState('')
+    const [videoId, setVideoId] = useState('');
     const [countdown, setCountdown] = useState(false);
     const [countTimer, setCountTimer] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
@@ -43,7 +48,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
     const { getThumbnail } = useContext(MediaUtilsContext);
     const [aspectRatio, setAspectRatio] = useState([9, 16]);
     const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
-    const [selectedVideoStyle, setSelectedVideoStyle] = useState(null);
+    const [selectedVideoStyle, setSelectedVideoStyle] = useState('Vertical Mode');
     const [iconsVisible, setIconsVisible] = useState(true);
 
     const handleVideoStyleSelect = (style) => {
@@ -63,7 +68,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         setVideoSettingsOpen(!videoSettingsOpen);
     };
 
-    const handleInsertion = async() => {
+    const handleInsertion = async () => {
         console.log(isLinkedin, 'test linkedin ');
         if (isLinkedin) {
             insertIntoLinkedInMessageWindow(
@@ -71,13 +76,13 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                 selectedChatWindows
             );
         } else {
-            const thumbnail_link=await getThumbnail(videoId);
-            var ret=''
-            if(thumbnail_link!=undefined && thumbnail_link!=null){
-                ret=`<img src='${thumbnail_link}' style={{width: '200px' ,display: 'inline-block'}}/><br>`
+            const thumbnail_link = await getThumbnail(videoId);
+            var ret = '';
+            if (thumbnail_link != undefined && thumbnail_link != null) {
+                ret = `<img src='${thumbnail_link}' style={{width: '200px' ,display: 'inline-block'}}/><br>`;
             }
             insertHtmlAtPositionInMail(
-                ret+`<a href=https://share.vidyard.com/watch/${videoPlayerId}>Play</a>`
+                ret + `<a href=https://share.vidyard.com/watch/${videoPlayerId}>Play</a>`
             );
         }
     };
@@ -237,7 +242,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
 
     useEffect(() => {
         if (capturing) {
-            setIconsVisible(true); 
+            setIconsVisible(true);
         }
     }, [capturing]);
 
@@ -304,9 +309,9 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         return 'inline-block';
     };
 
-
     return (
-        <div className='video-recorder'>
+                <>
+        <div className="video-recorder">
             <div>
                 {!countdown && (
                     <>
@@ -317,7 +322,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                             size="small"
                             disabled={isUploading}
                             id="skoop_record_button"
-                        >
+                            >
                             {capturing ? 'Stop' : 'Rec'}
                         </button>
                         <button className="btn btn-link" onClick={toggleVideoSettings}>
@@ -406,7 +411,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                                         className="videoOption"
                                         onClick={preview}
                                     >
-                                        {displayForPreview()!="none"? (
+                                        {isPlaying ? (
                                             <FaTimesCircle id="mail_icons" />
                                         ) : (
                                             <FaRegCirclePlay id="mail_icons" />
@@ -444,7 +449,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                                                     setIconsVisible(false);
                                                 }}
                                             >
-                                                <AiOutlineClose id="mail_icons"/>
+                                                <AiOutlineClose id="mail_icons" />
                                             </button>
                                         </>
                                     )}
@@ -453,29 +458,37 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                         </>
                     )}
                 </div>
-                <div>
-                    {prev != '' && (
-                        <div className="previewCard">
-                            {prev !== '' && (
-                                <div className="card">
-                                    <div className="embed-responsive embed-responsive-16by9">
-                                        <video
-                                            className="embed-responsive-item customDynamicDisplay"
-                                            src={prev}
-                                            style={{ display: `${displayForPreview()}` }}
-                                            autoPlay
-                                            muted
-                                            loop
-                                            controls
-                                        ></video>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
+                
             </div>
+            {prev !== '' && (
+  <div className="modal-overlay" onClick={() => setPrev('')}>
+    <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content">
+        <div className="modal-header">
+          <button type="button" className="btn-close" onClick={preview}>
+          </button>
         </div>
+        <div className="modal-body">
+          <video
+            className="embed-responsive-item"
+            src={prev}
+            autoPlay
+            loop
+            controls
+            onClick={(e) => e.stopPropagation()} // Prevent clicks on the video from closing the modal
+          ></video>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+
+
+        </div>
+
+        
+        </>
     );
 };
 

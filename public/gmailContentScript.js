@@ -177,13 +177,13 @@ function createWebcamContainer(title,height,width) {
     stopButton.style.top = '10px';
     stopButton.style.left = '10px';
     container.style.zIndex = '1100000';
-    container.appendChild(stopButton);
+    // container.appendChild(stopButton);
 
     // Create timer display
     const timerDisplay = document.createElement('span');
     timerDisplay.style.position = 'absolute';
     timerDisplay.style.top = '10px';
-    timerDisplay.style.right = '10px';
+    timerDisplay.style.left = '10px';
     timerDisplay.innerText = '00:00';
     container.appendChild(timerDisplay);
 
@@ -221,7 +221,7 @@ function createWebcamContainer(title,height,width) {
         timerDisplay.innerText = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     };
 
-    // Start the timer
+
     container.startTimer = () => {
         if (timerInterval !== null) {
             clearInterval(timerInterval); // Clear existing interval if any
@@ -307,7 +307,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             skoopVideoContainer = createWebcamContainer("title",request.height,request.width);
         }
         skoopVideoContainer.resetTimer();
-        skoopVideoContainer.startTimer();
+        
         skoopVideoContainer.style.display = 'block';
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices
@@ -316,7 +316,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     const video = document.createElement('video');
                     video.id="title"
                     video.srcObject = stream;
+                    skoopVideoContainer.startTimer();
                     video.autoplay = true;
+                    video.muted = true;
                     video.style.height = request.height+"px";
                     video.style.width = request.width+"px";
                     video.style.zIndex = '9998';

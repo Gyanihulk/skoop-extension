@@ -8,6 +8,39 @@ const ChatWindowSelection = () => {
     const [localRefresh,setLocalRefresh]=useState(0);
     const [resetInitialItems,setResetInitialItems]=useState(0);
 
+    const handleSend=()=>{
+
+        const clickSendButtons=(arr)=>{
+          const sendButtons=Array.from(document.getElementsByClassName("msg-form__send-button"));
+          arr.forEach(item=>{
+            const btn=sendButtons[item.index];
+            btn.click();
+          })
+        }
+      
+        try{
+          chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+              const targetTab=tabs[0];
+              if (targetTab) {
+                try{
+                  chrome.scripting.executeScript({
+                    target : {tabId : targetTab.id},
+                    func: clickSendButtons,
+                    args: [selectedChatWindows]
+                  });
+                }catch(err){
+                  console.log("some error occured in executing script",err)
+                }
+              }
+              else{
+                console.log("the target tab is not accessible");
+              }
+          });
+        }catch(err){
+          console.log("some error occured while setting up initial array")
+        }
+    }
+
     function checkForExistenceOfMessageWindow(element) {
         return element.querySelector('.msg-form__contenteditable')!=null
     }
@@ -18,7 +51,11 @@ const ChatWindowSelection = () => {
         var combinedArray=validChatWindows.map((item,index)=>{
             var nameOfRecipient;
             if(item.querySelector('h2').innerText=='New message'){
-                nameOfRecipient=item.querySelector('.app-aware-link').innerText
+              try{
+                nameOfRecipient=item.querySelectorAll('span')[2].innerText;
+              }catch(err){
+                nameOfRecipient="New Message"
+              }
             }
             else nameOfRecipient=item.querySelector('h2').innerText
             return {
@@ -108,7 +145,7 @@ const ChatWindowSelection = () => {
 
     if (initialItems.length > 0) {
     return (
-        <div className="container selection-container p-4 my-2">
+      <div className="container selection-container p-4 my-2">
       <h8 className="text-center mb-4 fw-bold fst-italic">
         Tick the Boxes You Wish to Send Message to
       </h8>
@@ -129,6 +166,9 @@ const ChatWindowSelection = () => {
                 </div>
             </div>
           ))}
+        </div>
+        <div class="d-grid gap-2">
+            <button class="btn btn-primary mt-3" type="button" onClick={handleSend}>SEND</button>
         </div>
       </div>
     );

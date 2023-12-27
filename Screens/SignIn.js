@@ -44,7 +44,7 @@ function SignIn() {
                                         type="password"
                                         className="form-control"
                                         id="password"
-                                        placeholder="password"
+                                        placeholder="Password"
                                         name="password"
                                     />
                                 </div>
@@ -62,11 +62,12 @@ function SignIn() {
                                 <div className="mb-3">
                                     <div class="d-flex justify-content-around">
                                         {' '}
-                                        <FaGoogle size={64} color="red" onClick={() => handleSocialLogin(2)} />
+                                        <FaGoogle size={64} color="red" className="clickable-icon" onClick={() => handleSocialLogin(2)} />
                                         <FaLinkedin
                                             size={64}
                                             color="#0A66C2"
                                             onClick={() => handleSocialLogin(1)}
+                                            className="clickable-icon"
                                         />
                                     </div>
                                 </div>
