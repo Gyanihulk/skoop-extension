@@ -95,7 +95,7 @@ export default function SignUp(props) {
                                     </select>
                                 </div>
                                 <div className="text-center">
-                                    <button type="submit" className="btn btn-color px-5 mb-5 w-100">
+                                    <button type="submit" className="btn btn-primary mb-3 w-100">
                                         Sign Up
                                     </button>
                                 </div>

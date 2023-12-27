@@ -219,7 +219,7 @@ const Library = (props) => {
             <div className="modal-content">
                 <div className="modal-header">
                     <h5 className="modal-title">Enter title</h5>
-                    <button type="button" className="close" onClick={() => { setOpenNewFolder(false) }}>
+                    <button type="button" className="btn btn-outline-dark btn-sm close" onClick={() => { setOpenNewFolder(false) }}>
                         <span>&times;</span>
                     </button>
                 </div>
@@ -227,7 +227,7 @@ const Library = (props) => {
                     <NewFolderInput closePopup={async () => { setOpenNewFolder(false); getDirs() }} />
                 </div>
                 <div className="modal-footer">
-                    <button type="button" onClick={async () => { setOpenNewFolder(false); getDirs() }}>
+                    <button type="button" className='btn btn-primary btn-sm' onClick={async () => { setOpenNewFolder(false); getDirs() }}>
                         Close
                     </button>
                 </div>
@@ -258,17 +258,12 @@ const Library = (props) => {
             </div>
         </div>
     </div>
-    {
-    dirs.length > 0 && (
-        <h4 className="mt-2 mb-3 ">Folders</h4>
-        )
-     }
         {
            dirs.map((dir) => {
             return (
                     <div className="d-inline-block">
                         <div
-                            className="card customCard"
+                            className="customCard"
                             onMouseEnter={() => setHoveredDir(dir.directory_name)}
                             onMouseLeave={() => setHoveredDir(null)}
                         >
@@ -327,7 +322,8 @@ const Library = (props) => {
         }
        {(currentDirectory !== '' || fav) && (
         <div className="mt-2"> 
-            <button className='customCloseButton'>
+            <button className='customCloseButton'
+            onClick={handleClose}>
             Close Folder
             </button>
         </div>
@@ -388,7 +384,7 @@ const Library = (props) => {
                             toggleFavourite(item.id);
                             }}
                         >
-                            {item.is_favourite ? <MdOutlineFavorite className="text-primary" /> : <MdOutlineFavorite />}
+                            {item.is_favourite ? <FaRegStar className="text-primary" /> : <FaRegStar />}
                         </button>
                         </div>
                         )}
