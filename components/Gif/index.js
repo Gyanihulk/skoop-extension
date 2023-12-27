@@ -6,7 +6,8 @@ function GiphyWindow(props) {
   const [search, setSearch] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const [sizeOfGif,setSizeOfGif] = useState(20);
+  
   const handleSearch = async () => {
     try {
       setLoading(true);
@@ -28,10 +29,15 @@ function GiphyWindow(props) {
 
   const handleInsertion = (url) => {
     if (props.appendToBody) {
-      props.appendToBody(`<img src=${url} />`);
+      props.appendToBody(`<img src=${url} style="width: ${sizeOfGif}%; height: auto;" >`);
     } else {
       props.appendToLinkedIn(url);
     }
+  };
+
+  const handleSizeChange = (event) => {
+    const newSize = parseInt(event.target.value);
+    setSizeOfGif(newSize);
   };
 
   const handleKeyPress = (e) => {
@@ -74,6 +80,40 @@ function GiphyWindow(props) {
         {loading && (
           <div className="sbl-circ-ripple"></div>
         )}
+        {results.length>0 && 
+          <div>
+            <label>
+              <input
+                type="radio"
+                name="gifSize"
+                value="20"
+                checked={sizeOfGif === 20}
+                onChange={handleSizeChange}
+              />
+              Small
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="gifSize"
+                value="50"
+                checked={sizeOfGif === 50}
+                onChange={handleSizeChange}
+              />
+              Medium
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="gifSize"
+                value="100"
+                checked={sizeOfGif === 100}
+                onChange={handleSizeChange}
+              />
+              Large
+            </label>
+          </div>
+        }
         <div className="row" style={{ whiteSpace: 'nowrap' }}>
           {results.map((result) => (
             <div key={result.id} className="col-4 col-md-4 col-lg-4 gif-result">
