@@ -1,6 +1,8 @@
 
 import React, { createContext, useEffect, useState } from 'react';
 import API_ENDPOINTS from '../components/apiConfig';
+import toast from 'react-hot-toast';
+
 const MediaUtilsContext = createContext();
 
 export const MediaUtilsProvider = ({ children }) => {
@@ -22,10 +24,30 @@ export const MediaUtilsProvider = ({ children }) => {
     }
  
 
-  
+    const deleteVideo=async (id)=>{
+      const toastId=toast.loading("Deleting video");
+      try{
+          
+          const response = await fetch(`${API_ENDPOINTS.deleteVideo}${id}`,{
+              method: "DELETE",
+              headers:{
+                  "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                  'Content-Type': 'application/json'
+              }
+          })
+          if(!response.ok){
+            throw Error;
+          }
+          toast.success("Video deleted",{id: toastId});
+          return true;
+      }catch(err){
+          toast.error("Could not delete",{id: toastId});
+          return false;
+      }
+    }
 
   return (
-    <MediaUtilsContext.Provider value={{ getThumbnail}}>
+    <MediaUtilsContext.Provider value={{ getThumbnail,deleteVideo}}>
       {children}
     </MediaUtilsContext.Provider>
   );

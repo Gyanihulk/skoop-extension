@@ -13,7 +13,7 @@ const LinkedInCom = () => {
         title="Go to any LinkedIn profile page & click this button to fetch its details."
         onClick={() => navigateToPage("ContactPage")}
       >
-        Access Contact Details
+        Save Contact Details
       </button>
 
      {/* <div className="container top-margins">

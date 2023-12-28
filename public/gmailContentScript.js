@@ -50,7 +50,7 @@ function injectIframe() {
 
     // Append the iframe and close button to the container
     container.appendChild(iframe);
-    container.appendChild(closeButton);
+    // container.appendChild(closeButton);
 
     // Append the container to the body of the document
     document.body.appendChild(container);
@@ -436,3 +436,17 @@ function handleMutations(mutationsList) {
     subtree: true 
   });
   
+
+// adding event listner to find the last selected element for insertion at Gmail
+
+document.addEventListener('focusin', (event) => {
+  console.log("focusing on ",event.target);
+
+  chrome.runtime.sendMessage({
+    action: 'elementRemoved',
+    element: event.target
+  });
+
+});
+
+// .............................................................................//

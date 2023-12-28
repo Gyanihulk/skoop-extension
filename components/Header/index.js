@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { BsArrowRightCircle } from "react-icons/bs";
-import { MdAccountCircle, MdNotificationsActive, MdOutlineVideoSettings } from "react-icons/md";
+import { MdAccountCircle, MdNotificationsActive, MdClose } from "react-icons/md";
 import GlobalStatesContext from "../../contexts/GlobalStates";
 import { FaRegCalendarCheck } from "react-icons/fa";
 import ScreenContext from "../../contexts/ScreenContext";
@@ -39,7 +39,34 @@ export default function Header() {
   }
 
   const closeExtension=()=>{
-    chrome.runtime.sendMessage({ message: 'closeExtension' });
+    // chrome.runtime.sendMessage({ message: 'closeExtension' });
+    const executeClose=()=>{
+      const container=document.getElementById('skoop-extension-container');
+      container.style.display = 'none';
+    }
+
+    try{
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          const targetTab=tabs[0];
+          console.log("the target tab",targetTab);
+          if (targetTab) {
+            console.log("the tab exists")
+            try{
+              chrome.scripting.executeScript({
+                target : {tabId : targetTab.id},
+                func: executeClose
+              })
+            }catch(err){
+              console.log("some error occured in executing script",err)
+            }
+          }
+          else{
+            console.log("the target tab is not accessible");
+          }
+      });
+    }catch(err){
+        console.log("some error occured while setting up initial array")
+    }
   }
 
   return (
@@ -55,32 +82,6 @@ export default function Header() {
           <span className="navbar-brand brand-text">Skoop</span>
 
           <div className="d-flex ml-auto align-items-center">
-            {/* Video Settings Dropdown */}
-            {/* <div className={`nav-item dropdown ${videoSettingsOpen ? 'show' : ''}`}>
-              <button className="btn btn-link" onClick={toggleVideoSettings}>
-                <MdOutlineVideoSettings className="icon-style-normal" />
-              </button>
-              <div className={`dropdown-menu ${videoSettingsOpen ? 'show' : ''}`}>
-                <button
-                  className={`dropdown-item ${selectedVideoStyle === 'Vertical Mode' ? 'active' : ''}`}
-                  onClick={() => handleVideoStyleSelect('Vertical Mode')}
-                >
-                  Vertical (9:16)
-                </button>
-                <button
-                  className={`dropdown-item ${selectedVideoStyle === 'Horizontal' ? 'active' : ''}`}
-                  onClick={() => handleVideoStyleSelect('Horizontal')}
-                >
-                  Horizontal (16:9)
-                </button>
-                <button
-                  className={`dropdown-item ${selectedVideoStyle === 'Square' ? 'active' : ''}`}
-                  onClick={() => handleVideoStyleSelect('Square')}
-                >
-                  Square (1:1)
-                </button>
-              </div>
-            </div> */}
 
             {/* Calendar Link */}
             <button
@@ -117,6 +118,14 @@ export default function Header() {
                 </button>
               </div>
             </div>
+            <button className="btn btn-link"
+              data-mdb-toggle="tooltip"
+              data-mdb-placement="bottom"
+              title="Close"
+              onClick={closeExtension}
+            >
+              <MdClose className="icon-style-normal" />
+            </button>
           </div>
         </div>
       </nav>
