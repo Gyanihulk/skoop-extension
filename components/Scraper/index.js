@@ -18,6 +18,19 @@ const Scrape = async(commandType) => {
     }
 
     const executeScrapingFromContactInfoOverlay=()=>{
+      try{
+        const anchorTags = document.getElementsByTagName('a');
+        let contactLink;
+        for (let i = 0; i < anchorTags.length; i++) {
+          if (anchorTags[i].innerText === 'Contact info') {
+            contactLink = anchorTags[i];
+            break;
+          }
+        }
+        contactLink.click()
+      }catch(err){
+        console.log("could not open contact info overlay")
+      }
       var email='';
       var website='';
       var twitter='';
@@ -59,11 +72,12 @@ const Scrape = async(commandType) => {
                 resolve(result);
               }catch(err){
                 console.log("some error occured in executing script",err)
-                resolve("an error occured");
+                resolve(["","","","","",""]);
               }
             }
             else{
               console.log("the target tab is not accessible");
+              resolve(["","","","","",""]);
             }
         });
     })

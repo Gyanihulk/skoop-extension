@@ -13,6 +13,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 
 import {
     getCurrentDateTimeString,
+    handleCopyToClipboard,
     insertHtmlAtPositionInMail,
     insertIntoLinkedInMessageWindow,
     replaceInvalidCharacters,
@@ -22,6 +23,7 @@ import toast from 'react-hot-toast';
 
 import ChatWindowSelection from '../ChatWindowSelection/index.js';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
+import { IoLink } from 'react-icons/io5';
 const videoResizeConstant = 25;
 const RecordingButton = ({ aspectR, setUrlAtHome }) => {
     const webcamRef = useRef(null);
@@ -45,7 +47,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [bloburl, setBlobUrl] = useState(null);
     const { setGlobalRefresh, isLinkedin, selectedChatWindows } = useContext(GlobalStatesContext);
-    const { getThumbnail } = useContext(MediaUtilsContext);
+    const { getThumbnail,deleteVideo } = useContext(MediaUtilsContext);
     const [aspectRatio, setAspectRatio] = useState([9, 16]);
     const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
     const [selectedVideoStyle, setSelectedVideoStyle] = useState(null);
@@ -309,6 +311,13 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         return 'inline-block';
     };
 
+    const handleDeleteVideo=async()=>{
+        const isDeleted=await deleteVideo(videoId);
+        if(isDeleted){
+            setIconsVisible(false);
+        }
+    }
+
     return (
                 <>
         <div className="video-recorder">
@@ -403,6 +412,18 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                                     <button
                                         data-mdb-toggle="tooltip"
                                         data-mdb-placement="bottom"
+                                        title="copy the video link"
+                                        className="videoOption"
+                                        onClick={() => {
+                                            handleCopyToClipboard(`https://share.vidyard.com/watch/${videoPlayerId}`)
+                                        }}
+                                    >
+                                        <IoLink id="mail_icons" />
+                                    </button>
+                                    
+                                    <button
+                                        data-mdb-toggle="tooltip"
+                                        data-mdb-placement="bottom"
                                         title={
                                             isPlaying
                                                 ? 'Close the Preview video'
@@ -423,10 +444,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                                         data-mdb-placement="bottom"
                                         title="Delete the video"
                                         className="delete"
-                                        onClick={() => {
-                                            setPrev('');
-                                            setRecordedChunks([]);
-                                        }}
+                                        onClick={handleDeleteVideo}
                                     >
                                         <MdDeleteForever id="mail_icons" />
                                     </button>

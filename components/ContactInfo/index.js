@@ -11,10 +11,10 @@ import { FaRegUserCircle } from "react-icons/fa";
 import toast from 'react-hot-toast';
 
 const ContactInfoCard = () => {
-  const [email1, setEmail1] = useState('');
+  const [email, setEmail] = useState('');
   const [linkedin, setlinkedin] = useState('');
-  const [phone2, setPhone2] = useState('');
-  const [website1, setWebsite1] = useState('');
+  const [phone, setPhone] = useState('');
+  const [website, setWebsite] = useState('');
   const [notes, setNotes] = useState('');
   const [profileName, setProfileName] = useState('');
   const [profileImage,setProfileImage]=useState('');
@@ -33,10 +33,10 @@ const ContactInfoCard = () => {
           "Content-type": "application/json; charset=UTF-8"
         },
         body: JSON.stringify({
-          personal_email: email1,
+          personal_email: email,
           name: profileName,
           linkedIn_url: linkedin,
-          website_url: website1,
+          website_url: website,
           image: profileImage,
           profile_desc: profileDesc,
           address: profileAddress,
@@ -54,62 +54,82 @@ const ContactInfoCard = () => {
     }
   };
 
+  const cleanTheSlate=()=>{
+    setEmail('');
+    setlinkedin('');
+    setPhone('');
+    setWebsite('');
+    setNotes('');
+    setProfileName('');
+    setProfileImage('');
+    setProfileDesc('');
+    setProfileAddress('');
+    setProfileId(null);
+  }
+
   const getProfileDetails=async()=>{
+    
+    cleanTheSlate();
     var linkedIn_url='';
+    var scrapedInfo1;
+    var scrapedInfo2;
     try{
-      var scrapedInfo = await Scrape("ProfilePage");
-      scrapedInfo=scrapedInfo.map(item=>{
+      scrapedInfo1 = await Scrape("ProfilePage");
+      scrapedInfo1=scrapedInfo1.map(item=>{
         return item.replace(/[^\x00-\x7F]/g, '');
       })
-      setProfileName(scrapedInfo[0]);
-      setProfileImage(scrapedInfo[1]);
-      setProfileDesc(scrapedInfo[2]);
-      setlinkedin(scrapedInfo[3]);
-      setProfileAddress(scrapedInfo[4]);
-      linkedIn_url=scrapedInfo[3];
     }catch(err){
       console.log("error fetching scraped info from profile page")
     }
     try{
-      var scrapedInfo = await Scrape("ContactInfoOverlay");
-      scrapedInfo=scrapedInfo.map(item=>{
+      scrapedInfo2 = await Scrape("ContactInfoOverlay");
+      scrapedInfo2=scrapedInfo2.map(item=>{
         return item.replace(/[^\x00-\x7F]/g, '');
       })
-      setEmail1(scrapedInfo[0]);
-      setWebsite1(scrapedInfo[1]);
-      setPhone2(scrapedInfo[3]);
-      setlinkedin(scrapedInfo[4]);
-      linkedIn_url=scrapedInfo[4];
     }catch(err){
       console.log("could not scrape from overlay",err);
     }
-    if(linkedIn_url==null || linkedIn_url=='' ){
-      return 
-    }
-    try{
-      var contactDetails=await fetch(API_ENDPOINTS.skoopCrmGetAllData+"?"
-      +new URLSearchParams({ linkedIn_url: linkedIn_url })
-        ,{
-        method: "GET",
-        headers: {
-          "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-          "Content-type": "application/json; charset=UTF-8"
+
+    linkedIn_url = scrapedInfo1[3] || scrapedInfo2[4];
+
+    if((linkedIn_url==null || linkedIn_url=='')==false){
+      try{
+        var contactDetails=await fetch(API_ENDPOINTS.skoopCrmGetAllData+"?"
+        +new URLSearchParams({ linkedIn_url: linkedIn_url })
+          ,{
+          method: "GET",
+          headers: {
+            "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+            "Content-type": "application/json; charset=UTF-8"
+          }
+        })
+        contactDetails=await contactDetails.json();
+        console.log("the fetched contact details",contactDetails)
+        if(contactDetails.length>0){
+          const person=contactDetails[0];
+          setProfileName(person.name);
+          setEmail(person.personal_email);
+          setWebsite(person.website_url);
+          setProfileDesc(person.profile_desc);
+          setProfileAddress(person.address);
+          setProfileId(person.id);
         }
-      })
-      contactDetails=await contactDetails.json();
-      console.log("the fetched contact details",contactDetails)
-      if(contactDetails.length>0){
-        const person=contactDetails[0];
-        setProfileName(person.name);
-        setEmail1(person.personal_email);
-        setWebsite1(person.website_url);
-        setProfileDesc(person.profile_desc);
-        setProfileAddress(person.address);
-        setProfileId(person.id);
-      } 
-    }catch(err){
-      console.log("could not fetch contact info details",err)
+      }catch(err){
+        console.log("could not fetch contact info details",err)
+      }
     }
+    
+
+    // lastest scraped info
+    setProfileName(scrapedInfo1[0]);
+    setProfileImage(scrapedInfo1[1]);
+    setProfileDesc(scrapedInfo1[2]);
+    setlinkedin(scrapedInfo1[3]);
+    setProfileAddress(scrapedInfo1[4]);
+    setEmail(scrapedInfo2[0]);
+    setWebsite(scrapedInfo2[1]);
+    setPhone(scrapedInfo2[3]);
+    setlinkedin(scrapedInfo2[4]);
   }
 
   useEffect(()=>{
@@ -157,8 +177,8 @@ const ContactInfoCard = () => {
                   type="text"
                   className="form-control"
                   placeholder="E-mail "
-                  value={email1}
-                  onChange={(e) => setEmail1(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
@@ -203,8 +223,8 @@ const ContactInfoCard = () => {
                   type="text"
                   className="form-control"
                   placeholder="Phone number"
-                  value={phone2}
-                  onChange={(e) => setPhone2(e.target.value)}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                 />
               </div>
             </div>
@@ -221,8 +241,8 @@ const ContactInfoCard = () => {
                   type="text"
                   className="form-control"
                   placeholder="Website URL "
-                  value={website1}
-                  onChange={(e) => setWebsite1(e.target.value)}
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
                 />
               </div>
             </div>

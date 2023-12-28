@@ -7,7 +7,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { FaStop } from "react-icons/fa";
 import { IoLink } from "react-icons/io5";
 import API_ENDPOINTS from '../apiConfig.js';
-import {getCurrentDateTimeString, replaceInvalidCharacters} from '../../utils/index.js';
+import {getCurrentDateTimeString, handleCopyToClipboard, replaceInvalidCharacters} from '../../utils/index.js';
 import { insertIntoLinkedInMessageWindow, insertHtmlAtPositionInMail } from '../../utils/index.js';
 import { PiExportFill } from "react-icons/pi";
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
@@ -28,7 +28,7 @@ const VoiceVisualization = (props) => {
   const [videoId,setVideoId] = useState('');
   const [iconsVisible, setIconsVisible] = useState(true);
   const { globalRefresh, setGlobalRefresh,isLinkedin,selectedChatWindows } = useContext(GlobalStatesContext)
-  const { getThumbnail } = useContext(MediaUtilsContext);
+  const { getThumbnail,deleteVideo } = useContext(MediaUtilsContext);
   
   useEffect(() => {
     let intervalId
@@ -168,6 +168,13 @@ const VoiceVisualization = (props) => {
     marginRight: '20px',
   };
 
+  const handleDeleteVideo=async()=>{
+    const isDeleted=await deleteVideo(videoId);
+    if(isDeleted){
+        setVisualizationUrl('')
+        setIconsVisible(false);
+    }
+  }
 
   return (
     <div id="homeDiv">
@@ -203,19 +210,22 @@ const VoiceVisualization = (props) => {
           title="Download Video"
           style={iconaudio} onClick={downloadAudio} />
   
-          <MdDeleteForever 
-          data-mdb-toggle="tooltip"
-          data-mdb-placement="bottom"
-          title="Delete File"
-          style={iconaudio} onClick={() => setVisualizationUrl('')} />
-
           {videoPlayerId &&
             <> 
+
+              <MdDeleteForever 
+              data-mdb-toggle="tooltip"
+              data-mdb-placement="bottom"
+              title="Delete File"
+              style={iconaudio} onClick={handleDeleteVideo} />
+              
               <IoLink
               data-mdb-toggle="tooltip"
               data-mdb-placement="bottom"
               title="Copy Link"
-              style={iconaudio} onClick={() => {navigator.clipboard.writeText(`https://share.vidyard.com/watch/${videoPlayerId}`)}}
+              style={iconaudio} onClick={() => {
+                handleCopyToClipboard(`https://share.vidyard.com/watch/${videoPlayerId}`)
+              }}
               />
 
               <PiExportFill

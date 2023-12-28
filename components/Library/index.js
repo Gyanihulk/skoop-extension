@@ -12,6 +12,7 @@ import API_ENDPOINTS from '../apiConfig.js';
 import { NewFolderInput } from '../UserInput/index.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
+import { handleCopyToClipboard } from '../../utils/index.js';
 
 const Library = (props) => {
     const [links,setLinks]= useState([])
@@ -363,7 +364,7 @@ const Library = (props) => {
                             title="Copy to clipboard"
                             className="mediaIcon"
                             onClick={() => {
-                            navigator.clipboard.writeText(`${item.link}`);
+                                handleCopyToClipboard(`${item.link}`);
                             }}
                         >
                             <GoCopy />
