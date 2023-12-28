@@ -11,25 +11,6 @@ import ChatComponent from '../components/ChatWindow/index.js'
 import ChatWindowSelection from '../components/ChatWindowSelection/index.js';
 const Homepage = (props) => {
   const {setIsLinkedin,isLinkedin,setLatestVideoUrl} = useContext(GlobalStatesContext); 
-  const [isRecording, setIsRecording] = useState(true);
-
-  const toggleComponent = () => {
-    setIsRecording(!isRecording);
-  }; 
-
-  const setLatestVideoUrlHandler = (input) => {
-    setLatestVideoUrl(input);
-  };
-
-  const message = { message: 'HomePage',width:"400px",height:"600px" };
-
-  // Send the message to the background script
-  chrome.runtime.sendMessage(message, function(response) {
-    console.log('Received response:', response);
-    if(response && response?.url.startsWith("www.linkedin.com")){
-      setIsLinkedin(true)
-    }
-  });
 
   function convertArrayOfObjectsToCSV(data) {
     const header = Object.keys(data[0]).join(',') + '\n';
@@ -62,15 +43,22 @@ const Homepage = (props) => {
       alert("some error occured while exporting csv",err)
     }
   }
- 
-   const hostUrl = new URL(window.location.href).hostname;
-    console.log(window.location.href)
-      if(hostUrl.startsWith("www.linkedin.com")){
-    
-        setIsLinkedin(true)
-        console.log(hostUrl,"setting linkein true",isLinkedin);
-      }
-   console.log(isLinkedin,"linkedin")
+  
+  useEffect(()=>{
+    try{
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          const targetTab=tabs[0];
+          if (targetTab.url.includes("linkedin")) {
+            setIsLinkedin(true);
+          }
+          else{
+            console.log("the target tab is not accessible");
+          }
+      });
+    }catch(err){
+        console.log("some error occured while setting up initial array")
+    }
+  },[])
    
   return (
     <div className="background-color">
@@ -92,8 +80,8 @@ const Homepage = (props) => {
       {isLinkedin  &&
           <>
           <LinkedInCom/>
-          <ChatWindowSelection/>
           <ChatComponent/>
+          <ChatWindowSelection/>
           </>
       } 
     </div>

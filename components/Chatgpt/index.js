@@ -78,7 +78,7 @@ const ChatGpt = ({ appendToBody }) => {
           <input
             type="text"
             className="form-control"
-            placeholder="Message ChatGPT..."
+            placeholder="Ask ChatGPT..."
             name="cgpt"
             value={cgpt}
             onChange={handleChange}
