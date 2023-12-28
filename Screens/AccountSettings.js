@@ -1,6 +1,7 @@
 import React, { useCallback, useState ,useEffect } from 'react';
 import { TbUserEdit } from "react-icons/tb";
 import { FaRegEdit } from "react-icons/fa";
+import { FaUserEdit } from "react-icons/fa";
 import { IoCheckmarkDoneSharp, IoArrowBack, IoClose } from "react-icons/io5";
 import API_ENDPOINTS from '../components/apiConfig'
 
@@ -28,7 +29,7 @@ const AccountProfile = ({ userData }) => (
         />
         <label htmlFor="contained-button-file">
           <button className="btn btn-link" startIcon={<TbUserEdit/>}>
-            Change Picture
+          <FaUserEdit/>
           </button>
         </label>
       </div>

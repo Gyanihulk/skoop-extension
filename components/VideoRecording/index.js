@@ -68,6 +68,25 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         setVideoSettingsOpen(!videoSettingsOpen);
     };
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (videoSettingsOpen && !event.target.closest('.dropdown-menu')) {
+                setVideoSettingsOpen(false);
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [videoSettingsOpen]);
+
+    const handleIconClick = (event) => {
+        event.stopPropagation();
+        toggleVideoSettings();
+    };
+
     const handleInsertion = async () => {
         console.log(isLinkedin, 'test linkedin ');
         if (isLinkedin) {
@@ -321,12 +340,13 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                             onClick={handleClick2}
                             size="small"
                             disabled={isUploading}
+                            title='Record Video'
                             id="skoop_record_button"
                             >
                             {capturing ? 'Stop' : 'Rec'}
                         </button>
-                        <button className="btn btn-link" onClick={toggleVideoSettings}>
-                            <MdOutlineVideoSettings className="icon-style-normal" />
+                        <button className="btn btn-link" onClick={handleIconClick}>
+                            <MdOutlineVideoSettings className="icon-style-normal" title='Select the video orientation/Aspect Ratio' />
                         </button>
                         <div className={`dropdown-menu ${videoSettingsOpen ? 'show' : ''}`}>
                             <button

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { BsArrowRightCircle } from "react-icons/bs";
 import { MdAccountCircle, MdNotificationsActive, MdOutlineVideoSettings } from "react-icons/md";
 import GlobalStatesContext from "../../contexts/GlobalStates";
@@ -26,6 +26,20 @@ export default function Header() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileOpen && !event.target.closest('.custom')) {
+        setProfileOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [profileOpen]);
 
   
 
