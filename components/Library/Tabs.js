@@ -1,9 +1,11 @@
 // Tabs.js
 import React from 'react';
 import { LuPlus } from "react-icons/lu";
+import VideoContainer from './VideoContainer';
 
 const Tabs = ({ activeTab, handleTabChange, handleNewTab, folders }) => (
   <div className="container">
+    {console.log(folders,"from tabs")}
     <div className="row">
       <div className="col-12">
         <div className="d-flex overflow-auto">
@@ -18,15 +20,7 @@ const Tabs = ({ activeTab, handleTabChange, handleNewTab, folders }) => (
                 Favorites
               </a>
             </li>
-            <li className="nav-item">
-              <a
-                className={`nav-link ${activeTab === 'folders' ? 'active' : ''}`}
-                onClick={() => handleTabChange('folders')}
-                href="#"
-              >
-                Media
-              </a>
-            </li>
+        
 
             {/* Dynamically generated tabs from folders */}
             {folders.map((folder) => (
@@ -40,6 +34,7 @@ const Tabs = ({ activeTab, handleTabChange, handleNewTab, folders }) => (
                 </a>
               </li>
             ))}
+
 
             {/* New tab (folder) button */}
             <li className="nav-item">

@@ -17,6 +17,7 @@ import { toast } from 'react-hot-toast';
 import FavoritesTab from './FavoritesTab.js';
 import Tabs from './Tabs.js';
 import VideoCard from './VideoCard.js';
+import VideoContainer from './VideoContainer.jsx';
 
 const Library = (props) => {
     const [links,setLinks]= useState([])
@@ -362,7 +363,7 @@ const Library = (props) => {
     {activeTab === 'folders' && (
       <div>
       {/* Render Video Cards for other tabs */}
-      {activeTab !== 'favorites' && (
+      {activeTab !== 'favorites' && links.length>0 &&(
         <div className="container">
           <div className="row">
             {links.map((item) => (
@@ -379,6 +380,11 @@ const Library = (props) => {
       )}
     </div>
     )}
+
+    <VideoContainer folderName={activeTab}    
+                 handleLinkInsertion={handleLinkInsertion}
+                 deleteVideo={deleteVideo}
+                toggleFavourite={toggleFavourite}/>
 </div>
   )
 }
