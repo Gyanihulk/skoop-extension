@@ -80,17 +80,7 @@ const Homepage = (props) => {
   return (
     <div className="background-color">
       <div className="d-flex my-4 justify-content-center mt-8">
-      <RecordingButton
-        setUrlAtHome={(input) => {
-        setLatestVideoUrl(input);
-        }}
-      />
-      <div className="mx-4"></div>
-        <VoiceVisualization
-        setUrlAtHome={(input) => {
-        setLatestVideoUrl(input);
-        }}
-      />
+      <RecordingButton/>
     </div>
        
     {!isLinkedin && <EmailComposer />}

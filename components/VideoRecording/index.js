@@ -41,7 +41,7 @@ const RecordingButton = () => {
     const [iconsVisible, setIconsVisible] = useState(true);
 
     const { setGlobalRefresh, isLinkedin, selectedChatWindows } = useContext(GlobalStatesContext);
-    const { getThumbnail } = useContext(MediaUtilsContext);
+    const { getThumbnail,deleteVideo } = useContext(MediaUtilsContext);
 
     const handleVideoStyleSelect = (style) => {
         setSelectedVideoStyle(style);
@@ -144,6 +144,14 @@ const RecordingButton = () => {
     }, [capturing]);
 
     //useable functions
+
+    const handleDeleteVideo=async()=>{
+        const isDeleted=await deleteVideo(videoId);
+        if(isDeleted){
+            setIconsVisible(false);
+        }
+    }
+
     const handleDownload = React.useCallback(() => {
         if (bloburl) {
             const a = document.createElement('a');
@@ -293,7 +301,13 @@ const RecordingButton = () => {
                         )}
                     </div>
                     <div class="col-auto">
-                        <VoiceVisualization setIconsVisible={setIconsVisible} setBlobUrl={setBlobUrl} setIsUploading={setIsUploading} setCapturing={setCapturing}/>
+                        <VoiceVisualization 
+                        setIconsVisible={setIconsVisible} 
+                        setBlobUrl={setBlobUrl}
+                        setIsUploading={setIsUploading}
+                        setCapturing={setCapturing}
+                        setVideoPlayerId={setVideoPlayerId}
+                        setVideoId={setVideoId}/>
                     </div>
                 </div>
             </div>
@@ -347,9 +361,7 @@ const RecordingButton = () => {
                                         data-mdb-placement="bottom"
                                         title="Delete the video"
                                         className="delete"
-                                        onClick={() => {
-                                            setPrev('');
-                                        }}
+                                        onClick={handleDeleteVideo}
                                     >
                                         <MdDeleteForever id="mail_icons" />
                                     </button>

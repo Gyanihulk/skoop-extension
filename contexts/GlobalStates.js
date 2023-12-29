@@ -18,12 +18,11 @@ useEffect(()=>{},[globalRefresh])
 
   return (
     <GlobalStatesContext.Provider value={{ globalRefresh, setGlobalRefresh ,isLinkedin,
-    setIsLinkedin,
-    selectedChatWindows,setSelectedChatWindows,setLatestVideoUrl,latestVideoUrl,scraperPage,setScraperPage}}>
       setIsLinkedin,
       selectedChatWindows,setSelectedChatWindows,
       setLatestVideoUrl,latestVideoUrl,
-      isProfilePage,setIsProfilePage
+      isProfilePage,setIsProfilePage,
+      scraperPage,setScraperPage
     }}>
       {children}
     </GlobalStatesContext.Provider>
