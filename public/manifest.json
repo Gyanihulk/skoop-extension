@@ -18,7 +18,8 @@
     "tabs" ,"<all_urls>", "scripting", "https://mail.google.com/",
     "https://www.linkedin.com/",
     "activeTab",
-    "storage"
+    "storage",
+    "clipboardWrite"
   ],
   "web_accessible_resources": [
     {

@@ -1,7 +1,9 @@
 import React, { useContext } from 'react';
 import ScreenContext from '../../contexts/ScreenContext';
+import GlobalStatesContext from '../../contexts/GlobalStates';
 
 const LinkedInCom = () => {
+  const { setScraperPage,scraperPage } = useContext(GlobalStatesContext);
   const { navigateToPage } = useContext(ScreenContext);
   return (
     <>
@@ -11,9 +13,9 @@ const LinkedInCom = () => {
         data-mdb-toggle="tooltip"
         data-mdb-placement="top"
         title="Go to any LinkedIn profile page & click this button to fetch its details."
-        onClick={() => navigateToPage("ContactPage")}
+        onClick={() => {navigateToPage("ContactPage");setScraperPage(!scraperPage)}}
       >
-        Access Contact Details
+        Save Contact Details
       </button>
     </>
   );

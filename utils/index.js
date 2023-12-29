@@ -141,3 +141,36 @@ export function getCurrentDateTimeString() {
   
     return dateString;
 }
+
+export const handleCopyToClipboard=(dataToCopy)=>{
+  console.log("inside copy to clipboard procedure")
+
+  const executeCopy=(data)=>{
+    console.log("the data to copy inside executeCopy",data)
+    navigator.clipboard.writeText(data);
+  }
+
+  try{
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const targetTab=tabs[0];
+        if (targetTab) {
+          try{
+            chrome.scripting.executeScript({
+              target : {tabId : targetTab.id},
+              func: executeCopy,
+              args: [dataToCopy]
+            });
+          }catch(err){
+            console.log("some error occured in executing script",err)
+          }
+        }
+        else{
+          console.log("the target tab is not accessible");
+        }
+    });
+    return true;
+  }catch(err){
+    console.log("some error occured while setting up initial array")
+    return false;
+  }
+}

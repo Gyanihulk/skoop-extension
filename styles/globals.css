@@ -522,13 +522,7 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 .selection-container {
   width: 92%;
 }
-.video-recorder {
-  display: flex;         
-  justify-content: center;
-  align-items: center;    
-  flex-direction: column;
-  text-align: center;    
-}
+
 
 
 /*home page audio/video toggle icon*/

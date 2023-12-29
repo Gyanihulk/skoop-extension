@@ -1,249 +1,184 @@
-import React, { useState, useEffect,useContext } from 'react';
-import { AiFillAudio } from "react-icons/ai";
+import React, { useState, useEffect, useContext } from 'react';
+import { AiFillAudio } from 'react-icons/ai';
 import { UserInput } from '../UserInput/index.js';
-import { MdFileUpload } from "react-icons/md";
-import { IoMdDownload } from "react-icons/io";
-import { MdDeleteForever } from "react-icons/md";
-import { FaStop } from "react-icons/fa";
-import { IoLink } from "react-icons/io5";
+import { MdFileUpload } from 'react-icons/md';
+import { IoMdDownload } from 'react-icons/io';
+import { MdDeleteForever } from 'react-icons/md';
+import { FaStop } from 'react-icons/fa';
+
 import API_ENDPOINTS from '../apiConfig.js';
-import {getCurrentDateTimeString, replaceInvalidCharacters} from '../../utils/index.js';
+import { getCurrentDateTimeString, replaceInvalidCharacters } from '../../utils/index.js';
 import { insertIntoLinkedInMessageWindow, insertHtmlAtPositionInMail } from '../../utils/index.js';
-import { PiExportFill } from "react-icons/pi";
+import { PiExportFill } from 'react-icons/pi';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import toast from 'react-hot-toast';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose } from 'react-icons/ai';
 
-const VoiceVisualization = (props) => {
-  const [mediaRecorder, setMediaRecorder] = useState(null);
-  const [visualizationUrl, setVisualizationUrl] = useState('');
-  const [isRecording, setIsRecording] = useState(false);
-  const [isTakingInput,setIsTakingInput]= useState(false);
-  const [isUploading,setIsUploading] = useState(false)
-  const [showSuccess,setShowSuccess]= useState(false);
-  const [time,setTime]=useState(0);
-  const [duration,setDuration]=useState(0);
-  const [videoPlayerId,setVideoPlayerId]=useState(null);
-  const [videoId,setVideoId] = useState('');
-  const [iconsVisible, setIconsVisible] = useState(true);
-  const { globalRefresh, setGlobalRefresh,isLinkedin,selectedChatWindows } = useContext(GlobalStatesContext)
-  const { getThumbnail } = useContext(MediaUtilsContext);
-  
-  useEffect(() => {
-    let intervalId
-    if (isRecording) {
-      intervalId = setInterval(() => setTime(time + 1), 1000);
-      if(time==60){
-        stopRecording();
-      }
+const VoiceVisualization = ({setIconsVisible, setBlobUrl ,setIsUploading ,setCapturing}) => {
+    const [mediaRecorder, setMediaRecorder] = useState(null);
+    const [visualizationUrl, setVisualizationUrl] = useState('');
+    const [isRecording, setIsRecording] = useState(false);
+    const [isTakingInput, setIsTakingInput] = useState(false);
+    const [time, setTime] = useState(0);
+    const [duration, setDuration] = useState(0);
+
+    const { globalRefresh, setGlobalRefresh, isLinkedin, selectedChatWindows } =
+        useContext(GlobalStatesContext);
+    const { getThumbnail } = useContext(MediaUtilsContext);
+
+    useEffect(() => {
+        let intervalId;
+        if (isRecording) {
+            intervalId = setInterval(() => setTime(time + 1), 1000);
+            if (time == 60) {
+                stopRecording();
+            }
+        }
+        return () => clearInterval(intervalId);
+    }, [isRecording, time]);
+
+    useEffect(() => {
+        if (visualizationUrl != '') {
+            console.log('handle Share in voice memo called');
+            handleShare(getCurrentDateTimeString(), 'Media');
+        }
+    }, [visualizationUrl]);
+
+
+
+    const handleShare = async (audioTitle, directoryName) => {
+        try {
+            setCapturing(false)
+            setIsUploading(true)
+            var title1 = audioTitle;
+            audioTitle = replaceInvalidCharacters(audioTitle + `_${Date.now()}`);
+            const blobres = await fetch(visualizationUrl);
+            const blob = await blobres.blob();
+            const audioUrl = URL.createObjectURL(blob);
+            setBlobUrl(audioUrl)
+            const formData = new FormData();
+            let file = new File([blob], 'recording');
+            formData.append('data', file, `${audioTitle}.wav`);
+            const customHeaders = new Headers();
+            customHeaders.append('title', audioTitle);
+            customHeaders.append('directory_name', directoryName);
+            customHeaders.append('duration', duration);
+            customHeaders.append('type', 'wav');
+            customHeaders.append(
+                'authorization',
+                `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`
+            );
+            customHeaders.append('title1', title1);
+       
+            const loadingObj = toast.loading('uploading Voice Memo...');
+            var response = await fetch(API_ENDPOINTS.vidyardUpload, {
+                method: 'POST',
+                headers: customHeaders,
+                body: formData,
+            });
+            response = await response.json();
+            toast.success('Voice Memo uploaded,encoding in progress', {
+                id: loadingObj,
+            })
+            setIsUploading(false)
+        
+        
+            console.log('the response after vidyard upload request', response);
+   
+            setGlobalRefresh(true);
+            setIconsVisible(true)
+        } catch (err) {
+            toast.dismiss();
+            console.log(err, 'err of Voice Memo upload');
+            toast.error('could not upload');
+        }
+    };
+
+    const startRecording = async () => {
+        try {
+
+    setCapturing(true)
+            const micStream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+                video: false,
+            });
+            const chunks = [];
+            const recorder = new MediaRecorder(micStream);
+            recorder.ondataavailable = (event) => {
+                chunks.push(event.data);
+            };
+            recorder.onstop = () => {
+                const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                setVisualizationUrl(audioUrl);
+            };
+            recorder.start();
+            setMediaRecorder(recorder);
+            setIsRecording(true);
+        } catch (error) {
+            alert('please provide the permission to access your microphone');
+            return;
+        }
+    };
+
+    const stopRecording = () => {
+        mediaRecorder.stop();
+        setIsRecording(false);
+        setDuration(time);
+        setTime(0);
+    };
+
+    const downloadAudio = () => {
+        const a = document.createElement('a');
+        a.href = visualizationUrl;
+        a.download = 'voice_visualization.wav';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
+
+    const sharingDetails = (audioTitle, directoryName) => {
+        setIsTakingInput(false);
+        handleShare(audioTitle, directoryName);
+    };
+
+    if (isTakingInput) {
+        return (
+            <UserInput
+                sharingDetails={sharingDetails}
+                cancelUpload={() => {
+                    setIsTakingInput(false);
+                }}
+            />
+        );
     }
-    return () => clearInterval(intervalId)
-  }, [isRecording, time])
-  
-  useEffect(()=>{
-    if(visualizationUrl!=''){
-      console.log("handle Share in voice memo called");
-      handleShare(getCurrentDateTimeString(),"Media");
-    }
-  },[visualizationUrl])
-  
-  const handleInsertion=async()=>{
-    if(isLinkedin){
-      insertIntoLinkedInMessageWindow(`<p>https://share.vidyard.com/watch/${videoPlayerId}</p>`,selectedChatWindows)
-    }
-    else{
-      const thumbnail_link=await getThumbnail(videoId);
-      var ret=''
-      if(thumbnail_link!=undefined && thumbnail_link!=null){
-          ret=`<img src='${thumbnail_link}' style={{width: '200px' ,display: 'inline-block'}}/><br>`
-      }
-      insertHtmlAtPositionInMail(
-          ret+`<a href=https://share.vidyard.com/watch/${videoPlayerId}>Play</a>`
-      );
-    }
-  }
 
-  const handleShare =async(audioTitle,directoryName)=>{
-    try{
-      var title1=audioTitle
-      audioTitle=replaceInvalidCharacters(audioTitle+`_${Date.now()}`);
-      const blobres = await fetch(visualizationUrl);
-      const blob = await blobres.blob();
-      const formData = new FormData();
-      let file = new File([blob], 'recording');
-      formData.append('data', file,`${audioTitle}.wav`);
-      const customHeaders = new Headers();
-      customHeaders.append('title', audioTitle);
-      customHeaders.append('directory_name', directoryName);
-      customHeaders.append('duration', duration);
-      customHeaders.append('type', 'wav');
-      customHeaders.append('authorization', `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`);
-      customHeaders.append('title1',title1);
-      setIsUploading(true)
-      const loadingObj=toast.loading("uploading Voice Memo...")
-      var response=await fetch(API_ENDPOINTS.vidyardUpload,{
-          method: "POST",
-          headers: customHeaders,
-          body: formData
-      })
-      response=await response.json();
-      toast.success("Voice Memo uploaded,encoding in progress",{
-        id: loadingObj
-      })
-      setIsUploading(false)
-      props.setUrlAtHome(`https://play.vidyard.com/${response.facade_player_uuid}`);
-      setVideoPlayerId(response.facade_player_uuid);
-      console.log("the response after vidyard upload request",response);
-      setVideoId(response.id);
-      setGlobalRefresh(true)
-      setShowSuccess(true)
-      setTimeout(()=>{setShowSuccess(false)},3000)
-    }catch(err){
-      toast.dismiss()
-      console.log(err,"err of Voice Memo upload")
-      toast.error("could not upload")
-    }
-  }
+    const iconaudio = {
+        fontSize: '18px',
+        color: 'black',
+        marginRight: '20px',
+    };
 
-  const startRecording = async () => {
-    try {
-        setIconsVisible(true);
-        setVideoPlayerId(null)
-        const micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-        const chunks = [];
-        const recorder = new MediaRecorder(micStream);
-        recorder.ondataavailable = event => {
-        chunks.push(event.data);
-        };
-        recorder.onstop = () => {
-          const audioBlob = new Blob(chunks, { type: 'audio/wav' });
-          const audioUrl = URL.createObjectURL(audioBlob);
-          setVisualizationUrl(audioUrl);
-        };
-        recorder.start();
-        setMediaRecorder(recorder);
-        setIsRecording(true);
-    } catch (error) {
-        alert("please provide the permission to access your microphone")
-        return ;
-    }
-    
-  };
-
-  const stopRecording = () => {
-    mediaRecorder.stop();
-    setIsRecording(false);
-    setDuration(time)
-    setTime(0);
-  };
-  
-  const toggleIconsVisibility = () => {
-    setIconsVisible((prevVisible) => !prevVisible);
-  };
-
-  const downloadAudio = () => {
-    const a = document.createElement('a');
-    a.href = visualizationUrl;
-    a.download = 'voice_visualization.wav';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
-
-  const sharingDetails=(audioTitle,directoryName)=>{
-    setIsTakingInput(false)
-    handleShare(audioTitle,directoryName)
-  }
-
-  if(isTakingInput){
-    return(
-      <UserInput sharingDetails={sharingDetails} cancelUpload={()=>{setIsTakingInput(false)}}/>
-    )
-  }
-
-  const iconaudio = {
-    fontSize: '18px',
-    color: 'black',
-    marginRight: '20px',
-  };
-
-
-  return (
-    <div id="homeDiv">
-        <div>
-        <button
-            onClick={isRecording ? stopRecording : startRecording}
-            id='skoop_record_button_audio'
-            data-mdb-toggle="tooltip"
-            data-mdb-placement="bottom"
-            title="Record Audio"
-            >
-            {isRecording ? < FaStop size={30} color='white'/>: <AiFillAudio size={30} color='white'/>}  
-        </button>
+    return (
+        <div id="homeDiv">
+                <button
+                    onClick={isRecording ? stopRecording : startRecording}
+                    id="skoop_record_button_audio"
+                    data-mdb-toggle="tooltip"
+                    data-mdb-placement="bottom"
+                    title="Record Audio"
+                >
+                    {isRecording ? (
+                        <FaStop size={30} color="white" />
+                    ) : (
+                        <AiFillAudio size={30} color="white" />
+                    )}
+                </button>
+          
+            <div>{isRecording && <h6>{60 - time} seconds left</h6>}</div>
         </div>
-        <div>
-          {isRecording &&
-            <h6>{60-time} seconds left</h6>
-          }
-        </div>
-        <div>
-            {visualizationUrl && (
-                <video  controls src={visualizationUrl} className="audio-preview" ></video>
-            )}
-        </div>
-      <div>
-      {visualizationUrl && (
-        <>
-        {iconsVisible && (
-        <> 
-          <IoMdDownload 
-          data-mdb-toggle="tooltip"
-          data-mdb-placement="bottom"
-          title="Download Video"
-          style={iconaudio} onClick={downloadAudio} />
-  
-          <MdDeleteForever 
-          data-mdb-toggle="tooltip"
-          data-mdb-placement="bottom"
-          title="Delete File"
-          style={iconaudio} onClick={() => setVisualizationUrl('')} />
-
-          {videoPlayerId &&
-            <> 
-              <IoLink
-              data-mdb-toggle="tooltip"
-              data-mdb-placement="bottom"
-              title="Copy Link"
-              style={iconaudio} onClick={() => {navigator.clipboard.writeText(`https://share.vidyard.com/watch/${videoPlayerId}`)}}
-              />
-
-              <PiExportFill
-              data-mdb-toggle="tooltip"
-              data-mdb-placement="bottom"
-              title="Append to Chat"
-              style={iconaudio} onClick={handleInsertion}
-              />
-
-              <AiOutlineClose
-              data-mdb-toggle="tooltip"
-              data-mdb-placement="bottom"
-              title="Close"
-              style={iconaudio}
-              onClick={() => {
-                setVisualizationUrl('');
-                setIconsVisible(false); 
-              }}
-              />
-            </>
-          }
-        </>
-        )}
-      </>
-      )}
-      </div>
-    </div>
-  );
+    );
 };
 
 export default VoiceVisualization;
