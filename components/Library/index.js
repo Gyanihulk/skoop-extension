@@ -6,13 +6,18 @@ import { IoIosLink } from "react-icons/io";
 import { GoCopy } from "react-icons/go";
 import { FiTrash2 } from "react-icons/fi";
 import { MdOutlineFavorite } from "react-icons/md";
+import { FaStar } from "react-icons/fa";
 import { FaRegStar } from "react-icons/fa";
 import { FaFolderPlus } from "react-icons/fa";
 import API_ENDPOINTS from '../apiConfig.js';
 import { NewFolderInput } from '../UserInput/index.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
-import { handleCopyToClipboard } from '../../utils/index.js';
+import { toast } from 'react-hot-toast';
+import FavoritesTab from './FavoritesTab.js';
+import Tabs from './Tabs.js';
+import VideoCard from './VideoCard.js';
+import VideoContainer from './VideoContainer.jsx';
 
 const Library = (props) => {
     const [links,setLinks]= useState([])
@@ -26,17 +31,68 @@ const Library = (props) => {
     const { globalRefresh, setGlobalRefresh } = useContext(GlobalStatesContext)
     const { getThumbnail } = useContext(MediaUtilsContext)
     const [hovered, setHovered] = useState(false);
+    const [activeTab, setActiveTab] = useState('favorites');
+    const [favorites, setFavorites] = useState([]); 
+    const [tabName, setTabName] = useState('');
+    const [folders, setFolders] = useState([]);
 
+
+    const handleTabChange = (tab) => {
+      setActiveTab(tab);
+      setCurrentDirectory(tab);
+      setFav(false);
+    };
+  
     const handleOpen = (dir) => {
-      getlinks(dir)
-      setOpen(true)
-      setCurrentDirectory(dir)
+      getlinks(dir);
+      setActiveTab(dir);
+      setCurrentDirectory(dir);
+    };
+  
+    const handleNewTab = () => {
+      setOpenNewFolder(true);
+      setTabName('');
+    };
+  
+    const handleTabCreation = async () => {
+      if (activeTab !== 'folders') {
+        await createNewTab(tabName);
+        setOpenNewFolder(false);
+        
+      } else {
+        // Handle case where tab name is empty
+        // You can show an error message or take appropriate action
+      }
     };
   
     const handleClose = () => {
       setCurrentDirectory('')
       setFav(false)
       setOpen(false)
+    };
+
+    const updateFavoritesState = (updatedLinks) => {
+      setFavorites(updatedLinks.filter(item => item.is_favourite));
+    };
+
+    const createNewTab = async (tabName) => {
+      // Implement logic to create a new folder (tab)
+      try {
+        const response = await fetch(API_ENDPOINTS.createNewDirectory, {
+          method: 'POST',
+          headers: {
+            'authorization': `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+            'Content-type': 'application/json; charset=UTF-8',
+          },
+          body: JSON.stringify({ directory_name: tabName }),
+        });
+        await getDirs();
+        // Optionally, you may also set the new tab as the active tab
+        setActiveTab(tabName);
+        setCurrentDirectory(tabName);
+      } catch (err) {
+        console.log('could not create directory', err);
+      }
     };
 
     const getDirs=async ()=>{
@@ -50,7 +106,7 @@ const Library = (props) => {
                 })
                 response= await response.json()
                 console.log("get dirs call was a success")
-                setDirs(response)
+                setFolders(response)
         }catch(err){
             console.log("could not fetch library folders",err)
         }
@@ -126,6 +182,7 @@ const Library = (props) => {
     useEffect(()=>{
         (async () => {
             await getDirs();
+            await getFavourites();
          })();
          if(currentDirectory!='' || fav){
             if(fav){
@@ -175,44 +232,79 @@ const Library = (props) => {
         }
     }
 
-    const toggleFavourite=async(videoId)=>{
-        
-        try{
-            await fetch(API_ENDPOINTS.toggleFavourite,{
-                method: "PATCH",
-                headers:{
-                    "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: videoId
-                })
-            })
-            
-        }catch(err){
-            console.log("could not move",err)
+    const toggleFavourite = async (videoId) => {
+      try {
+        await fetch(API_ENDPOINTS.toggleFavourite, {
+          method: "PATCH",
+          headers: {
+            "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id: videoId
+          })
+        });
+  
+        const updatedLinks = links.map(item => {
+          if (item.id === videoId) {
+            return { ...item, is_favourite: !item.is_favourite };
+          }
+          return item;
+        });
+  
+        setLinks(updatedLinks);
+        updateFavoritesState(updatedLinks);
+  
+      } catch (err) {
+        console.log("could not move", err);
+      }
+    };
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          // Fetch directories
+          const dirsResponse = await fetch(API_ENDPOINTS.videoDirectories, {
+            method: "GET",
+            headers: {
+              "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+              "Content-type": "application/json; charset=UTF-8"
+            }
+          });
+          const dirsData = await dirsResponse.json();
+          setDirs(dirsData);
+  
+          // Fetch all links
+          const linksResponse = await fetch(API_ENDPOINTS.linkData, {
+            method: "GET",
+            headers: {
+              "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+              "Content-type": "application/json; charset=UTF-8"
+            }
+          });
+          const linksData = await linksResponse.json();
+          setLinks(linksData);
+  
+          // Update favorites state based on links
+          updateFavoritesState(linksData);
+        } catch (err) {
+          console.log("Error fetching data", err);
         }
-    }
+      };
+  
+      fetchData();
+    }, [globalRefresh]);
+    
+    
 
   return (
     <div>
-        <div className="text-center" >
-            <button
-                className="lib-button"
-                onClick={() => { setOpenNewFolder(true) }}
-            >
-                <FaFolderPlus className="lib-icon" />
-                Create new folder
-            </button>
-            <button
-                className="lib-button"
-                onClick={getFavourites}
-            >
-                <FaRegStar className="lib-icon" />
-                Favourites
-            </button>
-
-
+      <Tabs
+        activeTab={activeTab}
+        handleTabChange={handleTabChange}
+        handleNewTab={handleNewTab}
+        folders={folders}
+      />
     <br />
     <br />
     <div className="modal" style={{ display: openNewFolder ? 'block' : 'none' }}>
@@ -259,143 +351,40 @@ const Library = (props) => {
             </div>
         </div>
     </div>
-        {
-           dirs.map((dir) => {
-            return (
-                    <div className="d-inline-block">
-                        <div
-                            className="customCard"
-                            onMouseEnter={() => setHoveredDir(dir.directory_name)}
-                            onMouseLeave={() => setHoveredDir(null)}
-                        >
-                            <div
-                               className="customContainer"
-                            >
-                                <div
-                                    onClick={() => {
-                                        handleOpen(dir.directory_name);
-                                    }}
-                                    className="customFlexContainer"
-                                >
-                                    <div className="customContainer1">
-                                        <FcFolder className="customFolderIcon" />
-                                    </div>
-                                    <div className="customTextContainer">
-                                        <h7 className="customDirectoryName">{dir.directory_name}</h7>
-                                    </div>
-                                </div>
-                                <div className="new">
-                                    {/* Rename button */}
-                                    {hoveredDir === dir.directory_name && (
-                                    <button
-                                        onClick={() => {
-                                            setDirToRename(dir.directory_name);
-                                        }}
-                                        className="rename"
-                                        data-mdb-toggle="tooltip"
-                                        data-mdb-placement="bottom"
-                                        title="Rename this video"
-                                    >
-                                    <MdOutlineDriveFileRenameOutline/>
-                                    </button>
-                                    )}
-        
-                                    {/* Delete button */}
-                                    {hoveredDir === dir.directory_name && (
-                                    <button
-                                        onClick={async () => {
-                                            await deleteDirectory(dir.directory_name);
-                                        }}
-                                        className="rename"
-                                        data-mdb-toggle="tooltip"
-                                        data-mdb-placement="bottom"
-                                        title="Delete this video"
-                                    >
-                                    <RiDeleteBin6Line/>
-                                    </button>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            );
-        })
-        }
-       {(currentDirectory !== '' || fav) && (
-        <div className="mt-2"> 
-            <button className='customCloseButton'
-            onClick={handleClose}>
-            Close Folder
-            </button>
-        </div>
+
+    {activeTab === 'favorites' && (
+      <FavoritesTab
+      favorites={favorites}
+      handleLinkInsertion={handleLinkInsertion}
+    />
+ 
 )}
-        <div className="custom-Cards">
-                {(currentDirectory !== '' || fav) &&
-                    links.map((item) => (
-                    <div className="LinkContainer" key={item.id}>
-                        <div
-                        className= "mediacard card"
-                        onMouseEnter={() => setHovered(true)}
-                        onMouseLeave={() => setHovered(false)}
-                        >
-                <iframe
-                    title={item.video_title}
-                    width="100%"
-                    height="auto"
-                    src={item.link}
-                    allow="autoplay; fullscreen; picture-in-picture"
-                    className='bgcolour'
-                />
-                    <div className="card-body customCardBody">
-                        <div className="BodyContainer">
-                        <h6 className="card-title">{item.video_title}</h6>
-                        {hovered && ( 
-                        <div className="btn-group" role="group" aria-label="Video actions">
-                        <button
-                            title="Insert link to mail body"
-                            className="mediaIcon"
-                            onClick={() => {
-                            handleLinkInsertion(item.link, item.id);
-                            }}
-                        >
-                            <IoIosLink />
-                        </button>
-                        <button
-                            title="Copy to clipboard"
-                            className="mediaIcon"
-                            onClick={() => {
-                                handleCopyToClipboard(`${item.link}`);
-                            }}
-                        >
-                            <GoCopy />
-                        </button>
-                        <button
-                            title="Delete video"
-                            className="mediaIcon"
-                            onClick={async () => {
-                            await deleteVideo(item.id, currentDirectory);
-                            }}
-                        >
-                            <FiTrash2 />
-                        </button>
-                        <button
-                            title="Add to favourites"
-                            className="mediaIcon"
-                            onClick={() => {
-                            toggleFavourite(item.id);
-                            }}
-                        >
-                            {item.is_favourite ? <FaRegStar className="text-primary" /> : <FaRegStar />}
-                        </button>
-                        </div>
-                        )}
-                    </div>
-                    </div>
-                </div>
-            </div>
+
+    {activeTab === 'folders' && (
+      <div>
+      {/* Render Video Cards for other tabs */}
+      {activeTab !== 'favorites' && links.length>0 &&(
+        <div className="container">
+          <div className="row">
+            {links.map((item) => (
+              <VideoCard
+                key={item.id}
+                video={item}
+                handleLinkInsertion={handleLinkInsertion}
+                deleteVideo={deleteVideo}
+                toggleFavourite={toggleFavourite}
+              />
             ))}
+          </div>
         </div>
+      )}
     </div>
+    )}
+
+    <VideoContainer folderName={activeTab}    
+                 handleLinkInsertion={handleLinkInsertion}
+                 deleteVideo={deleteVideo}
+                toggleFavourite={toggleFavourite}/>
 </div>
   )
 }

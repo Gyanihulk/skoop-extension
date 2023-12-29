@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
-import Webcam from 'react-webcam';
+import React, { useState, useEffect, useContext } from 'react';
 import API_ENDPOINTS from '../apiConfig.js';
 import { FaDownload } from 'react-icons/fa6';
 import { FaTimesCircle } from 'react-icons/fa';
@@ -20,16 +19,13 @@ import {
 } from '../../utils/index.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import toast from 'react-hot-toast';
-
-import ChatWindowSelection from '../ChatWindowSelection/index.js';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
+import VoiceVisualization from '../AudioRecording/index.js';
+import PreviewModal from '../PreviewModal/PreviewModal.jsx';
 import { IoLink } from 'react-icons/io5';
 const videoResizeConstant = 25;
-const RecordingButton = ({ aspectR, setUrlAtHome }) => {
-    const webcamRef = useRef(null);
-    const mediaRecorderRef = useRef(null);
+const RecordingButton = () => {
     const [capturing, setCapturing] = useState(false);
-    const [recordedChunks, setRecordedChunks] = useState([]);
     const [prev, setPrev] = useState('');
     const [time, setTime] = useState(0);
     const [videoPlayerId, setVideoPlayerId] = useState('');
@@ -37,25 +33,18 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
     const [countdown, setCountdown] = useState(false);
     const [countTimer, setCountTimer] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
-    const [isDragging, setIsDragging] = useState(false);
-    const [initialX, setInitialX] = useState((-1 * 200) / 4);
-    const [initialY, setInitialY] = useState((-1 * 200) / 8);
-    const [currentX, setCurrentX] = useState((-1 * 200) / 4);
-    const [currentY, setCurrentY] = useState((-1 * 200) / 8);
-    const [init, setInit] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [bloburl, setBlobUrl] = useState(null);
-    const { setGlobalRefresh, isLinkedin, selectedChatWindows } = useContext(GlobalStatesContext);
-    const { getThumbnail,deleteVideo } = useContext(MediaUtilsContext);
     const [aspectRatio, setAspectRatio] = useState([9, 16]);
     const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
-    const [selectedVideoStyle, setSelectedVideoStyle] = useState(null);
+    const [selectedVideoStyle, setSelectedVideoStyle] = useState('Vertical Mode');
     const [iconsVisible, setIconsVisible] = useState(true);
+
+    const { setGlobalRefresh, isLinkedin, selectedChatWindows } = useContext(GlobalStatesContext);
+    const { getThumbnail } = useContext(MediaUtilsContext);
 
     const handleVideoStyleSelect = (style) => {
         setSelectedVideoStyle(style);
-
         if (style === 'Square') {
             setAspectRatio([10, 10]);
         } else if (style === 'Vertical Mode') {
@@ -68,6 +57,25 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
     };
     const toggleVideoSettings = () => {
         setVideoSettingsOpen(!videoSettingsOpen);
+    };
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (videoSettingsOpen && !event.target.closest('.dropdown-menu')) {
+                setVideoSettingsOpen(false);
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [videoSettingsOpen]);
+
+    const handleIconClick = (event) => {
+        event.stopPropagation();
+        toggleVideoSettings();
     };
 
     const handleInsertion = async () => {
@@ -89,117 +97,16 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         }
     };
 
-    const handleMouseDown = (e) => {
-        setIsDragging(true);
-        setInitialX(e.clientX - currentX);
-        setInitialY(e.clientY - currentY);
-    };
 
-    const handleMouseMove = (e) => {
-        if (isDragging) {
-            e.preventDefault();
-            setCurrentX(e.clientX - initialX);
-            setCurrentY(e.clientY - initialY);
-        }
-    };
 
     const toggleIcon = () => {
         setIsPlaying((prevIsPlaying) => !prevIsPlaying);
     };
 
-    const Constraints = {
-        aspectRatio: aspectR,
-    };
-    const startCountdown = async () => {
-        try {
-            const permissionStatus = await navigator.permissions.query({ name: 'camera' });
-            console.log(permissionStatus);
-            if (permissionStatus.state === 'granted') {
-                setTime(0);
-                setVideoPlayerId('');
-                setInit(true);
-                await new Promise((r) => setTimeout(r, 2000)); // to let the camera initialize
-                setRecordedChunks([]);
-                setCountdown(true);
-            } else {
-                throw Error('please provide permission to use camera');
-            }
-        } catch (error) {
-            alert(error);
-        }
-    };
+ 
 
-    const handleStartCaptureClick = React.useCallback(() => {
-        setCountdown(false);
-        setCountTimer(0);
-        setCapturing(true);
-        setPrev('');
-        setIconsVisible(true);
-        try {
-            mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
-                mimeType: 'video/webm',
-            });
-            mediaRecorderRef.current.addEventListener('dataavailable', handleDataAvailable);
-            mediaRecorderRef.current.start();
-        } catch (err) {
-            alert('some error occured while recording please try again');
-        }
-    }, [webcamRef, setCapturing, mediaRecorderRef]);
 
-    const handleDataAvailable = React.useCallback(
-        ({ data }) => {
-            if (data.size > 0) {
-                setRecordedChunks((prev) => prev.concat(data));
-            }
-        },
-        [setRecordedChunks]
-    );
 
-    const handleStopCaptureClick = React.useCallback(() => {
-        mediaRecorderRef.current.stop();
-        setCapturing(false);
-        setInit(false);
-    }, [mediaRecorderRef, webcamRef, setCapturing]);
-
-    const handleShare = async (file, videoTitle, directoryName) => {
-        try {
-            console.log(file, 'file in handle share');
-            videoTitle = replaceInvalidCharacters(videoTitle + `_${Date.now()}`);
-            const formData = new FormData();
-            formData.append('data', file, `${videoTitle}.webm`);
-            const customHeaders = new Headers();
-            customHeaders.append('title', videoTitle);
-            customHeaders.append('directory_name', directoryName);
-            customHeaders.append('type', 'webm');
-            customHeaders.append(
-                'authorization',
-                `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`
-            );
-            customHeaders.append('title1', videoTitle);
-            setIsUploading(true);
-            const loadingObj = toast.loading('uploading video...');
-            var response = await fetch(API_ENDPOINTS.vidyardUpload, {
-                method: 'POST',
-                headers: customHeaders,
-                body: formData,
-            });
-            response = await response.json();
-            console.log(response, 'response of video ');
-            toast.success('video uploaded,encoding in progress', {
-                id: loadingObj,
-            });
-            setIsUploading(false);
-            setUrlAtHome(`https://play.vidyard.com/${response.facade_player_uuid}`);
-            setVideoPlayerId(response.facade_player_uuid);
-            setVideoId(response.id);
-            console.log('the response after vidyard upload request', response);
-            setGlobalRefresh(true);
-        } catch (err) {
-            toast.dismiss();
-            console.log(err, 'err of video upload');
-            toast.error('could not upload');
-        }
-    };
 
     const preview = () => {
         if (prev != '') {
@@ -217,9 +124,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         let intervalId;
         if (capturing) {
             intervalId = setInterval(() => setTime(time + 1), 1000);
-            if (time == 60) {
-                handleStopCaptureClick();
-            }
+          
         }
         return () => clearInterval(intervalId);
     }, [capturing, time]);
@@ -228,19 +133,9 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         let intervalId;
         if (countdown) {
             intervalId = setInterval(() => setCountTimer(countTimer + 1), 1000);
-            if (countTimer == 3) {
-                handleStartCaptureClick();
-            }
         }
         return () => clearInterval(intervalId);
     }, [countdown, countTimer]);
-
-    useEffect(() => {
-        if (recordedChunks.length) {
-            console.log('handle share is called');
-            handleShare(getCurrentDateTimeString(), 'Media');
-        }
-    }, [recordedChunks]);
 
     useEffect(() => {
         if (capturing) {
@@ -248,6 +143,7 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         }
     }, [capturing]);
 
+    //useable functions
     const handleDownload = React.useCallback(() => {
         if (bloburl) {
             const a = document.createElement('a');
@@ -260,21 +156,6 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
             window.URL.revokeObjectURL(bloburl);
         }
     }, [bloburl]);
-
-    const handleClick2 = () => {
-        if (capturing) {
-            setPrev('');
-            sendMessageToBackgroundScript({ action: 'stopRecording' }, handleVideoBlob);
-        } else {
-            sendMessageToBackgroundScript({
-                action: 'startRecording',
-                height: aspectRatio[0] * videoResizeConstant,
-                width: aspectRatio[1] * videoResizeConstant,
-            });
-        }
-        setCapturing(!capturing);
-    };
-
     function sendMessageToBackgroundScript(request, callback) {
         chrome.runtime.sendMessage(request, (response) => {
             if (callback && response) {
@@ -306,99 +187,121 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
         }
     }
 
-    const displayForPreview = () => {
-        if (prev == '' || capturing) return 'none';
-        return 'inline-block';
+    const startVideoCapture = () => {
+        if (capturing) {
+            setPrev('');
+            sendMessageToBackgroundScript({ action: 'stopRecording' }, handleVideoBlob);
+        } else {
+            sendMessageToBackgroundScript({
+                action: 'startRecording',
+                height: aspectRatio[0] * videoResizeConstant,
+                width: aspectRatio[1] * videoResizeConstant,
+            });
+        }
+        setCapturing(!capturing);
     };
 
-    const handleDeleteVideo=async()=>{
-        const isDeleted=await deleteVideo(videoId);
-        if(isDeleted){
-            setIconsVisible(false);
+    const handleShare = async (file, videoTitle, directoryName) => {
+        try {
+            console.log(file, 'file in handle share');
+            videoTitle = replaceInvalidCharacters(videoTitle + `_${Date.now()}`);
+            const formData = new FormData();
+            formData.append('data', file, `${videoTitle}.webm`);
+            const customHeaders = new Headers();
+            customHeaders.append('title', videoTitle);
+            customHeaders.append('directory_name', directoryName);
+            customHeaders.append('type', 'webm');
+            customHeaders.append(
+                'authorization',
+                `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`
+            );
+            customHeaders.append('title1', videoTitle);
+            setIsUploading(true);
+            const loadingObj = toast.loading('uploading video...');
+            var response = await fetch(API_ENDPOINTS.vidyardUpload, {
+                method: 'POST',
+                headers: customHeaders,
+                body: formData,
+            });
+            response = await response.json();
+            console.log(response, 'response of video ');
+            toast.success('video uploaded,encoding in progress', {
+                id: loadingObj,
+            });
+            setIsUploading(false);
+            setVideoPlayerId(response.facade_player_uuid);
+            setVideoId(response.id);
+            console.log('the response after vidyard upload request', response);
+            setGlobalRefresh(true);
+        } catch (err) {
+            toast.dismiss();
+            console.log(err, 'err of video upload');
+            toast.error('could not upload');
         }
-    }
-
+    };
     return (
-                <>
-        <div className="video-recorder">
-            <div>
-                {!countdown && (
-                    <>
-                        <button
-                            variant="outlined"
-                            color={capturing ? 'secondary' : 'primary'}
-                            onClick={handleClick2}
-                            size="small"
-                            disabled={isUploading}
-                            id="skoop_record_button"
-                            >
-                            {capturing ? 'Stop' : 'Rec'}
-                        </button>
-                        <button className="btn btn-link" onClick={toggleVideoSettings}>
-                            <MdOutlineVideoSettings className="icon-style-normal" />
-                        </button>
-                        <div className={`dropdown-menu ${videoSettingsOpen ? 'show' : ''}`}>
-                            <button
-                                className={`dropdown-item ${
-                                    selectedVideoStyle === 'Vertical Mode' ? 'active' : ''
-                                }`}
-                                onClick={() => handleVideoStyleSelect('Vertical Mode')}
-                            >
-                                Vertical (9:16)
-                            </button>
-                            <button
-                                className={`dropdown-item ${
-                                    selectedVideoStyle === 'Horizontal' ? 'active' : ''
-                                }`}
-                                onClick={() => handleVideoStyleSelect('Horizontal')}
-                            >
-                                Horizontal (16:9)
-                            </button>
-                            <button
-                                className={`dropdown-item ${
-                                    selectedVideoStyle === 'Square' ? 'active' : ''
-                                }`}
-                                onClick={() => handleVideoStyleSelect('Square')}
-                            >
-                                Square (1:1)
-                            </button>
-                        </div>
-                    </>
-                )}
-            </div>
-            <div>
-                <div
-                    style={{
-                        position: 'fixed',
-                        cursor: 'move',
-                        transform: `translate(${currentX}px, ${currentY}px)`,
-                        textAlign: 'center',
-                    }}
-                    onMouseDown={handleMouseDown}
-                >
-                    {countdown && (
-                        <div className="text-center">
-                            <h1 className="customH1">{3 - countTimer}</h1>
-                        </div>
-                    )}
-                    {init === true && (
-                        <div className="card Cardstyle">
-                            <Webcam
-                                audio={true}
-                                ref={webcamRef}
-                                videoConstraints={Constraints}
-                                muted
-                                className="customWebcam"
-                            />
-                            <h4>{`Time remaining: ${60 - time} Seconds`}</h4>
-                        </div>
-                    )}
+        <>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-auto">
+                        {!countdown && (
+                            <>
+                                <button
+                                    variant="outlined"
+                                    color={capturing ? 'secondary' : 'primary'}
+                                    onClick={startVideoCapture}
+                                    size="small"
+                                    disabled={isUploading}
+                                    title="Record Video"
+                                    id="skoop_record_button"
+                                >
+                                    {capturing ? 'Stop' : 'Rec'}
+                                </button>
+                                <button className="btn btn-link" onClick={handleIconClick}>
+                                    <MdOutlineVideoSettings
+                                        className="icon-style-normal"
+                                        title="Select the video orientation/Aspect Ratio"
+                                    />
+                                </button>
+                                <div className={`dropdown-menu ${videoSettingsOpen ? 'show' : ''}`}>
+                                    <button
+                                        className={`dropdown-item ${
+                                            selectedVideoStyle === 'Vertical Mode' ? 'active' : ''
+                                        }`}
+                                        onClick={() => handleVideoStyleSelect('Vertical Mode')}
+                                    >
+                                        Vertical (9:16)
+                                    </button>
+                                    <button
+                                        className={`dropdown-item ${
+                                            selectedVideoStyle === 'Horizontal' ? 'active' : ''
+                                        }`}
+                                        onClick={() => handleVideoStyleSelect('Horizontal')}
+                                    >
+                                        Horizontal (16:9)
+                                    </button>
+                                    <button
+                                        className={`dropdown-item ${
+                                            selectedVideoStyle === 'Square' ? 'active' : ''
+                                        }`}
+                                        onClick={() => handleVideoStyleSelect('Square')}
+                                    >
+                                        Square (1:1)
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                    <div class="col-auto">
+                        <VoiceVisualization setIconsVisible={setIconsVisible} setBlobUrl={setBlobUrl} setIsUploading={setIsUploading} setCapturing={setCapturing}/>
+                    </div>
                 </div>
-                <div>
-                    {!capturing && !isUploading && bloburl && (
-                        <>
-                            {iconsVisible && (
-                                <div className="options">
+            </div>
+
+            <div class="container">
+                <div class="row justify-content-center">
+                    {!capturing && !isUploading && bloburl && iconsVisible && (
+                                <div class="col-auto">
                                     <button
                                         data-mdb-toggle="tooltip"
                                         data-mdb-placement="bottom"
@@ -444,7 +347,9 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                                         data-mdb-placement="bottom"
                                         title="Delete the video"
                                         className="delete"
-                                        onClick={handleDeleteVideo}
+                                        onClick={() => {
+                                            setPrev('');
+                                        }}
                                     >
                                         <MdDeleteForever id="mail_icons" />
                                     </button>
@@ -473,39 +378,10 @@ const RecordingButton = ({ aspectR, setUrlAtHome }) => {
                                     )}
                                 </div>
                             )}
-                        </>
-                    )}
                 </div>
-                
             </div>
-            {prev !== '' && (
-  <div className="modal-overlay" onClick={() => setPrev('')}>
-    <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
-      <div className="modal-content">
-        <div className="modal-header">
-          <button type="button" className="btn-close" onClick={preview}>
-          </button>
-        </div>
-        <div className="modal-body">
-          <video
-            className="embed-responsive-item"
-            src={prev}
-            autoPlay
-            loop
-            controls
-            onClick={(e) => e.stopPropagation()} // Prevent clicks on the video from closing the modal
-          ></video>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
 
-
-
-        </div>
-
-        
+            {prev !== '' && <PreviewModal prev={prev} preview={preview} setPrev={setPrev} />}
         </>
     );
 };
