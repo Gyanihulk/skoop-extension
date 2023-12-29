@@ -1,14 +1,4 @@
 import React,{useEffect, useState, useContext} from 'react'
-import { FcFolder } from "react-icons/fc";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { MdOutlineDriveFileRenameOutline } from "react-icons/md";
-import { IoIosLink } from "react-icons/io";
-import { GoCopy } from "react-icons/go";
-import { FiTrash2 } from "react-icons/fi";
-import { MdOutlineFavorite } from "react-icons/md";
-import { FaStar } from "react-icons/fa";
-import { FaRegStar } from "react-icons/fa";
-import { FaFolderPlus } from "react-icons/fa";
 import API_ENDPOINTS from '../apiConfig.js';
 import { NewFolderInput } from '../UserInput/index.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
@@ -36,7 +26,6 @@ const Library = (props) => {
     const [tabName, setTabName] = useState('');
     const [folders, setFolders] = useState([]);
 
-
     const handleTabChange = (tab) => {
       setActiveTab(tab);
       setCurrentDirectory(tab);
@@ -58,22 +47,42 @@ const Library = (props) => {
       if (activeTab !== 'folders') {
         await createNewTab(tabName);
         setOpenNewFolder(false);
-        
+        updateFavoritesState(); 
       } else {
         // Handle case where tab name is empty
         // You can show an error message or take appropriate action
       }
     };
-  
+    
     const handleClose = () => {
       setCurrentDirectory('')
       setFav(false)
       setOpen(false)
     };
 
-    const updateFavoritesState = (updatedLinks) => {
-      setFavorites(updatedLinks.filter(item => item.is_favourite));
+    const updateFavoritesState = async () => {
+      try {
+        const linksResponse = await fetch(API_ENDPOINTS.linkData, {
+          method: "GET",
+          headers: {
+            "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+            "Content-type": "application/json; charset=UTF-8"
+          }
+        });
+        const linksData = await linksResponse.json();
+        
+        // Check if linksData.links is an array before using filter
+        if (Array.isArray(linksData.links)) {
+          setFavorites(linksData.links.filter(item => item.is_favourite));
+        } else {
+          console.error("Links data's 'links' property is not an array:", linksData);
+        }
+      } catch (err) {
+        console.log("Error updating favorites state", err);
+      }
     };
+    
+    
 
     const createNewTab = async (tabName) => {
       // Implement logic to create a new folder (tab)
@@ -148,20 +157,22 @@ const Library = (props) => {
         getlinks(null,true);
     }
 
-    const deleteVideo=async (id,dir)=>{
-        try{
-            const response = await fetch(`${API_ENDPOINTS.deleteVideo}${id}`,{
-                method: "DELETE",
-                headers:{
-                    "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                    'Content-Type': 'application/json'
-                }
-            })
-            await getlinks(dir)
-        }catch(err){
-            console.log("could not delete",err)
-        }
-    }
+    const deleteVideo = async (id, dir) => {
+      try {
+        const response = await fetch(`${API_ENDPOINTS.deleteVideo}${id}`, {
+          method: "DELETE",
+          headers: {
+            "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        await getlinks(dir);
+        await updateFavoritesState(); // Use await to ensure proper order of operations
+      } catch (err) {
+        console.log("could not delete", err);
+      }
+    };
+    
     
     const deleteDirectory=async(dirName)=>{
         console.log("delete directory called")
@@ -234,7 +245,7 @@ const Library = (props) => {
 
     const toggleFavourite = async (videoId) => {
       try {
-        await fetch(API_ENDPOINTS.toggleFavourite, {
+        const response = await fetch(API_ENDPOINTS.toggleFavourite, {
           method: "PATCH",
           headers: {
             "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
@@ -244,22 +255,31 @@ const Library = (props) => {
             id: videoId
           })
         });
-  
-        const updatedLinks = links.map(item => {
-          if (item.id === videoId) {
-            return { ...item, is_favourite: !item.is_favourite };
-          }
-          return item;
+    
+        // Assuming the response indicates success
+        // Update the favorites state
+        setFavorites(prevFavorites => {
+          const updatedFavorites = prevFavorites.map(favorite => {
+            if (favorite.id === videoId) {
+              // Toggle the is_favourite property
+              const updatedFavorite = { ...favorite, is_favourite: !favorite.is_favourite };
+              console.log('Updated Favorite:', updatedFavorite);
+              return updatedFavorite;
+            }
+            return favorite;
+          });
+          return updatedFavorites;
         });
-  
-        setLinks(updatedLinks);
-        updateFavoritesState(updatedLinks);
-  
+    
+        // Call updateFavoritesState to synchronize with the server
+        await updateFavoritesState(); // Use await to ensure proper order of operations
+    
       } catch (err) {
-        console.log("could not move", err);
+        console.log("Toggle Favorite Error:", err);
       }
     };
-
+    
+    
     useEffect(() => {
       const fetchData = async () => {
         try {
@@ -308,24 +328,16 @@ const Library = (props) => {
     <br />
     <br />
     <div className="modal" style={{ display: openNewFolder ? 'block' : 'none' }}>
-        <div className="modal-dialog">
-            <div className="modal-content">
-                <div className="modal-header">
-                    <h5 className="modal-title">Enter title</h5>
-                    <button type="button" className="btn btn-outline-dark btn-sm close" onClick={() => { setOpenNewFolder(false) }}>
-                        <span>&times;</span>
-                    </button>
-                </div>
-                <div className="modal-body">
-                    <NewFolderInput closePopup={async () => { setOpenNewFolder(false); getDirs() }} />
-                </div>
-                <div className="modal-footer">
-                    <button type="button" className='btn btn-primary btn-sm' onClick={async () => { setOpenNewFolder(false); getDirs() }}>
-                        Close
-                    </button>
-                </div>
-            </div>
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <div className="modal-body d-flex flex-column">
+            <NewFolderInput closePopup={async () => { setOpenNewFolder(false); getDirs() }} />
+            <button type="button" className="btn btn-primary btn-sm align-self-end mt-3 " onClick={() => { setOpenNewFolder(false) }}>
+              Close
+            </button>
+          </div>
         </div>
+      </div>
     </div>
 
     <div className="modal" style={{ display: dirToRename !== '' ? 'block' : 'none' }}>
@@ -355,33 +367,15 @@ const Library = (props) => {
     {activeTab === 'favorites' && (
       <FavoritesTab
       favorites={favorites}
+      currentDirectory={currentDirectory}
       handleLinkInsertion={handleLinkInsertion}
+      deleteVideo={deleteVideo}
+      toggleFavourite={toggleFavourite}
     />
  
 )}
 
-    {activeTab === 'folders' && (
-      <div>
-      {/* Render Video Cards for other tabs */}
-      {activeTab !== 'favorites' && links.length>0 &&(
-        <div className="container">
-          <div className="row">
-            {links.map((item) => (
-              <VideoCard
-                key={item.id}
-                video={item}
-                handleLinkInsertion={handleLinkInsertion}
-                deleteVideo={deleteVideo}
-                toggleFavourite={toggleFavourite}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-    )}
-
-    <VideoContainer folderName={activeTab}    
+    <VideoContainer folderName={activeTab === 'favorites' ? 'favorites' : activeTab}    
                  handleLinkInsertion={handleLinkInsertion}
                  deleteVideo={deleteVideo}
                 toggleFavourite={toggleFavourite}/>

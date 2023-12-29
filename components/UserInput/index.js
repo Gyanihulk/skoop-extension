@@ -1,5 +1,6 @@
 import React,{ Component ,useEffect,useState} from 'react';
 import API_ENDPOINTS from '../apiConfig';
+import { MdOutlineDone } from "react-icons/md";
 
 export class UserInput extends Component{
   constructor(props){
@@ -193,28 +194,23 @@ export const NewFolderInput=(props)=>{
   }
 
   return(
-    <div className="card">
-      <div className="card-body">
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label"><strong>{props.oldDirectoryName ? "Enter New Folder Name" : "Add New Folder"}</strong></label>
-            <input
-              type="text"
-              className="form-control"
-              name="directoryName"
-              onChange={handleChange}
-              value={values.directoryName}
-              placeholder="Enter folder Name"
-              style={{ width: '100%' }}
-            />
-            <div className="mt-4 d-flex justify-content-end">
-              <button type="submit" className="btn btn-link save-button">
-                Save
-              </button>
-            </div>
-          </div>
-        </form>
+  <div>
+    <form onSubmit={handleSubmit}>
+      <div className="position-relative">
+        <input
+          type="text"
+          className="form-control"
+          name="directoryName"
+          onChange={handleChange}
+          value={values.directoryName}
+          placeholder="Enter folder Name"
+          style={{ width: '100%' }}
+        />
+        <button type="submit" className="btn btn-link save-button position-absolute end-0 top-50 translate-middle-y">
+          <MdOutlineDone />
+        </button>
       </div>
-    </div>
+    </form>
+  </div>
   )
 }
