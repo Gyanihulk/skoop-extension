@@ -1,27 +1,27 @@
 import React, { useContext, useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { PiSwap } from "react-icons/pi";
+import { PiSwap } from 'react-icons/pi';
 import API_ENDPOINTS from '../components/apiConfig.js';
 import GlobalStatesContext from '../contexts/GlobalStates.js';
 import RecordingButton from '../components/VideoRecording/index.js';
 import VoiceVisualization from '../components/AudioRecording/index.js';
 import EmailComposer from '../components/EmailSection/index.js';
 import LinkedInCom from '../components/LinkedinCom/index.js';
-import ChatComponent from '../components/ChatWindow/index.js'
+import ChatComponent from '../components/ChatWindow/index.js';
 import ChatWindowSelection from '../components/ChatWindowSelection/index.js';
 const Homepage = (props) => {
   const {setIsLinkedin,isLinkedin,setLatestVideoUrl,isProfilePage,setIsProfilePage} = useContext(GlobalStatesContext); 
 
-  function convertArrayOfObjectsToCSV(data) {
-    const header = Object.keys(data[0]).join(',') + '\n';
-    const rows = data.map(obj => Object.values(obj).join(',') + '\n');
-    const csvContent= header + rows.join('');
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    //const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'skoop_contacts_data.csv';
-    link.click();
-  }
+    function convertArrayOfObjectsToCSV(data) {
+        const header = Object.keys(data[0]).join(',') + '\n';
+        const rows = data.map((obj) => Object.values(obj).join(',') + '\n');
+        const csvContent = header + rows.join('');
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        //const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'skoop_contacts_data.csv';
+        link.click();
+    }
 
   const handleExportCsv=async()=>{
     try{

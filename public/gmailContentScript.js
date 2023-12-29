@@ -10,18 +10,43 @@ function injectIframe() {
         return;
     }
 
-    // Request camera and microphone permissions
-
     // Create the container
     const container = document.createElement('div');
     container.id = 'skoop-extension-container';
     container.style.position = 'fixed';
     container.style.top = '66px';
     container.style.right = '0';
-    container.style.width = '400px';
-    container.style.height = '600px';
+    container.style.width = '400px'; 
+    container.style.height = '60px'; 
     container.style.zIndex = '10000';
     container.style.display = 'block';
+    container.style.border = '1px solid #000'; 
+
+    // Draggable functionality
+    container.onmousedown = function (event) {
+        let shiftX = event.clientX - container.getBoundingClientRect().left;
+        let shiftY = event.clientY - container.getBoundingClientRect().top;
+
+        function moveAt(pageX, pageY) {
+            container.style.left = pageX - shiftX + 'px';
+            container.style.top = pageY - shiftY + 'px';
+        }
+
+        function onMouseMove(event) {
+            moveAt(event.pageX, event.pageY);
+        }
+
+        document.addEventListener('mousemove', onMouseMove);
+
+        container.onmouseup = function () {
+            document.removeEventListener('mousemove', onMouseMove);
+            container.onmouseup = null;
+        };
+    };
+
+    container.ondragstart = function () {
+        return false;
+    };
 
     // Create the iframe
     const iframe = document.createElement('iframe');
@@ -30,17 +55,67 @@ function injectIframe() {
     iframe.setAttribute('allow', 'camera;microphone');
     iframe.style.border = 'none';
     iframe.style.width = '100%';
-    iframe.style.height = '100%';
+    iframe.style.height = '100%'; // Height when expanded
 
+    const dragButton = document.createElement('button');
+    dragButton.id="skoop-drag-button"
+    dragButton.style.top = '18px';
+    dragButton.style.left = '13px';
+    dragButton.style.width = '20px';
+    dragButton.style.height = '20px';
+    dragButton.title="Click and Drag"
+    dragButton.style.position = 'absolute';
+    dragButton.style.cursor = 'move';
+    // dragButton.textContent = 'drag';
+    dragButton.onmousedown = function(event) {
+        event.preventDefault(); // prevent default drag behavior
+        let shiftX = event.clientX - container.getBoundingClientRect().left;
+        let shiftY = event.clientY - container.getBoundingClientRect().top;
+
+        function moveAt(pageX, pageY) {
+            container.style.left = pageX - shiftX + 'px';
+            container.style.top = pageY - shiftY + 'px';
+        }
+
+        function onMouseMove(event) {
+            moveAt(event.pageX, event.pageY);
+        }
+
+        document.addEventListener('mousemove', onMouseMove);
+
+        document.onmouseup = function() {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.onmouseup = null;
+        };
+    };
+
+    // Create minimize/expand button
+    const toggleButton = document.createElement('button');
+    toggleButton.id="skoop-expand-minimize-button"
+
+
+    // Toggle button functionality
+    let isMinimized = false;
+    toggleButton.onclick = function() {
+        if (isMinimized) {
+            container.style.height = '600px';
+        } else {
+            container.style.height = '54px';
+        }
+        isMinimized = !isMinimized;
+    };
+
+
+    container.appendChild(dragButton);
+    container.appendChild(toggleButton);
+    container.appendChild(iframe);
     // Create the close button
-    const closeButton = document.createElement('div');
+    const closeButton = document.createElement('button');
     closeButton.id = 'extension-close-button';
     closeButton.className = 'extension-close-button';
     closeButton.style.position = 'absolute';
     closeButton.style.top = '10px';
-    closeButton.style.right = '10px';
-    closeButton.style.width = '5px';
-    closeButton.style.height = '5px';
+    closeButton.style.left = '10px';
     closeButton.style.cursor = 'pointer';
     closeButton.textContent = 'x';
     container.style.zIndex = '10000';

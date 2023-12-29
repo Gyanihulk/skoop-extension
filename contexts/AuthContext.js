@@ -119,7 +119,7 @@ export const AuthProvider = ({ children }) => {
           })
           if(res.ok){
             toast.success("Sign up was complete",{ id : toastId});
-            navigateToPage('SignIn');
+            navigateToPage('Home');
           }
           else toast.error("username already exists pick a different username",{ id : toastId})
         }catch(err){
