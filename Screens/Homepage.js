@@ -10,7 +10,7 @@ import LinkedInCom from '../components/LinkedinCom/index.js';
 import ChatComponent from '../components/ChatWindow/index.js'
 import ChatWindowSelection from '../components/ChatWindowSelection/index.js';
 const Homepage = (props) => {
-  const {setIsLinkedin,isLinkedin,setLatestVideoUrl} = useContext(GlobalStatesContext); 
+  const {setIsLinkedin,isLinkedin,setLatestVideoUrl,isProfilePage,setIsProfilePage} = useContext(GlobalStatesContext); 
 
   function convertArrayOfObjectsToCSV(data) {
     const header = Object.keys(data[0]).join(',') + '\n';
@@ -44,12 +44,25 @@ const Homepage = (props) => {
     }
   }
   
+  const messageHandler = (message) => {
+    if (message.action === 'skoopMsgIsProfilePage') {
+        setIsProfilePage(true);
+        console.log("is profile page message received");
+    } else if (message.action === 'skoopMsgIsNotProfilePage') {
+        setIsProfilePage(false);
+        console.log("is not a profile page");
+    }
+  };
+
   useEffect(()=>{
     try{
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
           const targetTab=tabs[0];
           if (targetTab.url.includes("linkedin")) {
             setIsLinkedin(true);
+            if(targetTab.url.includes("www.linkedin.com/in")){
+              setIsProfilePage(true);
+            }
           }
           else{
             console.log("the target tab is not accessible");
@@ -58,6 +71,10 @@ const Homepage = (props) => {
     }catch(err){
         console.log("some error occured while setting up initial array")
     }
+    chrome.runtime.onMessage.addListener(messageHandler);
+    return () => {
+        chrome.runtime.onMessage.removeListener(messageHandler);
+    };
   },[])
    
   return (
@@ -79,7 +96,9 @@ const Homepage = (props) => {
     {!isLinkedin && <EmailComposer />}
       {isLinkedin  &&
           <>
-          <LinkedInCom/>
+          {isProfilePage &&
+            <LinkedInCom/>
+          }
           <ChatComponent/>
           <ChatWindowSelection/>
           </>

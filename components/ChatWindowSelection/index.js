@@ -52,7 +52,13 @@ const ChatWindowSelection = () => {
             var nameOfRecipient;
             if(item.querySelector('h2').innerText=='New message'){
               try{
-                nameOfRecipient=item.querySelectorAll('span')[2].innerText;
+                const profileLink=item.getElementsByClassName('msg-compose__profile-link') 
+                if(profileLink.length){
+                  nameOfRecipient=profileLink[0].innerText;
+                }
+                else{
+                  nameOfRecipient=item.querySelectorAll('span')[2].innerText;
+                }
               }catch(err){
                 nameOfRecipient="New Message"
               }

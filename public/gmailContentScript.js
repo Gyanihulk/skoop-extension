@@ -379,7 +379,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 const observer = new MutationObserver(createButton);
 observer.observe(document.body, { subtree: true, childList: true });
 
-
+var isProfilePage=false;
 // Function to handle mutations
 function handleMutations(mutationsList) {
     mutationsList.forEach((mutation) => {
@@ -416,13 +416,39 @@ function handleMutations(mutationsList) {
             }
           });
           if(MessagingTabFound==false){
-            console.log("the messaging tab not found")
+
             chrome.runtime.sendMessage({
                 action: 'elementRemoved'
             });
+
+            // if(window.location.href.includes('www.linkedin.com/in')){
+            //     chrome.runtime.sendMessage({
+            //         action: 'skoopMsgIsProfilePage'
+            //     });
+            // }
+            
+            // if(window.location.href.includes('www.linkedin.com/in')==false){
+            //     chrome.runtime.sendMessage({
+            //         action: 'skoopMsgIsNotProfilePage'
+            //     });
+            // }
           }
         }
       });
+
+      if(window.location.href.includes('www.linkedin.com/in') && !isProfilePage){
+        isProfilePage=true;
+        chrome.runtime.sendMessage({
+            action: 'skoopMsgIsProfilePage'
+        });
+    }
+
+    if(window.location.href.includes('www.linkedin.com/in')==false && isProfilePage){
+        isProfilePage=false;
+        chrome.runtime.sendMessage({
+            action: 'skoopMsgIsNotProfilePage'
+        });
+    }
 
     });
   }
@@ -440,7 +466,6 @@ function handleMutations(mutationsList) {
 // adding event listner to find the last selected element for insertion at Gmail
 
 document.addEventListener('focusin', (event) => {
-  console.log("focusing on ",event.target);
 
   chrome.runtime.sendMessage({
     action: 'elementRemoved',

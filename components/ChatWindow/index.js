@@ -130,7 +130,7 @@ const ChatComponent = (props) => {
     </div>
     </div>
     <div class="d-grid gap-2">
-      <button class="btn btn-primary btn-lg btn-block" type="button"
+      <button type="button" class="btn btn-outline-dark"
         onClick={() => appendToBody(`${API_ENDPOINTS.skoopCalendarUrl}/?username=${JSON.parse(localStorage.getItem('skoopUsername'))}`)} 
       >
         Insert meet link
