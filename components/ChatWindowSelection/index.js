@@ -52,7 +52,13 @@ const ChatWindowSelection = () => {
             var nameOfRecipient;
             if(item.querySelector('h2').innerText=='New message'){
               try{
-                nameOfRecipient=item.querySelectorAll('span')[2].innerText;
+                const profileLink=item.getElementsByClassName('msg-compose__profile-link') 
+                if(profileLink.length){
+                  nameOfRecipient=profileLink[0].innerText;
+                }
+                else{
+                  nameOfRecipient=item.querySelectorAll('span')[2].innerText;
+                }
               }catch(err){
                 nameOfRecipient="New Message"
               }
@@ -88,10 +94,10 @@ const ChatWindowSelection = () => {
                             var combinedArray = response[0].result;
 
                             setInitialItems(combinedArray);
-                            const filteredArray = combinedArray.filter(item =>
-                                selectedChatWindows.some(secondItem => secondItem.name === item.name)
-                            );
-                            setSelectedChatWindows(filteredArray);
+                            // const filteredArray = combinedArray.filter(item =>
+                            //     selectedChatWindows.some(secondItem => secondItem.name === item.name)
+                            // );
+                            setSelectedChatWindows(combinedArray);
                         } else {
                           console.error("Error retrieving combinedArray:", chrome.runtime.lastError);
                         }

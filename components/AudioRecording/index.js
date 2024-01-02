@@ -15,7 +15,7 @@ import toast from 'react-hot-toast';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
 import { AiOutlineClose } from 'react-icons/ai';
 
-const VoiceVisualization = ({setIconsVisible, setBlobUrl ,setIsUploading ,setCapturing}) => {
+const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCapturing,setVideoPlayerId,setVideoId}) => {
     const [mediaRecorder, setMediaRecorder] = useState(null);
     const [visualizationUrl, setVisualizationUrl] = useState('');
     const [isRecording, setIsRecording] = useState(false);
@@ -83,7 +83,8 @@ const VoiceVisualization = ({setIconsVisible, setBlobUrl ,setIsUploading ,setCap
             })
             setIsUploading(false)
         
-        
+            setVideoPlayerId(response.facade_player_uuid);
+            setVideoId(response.id);
             console.log('the response after vidyard upload request', response);
    
             setGlobalRefresh(true);

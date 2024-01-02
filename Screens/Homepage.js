@@ -10,26 +10,7 @@ import LinkedInCom from '../components/LinkedinCom/index.js';
 import ChatComponent from '../components/ChatWindow/index.js';
 import ChatWindowSelection from '../components/ChatWindowSelection/index.js';
 const Homepage = (props) => {
-    const { setIsLinkedin, isLinkedin, setLatestVideoUrl } = useContext(GlobalStatesContext);
-    const [isRecording, setIsRecording] = useState(true);
-
-    const toggleComponent = () => {
-        setIsRecording(!isRecording);
-    };
-
-    const setLatestVideoUrlHandler = (input) => {
-        setLatestVideoUrl(input);
-    };
-
-    const message = { message: 'HomePage', width: '400px', height: '400px' };
-
-    // Send the message to the background script
-    chrome.runtime.sendMessage(message, function (response) {
-        console.log('Received response:', response);
-        if (response && response?.url.startsWith('www.linkedin.com')) {
-            setIsLinkedin(true);
-        }
-    });
+  const {setIsLinkedin,isLinkedin,setLatestVideoUrl,isProfilePage,setIsProfilePage} = useContext(GlobalStatesContext); 
 
     function convertArrayOfObjectsToCSV(data) {
         const header = Object.keys(data[0]).join(',') + '\n';
@@ -42,49 +23,78 @@ const Homepage = (props) => {
         link.click();
     }
 
-    const handleExportCsv = async () => {
-        try {
-            var response = await fetch(API_ENDPOINTS.skoopCrmGetAllData, {
-                method: 'GET',
-                headers: {
-                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                    'Content-type': 'application/json; charset=UTF-8',
-                },
-            });
-            response = await response.json();
-            const keysToRemove = ['username', 'id'];
-            response.map((obj) => {
-                keysToRemove.forEach((key) => delete obj[key]);
-                return obj;
-            });
-            convertArrayOfObjectsToCSV(response);
-        } catch (err) {
-            alert('some error occured while exporting csv', err);
+  const handleExportCsv=async()=>{
+    try{
+      var response=await fetch(API_ENDPOINTS.skoopCrmGetAllData,{
+        method: "GET",
+        headers: {
+          "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+          "Content-type": "application/json; charset=UTF-8"
         }
-    };
-
-    const hostUrl = new URL(window.location.href).hostname;
-    console.log(window.location.href);
-    if (hostUrl.startsWith('www.linkedin.com')) {
-        setIsLinkedin(true);
-        console.log(hostUrl, 'setting linkein true', isLinkedin);
+      });
+      response=await response.json()
+      const keysToRemove=['username','id']
+      response.map(obj => {
+        keysToRemove.forEach(key => delete obj[key]);
+        return obj;
+      });
+      convertArrayOfObjectsToCSV(response)
+    }catch(err){
+      alert("some error occured while exporting csv",err)
     }
-    console.log(isLinkedin, 'linkedin');
+  }
+  
+  const messageHandler = (message) => {
+    if (message.action === 'skoopMsgIsProfilePage') {
+        setIsProfilePage(true);
+        console.log("is profile page message received");
+    } else if (message.action === 'skoopMsgIsNotProfilePage') {
+        setIsProfilePage(false);
+        console.log("is not a profile page");
+    }
+  };
 
-    return (
-        <>
-            <RecordingButton/>
-
-            {!isLinkedin && <EmailComposer />}
-            {isLinkedin && (
-                <>
-                    <LinkedInCom />
-                    <ChatComponent />
-                    <ChatWindowSelection />
-                </>
-            )}
-        </>
-    );
+  useEffect(()=>{
+    try{
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          const targetTab=tabs[0];
+          if (targetTab.url.includes("linkedin")) {
+            setIsLinkedin(true);
+            if(targetTab.url.includes("www.linkedin.com/in")){
+              setIsProfilePage(true);
+            }
+          }
+          else{
+            console.log("the target tab is not accessible");
+          }
+      });
+    }catch(err){
+        console.log("some error occured while setting up initial array")
+    }
+    chrome.runtime.onMessage.addListener(messageHandler);
+    return () => {
+        chrome.runtime.onMessage.removeListener(messageHandler);
+    };
+  },[])
+   
+  return (
+    <div className="background-color">
+      <div className="d-flex my-4 justify-content-center mt-8">
+      <RecordingButton/>
+    </div>
+       
+    {!isLinkedin && <EmailComposer />}
+      {isLinkedin  &&
+          <>
+          {isProfilePage &&
+            <LinkedInCom/>
+          }
+          <ChatComponent/>
+          <ChatWindowSelection/>
+          </>
+      } 
+    </div>
+  );
 };
 
 export default Homepage;
