@@ -496,17 +496,7 @@ function handleMutations(mutationsList) {
                 action: 'elementRemoved'
             });
 
-            // if(window.location.href.includes('www.linkedin.com/in')){
-            //     chrome.runtime.sendMessage({
-            //         action: 'skoopMsgIsProfilePage'
-            //     });
-            // }
-            
-            // if(window.location.href.includes('www.linkedin.com/in')==false){
-            //     chrome.runtime.sendMessage({
-            //         action: 'skoopMsgIsNotProfilePage'
-            //     });
-            // }
+         
           }
         }
       });
@@ -542,10 +532,10 @@ function handleMutations(mutationsList) {
 
 document.addEventListener('focusin', (event) => {
 
-  chrome.runtime.sendMessage({
-    action: 'elementRemoved',
-    element: event.target
-  });
+    chrome.runtime.sendMessage({
+        action: "skoopFocusedElementChanged",
+        elementId: event.target.id
+    });
 
 });
 

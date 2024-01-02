@@ -10,7 +10,13 @@ import LinkedInCom from '../components/LinkedinCom/index.js';
 import ChatComponent from '../components/ChatWindow/index.js';
 import ChatWindowSelection from '../components/ChatWindowSelection/index.js';
 const Homepage = (props) => {
-  const {setIsLinkedin,isLinkedin,setLatestVideoUrl,isProfilePage,setIsProfilePage} = useContext(GlobalStatesContext); 
+  const {
+    setIsLinkedin,
+    isLinkedin,
+    setLatestVideoUrl,
+    isProfilePage,
+    setIsProfilePage,
+    setFocusedElementId} = useContext(GlobalStatesContext); 
 
     function convertArrayOfObjectsToCSV(data) {
         const header = Object.keys(data[0]).join(',') + '\n';
@@ -52,6 +58,9 @@ const Homepage = (props) => {
         setIsProfilePage(false);
         console.log("is not a profile page");
     }
+    else if(message.action==='skoopFocusedElementChanged'){
+      setFocusedElementId(message.elementId);
+    }
   };
 
   useEffect(()=>{
@@ -78,11 +87,10 @@ const Homepage = (props) => {
   },[])
    
   return (
-    <div className="background-color">
-      <div className="d-flex my-4 justify-content-center mt-8">
+    <div>
+
       <RecordingButton/>
-    </div>
-       
+  
     {!isLinkedin && <EmailComposer />}
       {isLinkedin  &&
           <>
