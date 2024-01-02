@@ -52,7 +52,6 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite })
       if (response.ok) {
         video.video_title = newTitle;
         handleCloseRenamePopup();
-        fetchVideos(); 
         toast.success('Video renamed successfully');
       } else {
         console.error('Rename operation failed:', response.statusText);
