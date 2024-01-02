@@ -29,22 +29,27 @@ const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFa
 
     return (
         <div className="container">
-            <div className="row">
-                {videos &&
-                    videos.map((item) => (
-                        <VideoCard
-                            key={item.id}
-                            video={item}
-                            folderName={folderName} 
-                            handleLinkInsertion={handleLinkInsertion}
-                            deleteVideo={deleteVideo}
-                            toggleFavourite={toggleFavourite}
-                            fetchVideos={fetchVideos}
-                        />
-                    ))}
-            </div>
+        <div className="row">
+            {videos && videos.length > 0 ? (
+                videos.map((item) => (
+                    <VideoCard
+                        key={item.id}
+                        video={item}
+                        folderName={folderName}
+                        handleLinkInsertion={handleLinkInsertion}
+                        deleteVideo={deleteVideo}
+                        toggleFavourite={toggleFavourite}
+                        fetchVideos={fetchVideos}
+                    />
+                ))
+            ) : (
+                <div className="col-12 text-center">
+                    <p>No videos available</p>
+                </div>
+            )}
         </div>
-    );
+    </div>
+);
 };
 
 export default VideoContainer;

@@ -36,15 +36,14 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite })
       console.log('Video ID:', video.id);
       console.log('New Title:', newTitle);
       
-      const response = await fetch(API_ENDPOINTS.renameVideo, {
+      const response = await fetch(API_ENDPOINTS.renameVideo +`/${video.id}`, {
         method: 'PATCH',
         headers: {
           authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
           'Content-type': 'application/json; charset=UTF-8',
         },
         body: JSON.stringify({
-          videoId: video.id,
-          newTitle,
+          newTitle: newTitle
         }),
       });
   
@@ -53,7 +52,7 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite })
       if (response.ok) {
         video.video_title = newTitle;
         handleCloseRenamePopup();
-        fetchVideos(); // Update the video list
+        fetchVideos(); 
         toast.success('Video renamed successfully');
       } else {
         console.error('Rename operation failed:', response.statusText);

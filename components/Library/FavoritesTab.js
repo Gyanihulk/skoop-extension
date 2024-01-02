@@ -40,7 +40,7 @@ const FavoritesTab = ({ favorites, currentDirectory, handleLinkInsertion, delete
           ))}
         </div>
       ) : (
-        <p>No favorites to display.</p>
+        <p></p>
       )}
     </div>
   );
