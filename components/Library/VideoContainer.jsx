@@ -35,6 +35,7 @@ const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFa
                         <VideoCard
                             key={item.id}
                             video={item}
+                            folderName={folderName} 
                             handleLinkInsertion={handleLinkInsertion}
                             deleteVideo={deleteVideo}
                             toggleFavourite={toggleFavourite}

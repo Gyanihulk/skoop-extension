@@ -33,6 +33,8 @@ const MoveVideoPopup = ({ videoId, onClose, onMove }) => {
 
   const handleMove = async (folderName) => {
     try {
+      console.log('Video ID:', videoId);
+      console.log('Destination Folder:', folderName);
       const response = await fetch(API_ENDPOINTS.moveVideos, {
         method: 'PATCH',
         headers: {
@@ -40,13 +42,14 @@ const MoveVideoPopup = ({ videoId, onClose, onMove }) => {
           'Content-type': 'application/json; charset=UTF-8',
         },
         body: JSON.stringify({
-          videoId,
-          destinationFolder: folderName,
+          videoIds: [videoId],
+          to: folderName,
         }),
       });
-  
+      console.log('Move Response:', response);
+
       if (response.ok) {
-        onMove();
+        await onMove();  // Use await to ensure the asynchronous operation completes
       } else {
         console.error('Move operation failed:', response.statusText);
       }

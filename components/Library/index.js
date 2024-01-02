@@ -42,6 +42,12 @@ const Library = (props) => {
       setOpenNewFolder(true);
       setTabName('');
     };
+
+    const handleMoveVideo = async () => {
+      // After moving the video, update the state to reflect the changes
+      await getlinks(currentDirectory);
+    };
+    
   
     const handleTabCreation = async () => {
       if (activeTab !== 'folders') {
