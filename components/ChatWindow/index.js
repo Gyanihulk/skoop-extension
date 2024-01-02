@@ -14,7 +14,7 @@ const ChatComponent = (props) => {
   const [message, setMessage] = useState('');
   const [option, setOption] = useState('null');
   const [targetPerson,setTargetPerson] = useState('');
- const {selectedChatWindows}=useContext(GlobalStatesContext)
+ const {selectedChatWindows,isProfilePage}=useContext(GlobalStatesContext)
   const [messages, setMessages] = useState([
     { text: 'Hi there! Click on the message box to detect receiver', profilePicture: "https://pbs.twimg.com/media/FjU2lkcWYAgNG6d.jpg", sender: 'receiver' },
   ]);
@@ -52,6 +52,40 @@ const ChatComponent = (props) => {
     }
   };
 
+  const handleOpenMessageWindow=()=>{
+    const clickMessageButton=()=>{
+      const btns=Array.from(document.querySelectorAll("div>div>div>button"))
+      var selectedButton;
+      btns.forEach(btn => {
+        const ariaLabel=btn.ariaLabel
+        if(ariaLabel!=null && ariaLabel.includes("Message")){
+          selectedButton=btn;
+        }
+      })
+      selectedButton.click();
+    }
+    
+    try{
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          const targetTab=tabs[0];
+          if (targetTab) {
+            try{
+              chrome.scripting.executeScript({
+                target : {tabId : targetTab.id},
+                func: clickMessageButton
+              });
+            }catch(err){
+              console.log("some error occured in executing script",err)
+            }
+          }
+          else{
+            console.log("the target tab is not accessible");
+          }
+      });
+    }catch(err){
+      console.log("some error occured while setting up initial array")
+    }
+  }
 
   const chatContainerStyle = {
     minheight: 'calc(160vh - 500px)',
@@ -130,11 +164,16 @@ const ChatComponent = (props) => {
     </div>
     </div>
     <div class="d-grid gap-2">
-      <button class="btn btn-primary btn-lg btn-block" type="button"
+      <button type="button" class="btn btn-outline-dark"
         onClick={() => appendToBody(`${API_ENDPOINTS.skoopCalendarUrl}/?username=${JSON.parse(localStorage.getItem('skoopUsername'))}`)} 
       >
         Insert meet link
       </button>
+      {isProfilePage && 
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary mt-3" type="button" onClick={handleOpenMessageWindow}>Message profile</button>
+          </div>
+      }
     </div>
     </div>
   );
