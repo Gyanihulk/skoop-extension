@@ -6,7 +6,7 @@ import { MdMoveUp } from "react-icons/md";
 import { toast } from 'react-hot-toast';
 import MoveVideoPopup from './MoveVideoPopup';
 
-const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite }) => {
+const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, fetchVideos }) => {
   const [showMovePopup, setShowMovePopup] = useState(false);
 
   const handleMoveClick = () => {
@@ -82,6 +82,7 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite })
               onMove={() => {
                 handleCloseMovePopup();
                 toast.success('Video moved successfully');
+                fetchVideos();
               }}
             />
           )}

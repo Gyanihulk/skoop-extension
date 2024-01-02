@@ -48,10 +48,7 @@ const Library = (props) => {
         await createNewTab(tabName);
         setOpenNewFolder(false);
         updateFavoritesState(); 
-      } else {
-        // Handle case where tab name is empty
-        // You can show an error message or take appropriate action
-      }
+      } 
     };
     
     const handleClose = () => {
@@ -85,7 +82,6 @@ const Library = (props) => {
     
 
     const createNewTab = async (tabName) => {
-      // Implement logic to create a new folder (tab)
       try {
         const response = await fetch(API_ENDPOINTS.createNewDirectory, {
           method: 'POST',
@@ -96,7 +92,6 @@ const Library = (props) => {
           body: JSON.stringify({ directory_name: tabName }),
         });
         await getDirs();
-        // Optionally, you may also set the new tab as the active tab
         setActiveTab(tabName);
         setCurrentDirectory(tabName);
       } catch (err) {
@@ -167,7 +162,7 @@ const Library = (props) => {
           }
         });
         await getlinks(dir);
-        await updateFavoritesState(); // Use await to ensure proper order of operations
+        await updateFavoritesState();
       } catch (err) {
         console.log("could not delete", err);
       }
@@ -202,23 +197,6 @@ const Library = (props) => {
             else getlinks(currentDirectory);
          }
     },[globalRefresh]);
-
-    // const getThumbnail=async(id)=>{
-    //     try{
-    //         var response=await fetch(API_ENDPOINTS.getThumbnail+id,{
-    //             method: "GET",
-    //             headers:{
-    //                 "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-    //                 'Content-Type': 'application/json'
-    //             }
-    //         });
-    //         response=await response.json();
-    //         return response.url;
-    //     }catch(err){
-    //         console.log("error while fetching thumbnails",err);
-    //         return null
-    //     }
-    // }
 
     const handleLinkInsertion=async(link,id)=>{
         if(props.appendToBody){
@@ -256,7 +234,6 @@ const Library = (props) => {
           })
         });
     
-        // Assuming the response indicates success
         // Update the favorites state
         setFavorites(prevFavorites => {
           const updatedFavorites = prevFavorites.map(favorite => {
@@ -271,8 +248,7 @@ const Library = (props) => {
           return updatedFavorites;
         });
     
-        // Call updateFavoritesState to synchronize with the server
-        await updateFavoritesState(); // Use await to ensure proper order of operations
+        await updateFavoritesState();
     
       } catch (err) {
         console.log("Toggle Favorite Error:", err);
@@ -325,8 +301,9 @@ const Library = (props) => {
         handleNewTab={handleNewTab}
         folders={folders}
       />
-    <br />
-    <br />
+
+    {/* User Input Modals */}
+    
     <div className="modal" style={{ display: openNewFolder ? 'block' : 'none' }}>
       <div className="modal-dialog">
         <div className="modal-content">
@@ -364,6 +341,7 @@ const Library = (props) => {
         </div>
     </div>
 
+
     {activeTab === 'favorites' && (
       <FavoritesTab
       favorites={favorites}
@@ -379,6 +357,7 @@ const Library = (props) => {
                  handleLinkInsertion={handleLinkInsertion}
                  deleteVideo={deleteVideo}
                 toggleFavourite={toggleFavourite}/>
+                
 </div>
   )
 }

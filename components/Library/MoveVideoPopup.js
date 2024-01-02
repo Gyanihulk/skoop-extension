@@ -33,8 +33,6 @@ const MoveVideoPopup = ({ videoId, onClose, onMove }) => {
 
   const handleMove = async (folderName) => {
     try {
-        console.log('Video ID:', videoId);
-        console.log('Destination Folder:', folderName);
       const response = await fetch(API_ENDPOINTS.moveVideos, {
         method: 'PATCH',
         headers: {
@@ -48,30 +46,22 @@ const MoveVideoPopup = ({ videoId, onClose, onMove }) => {
       });
   
       if (response.ok) {
-        // If the move operation is successful, notify the parent component
         onMove();
       } else {
         console.error('Move operation failed:', response.statusText);
-        // Handle the case where the move operation fails
       }
     } catch (error) {
       console.error('Error moving video:', error);
     } finally {
-      // Close the popup regardless of success or failure
       onClose();
     }
-  };  
+  };
+  
 
   return (
     <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block' }}>
       <div className="modal-dialog" role="document">
         <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">Select a folder to move the video:</h5>
-            <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={onClose}>
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
           <div className="modal-body">
             {loading ? (
               <p>Loading folders...</p>
@@ -91,7 +81,7 @@ const MoveVideoPopup = ({ videoId, onClose, onMove }) => {
             )}
           </div>
           <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" onClick={onClose}>
+            <button type="button" className="btn btn-secondary btn-sm" onClick={onClose}>
               Close
             </button>
           </div>
