@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { AiFillRobot } from "react-icons/ai";
 import { HiMiniGif } from "react-icons/hi2";
 import { RiMessage2Fill } from "react-icons/ri";
@@ -10,15 +10,16 @@ import Library from '../Library/index.js';
 import AI from '../Pre-Determined-Msg/index.js';
 import API_ENDPOINTS from '../apiConfig.js';
 import { insertHtmlAtPositionInMail } from '../../utils/index.js';
+import GlobalStatesContext from '../../contexts/GlobalStates.js';
 
 const EmailComposer = () => {
   const [state, setState] = useState({
     displayComp: 'DefaultCard'
   });
 
-
+  const {focusedElementId}=useContext(GlobalStatesContext)
   const handleInsertion = (text) => {
-    insertHtmlAtPositionInMail(text);
+    insertHtmlAtPositionInMail(text,focusedElementId);
   };
 
   const componentDisplaySwitch = (input) => {

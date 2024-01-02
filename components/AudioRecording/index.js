@@ -8,7 +8,6 @@ import { FaStop } from 'react-icons/fa';
 
 import API_ENDPOINTS from '../apiConfig.js';
 import { getCurrentDateTimeString, replaceInvalidCharacters } from '../../utils/index.js';
-import { insertIntoLinkedInMessageWindow, insertHtmlAtPositionInMail } from '../../utils/index.js';
 import { PiExportFill } from 'react-icons/pi';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import toast from 'react-hot-toast';

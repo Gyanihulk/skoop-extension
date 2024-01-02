@@ -51,13 +51,10 @@ export const insertIntoLinkedInMessageWindow=(html,selectedChatWindows)=>{
     
 }
 
-export const insertHtmlAtPositionInMail=(textInput) => {
+export const insertHtmlAtPositionInMail=(textInput,elementId) => {
     
-    const executeInsertion=(text)=>{
-        var element = document.querySelector("table > tbody > tr:nth-of-type(1) > td > div > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(3) > div > table > tbody > tr > td:nth-of-type(2) > div:nth-of-type(2) > div");
-        if(element==null){
-            element=document.querySelector("div > table > tbody > tr > td:nth-of-type(2) > div:nth-of-type(2) > div > div:nth-child(1)");
-        }
+    const executeInsertion=(text,Id)=>{
+        var element = document.getElementById(Id)
         
         if(element==null){
         console.log("gmail compose mail window not found returning")
@@ -114,7 +111,7 @@ export const insertHtmlAtPositionInMail=(textInput) => {
             chrome.scripting.executeScript({
               target : {tabId : targetTab.id},
               func: executeInsertion,
-              args: [textInput]
+              args: [textInput,elementId]
             });
           }catch(err){
             console.log("some error occured in executing script")
