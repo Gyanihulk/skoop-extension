@@ -1,16 +1,17 @@
 import { useContext, useState, useEffect } from 'react';
 import { BsArrowLeftCircle } from 'react-icons/bs';
-import { MdAccountCircle, MdNotificationsActive, MdClose } from 'react-icons/md';
+import { MdAccountCircle, MdNotificationsActive, MdClose, MdSaveAlt } from 'react-icons/md';
 import { FaExpandAlt, FaExpandArrowsAlt } from 'react-icons/fa';
-import { AiOutlineExpandAlt } from 'react-icons/ai';
 import GlobalStatesContext from '../../contexts/GlobalStates';
 import { FaRegCalendarCheck } from 'react-icons/fa';
 import ScreenContext from '../../contexts/ScreenContext';
 import API_ENDPOINTS from '../apiConfig';
 import { FiMinimize2, FiMaximize2 } from 'react-icons/fi';
+import ProfileScraper from '../ProfileScraper/index.js';
+
 export default function Header() {
     const { navigateToPage, activePage } = useContext(ScreenContext);
-    const { setScraperPage, scraperPage } = useContext(GlobalStatesContext);
+    const { setScraperPage, scraperPage, isProfilePage } = useContext(GlobalStatesContext);
     const [expand, setExpand] = useState(false);
 
     const [profileOpen, setProfileOpen] = useState(false);
@@ -108,8 +109,9 @@ export default function Header() {
                             <div className="col">
                                 <FaExpandArrowsAlt className="icon-style-normal" />
                             </div>
+
                             <div className="col">
-                                {scraperPage && (
+                                {(scraperPage || activePage ==="AccountSettings") && (
                                     <BsArrowLeftCircle
                                         className="icon-style-normal"
                                         onClick={() => {
@@ -124,6 +126,21 @@ export default function Header() {
                 </div>
 
                 <div className="d-flex ml-auto align-items-center">
+                      {/* Profile Info Saver */}
+                    {isProfilePage && (
+                        <button
+                            className="btn btn-link"
+                            data-mdb-toggle="tooltip"
+                            data-mdb-placement="bottom"
+                            title="Save Profile Info "
+                            onClick={() => {
+                                navigateToPage('ContactPage');
+                                setScraperPage(!scraperPage);
+                            }}
+                        >
+                            <MdSaveAlt className="icon-style-normal" />
+                        </button>
+                    )}
                     {/* Calendar Link */}
                     <button
                         className="btn btn-link"
@@ -140,15 +157,7 @@ export default function Header() {
                         <FaRegCalendarCheck className="icon-style-normal" />
                     </button>
 
-                    {/* Notifications */}
-                    <button
-                        className="btn btn-link"
-                        data-mdb-toggle="tooltip"
-                        data-mdb-placement="bottom"
-                        title="Notifications"
-                    >
-                        <MdNotificationsActive className="icon-style-normal" />
-                    </button>
+                  
 
                     {/* Profile Dropdown */}
                     <div className={`nav-item dropdown custom ${profileOpen ? 'show' : ''}`}>

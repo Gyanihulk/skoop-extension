@@ -5,7 +5,7 @@ import SignUp from '../Screens/SignUp';
 import ScreenContext from '../contexts/ScreenContext';
 import ChatPage from '../Screens/ChatPage';
 import ContactPage from '../Screens/ContactPage';
-import LinkedInCom from '../components/LinkedinCom';
+import ProfileScraper from '../components/ProfileScraper';
 import AccountSettings from '../Screens/AccountSettings';
 import ForgotPassword from '../Screens/ForgotPassword';
 import LoadingScreen from '../Screens/LoadingScreen';
@@ -33,7 +33,7 @@ export default function Home() {
             {activePage === 'AccountSettings' && <AccountSettings />}
             {activePage=='ChatPage' && <ChatPage/>}
             {activePage=='ContactPage' && <ContactPage/>}
-            {activePage=='LinkedInCom' && <LinkedInCom/>}
+            {activePage=='ProfileScraper' && <ProfileScraper/>}
             {activePage=='ForgotPassword' && <ForgotPassword/>}
         </>
     );

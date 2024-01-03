@@ -248,7 +248,9 @@ const RecordingButton = () => {
         }
     };
     return (
-        <>
+        <><div className='pt-3'>
+
+        
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-auto">
@@ -394,6 +396,7 @@ const RecordingButton = () => {
             </div>
 
             {prev !== '' && <PreviewModal prev={prev} preview={preview} setPrev={setPrev} />}
+            </div>
         </>
     );
 };

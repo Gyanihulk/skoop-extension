@@ -3,10 +3,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { PiSwap } from 'react-icons/pi';
 import API_ENDPOINTS from '../components/apiConfig.js';
 import GlobalStatesContext from '../contexts/GlobalStates.js';
-import RecordingButton from '../components/VideoRecording/index.js';
+import RecordingButton from '../components/RecordingButton/index.js';
 import VoiceVisualization from '../components/AudioRecording/index.js';
 import EmailComposer from '../components/EmailSection/index.js';
-import LinkedInCom from '../components/LinkedinCom/index.js';
+import ProfileScraper from '../components/ProfileScraper/index.js';
 import ChatComponent from '../components/ChatWindow/index.js';
 import ChatWindowSelection from '../components/ChatWindowSelection/index.js';
 const Homepage = (props) => {
@@ -94,9 +94,6 @@ const Homepage = (props) => {
     {!isLinkedin && <EmailComposer />}
       {isLinkedin  &&
           <>
-          {isProfilePage &&
-            <LinkedInCom/>
-          }
           <ChatComponent/>
           <ChatWindowSelection/>
           </>

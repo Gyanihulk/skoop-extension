@@ -17,7 +17,7 @@ function injectIframe() {
     container.style.top = '66px';
     container.style.right = '0';
     container.style.width = '400px'; 
-    container.style.height = '60px'; 
+    container.style.height = '600px'; 
     container.style.zIndex = '10000';
     container.style.display = 'block';
     container.style.border = '1px solid #000'; 
@@ -57,16 +57,16 @@ function injectIframe() {
     iframe.style.width = '100%';
     iframe.style.height = '100%'; // Height when expanded
 
-    const dragButton = document.createElement('button');
+    const dragButton = document.createElement('div');
     dragButton.id="skoop-drag-button"
     dragButton.style.top = '18px';
     dragButton.style.left = '13px';
     dragButton.style.width = '20px';
     dragButton.style.height = '20px';
-    dragButton.title="Click and Drag"
+    dragButton.title="Click and Drag To Move"
     dragButton.style.position = 'absolute';
     dragButton.style.cursor = 'move';
-    // dragButton.textContent = 'drag';
+    dragButton.style.backgroundColor="transparent";
     dragButton.onmousedown = function(event) {
         event.preventDefault(); // prevent default drag behavior
         let shiftX = event.clientX - container.getBoundingClientRect().left;
@@ -91,8 +91,8 @@ function injectIframe() {
 
     // Create minimize/expand button
     const toggleButton = document.createElement('button');
-    toggleButton.id="skoop-expand-minimize-button"
-
+    toggleButton.id="skoop-expand-minimize-button";
+    toggleButton.style.display="none";
 
     // Toggle button functionality
     let isMinimized = false;
@@ -100,7 +100,7 @@ function injectIframe() {
         if (isMinimized) {
             container.style.height = '600px';
         } else {
-            container.style.height = '54px';
+            container.style.height = '61px';
         }
         isMinimized = !isMinimized;
     };

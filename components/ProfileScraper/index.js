@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import ScreenContext from '../../contexts/ScreenContext';
 import GlobalStatesContext from '../../contexts/GlobalStates';
 
-const LinkedInCom = () => {
+const ProfileScraper = () => {
   const { setScraperPage,scraperPage } = useContext(GlobalStatesContext);
   const { navigateToPage } = useContext(ScreenContext);
   return (
@@ -21,4 +21,4 @@ const LinkedInCom = () => {
   );
 };
 
-export default LinkedInCom;
+export default ProfileScraper;

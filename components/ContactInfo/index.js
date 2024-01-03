@@ -157,13 +157,7 @@ const ContactInfoCard = () => {
           <h3 className="mb-3 Section-heading">Contact Info: {profileName}</h3>
           <p className="mb-4 blue-text d-flex align-items-center">
             Extract Contact Information from Profiles
-            <button
-              type="button"
-              className="btn btn-primary refresh-button ml-2"
-              onClick={() => setRefresh(!refresh)}
-            >
-              Refresh
-            </button>
+           
           </p>
 
           {/* Row 1 */}
