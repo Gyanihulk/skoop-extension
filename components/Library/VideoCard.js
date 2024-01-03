@@ -66,17 +66,17 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite })
 
   return (
     <div className="col-6" key={video.id}>
-      <div className="card mb-1" style={{ overflow: 'hidden' }}>
+      <div className="card mb-1 card-overflow-hidden">
         <iframe
           title={video.video_title}
           width="100%"
           height="80vw" 
           src={video.link}
           allow="autoplay; fullscreen; picture-in-picture"
-          style={{ border: 'none' }} 
+          className="no-border"
         />
         <div className="card justify-content-between align-items-center">
-          <h8 className="card-title text-truncate" style={{ maxWidth: '100px' }} title={video.video_title}>
+          <h8 className="card-title text-truncate title-width" title={video.video_title}>
             {video.video_title}
           </h8>
           <div className="btn-group" role="group">

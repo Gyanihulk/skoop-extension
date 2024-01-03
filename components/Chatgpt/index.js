@@ -140,7 +140,6 @@ const ChatGpt = ({ appendToBody }) => {
           <button
             type="button"
             className="btn btn-outline-primary chatgpt-button"
-            style={{ fontSize: '14px' }}
             onClick={() => {
               appendToBody(prompt);
             }}

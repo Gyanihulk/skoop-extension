@@ -215,7 +215,7 @@ const Library = (props) => {
             console.log("the thumbnail link provided");
             var ret
             if(thumbnail_link!=undefined && thumbnail_link!=null){
-                ret=`<img src='${thumbnail_link}' style={{width: '200px' ,display: 'inline-block'}}/><br>`
+                ret=`<img src='${thumbnail_link}' className="inline-block-width"/><br>`
             }
             ret+=`<a href='${link}'>video link</a>`
             props.appendToBody(ret)

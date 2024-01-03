@@ -53,7 +53,6 @@ function GiphyWindow(props) {
 
   return (
     <div className="container gif-container">
-      <div style={{ borderRadius: '5px' }}>
         <form onSubmit={(e) => e.preventDefault()}>
           <div className="input-group mb-3">
             <input
@@ -114,7 +113,7 @@ function GiphyWindow(props) {
             </label>
           </div>
         }
-        <div className="row" style={{ whiteSpace: 'nowrap' }}>
+        <div className="row no-wrap">
           {results.map((result) => (
             <div key={result.id} className="col-4 col-md-4 col-lg-4 gif-result">
               <img
@@ -128,7 +127,6 @@ function GiphyWindow(props) {
           ))}
         </div>
       </div>
-    </div>
  );
 }
 export default GiphyWindow;

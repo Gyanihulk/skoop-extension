@@ -199,12 +199,11 @@ export const NewFolderInput=(props)=>{
       <div className="position-relative">
         <input
           type="text"
-          className="form-control"
+          className="form-control full-width"
           name="directoryName"
           onChange={handleChange}
           value={values.directoryName}
           placeholder="Enter folder Name"
-          style={{ width: '100%' }}
         />
         <button type="submit" className="btn btn-link save-button position-absolute end-0 top-50 translate-middle-y">
           <MdOutlineDone />

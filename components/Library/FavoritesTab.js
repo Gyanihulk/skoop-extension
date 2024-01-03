@@ -19,11 +19,10 @@ const FavoritesTab = ({ favorites, currentDirectory, handleLinkInsertion, delete
                 height="80vw" 
                 src={favorite.link}
                 allow="autoplay; fullscreen; picture-in-picture"
-                style={{ border: 'none' }} 
-                //className="card-img-top"
+                className="no-border"
               />
               <div className="card justify-content-between align-items-center">
-                <h8 className="card-title text-truncate" style={{ maxWidth: '100px' }} title={favorite.video_title}>
+                <h8 className="card-title text-truncate title-width" title={favorite.video_title}>
                   {favorite.video_title}
                 </h8>
                 <button

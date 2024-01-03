@@ -87,27 +87,17 @@ const ChatComponent = (props) => {
     }
   }
 
-  const chatContainerStyle = {
-    minheight: 'calc(160vh - 500px)',
-    width: '92%',
-    backgroundSize: 'cover',
-    margin: 0,
-    border: 'none'
-  };
-
- 
 
   return (
-    <div style={{textAlign: 'center', marginBottom: '10px'}}>
+    <div className="centered-container">
       <AI 
       appendToBody={appendToBody}/>
-        <div className="card mx-auto" 
-        style={chatContainerStyle} >
-        <div className="card-footer bg-white position-relative w-100 bottom-0 m-0 p-1">
+        <div className="card mx-auto w-70"> 
+        <div className="card-footer bg-white position-relative bottom-0 m-0 p-1">
           
         
       {/* tabs start here */}
-      <div style={{textAlign: 'center', marginTop: '8px', zIndex:'8000'}}>
+      <div className="chat-window-tab">
       <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
           <button
