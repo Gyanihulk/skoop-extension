@@ -2,7 +2,8 @@ import React from 'react';
 
 const RenameVideoPopup = ({ newTitle, onClose, onSave, onTitleChange }) => {
   return (
-    <div className="modal modal-display-block">
+    <div className="modal" style={{ display: 'block' }}>
+      <div className="modal-display-block"/>
       <div className="modal-dialog">
         <div className="modal-content">
         <div className="modal-body d-flex justify-content-end">
