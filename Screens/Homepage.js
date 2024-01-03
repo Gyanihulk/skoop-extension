@@ -3,14 +3,20 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { PiSwap } from 'react-icons/pi';
 import API_ENDPOINTS from '../components/apiConfig.js';
 import GlobalStatesContext from '../contexts/GlobalStates.js';
-import RecordingButton from '../components/VideoRecording/index.js';
+import RecordingButton from '../components/RecordingButton/index.js';
 import VoiceVisualization from '../components/AudioRecording/index.js';
 import EmailComposer from '../components/EmailSection/index.js';
-import LinkedInCom from '../components/LinkedinCom/index.js';
+import ProfileScraper from '../components/ProfileScraper/index.js';
 import ChatComponent from '../components/ChatWindow/index.js';
 import ChatWindowSelection from '../components/ChatWindowSelection/index.js';
 const Homepage = (props) => {
-  const {setIsLinkedin,isLinkedin,setLatestVideoUrl,isProfilePage,setIsProfilePage} = useContext(GlobalStatesContext); 
+  const {
+    setIsLinkedin,
+    isLinkedin,
+    setLatestVideoUrl,
+    isProfilePage,
+    setIsProfilePage,
+    setFocusedElementId} = useContext(GlobalStatesContext); 
 
     function convertArrayOfObjectsToCSV(data) {
         const header = Object.keys(data[0]).join(',') + '\n';
@@ -52,6 +58,9 @@ const Homepage = (props) => {
         setIsProfilePage(false);
         console.log("is not a profile page");
     }
+    else if(message.action==='skoopFocusedElementChanged'){
+      setFocusedElementId(message.elementId);
+    }
   };
 
   useEffect(()=>{
@@ -78,17 +87,13 @@ const Homepage = (props) => {
   },[])
    
   return (
-    <div className="background-color">
-      <div className="d-flex my-4 justify-content-center mt-8">
+    <div>
+
       <RecordingButton/>
-    </div>
-       
+  
     {!isLinkedin && <EmailComposer />}
       {isLinkedin  &&
           <>
-          {isProfilePage &&
-            <LinkedInCom/>
-          }
           <ChatComponent/>
           <ChatWindowSelection/>
           </>

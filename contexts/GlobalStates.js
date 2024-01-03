@@ -9,7 +9,7 @@ export const GlobalStatesProvider = ({ children }) => {
   const [isLinkedin,setIsLinkedin] = useState(false);
   const [isProfilePage,setIsProfilePage] = useState(false);
   const [scraperPage,setScraperPage]=useState(false)
- 
+  const [focusedElementId,setFocusedElementId]=useState(null);
 
   const [selectedChatWindows, setSelectedChatWindows] = useState([]);
  
@@ -22,7 +22,8 @@ useEffect(()=>{},[globalRefresh])
       selectedChatWindows,setSelectedChatWindows,
       setLatestVideoUrl,latestVideoUrl,
       isProfilePage,setIsProfilePage,
-      scraperPage,setScraperPage
+      scraperPage,setScraperPage,
+      focusedElementId,setFocusedElementId
     }}>
       {children}
     </GlobalStatesContext.Provider>

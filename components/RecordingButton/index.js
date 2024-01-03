@@ -40,7 +40,7 @@ const RecordingButton = () => {
     const [selectedVideoStyle, setSelectedVideoStyle] = useState('Vertical Mode');
     const [iconsVisible, setIconsVisible] = useState(true);
 
-    const { setGlobalRefresh, isLinkedin, selectedChatWindows } = useContext(GlobalStatesContext);
+    const { setGlobalRefresh, isLinkedin, selectedChatWindows,focusedElementId } = useContext(GlobalStatesContext);
     const { getThumbnail,deleteVideo } = useContext(MediaUtilsContext);
 
     const handleVideoStyleSelect = (style) => {
@@ -92,7 +92,7 @@ const RecordingButton = () => {
                 ret = `<img src='${thumbnail_link}' class="inline-block-width"/><br>`;
             }
             insertHtmlAtPositionInMail(
-                ret + `<a href=https://share.vidyard.com/watch/${videoPlayerId}>Play</a>`
+                ret + `<a href=https://share.vidyard.com/watch/${videoPlayerId}>Play</a>`,focusedElementId
             );
         }
     };
@@ -248,7 +248,9 @@ const RecordingButton = () => {
         }
     };
     return (
-        <>
+        <><div className='pt-3'>
+
+        
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-auto">
@@ -394,6 +396,7 @@ const RecordingButton = () => {
             </div>
 
             {prev !== '' && <PreviewModal prev={prev} preview={preview} setPrev={setPrev} />}
+            </div>
         </>
     );
 };

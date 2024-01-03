@@ -2,6 +2,7 @@ import React, { useState,  useContext} from 'react';
 import { MdOutlineVideoLibrary } from 'react-icons/md';
 import { AiOutlineFileGif } from 'react-icons/ai';
 import { RiRobot2Line } from 'react-icons/ri';
+import { LuCalendarPlus } from "react-icons/lu";
 import GiphyWindow from '../Gif/index.js';
 import ChatGpt from '../Chatgpt/index.js';
 import Library from '../Library/index.js';
@@ -98,8 +99,8 @@ const ChatComponent = (props) => {
         
       {/* tabs start here */}
       <div className="chat-window-tab">
-      <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
-        <li class="nav-item" role="presentation">
+      <ul class="nav nav-pills mb-3 justify-content-center">
+        <li class="nav-item">
           <button
             class={`nav-link ${option === 'ChatGpt' ? 'active' : ''}`}
             onClick={() => handleIconClick('ChatGpt')}
@@ -111,7 +112,7 @@ const ChatComponent = (props) => {
             title="Open a chat with an AI-powered assistant, ChatGPT. You can ask questions or seek assistance."/> Chatgpt
           </button>
         </li>
-        <li class="nav-item" role="presentation">
+        <li class="nav-item">
           <button
             class={`nav-link ${option === 'Giphy' ? 'active' : ''}`}
             onClick={() => handleIconClick('Giphy')}
@@ -123,7 +124,7 @@ const ChatComponent = (props) => {
             title="Search and insert GIFs into your messages to add a touch of fun and expressiveness to your conversations."/> Gif
           </button>
         </li>
-        <li class="nav-item" role="presentation">
+        <li class="nav-item">
           <button
             class={`nav-link ${option === 'Library' ? 'active' : ''}`}
             onClick={() => handleIconClick('Library')}
@@ -133,6 +134,17 @@ const ChatComponent = (props) => {
             data-mdb-toggle="tooltip"
             data-mdb-placement="bottom"
             title="Access your personal video library. You can find and manage your saved videos."/> Library
+          </button>
+        </li>
+        <li class="nav-item">
+          <button
+            class={`nav-link ${option === 'Library' ? 'active' : ''}`}
+            onClick={() => appendToBody(`${API_ENDPOINTS.skoopCalendarUrl}/?username=${JSON.parse(localStorage.getItem('skoopUsername'))}`)} 
+          >
+          <LuCalendarPlus className='iconButtonStyle' 
+            data-mdb-toggle="tooltip"
+            data-mdb-placement="bottom"
+            title="Add Appointment Meet link "  /> Appointment
           </button>
         </li>
       </ul>
@@ -153,18 +165,13 @@ const ChatComponent = (props) => {
       </div>
     </div>
     </div>
-    <div class="d-grid gap-2">
-      <button type="button" class="btn btn-outline-dark"
-        onClick={() => appendToBody(`${API_ENDPOINTS.skoopCalendarUrl}/?username=${JSON.parse(localStorage.getItem('skoopUsername'))}`)} 
-      >
-        Insert meet link
-      </button>
       {isProfilePage && 
+  
           <div class="d-grid gap-2">
             <button class="btn btn-primary mt-3" type="button" onClick={handleOpenMessageWindow}>Message profile</button>
           </div>
+  
       }
-    </div>
     </div>
   );
 };
