@@ -11,6 +11,7 @@ import API_ENDPOINTS from '../apiConfig.js';
 import { insertIntoLinkedInMessageWindow } from '../../utils/index.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
 
+
 const ChatComponent = (props) => {
   const [message, setMessage] = useState('');
   const [option, setOption] = useState('null');
@@ -138,7 +139,7 @@ const ChatComponent = (props) => {
         </li>
         <li class="nav-item">
           <button
-            class={`nav-link ${option === 'Library' ? 'active' : ''}`}
+            class={`nav-link ${option === 'Appointment' ? 'active' : ''}`}
             onClick={() => appendToBody(`${API_ENDPOINTS.skoopCalendarUrl}/?username=${JSON.parse(localStorage.getItem('skoopUsername'))}`)} 
           >
           <LuCalendarPlus className='iconButtonStyle' 
