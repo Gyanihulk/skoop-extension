@@ -42,13 +42,13 @@ const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFa
                         fetchVideos={fetchVideos}
                     />
                 ))
-            ) : (
-                <div className="col-12 text-center">
-                    <p>No videos available</p>
-                </div>
-            )}
+            ) : folderName !== 'favorites' ? (
+              <div className="col-12 text-center">
+                <p>No videos available</p>
+              </div>
+            ) : null}
+          </div>
         </div>
-    </div>
 );
 };
 

@@ -9,7 +9,7 @@ import MoveVideoPopup from './MoveVideoPopup';
 import RenameVideoPopup from './RenameVideoPopup';
 import API_ENDPOINTS from '../apiConfig';
 
-const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite }) => {
+const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, fetchVideos}) => {
   const [showMovePopup, setShowMovePopup] = useState(false);
   const [showRenamePopup, setShowRenamePopup] = useState(false);
   const [newTitle, setNewTitle] = useState(video.video_title);
@@ -62,7 +62,29 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite })
       toast.error('Failed to rename video');
     }
   };
-  
+
+  const handleDeleteClick = async () => {
+    try {
+      await deleteVideo(video.id);
+      toast.success('Video deleted successfully');
+      fetchVideos(); // Refresh the folder immediately after deletion
+    } catch (error) {
+      console.error('Error deleting video:', error);
+      toast.error('Failed to delete video');
+    }
+  };
+
+  const handleToggleFavouriteClick = async () => {
+    try {
+      await toggleFavourite(video.id);
+      toast.success(video.is_favourite ? 'Removed from favorites' : 'Added to favorites');
+      fetchVideos(); 
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      toast.error('Failed to toggle favorite status');
+    }
+  };
+
 
   return (
     <div className="col-6" key={video.id}>
@@ -79,7 +101,7 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite })
           <h8 className="card-title text-truncate title-width" title={video.video_title}>
             {video.video_title}
           </h8>
-          <div className="btn-group" role="group">
+          <div className="btn-group d-flex flex-wrap" role="group">
             <button
               title="Insert link to mail body"
               className="btn btn-link btn-sm"
@@ -93,20 +115,14 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite })
             <button
               title="Delete video"
               className="btn btn-link btn-sm"
-              onClick={async () => {
-                await deleteVideo(video.id);
-                toast.success('Video deleted successfully');
-              }}
+              onClick={handleDeleteClick}
             >
               <FiTrash2 />
             </button>
             <button
               title={video.is_favourite ? "Remove from favorites" : "Add to favorites"}
               className="btn btn-link btn-sm"
-              onClick={() => {
-                toggleFavourite(video.id);
-                toast.success(video.is_favourite ? 'Removed from favorites' : 'Added to favorites');
-              }}
+              onClick={handleToggleFavouriteClick}
             >
               {video.is_favourite ? (
                 <FaStar className="text-primary" />
@@ -114,20 +130,22 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite })
                 <FaRegStar />
               )}
             </button>
-            <button
-              title="Rename video"
-              className="btn btn-link btn-sm"
-              onClick={handleRenameClick}
-            >
-              <FaPencilAlt />
-            </button>
-            <button
-              title="Move video to another folder"
-              className="btn btn-link btn-sm"
-              onClick={handleMoveClick}
-            >
-              <MdMoveUp />
-            </button>
+            <div className="d-flex flex-wrap justify-content-center">
+              <button
+                title="Rename video"
+                className="btn btn-link btn-sm"
+                onClick={handleRenameClick}
+              >
+                <FaPencilAlt />
+              </button>
+              <button
+                title="Move video to another folder"
+                className="btn btn-link btn-sm"
+                onClick={handleMoveClick}
+              >
+                <MdMoveUp />
+              </button>
+            </div>
           </div>
           {showMovePopup && (
             <MoveVideoPopup
@@ -136,7 +154,7 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite })
               onMove={() => {
                 handleCloseMovePopup();
                 toast.success('Video moved successfully');
-                //fetchVideos();
+                fetchVideos();
               }}
             />
           )}

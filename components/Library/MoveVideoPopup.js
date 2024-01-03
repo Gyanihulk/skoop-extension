@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import API_ENDPOINTS from '../apiConfig';
 
-const MoveVideoPopup = ({ videoId, onClose, onMove }) => {
+const MoveVideoPopup = ({ videoId, onClose, onMove, fetchVideos }) => {
   const [folders, setFolders] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -50,6 +50,7 @@ const MoveVideoPopup = ({ videoId, onClose, onMove }) => {
 
       if (response.ok) {
         await onMove();  // Use await to ensure the asynchronous operation completes
+        fetchVideos();
       } else {
         console.error('Move operation failed:', response.statusText);
       }
@@ -63,34 +64,50 @@ const MoveVideoPopup = ({ videoId, onClose, onMove }) => {
 
   return (
     <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block' }}>
-      <div className="modal-dialog" role="document">
-        <div className="modal-content">
-          <div className="modal-body">
-            {loading ? (
-              <p>Loading folders...</p>
-            ) : (
-              <div className="list-group">
-                {folders.length > 0 &&
-                  folders.map((folder) => (
+  <div className="modal-dialog" role="document">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h7 className="modal-title">Move video to other folder</h7>
+      </div>
+      <div className="modal-body">
+        {loading ? (
+          <p>Loading folders...</p>
+        ) : (
+          <div className="list-group">
+            {folders.length > 0 &&
+              folders.map((folder, index) => (
+                index % 2 === 0 && (
+                  <div key={folder.directory_name} className="d-flex">
                     <button
-                      key={folder.directory_name}
-                      className="list-group-item list-group-item-action"
+                      className="list-group-item list-group-item-action mr-2"
                       onClick={() => handleMove(folder.directory_name)}
                     >
                       {folder.directory_name}
                     </button>
-                  ))}
-              </div>
-            )}
+                    {index + 1 < folders.length && (
+                      <button
+                        className="list-group-item list-group-item-action"
+                        onClick={() => handleMove(folders[index + 1].directory_name)}
+                      >
+                        {folders[index + 1].directory_name}
+                      </button>
+                    )}
+                  </div>
+                )
+              ))}
           </div>
-          <div className="modal-footer">
-            <button type="button" className="btn btn-secondary btn-sm" onClick={onClose}>
-              Close
-            </button>
-          </div>
-        </div>
+        )}
+      </div>
+      <div className="modal-footer">
+        <button type="button" className="btn btn-secondary btn-sm" onClick={onClose}>
+          Close
+        </button>
       </div>
     </div>
+  </div>
+</div>
+
+
   );
 };
 

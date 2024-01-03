@@ -169,6 +169,7 @@ const Library = (props) => {
         });
         await getlinks(dir);
         await updateFavoritesState();
+        fetchVideos(); 
       } catch (err) {
         console.log("could not delete", err);
       }
@@ -229,18 +230,7 @@ const Library = (props) => {
 
     const toggleFavourite = async (videoId) => {
       try {
-        const response = await fetch(API_ENDPOINTS.toggleFavourite, {
-          method: "PATCH",
-          headers: {
-            "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            id: videoId
-          })
-        });
-    
-        // Update the favorites state
+        // Update the state immediately
         setFavorites(prevFavorites => {
           const updatedFavorites = prevFavorites.map(favorite => {
             if (favorite.id === videoId) {
@@ -254,12 +244,41 @@ const Library = (props) => {
           return updatedFavorites;
         });
     
-        await updateFavoritesState();
+        // Send the request to the server
+        const response = await fetch(API_ENDPOINTS.toggleFavourite, {
+          method: "PATCH",
+          headers: {
+            "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id: videoId
+          })
+        });
     
+        // Handle errors if any
+        if (!response.ok) {
+          console.error("Toggle Favorite Error:", response.statusText);
+          // If there's an error, revert the state change
+          setFavorites(prevFavorites => {
+            const revertedFavorites = prevFavorites.map(favorite => {
+              if (favorite.id === videoId) {
+                const revertedFavorite = { ...favorite, is_favourite: !favorite.is_favourite };
+                return revertedFavorite;
+              }
+              return favorite;
+            });
+            return revertedFavorites;
+          });
+        }
+    
+        // Update the favorites state again to ensure consistency
+        await updateFavoritesState();
       } catch (err) {
         console.log("Toggle Favorite Error:", err);
       }
     };
+    
     
     
     useEffect(() => {
@@ -323,7 +342,7 @@ const Library = (props) => {
       </div>
     </div>
 
-    <div className="modal" style={{ display: dirToRename !== '' ? 'block' : 'none' }}>
+    {/* <div className="modal" style={{ display: dirToRename !== '' ? 'block' : 'none' }}>
         <div className="modal-dialog">
             <div className="modal-content">
                 <div className="modal-header">
@@ -345,7 +364,7 @@ const Library = (props) => {
                 </div>
             </div>
         </div>
-    </div>
+    </div> */}
 
 
     {activeTab === 'favorites' && (
