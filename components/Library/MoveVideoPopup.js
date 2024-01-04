@@ -65,7 +65,7 @@ const MoveVideoPopup = ({ videoId, onClose, onMove, fetchVideos }) => {
 
   return (
     <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block' }}>
-  <div className="modal-dialog modal-dialog-centered" role="document">
+  <div className="modal-overlay modal-dialog modal-dialog-centered" role="document">
     <div className="modal-content">
       <div className="modal-header">
         <h6 className="modal-title">Move video to- </h6>

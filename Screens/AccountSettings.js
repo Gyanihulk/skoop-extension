@@ -11,7 +11,7 @@ const AccountProfile = ({ userData }) => (
     <div className="d-flex justify-content-between align-items-center">
       <div className="d-flex align-items-center">
         <img
-          src="https://nextbootstrap.netlify.app/assets/images/profiles/1.jpg"
+          src="https://static-00.iconduck.com/assets.00/user-avatar-happy-icon-1023x1024-bve9uom6.png"
         className="rounded-circle rounded-circle-custom"/>
         <div>
           <h4 className="card-title">{userData.fullName}</h4>
@@ -25,11 +25,11 @@ const AccountProfile = ({ userData }) => (
           id="contained-button-file"
           type="file"
         />
-        <label htmlFor="contained-button-file">
+        {/* <label htmlFor="contained-button-file">
           <button className="btn btn-link" startIcon={<TbUserEdit/>}>
           <FaUserEdit/>
           </button>
-        </label>
+        </label> */}
       </div>
     </div>
   </div>

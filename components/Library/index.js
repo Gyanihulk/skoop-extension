@@ -332,8 +332,8 @@ const Library = (props) => {
 
     {/* User Input Modals */}
     
-    <div className="modal" style={{ display: openNewFolder ? 'block' : 'none' }}>
-      <div className="modal-dialog modal-dialog-centered">
+    <div className="modal modal-overlay" style={{ display: openNewFolder ? 'block' : 'none' }}>
+      <div className=" modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">Move video to - </h5>
