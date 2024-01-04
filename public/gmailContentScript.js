@@ -22,27 +22,7 @@ function injectIframe() {
     container.style.display = 'block';
     container.style.border = '1px solid #000'; 
 
-    // Draggable functionality
-    container.onmousedown = function (event) {
-        let shiftX = event.clientX - container.getBoundingClientRect().left;
-        let shiftY = event.clientY - container.getBoundingClientRect().top;
 
-        function moveAt(pageX, pageY) {
-            container.style.left = pageX - shiftX + 'px';
-            container.style.top = pageY - shiftY + 'px';
-        }
-
-        function onMouseMove(event) {
-            moveAt(event.pageX, event.pageY);
-        }
-
-        document.addEventListener('mousemove', onMouseMove);
-
-        container.onmouseup = function () {
-            document.removeEventListener('mousemove', onMouseMove);
-            container.onmouseup = null;
-        };
-    };
 
     container.ondragstart = function () {
         return false;
@@ -109,17 +89,55 @@ function injectIframe() {
     container.appendChild(dragButton);
     container.appendChild(toggleButton);
     container.appendChild(iframe);
-  
 
-    // Append the iframe and close button to the container
-    container.appendChild(iframe);
+    const resizer = document.createElement('div');
+    resizer.style.width = '10px';
+    resizer.style.height = '10px';
+    resizer.style.background = 'blue';
+    resizer.style.position = 'absolute';
+    resizer.style.bottom = '0';
+    resizer.style.right = '0';
+    resizer.style.cursor = 'se-resize';
+    container.appendChild(resizer);
+
+    resizer.addEventListener('mousedown', initResize, false);
+
+    function disableTextSelection() {
+        document.body.style.userSelect = 'none';  // for most browsers
+        document.body.style.webkitUserSelect = 'none'; // for Safari and Chrome
+        document.body.style.MozUserSelect = 'none'; // for Firefox
+        document.body.style.msUserSelect = 'none'; // for IE and Edge
+    }
+
+    function enableTextSelection() {
+        document.body.style.userSelect = '';
+        document.body.style.webkitUserSelect = '';
+        document.body.style.MozUserSelect = '';
+        document.body.style.msUserSelect = '';
+    }
 
 
+    function initResize(e) {
+        disableTextSelection();
+        window.addEventListener('mousemove', resize, false);
+        window.addEventListener('mouseup', stopResize, false);
+    }
+
+    function resize(e) {
+        const dimensions = container.getBoundingClientRect();
+        container.style.width = (e.clientX - dimensions.left) + 'px';
+        container.style.height = (e.clientY - dimensions.top) + 'px';
+    }
+
+    function stopResize(e) {
+        enableTextSelection();
+        window.removeEventListener('mousemove', resize, false);
+        window.removeEventListener('mouseup', stopResize, false);
+    }
     // Append the container to the body of the document
     document.body.appendChild(container);
     
 }
-
 
 
 
@@ -233,8 +251,8 @@ function createWebcamContainer(title,height,width) {
     container.style.transform = 'translate(-50%, -50%)';
     container.style.zIndex = '11000';
     container.style.display = 'none';
-    container.style.height = '120px';
-    container.style.width = '210px';
+    container.style.height = height;
+    container.style.width = width;
     
 
     const stopButton = document.createElement('button');
@@ -253,6 +271,19 @@ function createWebcamContainer(title,height,width) {
     timerDisplay.style.left = '10px';
     timerDisplay.innerText = '00:00';
     container.appendChild(timerDisplay);
+
+
+    const loaderBar = document.createElement('div');
+    loaderBar.id = 'loader-bar';
+    loaderBar.style.position = 'absolute';
+    loaderBar.style.bottom = '0';
+    loaderBar.style.left  = '10px';
+    loaderBar.style.width = '0%';
+    loaderBar.style.height = '5px';
+    loaderBar.style.backgroundColor = 'green';
+    loaderBar.style.zIndex = '10001';
+    container.appendChild(loaderBar);
+
 
     // Drag functionality
     let isDragging = false;
@@ -286,6 +317,20 @@ function createWebcamContainer(title,height,width) {
         const minutes = Math.floor((seconds % 3600) / 60);
         const secs = seconds % 60;
         timerDisplay.innerText = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    
+        const totalDuration = 90; // total duration in seconds
+        const widthPercent = (seconds / totalDuration) * 100;
+        loaderBar.style.width = `${widthPercent}%`;
+
+        // Change color based on time elapsed
+        if (seconds <= 45) {
+            loaderBar.style.backgroundColor = 'green';
+        } else if (seconds <= 60) {
+            loaderBar.style.backgroundColor = 'yellow';
+        } else if (seconds <= totalDuration) {
+            loaderBar.style.backgroundColor = 'red';
+        }
+    
     };
 
 

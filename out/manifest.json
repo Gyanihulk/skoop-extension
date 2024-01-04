@@ -30,7 +30,8 @@
   "content_scripts": [
     {
       "matches": ["*://mail.google.com/*","*://www.linkedin.com/*"],
-      "js": ["gmailContentScript.js"]
+      "js": ["gmailContentScript.js"],
+      "css": ["styles.css"]
     }
   ],
   "oauth2": {
