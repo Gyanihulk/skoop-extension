@@ -8,6 +8,8 @@ import FavoritesTab from './FavoritesTab.js';
 import Tabs from './Tabs.js';
 import VideoCard from './VideoCard.js';
 import VideoContainer from './VideoContainer.jsx';
+import { IoMdClose } from "react-icons/io";
+
 
 const Library = (props) => {
     const [links,setLinks]= useState([])
@@ -326,17 +328,21 @@ const Library = (props) => {
         handleNewTab={handleNewTab}
         folders={folders}
       />
+      <br/>
 
     {/* User Input Modals */}
     
     <div className="modal" style={{ display: openNewFolder ? 'block' : 'none' }}>
-      <div className="modal-dialog">
+      <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">Move video to - </h5>
+              <button type="button" className="custom-close-button" onClick={() => { setOpenNewFolder(false) }} aria-label="Close">
+                <IoMdClose/>
+               </button>
+          </div>
           <div className="modal-body d-flex flex-column">
             <NewFolderInput closePopup={async () => { setOpenNewFolder(false); getDirs() }} />
-            <button type="button" className="btn btn-primary btn-sm align-self-end mt-3 " onClick={() => { setOpenNewFolder(false) }}>
-              Close
-            </button>
           </div>
         </div>
       </div>

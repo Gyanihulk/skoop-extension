@@ -38,7 +38,7 @@ export default function SignUp(props) {
                                 className="card-body cardbody-color p-lg-5"
                                 onSubmit={handleRegister}
                             >
-                                <h2 className="text-center text-dark mt-5">Sign Up</h2>
+                                <h2 className="text-center text-dark mb-2">Sign Up</h2>
                                 <div className="mb-3">
                                     <input
                                         type="text"
@@ -46,6 +46,7 @@ export default function SignUp(props) {
                                         id="first-name"
                                         placeholder="First Name"
                                         name="firstName"
+                                        required
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -55,6 +56,7 @@ export default function SignUp(props) {
                                         id="last-name"
                                         placeholder="Last Name"
                                         name="lastName"
+                                        required
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -64,6 +66,7 @@ export default function SignUp(props) {
                                         id="email"
                                         placeholder="Email Address"
                                         name="email"
+                                        required
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -73,6 +76,7 @@ export default function SignUp(props) {
                                         id="password"
                                         placeholder="Password"
                                         name="password"
+                                        required
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -82,6 +86,7 @@ export default function SignUp(props) {
                                         id="confirm-password"
                                         placeholder="Confirm Password"
                                         name="confirmPassword"
+                                        required
                                     />
                                 </div>
                                 <div className="mb-3">

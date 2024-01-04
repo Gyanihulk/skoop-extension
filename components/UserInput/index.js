@@ -195,21 +195,23 @@ export const NewFolderInput=(props)=>{
 
   return(
   <div>
-    <form onSubmit={handleSubmit}>
-      <div className="position-relative">
-        <input
-          type="text"
-          className="form-control full-width"
-          name="directoryName"
-          onChange={handleChange}
-          value={values.directoryName}
-          placeholder="Enter folder Name"
-        />
-        <button type="submit" className="btn btn-link save-button position-absolute end-0 top-50 translate-middle-y">
-          <MdOutlineDone />
-        </button>
-      </div>
-    </form>
+   <form onSubmit={handleSubmit}>
+  <div className="d-flex align-items-center">
+    <input
+      type="text"
+      className="form-control"
+      name="directoryName"
+      onChange={handleChange}
+      value={values.directoryName}
+      placeholder="Enter folder Name"
+      required
+    />
+    <button type="submit" className="btn btn-primary ms-2">
+      Save
+    </button>
+  </div>
+</form>
+
   </div>
   )
 }

@@ -77,8 +77,11 @@ function GiphyWindow(props) {
           </div>
         </form>
         {loading && (
-          <div className="sbl-circ-ripple"></div>
+          <div className="d-flex justify-content-center align-items-center">
+            <div className="sbl-circ-ripple"></div>
+          </div>
         )}
+
         {results.length>0 && 
           <div>
             <label>

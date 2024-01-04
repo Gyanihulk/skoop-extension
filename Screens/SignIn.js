@@ -37,6 +37,7 @@ function SignIn() {
                                         aria-describedby="emailHelp"
                                         placeholder="Email"
                                         name="username"
+                                        required
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -46,6 +47,7 @@ function SignIn() {
                                         id="password"
                                         placeholder="Password"
                                         name="password"
+                                        required
                                     />
                                 </div>
 

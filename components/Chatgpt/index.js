@@ -94,10 +94,12 @@ const ChatGpt = ({ appendToBody }) => {
         </div>
 
         {loading ? (
-          <>
+        <>
+          <div className="d-flex flex-column align-items-center justify-content-center">
             <div className="sbl-circ-ripple"></div>
             <h6>{waitingMessage}</h6>
-          </>
+          </div>
+        </>
         ) : null}
 
         {prompt !== '' && !loading && (

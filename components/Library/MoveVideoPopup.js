@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import API_ENDPOINTS from '../apiConfig';
+import { IoMdClose } from "react-icons/io";
+
 
 const MoveVideoPopup = ({ videoId, onClose, onMove, fetchVideos }) => {
   const [folders, setFolders] = useState([]);
@@ -49,7 +51,7 @@ const MoveVideoPopup = ({ videoId, onClose, onMove, fetchVideos }) => {
       console.log('Move Response:', response);
 
       if (response.ok) {
-        await onMove();  // Use await to ensure the asynchronous operation completes
+        await onMove();  
         fetchVideos();
       } else {
         console.error('Move operation failed:', response.statusText);
@@ -60,14 +62,16 @@ const MoveVideoPopup = ({ videoId, onClose, onMove, fetchVideos }) => {
       onClose();
     }
   };
-  
 
   return (
     <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block' }}>
-  <div className="modal-dialog" role="document">
+  <div className="modal-dialog modal-dialog-centered" role="document">
     <div className="modal-content">
       <div className="modal-header">
-        <h7 className="modal-title">Move video to other folder</h7>
+        <h6 className="modal-title">Move video to- </h6>
+        <button type="button" className="custom-close-button" onClick={onClose} aria-label="Close">
+        <IoMdClose/>
+        </button>
       </div>
       <div className="modal-body">
         {loading ? (
@@ -97,11 +101,6 @@ const MoveVideoPopup = ({ videoId, onClose, onMove, fetchVideos }) => {
               ))}
           </div>
         )}
-      </div>
-      <div className="modal-footer">
-        <button type="button" className="btn btn-secondary btn-sm" onClick={onClose}>
-          Close
-        </button>
       </div>
     </div>
   </div>
