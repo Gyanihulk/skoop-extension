@@ -94,10 +94,10 @@ const ChatWindowSelection = () => {
                             var combinedArray = response[0].result;
 
                             setInitialItems(combinedArray);
-                            // const filteredArray = combinedArray.filter(item =>
-                            //     selectedChatWindows.some(secondItem => secondItem.name === item.name)
-                            // );
-                            setSelectedChatWindows(combinedArray);
+                            const filteredArray = combinedArray.filter(item =>
+                                selectedChatWindows.some(secondItem => secondItem.name === item.name)
+                            );
+                            setSelectedChatWindows(filteredArray);
                         } else {
                           console.error("Error retrieving combinedArray:", chrome.runtime.lastError);
                         }
