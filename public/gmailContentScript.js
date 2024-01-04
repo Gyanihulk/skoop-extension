@@ -267,11 +267,22 @@ function createWebcamContainer(title,height,width) {
     // Create timer display
     const timerDisplay = document.createElement('span');
     timerDisplay.style.position = 'absolute';
-    timerDisplay.style.top = '10px';
+    timerDisplay.style.bottom = '10px';
     timerDisplay.style.left = '10px';
     timerDisplay.innerText = '00:00';
+    timerDisplay.style.fontSize = '24px'; 
+    timerDisplay.style.fontWeight = 'bold';
     container.appendChild(timerDisplay);
 
+    const countDownTimer = document.createElement('div');
+    countDownTimer.style.position = 'absolute';
+    countDownTimer.style.top = '50%';
+    countDownTimer.style.left = '50%';
+    countDownTimer.style.transform = 'translate(-50%, -50%)';
+    countDownTimer.style.fontSize = '125px'; 
+    countDownTimer.style.fontWeight = 'bold';
+    countDownTimer.style.color = 'red'; 
+    container.appendChild(countDownTimer);
 
     const loaderBar = document.createElement('div');
     loaderBar.id = 'loader-bar';
@@ -313,10 +324,9 @@ function createWebcamContainer(title,height,width) {
     let timerInterval = null;
     const updateTimer = () => {
         seconds++;
-        const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
         const secs = seconds % 60;
-        timerDisplay.innerText = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        timerDisplay.innerText = `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     
         const totalDuration = 90; // total duration in seconds
         const widthPercent = (seconds / totalDuration) * 100;
@@ -347,7 +357,7 @@ function createWebcamContainer(title,height,width) {
             clearInterval(timerInterval);
             timerInterval = null; // Clear interval reference after stopping
         }
-        timerDisplay.innerText = '00:00:00';
+        timerDisplay.innerText = '00:00';
     };
 
     container.resetTimer = () => {
@@ -356,14 +366,16 @@ function createWebcamContainer(title,height,width) {
 
     container.showCountdown = () => {
         let countdown = 3; 
-        timerDisplay.innerText = countdown; 
+        countDownTimer.style.display="block"
+        countDownTimer.innerText = countdown; 
         const countdownInterval = setInterval(() => {
             countdown--; // Decrement countdown each second
-            timerDisplay.innerText = countdown; // Update display with new countdown value
+            countDownTimer.innerText = countdown; // Update display with new countdown value
     
             if (countdown <= 0) {
                 clearInterval(countdownInterval); // Clear countdown interval
-                timerDisplay.innerText = '00:00:00'; // Optionally clear the display or set to "00:00"
+                countDownTimer.style.display="none"
+                timerDisplay.innerText = '00:00'; // Optionally clear the display or set to "00:00"
                 container.startTimer(); 
                 mediaRecorder.start(); 
             }
