@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MdOutlineScheduleSend } from "react-icons/md";
 import API_ENDPOINTS from '../apiConfig';
 import { handleCopyToClipboard } from '../../utils';
+import toast from 'react-hot-toast';
 
 const ChatGpt = ({ appendToBody }) => {
   const [cgpt, setCgpt] = useState('');
@@ -67,7 +68,7 @@ const ChatGpt = ({ appendToBody }) => {
       setPrompt(response.choices[0].message.content);
     } catch (err) {
       console.log("could not get chatGpt response", err);
-      alert("could not get chatGpt response");
+      toast.error();("could not get chatGpt response");
     }
   };
 

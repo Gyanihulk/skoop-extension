@@ -27,8 +27,11 @@ export default function Header() {
 
         return () => {
             document.removeEventListener('click', handleClickOutside);
+            document.body.style.overflow = 'auto';
         };
     }, [profileOpen]);
+
+    
 
     const toggleProfileDropdown = () => {
         setProfileOpen(!profileOpen);
@@ -100,6 +103,14 @@ export default function Header() {
         }
     };
 
+    const openCalendarWindow = () => {
+        document.body.style.overflow = 'auto';
+        window.open(
+            `${API_ENDPOINTS.skoopCalendarUrl}/index.php/user/login`,
+            '_blank'
+        );
+    };
+
     return (
         <>
             <nav className="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
@@ -144,12 +155,7 @@ export default function Header() {
                     {/* Calendar Link */}
                     <button
                         className="btn btn-link"
-                        onClick={() =>
-                            window.open(
-                                `${API_ENDPOINTS.skoopCalendarUrl}/index.php/user/login`,
-                                '_blank'
-                            )
-                        }
+                        onClick={openCalendarWindow}
                         data-mdb-toggle="tooltip"
                         data-mdb-placement="bottom"
                         title="Go to your Meeting Calendar Schedular"

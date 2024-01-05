@@ -71,6 +71,7 @@ const ForgotPassword = () => {
                 placeholder="Enter Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
             <div className="text-center">

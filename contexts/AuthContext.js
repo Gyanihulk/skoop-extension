@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
           navigateToPage('Home'); 
         } catch (err) {
           console.log("the error",err);
-          alert("could not sign in")
+          toast.error("could not sign in")
         }
       }
     
@@ -86,7 +86,7 @@ export const AuthProvider = ({ children }) => {
           }
         } catch (err) {
           console.log(err);
-          alert('Something went wrong, please try again');
+          toast.error('Something went wrong, please try again');
         }
       };
     

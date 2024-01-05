@@ -146,7 +146,7 @@ const Library = (props) => {
         response=await response.json()
         setLinks(response);
         }catch(err){
-            alert("could not fetch videos",err)
+        toast.error("could not fetch videos",err)
         }
     }
 

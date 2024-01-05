@@ -1,6 +1,7 @@
 import React,{ Component ,useEffect,useState} from 'react';
 import API_ENDPOINTS from '../apiConfig';
 import { MdOutlineDone } from "react-icons/md";
+import toast from 'react-hot-toast';
 
 export class UserInput extends Component{
   constructor(props){
@@ -158,7 +159,7 @@ export const NewFolderInput=(props)=>{
       }
       else throw "error in the database"
     }catch(err){
-      alert("some error occured during update");
+      toast.error("some error occured during update");
     }
   }
   const renameDirectory= async()=>{
@@ -181,7 +182,7 @@ export const NewFolderInput=(props)=>{
         })
       }
     }catch(err){
-      alert("some error occurred")
+      toast.error("some error occurred")
     }
   }
   const handleSubmit = async (event)=>{
