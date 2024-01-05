@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext ,useRef} from 'react';
 import API_ENDPOINTS from '../apiConfig.js';
 import { FaDownload } from 'react-icons/fa6';
 import { FaTimesCircle } from 'react-icons/fa';
@@ -53,7 +53,6 @@ const RecordingButton = () => {
             setAspectRatio([9, 16]);
         }
         toggleVideoSettings();
-        console.log(`Selected Video Style: ${style}`);
     };
     const toggleVideoSettings = () => {
         setVideoSettingsOpen(!videoSettingsOpen);
@@ -79,7 +78,6 @@ const RecordingButton = () => {
     };
 
     const handleInsertion = async () => {
-        console.log(isLinkedin, 'test linkedin ');
         if (isLinkedin) {
             insertIntoLinkedInMessageWindow(
                 `<p>https://share.vidyard.com/watch/${videoPlayerId}</p>`,
@@ -102,11 +100,6 @@ const RecordingButton = () => {
     const toggleIcon = () => {
         setIsPlaying((prevIsPlaying) => !prevIsPlaying);
     };
-
- 
-
-
-
 
     const preview = () => {
         if (prev != '') {
@@ -180,6 +173,7 @@ const RecordingButton = () => {
             const blob = await response.blob();
             url = URL.createObjectURL(blob);
             setBlobUrl(url);
+            // setPrev(url);
             return blob;
         } catch (error) {
             console.error('Error fetching blob:', error);
@@ -189,29 +183,45 @@ const RecordingButton = () => {
     function handleVideoBlob(response) {
         if (response.videoBlob) {
             getBlobFromUrl(response.url).then((blob) => {
-                console.log('Retrieved Blob:', blob);
                 handleShare(blob, getCurrentDateTimeString(), 'New');
             });
         }
     }
 
+    const capturingRef = useRef(capturing);
+    let stopTimeoutId;
+    
     const startVideoCapture = () => {
         if (capturing) {
+            clearTimeout(stopTimeoutId);
             setPrev('');
             sendMessageToBackgroundScript({ action: 'stopRecording' }, handleVideoBlob);
+            setCapturing(false);
         } else {
             sendMessageToBackgroundScript({
                 action: 'startRecording',
                 height: aspectRatio[0] * videoResizeConstant,
                 width: aspectRatio[1] * videoResizeConstant,
             });
+            setCapturing(true);
+    
+            stopTimeoutId = setTimeout(() => {
+                if (capturingRef.current) {
+                    setPrev('');
+                    sendMessageToBackgroundScript({ action: 'stopRecording' }, handleVideoBlob);
+                    setCapturing(false);
+                }
+            }, 95000); // Stops recording after 90 + 5 seconds
         }
-        setCapturing(!capturing);
     };
+    
+    useEffect(() => {
+        capturingRef.current = capturing;
+    }, [capturing]);
+    
 
     const handleShare = async (file, videoTitle, directoryName) => {
         try {
-            console.log(file, 'file in handle share');
             videoTitle = replaceInvalidCharacters(videoTitle + `_${Date.now()}`);
             const formData = new FormData();
             formData.append('data', file, `${videoTitle}.webm`);
@@ -232,14 +242,12 @@ const RecordingButton = () => {
                 body: formData,
             });
             response = await response.json();
-            console.log(response, 'response of video ');
             toast.success('video uploaded,encoding in progress', {
                 id: loadingObj,
             });
             setIsUploading(false);
             setVideoPlayerId(response.facade_player_uuid);
             setVideoId(response.id);
-            console.log('the response after vidyard upload request', response);
             setGlobalRefresh(true);
         } catch (err) {
             toast.dismiss();
