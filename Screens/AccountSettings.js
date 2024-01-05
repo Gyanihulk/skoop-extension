@@ -4,6 +4,7 @@ import { FaRegEdit } from "react-icons/fa";
 import { FaUserEdit } from "react-icons/fa";
 import { IoCheckmarkDoneSharp, IoArrowBack, IoClose } from "react-icons/io5";
 import API_ENDPOINTS from '../components/apiConfig'
+import { toast } from 'react-hot-toast';
 
 const AccountProfile = ({ userData }) => (
   <div className="card card-with-border">
@@ -37,43 +38,47 @@ const AccountProfile = ({ userData }) => (
 
 );
 
-const AccountProfileDetails = ({  userData,onUpdateProfile }) => {
-  
-  const [values, setValues] = useState({})
+const AccountProfileDetails = ({ userData, onUpdateProfile }) => {
+  const [values, setValues] = useState({});
   const [isEditable, setIsEditable] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     setValues(userData);
-  },[userData])
+  }, [userData]);
 
   const handleChange = (event) => {
-      setValues((prevState) => ({
-        ...prevState,
-        [event.target.name]: event.target.value,
-      }));
-  }
+    setValues((prevState) => ({
+      ...prevState,
+      [event.target.name]: event.target.value,
+    }));
+  };
 
-  const handleSubmit=async(event)=>{
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    
-    try{
-      var res=await fetch(API_ENDPOINTS.updateUserDetails,{
+
+    try {
+      var res = await fetch(API_ENDPOINTS.updateUserDetails, {
         method: "PATCH",
         headers: {
-          "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-          "Content-type": "application/json; charset=UTF-8"
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+          "Content-type": "application/json; charset=UTF-8",
         },
         body: JSON.stringify({
           firstName: values.firstName,
-          lastName: values.lastName
-        })
-      })
-      if(!res.ok) throw Error("")
-      setIsEditable(false)
-    }catch(err){
-      alert("some error occurred")
+          lastName: values.lastName,
+        }),
+      });
+      if (!res.ok) throw Error("");
+      const updatedData = await res.json();
+      console.log('API response:', updatedData);
+      onUpdateProfile(values); // Update parent component's state
+      toast.success('Details updated successfully');
+      setIsEditable(false);
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      toast.error('Some error occurred');
     }
-  }
+  };
 
   return (
     
@@ -90,12 +95,12 @@ const AccountProfileDetails = ({  userData,onUpdateProfile }) => {
         </button>
       </div>
     </div>
-    <form autoComplete="off" noValidate onSubmit={handleSubmit}>
+    <form autoComplete="off" onSubmit={handleSubmit}>
     <div className="card-body">
       <div className="container">
         <div className="row">
           <div className="col-sm-6 mb-3">
-            <label htmlFor="firstName" className="form-label">First Name</label>
+            <label htmlFor="firstName" className="form-label">First Name*</label>
             <input
               type="text"
               className="form-control"
@@ -104,6 +109,7 @@ const AccountProfileDetails = ({  userData,onUpdateProfile }) => {
               value={values.firstName}
               onChange={handleChange}
               disabled={!isEditable}
+              required
             />
           </div>
           <div className="col-sm-6 mb-3">
@@ -139,7 +145,7 @@ const AccountProfileDetails = ({  userData,onUpdateProfile }) => {
       <button
         type="submit"
         className="btn btn-primary"
-        disabled={!isEditable}
+        //disabled={!isEditable}
       >
         <IoCheckmarkDoneSharp/> Save Changes
       </button>
@@ -175,7 +181,7 @@ const SettingsPassword = () => {
   const handleSubmit = async (event)=>{
     event.preventDefault();
     if(values.password!==values.confirm){
-      alert("confirm password and entered password do not match");
+      toast.error("confirm password and entered password do not match");
       return ;
     }
     try{
@@ -191,7 +197,7 @@ const SettingsPassword = () => {
         }
       })
       if(res.ok){
-        alert("update complete")
+        toast.success("Password Changed")
         setValues({
           password: '',
           confirm: '',
@@ -200,7 +206,7 @@ const SettingsPassword = () => {
       }
       else throw "error in the database"
     }catch(err){
-      alert("some error occured during update");
+      toast.error('Password Not Updated, try Again');
     }
   }
 
@@ -218,7 +224,7 @@ const SettingsPassword = () => {
         <div className="container">
           <div className="row">
             <div className="col-sm-6 mb-3">
-              <label htmlFor="oldPassword" className="form-label">Current Password</label>
+              <label htmlFor="oldPassword" className="form-label">Current Password*</label>
               <input
                 type={showPassword ? 'text' : 'password'}
                 className="form-control"
@@ -227,10 +233,11 @@ const SettingsPassword = () => {
                 onChange={handleChange}
                 value={values.oldPassword}
                 placeholder="Current Password"
+                required
               />
             </div>
             <div className="col-sm-6 mb-3">
-              <label htmlFor="password" className="form-label">New Password</label>
+              <label htmlFor="password" className="form-label">New Password*</label>
               <input
                 type={showPassword ? 'text' : 'password'}
                 className="form-control"
@@ -239,12 +246,13 @@ const SettingsPassword = () => {
                 onChange={handleChange}
                 value={values.password}
                 placeholder="New Password"
+                required
               />
             </div>
           </div>
           <div className="row">
             <div className="col-sm-6 mb-3">
-              <label htmlFor="confirm" className="form-label">Confirm Password</label>
+              <label htmlFor="confirm" className="form-label">Confirm Password*</label>
               <input
                 type={showPassword ? 'text' : 'password'}
                 className="form-control"
@@ -253,6 +261,7 @@ const SettingsPassword = () => {
                 onChange={handleChange}
                 value={values.confirm}
                 placeholder="Confirm Password"
+                required
               />
             </div>
           </div>
@@ -277,6 +286,7 @@ function AccountSettings(props) {
   const [profileData, setProfileData] = useState({});
 
   const handleProfileUpdate = (newProfileData) => {
+    console.log('Updating profile:', newProfileData);
     setProfileData((prevData) => ({
       ...prevData,
       ...newProfileData,

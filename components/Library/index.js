@@ -146,7 +146,7 @@ const Library = (props) => {
         response=await response.json()
         setLinks(response);
         }catch(err){
-            alert("could not fetch videos",err)
+        toast.error("could not fetch videos",err)
         }
     }
 
@@ -338,7 +338,7 @@ const Library = (props) => {
       <div className=" modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">Move video to - </h5>
+            <h5 className="modal-title">Create New Folder</h5>
               <button type="button" className="custom-close-button" onClick={() => { setOpenNewFolder(false) }} aria-label="Close">
                 <IoMdClose/>
                </button>

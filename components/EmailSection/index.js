@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { AiFillRobot } from "react-icons/ai";
 import { HiMiniGif } from "react-icons/hi2";
-import { RiMessage2Fill } from "react-icons/ri";
-
+import { GrSchedulePlay } from "react-icons/gr";
 import { MdVideoLibrary } from "react-icons/md";
+import { FaListAlt } from "react-icons/fa";
 import ChatGpt from '../Chatgpt/index.js';
 import GiphyWindow from '../Gif/index.js';
 import Library from '../Library/index.js';
@@ -119,9 +119,9 @@ if(isLinkedin){
       <ul className="nav nav-pills justify-content-center mt-2">
         {renderNavItem('Chatgpt', <AiFillRobot />, 'Send Chatgpt responses to Mail')}
         {renderNavItem('Giphy', <HiMiniGif />, 'Send your favorite GIFs to Mail')}
-        {renderNavItem('AI', <RiMessage2Fill />, 'Send predetermined custom message responses.')}
+        {renderNavItem('AI', <FaListAlt />, 'Send predetermined custom message responses.')}
         {renderNavItem('Library', <MdVideoLibrary />, 'Send any recorded video or audio file')}
-        {renderNavItem('ScheduleMeet', <SiGooglemeet />, 'Send link to schedule virtual appointment.')}
+        {renderNavItem('ScheduleMeet', <GrSchedulePlay />, 'Send link to schedule virtual appointment.')}
       </ul>
 
       <div className="container w-90 mt-4">

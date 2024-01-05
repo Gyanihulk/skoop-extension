@@ -49,12 +49,12 @@ return (
     ))}
   </select>
   {selectedOption === 'AddEditResponses' && redirectToEditPage()}
-  {selectedOption !== 'Select Response' && (
+    {selectedOption !== 'Select Response' && (
     <>
       <div className="container">
         <div className="row">
           <div className="col-md-6 offset-md-3 mb-3">
-            <label className="mb-2 text-center">Response</label>
+            <label className="mb-2 mt-2 text-center">Response</label>
             <textarea
               className="form-control"
               aria-multiline="auto"
@@ -68,33 +68,34 @@ return (
           </div>
         </div>
       </div>
-      <div className="d-flex justify-content-center mt-3">
-        <button
-          type="button"
-          className="btn btn-sm btn-outline-primary"
-          onClick={() => setSelectedOption('Select Response')}
-          
-        >
-          Close
-        </button>
-        <button
-          type="button"
-          className="btn btn-sm btn-outline-primary"
-          onClick={() => {
-            handleCopyToClipboard(selectedDescription);
-          }}
-        >
-          Copy
-        </button>
-        <button
-          type="button"
-          className="btn btn-sm btn-outline-primary"
-          onClick={() => {
-            props.appendToBody(selectedDescription);
-          }}
-        >
-          Insert
-        </button>
+      <div className="d-flex justify-content-end mt-2">
+        <div className="btn-group" role="group" aria-label="Button Group">
+          <button
+            type="button"
+            className="btn btn-sm btn-dark"
+            onClick={() => setSelectedOption('Select Response')}
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            className="btn btn-sm btn-secondary"
+            onClick={() => {
+              handleCopyToClipboard(selectedDescription);
+            }}
+          >
+            Copy
+          </button>
+          <button
+            type="button"
+            className="btn btn-sm btn-primary"
+            onClick={() => {
+              props.appendToBody(selectedDescription);
+            }}
+          >
+            Insert
+          </button>
+        </div>
       </div>
     </>
   )}

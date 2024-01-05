@@ -117,7 +117,7 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
             setMediaRecorder(recorder);
             setIsRecording(true);
         } catch (error) {
-            alert('please provide the permission to access your microphone');
+            toast.error('please provide the permission to access your microphone');
             return;
         }
     };
