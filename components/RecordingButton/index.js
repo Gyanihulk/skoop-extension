@@ -89,7 +89,7 @@ const RecordingButton = () => {
             const thumbnail_link = await getThumbnail(videoId);
             var ret = '';
             if (thumbnail_link != undefined && thumbnail_link != null) {
-                ret = `<img src='${thumbnail_link}' style={{width: '200px' ,display: 'inline-block'}}/><br>`;
+                ret = `<img src='${thumbnail_link}' class="inline-block-width"/><br>`;
             }
             insertHtmlAtPositionInMail(
                 ret + `<a href=https://share.vidyard.com/watch/${videoPlayerId}>Play</a>`,focusedElementId

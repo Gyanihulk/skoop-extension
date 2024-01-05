@@ -9,7 +9,7 @@ const Tabs = ({ activeTab, handleTabChange, handleNewTab, folders }) => (
     <div className="row">
       <div className="col-12">
         <div className="d-flex overflow-auto">
-          <ul className="nav nav-tabs nav-justified mr-2 flex-nowrap">
+          <ul className="nav nav-tabs mr-2 flex-nowrap">
             {/* Existing tabs */}
             <li className="nav-item">
               <a
@@ -35,10 +35,9 @@ const Tabs = ({ activeTab, handleTabChange, handleNewTab, folders }) => (
               </li>
             ))}
 
-
             {/* New tab (folder) button */}
             <li className="nav-item">
-              <button className="btn btn-sm btn-light" onClick={handleNewTab}>
+              <button className="btn btn-md" onClick={handleNewTab}>
                 <LuPlus/>
               </button>
             </li>

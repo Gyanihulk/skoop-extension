@@ -11,6 +11,7 @@ import API_ENDPOINTS from '../apiConfig.js';
 import { insertIntoLinkedInMessageWindow } from '../../utils/index.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
 
+
 const ChatComponent = (props) => {
   const [message, setMessage] = useState('');
   const [option, setOption] = useState('null');
@@ -88,28 +89,18 @@ const ChatComponent = (props) => {
     }
   }
 
-  const chatContainerStyle = {
-    minheight: 'calc(160vh - 500px)',
-    width: '92%',
-    backgroundSize: 'cover',
-    margin: 0,
-    border: 'none'
-  };
-
- 
 
   return (
-    <div style={{textAlign: 'center', marginBottom: '10px'}}>
+    <div className="centered-container">
       <AI 
       appendToBody={appendToBody}/>
-        <div className="card mx-auto" 
-        style={chatContainerStyle} >
-        <div className="card-footer bg-white position-relative w-100 bottom-0 m-0 p-1">
+        <div className="card mx-auto w-70"> 
+        <div className="card-footer bg-white position-relative bottom-0 m-0 p-1">
           
         
- 
-      <div style={{textAlign: 'center', marginTop: '8px', zIndex:'8000',color:"#000"}}>
-      <ul class="nav nav-pills mb-3 justify-content-center" >
+      {/* tabs start here */}
+      <div className="chat-window-tab">
+      <ul class="nav nav-pills mb-3 justify-content-center">
         <li class="nav-item">
           <button
             class={`nav-link ${option === 'ChatGpt' ? 'active' : ''}`}
@@ -148,7 +139,7 @@ const ChatComponent = (props) => {
         </li>
         <li class="nav-item">
           <button
-            class={`nav-link ${option === 'Library' ? 'active' : ''}`}
+            class={`nav-link ${option === 'Appointment' ? 'active' : ''}`}
             onClick={() => appendToBody(`${API_ENDPOINTS.skoopCalendarUrl}/?username=${JSON.parse(localStorage.getItem('skoopUsername'))}`)} 
           >
           <LuCalendarPlus className='iconButtonStyle' 

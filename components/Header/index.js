@@ -165,16 +165,24 @@ export default function Header() {
                             <MdAccountCircle className="icon-style-normal" />
                         </button>
                         <div
-                            className={`dropdown-menu ${profileOpen ? 'show' : ''}`}
+                            className={`ddstyle dropdown-menu ${profileOpen ? 'show' : ''}`}
                             style={{ marginLeft: '-120px' }}
                         >
                             <button
                                 className="dropdown-item"
-                                onClick={() => navigateToPage('AccountSettings')}
+                                onClick={() => {
+                                    navigateToPage('AccountSettings');
+                                    toggleProfileDropdown(); 
+                                }}   
                             >
                                 Account Settings
                             </button>
-                            <button className="dropdown-item" onClick={handleLogOut}>
+                            <button className="dropdown-item"
+                            onClick={() => {
+                                handleLogOut();
+                                toggleProfileDropdown();
+                            }}
+                            >
                                 Logout
                             </button>
                         </div>

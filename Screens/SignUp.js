@@ -38,7 +38,7 @@ export default function SignUp(props) {
                                 className="card-body cardbody-color p-lg-5"
                                 onSubmit={handleRegister}
                             >
-                                <h2 className="text-center text-dark mt-5">Sign Up</h2>
+                                <h2 className="text-center text-dark mb-2">Sign Up</h2>
                                 <div className="mb-3">
                                     <input
                                         type="text"
@@ -46,6 +46,7 @@ export default function SignUp(props) {
                                         id="first-name"
                                         placeholder="First Name"
                                         name="firstName"
+                                        required
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -55,6 +56,7 @@ export default function SignUp(props) {
                                         id="last-name"
                                         placeholder="Last Name"
                                         name="lastName"
+                                        required
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -64,6 +66,7 @@ export default function SignUp(props) {
                                         id="email"
                                         placeholder="Email Address"
                                         name="email"
+                                        required
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -73,6 +76,7 @@ export default function SignUp(props) {
                                         id="password"
                                         placeholder="Password"
                                         name="password"
+                                        required
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -82,6 +86,7 @@ export default function SignUp(props) {
                                         id="confirm-password"
                                         placeholder="Confirm Password"
                                         name="confirmPassword"
+                                        required
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -115,102 +120,6 @@ export default function SignUp(props) {
                     </div>
                 </div>
             </div>
-            {/* <Container style={{ maxWidth: '90%', height: '70%', marginTop: '7rem', borderRadius: '1rem', position: 'relative' }}>
-      <Row className="justify-content-md-center">
-      <Col xs={12} md={10}>
-      <div className="text-center mb-4">
-            <TbListDetails style={{ fontSize:"16px" }}/> 
-            <h2>Sign Up</h2>
-          </div>
-          <Form noValidate onSubmit={handleRegister}>
-            <Form.Group className="mb-3" controlId="firstName">
-              <Form.Control
-                type="text"
-                placeholder="First Name"
-                required
-                name="firstName"
-                autoComplete="given-name"
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="lastName">
-              <Form.Control
-                type="text"
-                placeholder="Last Name"
-                required
-                name="lastName"
-                autoComplete="family-name"
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="email">
-              <Form.Control
-                type="email"
-                placeholder="Email Address"
-                required
-                name="email"
-                autoComplete="email"
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="password">
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                name="password"
-                required
-                autoComplete="new-password"
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="confirmPassword">
-              <Form.Control
-                type="password"
-                placeholder="Confirm Password"
-                required
-                name="confirmPassword"
-                autoComplete="new-password"
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="timezone">
-              <Form.Select
-                value={selectedOption}
-                required
-                name="timezone"
-                onChange={(e) => setSelectedOption(e.target.value)}
-              >
-                <option>Select Timezone</option>
-                {timezones.map((option, index) => (
-                  <option key={index} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-            <br></br>
-            <button 
-            type="submit" 
-            className=" w-100 mb-2" 
-            style={{ fontSize: '1.5rem', color:'#FFFFFF', backgroundColor:'#0a66c2', border: '1' }}>
-              Sign Up
-            </button>
-          </Form>
-        </Col>
-      </Row>
-      <Row className="mt-2 justify-content-center">
-        <Col xs={12} className="text-center">
-          <p>
-            Already have an account?{' '}
-            <a
-                href="#"
-                className="text-secondary"
-                onClick={() => {
-                  navigateToPage('SignIn');
-                }}
-              >
-                Sign in
-              </a>
-          </p>
-        </Col>
-      </Row>
-      <Copyright/>
-    </Container> */}
         </div>
     );
 }

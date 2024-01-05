@@ -6,15 +6,13 @@ import { IoCheckmarkDoneSharp, IoArrowBack, IoClose } from "react-icons/io5";
 import API_ENDPOINTS from '../components/apiConfig'
 
 const AccountProfile = ({ userData }) => (
-  <div className="card" style={{ border: '2px solid grey' }}>
+  <div className="card card-with-border">
   <div className="card-body">
     <div className="d-flex justify-content-between align-items-center">
       <div className="d-flex align-items-center">
         <img
-          src="https://nextbootstrap.netlify.app/assets/images/profiles/1.jpg"
-          className="rounded-circle"
-          style={{ height: '80px', width: '80px', marginRight: '5px' }}
-        />
+          src="https://static-00.iconduck.com/assets.00/user-avatar-happy-icon-1023x1024-bve9uom6.png"
+        className="rounded-circle rounded-circle-custom"/>
         <div>
           <h4 className="card-title">{userData.fullName}</h4>
           <h6 className="card-text text-secondary">{userData.username}</h6>
@@ -27,11 +25,11 @@ const AccountProfile = ({ userData }) => (
           id="contained-button-file"
           type="file"
         />
-        <label htmlFor="contained-button-file">
+        {/* <label htmlFor="contained-button-file">
           <button className="btn btn-link" startIcon={<TbUserEdit/>}>
           <FaUserEdit/>
           </button>
-        </label>
+        </label> */}
       </div>
     </div>
   </div>
@@ -79,8 +77,8 @@ const AccountProfileDetails = ({  userData,onUpdateProfile }) => {
 
   return (
     
-  <div className="card" style={{ border: '1px solid grey' }}>
-    <div className="card-header bg-secondary" style={{ borderBottom: '0' }}>
+    <div className="card card-with-border">
+    <div className="card-header bg-secondary card-header-custom">
       <div className="d-flex justify-content-between align-items-center">
         <h6 className="mb-0 text-white">Profile Details</h6>
         <button
@@ -209,7 +207,7 @@ const SettingsPassword = () => {
   return (
     
     <div className="card">
-      <div className="card-header bg-secondary" style={{ borderBottom: '0' }}>
+      <div className="card-header bg-secondary card-header-custom">
         <div className="d-flex justify-content-between align-items-center">
           <h6 className="mb-0 text-white">Change Password</h6>
           
