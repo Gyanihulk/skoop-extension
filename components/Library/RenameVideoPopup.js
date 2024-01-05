@@ -18,7 +18,7 @@ const RenameVideoPopup = ({ newTitle, onClose, onSave, onTitleChange }) => {
   <div className="modal-dialog modal-overlay modal-dialog-centered">
     <div className="modal-content">
       <div className="modal-header">
-        <h6 className="modal-title">Rename Folder</h6>
+        <h6 className="modal-title">Rename Video</h6>
         <button type="button" className="custom-close-button" onClick={onClose} aria-label="Close">
         <IoMdClose/>
         </button>
