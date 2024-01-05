@@ -41,7 +41,7 @@ return (
   <div className="form-group mx-auto dropDown" data-mdb-toggle="tooltip" data-mdb-placement="top" title="Dropdown for pre-determined custom responses to send directly on DM">
   <select className="form-select" value={selectedOption} onChange={handleDropdownChange} size="sm">
     <option value="AddEditResponses" style={{ fontWeight: 'bold' }}>Add or edit responses</option>
-    <option value="Select Response">Select saved response</option>
+    <option value="Select Response">Select Template Message</option>
     {messageOptions.map((option) => (
       <option key={option.heading} value={option.heading}>
         {option.heading}
