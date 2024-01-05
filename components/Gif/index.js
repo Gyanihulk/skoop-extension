@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { GrSearchAdvanced } from 'react-icons/gr';
 import API_ENDPOINTS from '../apiConfig';
+import GlobalStatesContext from '../../contexts/GlobalStates';
 
 function GiphyWindow(props) {
   const [search, setSearch] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sizeOfGif,setSizeOfGif] = useState(20);
-  
+  const { isLinkedin} = useContext(GlobalStatesContext)
   const handleSearch = async () => {
     try {
       setLoading(true);
@@ -28,10 +29,10 @@ function GiphyWindow(props) {
   };
 
   const handleInsertion = (url) => {
-    if (props.appendToBody) {
+    if (!isLinkedin) {
       props.appendToBody(`<img src=${url} style="width: ${sizeOfGif}%; height: auto;" >`);
     } else {
-      props.appendToLinkedIn(url);
+      props.appendToBody(url);
     }
   };
 
@@ -62,7 +63,12 @@ function GiphyWindow(props) {
               aria-label="Search GIFs"
               aria-describedby="basic-addon2"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                if (e.target.value.length > 3) {
+                  handleSearch();
+                }
+              }}
               onKeyDown={handleKeyPress}
             />
             <div className="input-group-append">
@@ -82,7 +88,7 @@ function GiphyWindow(props) {
           </div>
         )}
 
-        {results.length>0 && 
+        {results.length>0 && !isLinkedin &&
           <div>
             <label>
               <input

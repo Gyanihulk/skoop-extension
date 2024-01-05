@@ -90,11 +90,10 @@ const Homepage = (props) => {
     <div>
 
       <RecordingButton/>
-  
-    {!isLinkedin && <EmailComposer />}
+      <EmailComposer />
+   
       {isLinkedin  &&
           <>
-          <ChatComponent/>
           <ChatWindowSelection/>
           </>
       } 

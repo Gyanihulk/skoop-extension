@@ -20,7 +20,7 @@ const Library = (props) => {
     const [dirToRename,setDirToRename]= useState('')
     const [fav,setFav]=useState(false);
     const [hoveredDir, setHoveredDir] = useState(null);
-    const { globalRefresh, setGlobalRefresh } = useContext(GlobalStatesContext)
+    const { globalRefresh, isLinkedin,setGlobalRefresh } = useContext(GlobalStatesContext)
     const { getThumbnail } = useContext(MediaUtilsContext)
     const [hovered, setHovered] = useState(false);
     const [activeTab, setActiveTab] = useState('favorites');
@@ -208,7 +208,8 @@ const Library = (props) => {
     },[globalRefresh]);
 
     const handleLinkInsertion=async(link,id)=>{
-        if(props.appendToBody){
+     
+        if(!isLinkedin){
             if(getThumbnail){
                 console.log("get thumbnail is defined");
             }
@@ -226,7 +227,8 @@ const Library = (props) => {
         else{
             const url = link;
             const facade_player_uuid = url.substring(url.lastIndexOf("/") + 1);
-            props.appendToMessage(`https://share.vidyard.com/watch/${facade_player_uuid}`);
+            console.log(facade_player_uuid)
+            props.appendToBody(`https://share.vidyard.com/watch/${facade_player_uuid}`);
         }
     }
 

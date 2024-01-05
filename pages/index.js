@@ -12,10 +12,8 @@ import LoadingScreen from '../Screens/LoadingScreen';
 import AuthContext from '../contexts/AuthContext';
 
 export default function Home() {
- 
     const { verifyToken } = useContext(AuthContext);
     const { activePage,navigateToPage } = useContext(ScreenContext);
-
     useEffect(() => {
         (async () => {
           const res = await verifyToken();
