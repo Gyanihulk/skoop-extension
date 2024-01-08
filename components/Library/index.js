@@ -23,7 +23,7 @@ const Library = (props) => {
     const { globalRefresh, isLinkedin,setGlobalRefresh } = useContext(GlobalStatesContext)
     const { getThumbnail } = useContext(MediaUtilsContext)
     const [hovered, setHovered] = useState(false);
-    const [activeTab, setActiveTab] = useState('New');
+    const [activeTab, setActiveTab] = useState('favorites');
     const [favorites, setFavorites] = useState([]); 
     const [tabName, setTabName] = useState('');
     const [folders, setFolders] = useState([]);
@@ -34,6 +34,11 @@ const Library = (props) => {
       setFav(false);
     };
   
+    const handleOpen = (dir) => {
+      getlinks(dir);
+      setActiveTab(dir);
+      setCurrentDirectory(dir);
+    };
   
     const handleNewTab = () => {
       setOpenNewFolder(true);
