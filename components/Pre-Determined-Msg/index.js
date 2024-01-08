@@ -93,7 +93,7 @@ function AI(props) {
   return (
     <div className="form-group mx-auto dropDown">
       <select className="form-select" value={selectedOption} onChange={handleDropdownChange} size="sm">
-        <option value="AddEditResponses" style={{ fontWeight: 'bold' }}>
+        <option value="AddEditResponses" className='bold-text'>
           Add responses
         </option>
         <option value="Select Response">Select saved response</option>
