@@ -16,7 +16,7 @@ function injectIframe() {
     container.style.position = 'fixed';
     container.style.top = '66px';
     container.style.right = '0';
-    container.style.width = '400px'; 
+    container.style.width = '440px'; 
     container.style.height = '600px'; 
     container.style.zIndex = '10000';
     container.style.display = 'block';
