@@ -134,7 +134,7 @@ export function getCurrentDateTimeString() {
     const minutes = now.getMinutes().toString().padStart(2, '0');
     const seconds = now.getSeconds().toString().padStart(2, '0');
   
-    const dateString = `${JSON.parse(localStorage.getItem('skoopUsername'))}--${year}-${month}-${day} at ${hours}:${minutes}:${seconds}`;
+    const dateString = `${year}-${month}-${day} at ${hours}:${minutes}:${seconds}`;
     return dateString;
 }
 
