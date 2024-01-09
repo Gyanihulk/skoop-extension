@@ -9,7 +9,7 @@ export const replaceInvalidCharacters=(inputString)=>{
     return replacedString;
 }
 
-export const insertIntoLinkedInMessageWindow=(html,selectedChatWindows)=>{
+export const insertIntoLinkedInMessageWindow=async (html,selectedChatWindows)=>{
   console.log("inside insertinto linkedin in")
       const executeInsertionIntoWindow=(arr,htmlToInsert)=>{
       const messageWindows = Array.from(document.getElementsByClassName("msg-form__contenteditable"));

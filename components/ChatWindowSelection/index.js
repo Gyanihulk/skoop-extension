@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import GlobalStatesContext from '../../contexts/GlobalStates';
+import MessageContext from '../../contexts/MessageContext';
+import { insertHtmlAtPositionInMail, insertIntoLinkedInMessageWindow } from '../../utils';
 
 const ChatWindowSelection = () => {
 
     const [initialItems,setInitialItems]=useState([]); 
-    const {selectedChatWindows,setSelectedChatWindows} = useContext(GlobalStatesContext);
+    const {selectedChatWindows,setSelectedChatWindows,isLinkedin} = useContext(GlobalStatesContext);
     const [localRefresh,setLocalRefresh]=useState(0);
     const [resetInitialItems,setResetInitialItems]=useState(0);
 
@@ -40,6 +42,15 @@ const ChatWindowSelection = () => {
           console.log("some error occured while setting up initial array")
         }
     }
+    const { message,setMessage} = useContext(MessageContext)
+    const handleInsertionToWebsite =async () => {
+      if (isLinkedin) {
+          await insertIntoLinkedInMessageWindow(`<p>${message}</p>`, selectedChatWindows);
+          handleSend();
+      } else {
+          insertHtmlAtPositionInMail(message, focusedElementId);
+      }
+  };
 
     function checkForExistenceOfMessageWindow(element) {
         return element.querySelector('.msg-form__contenteditable')!=null
@@ -153,6 +164,7 @@ const ChatWindowSelection = () => {
     return (
 
       <div className="container selection-container p-4 my-2">
+      {isLinkedin && <>
       <h8 className="text-center mb-4 fw-bold fst-italic">
         Select Recipients
       </h8>
@@ -175,8 +187,10 @@ const ChatWindowSelection = () => {
             </div>
           ))}
         </div>
+          </>
+        }
         <div class="d-grid gap-2">
-            <button class="btn btn-primary mt-3" type="button" onClick={handleSend}>SEND</button>
+            <button class="btn btn-primary mt-3" type="button" onClick={handleInsertionToWebsite}>SEND</button>
         </div>
       </div>
     );
