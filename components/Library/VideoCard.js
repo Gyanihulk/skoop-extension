@@ -8,11 +8,15 @@ import { toast } from 'react-hot-toast';
 import MoveVideoPopup from './MoveVideoPopup';
 import RenameVideoPopup from './RenameVideoPopup';
 import API_ENDPOINTS from '../apiConfig';
+import VideoPreviewPopup from './VideoPreviewPopup';
+import { FaPlayCircle } from "react-icons/fa";
 
 const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, fetchVideos}) => {
   const [showMovePopup, setShowMovePopup] = useState(false);
   const [showRenamePopup, setShowRenamePopup] = useState(false);
   const [newTitle, setNewTitle] = useState(video.video_title);
+  const [showPreviewPopup, setShowPreviewPopup] = useState(false);
+
 
   const handleMoveClick = () => {
     console.log('Move button clicked for video ID:', video.id);
@@ -85,18 +89,31 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
     }
   };
 
+  const handlePreviewClick = () => {
+    setShowPreviewPopup(true);
+  };
+
+  const handleClosePreviewPopup = () => {
+    setShowPreviewPopup(false);
+  };
+
 
   return (
     <div className="col-6" key={video.id}>
       <div className="card mb-1 card-overflow-hidden">
-        <iframe
-          title={video.video_title}
-          width="100%"
-          height="80vw" 
-          src={video.link}
-          allow="autoplay; fullscreen; picture-in-picture"
-          className="no-border"
-        />
+      <div className="video-card position-relative" onClick={handlePreviewClick}>
+          <iframe
+            title={video.video_title}
+            width="100%"
+            height="100vw"
+            src={video.link}
+            allow="autoplay; fullscreen; picture-in-picture"
+            className="no-border"
+          />
+          <div className="overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+          <FaPlayCircle/>
+          </div>
+        </div>
         <div className="card justify-content-between align-items-center">
           <h8 className="card-title text-truncate title-width" title={video.video_title}>
             {video.video_title}
@@ -167,6 +184,9 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
             onTitleChange={(e) => setNewTitle(e.target.value)}
           />
         )}
+         {showPreviewPopup && (
+        <VideoPreviewPopup video={video} onClose={handleClosePreviewPopup} />
+      )}
         </div>
       </div>
     </div>
