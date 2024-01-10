@@ -25,7 +25,6 @@ const MessageWindow = () => {
             <textarea ref={textareaRef} class="form-control" className="form-control auto-height-textarea" 
                 aria-label="With textarea" 
                 value={message} onChange={handleTextChange} ></textarea>
-                {console.log(message)}
         </div>
     );
 };

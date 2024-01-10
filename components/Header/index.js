@@ -54,7 +54,6 @@ export default function Header() {
         try {
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 const targetTab = tabs[0];
-                console.log('the target tab', targetTab);
                 if (targetTab) {
                     console.log('the tab exists');
                     try {
@@ -77,7 +76,6 @@ export default function Header() {
         try {
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 const targetTab = tabs[0];
-                console.log('the target tab', targetTab);
                 if (targetTab) {
                     console.log('the tab exists');
                     try {
@@ -117,9 +115,9 @@ export default function Header() {
                 <div class="navbar-brand">
                     <div className="container">
                         <div class="row justify-content-left">
-                            <div className="col">
+                            {/* <div className="col">
                                 <FaExpandArrowsAlt className="icon-style-normal" />
-                            </div>
+                            </div> */}
 
                             <div className="col">
                                 {(scraperPage || activePage ==="AccountSettings") && (

@@ -39,7 +39,6 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
 
     useEffect(() => {
         if (visualizationUrl != '') {
-            console.log('handle Share in voice memo called');
             handleShare(getCurrentDateTimeString(), 'Media');
         }
     }, [visualizationUrl]);
@@ -84,7 +83,6 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
         
             setVideoPlayerId(response.facade_player_uuid);
             setVideoId(response.id);
-            console.log('the response after vidyard upload request', response);
    
             setGlobalRefresh(true);
             setIconsVisible(true)

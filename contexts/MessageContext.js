@@ -4,11 +4,11 @@ import React, { createContext, useState } from 'react';
 const MessageContext = createContext();
 
 export const MessageProvider = ({ children }) => {
-    const [message, setMessage] = useState("null");
+    const [message, setMessage] = useState();
 
     const addMessage = (text) => {
-       setMessage(prevMessage => prevMessage + text);
-      console.log(message)
+       setMessage(prevMessage => (prevMessage==null?"":prevMessage) + text);
+
     };
   return (
     <MessageContext.Provider value={{ message,addMessage ,setMessage}}>

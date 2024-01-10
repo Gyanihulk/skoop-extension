@@ -139,12 +139,13 @@ const EmailComposer = () => {
             </ul>
 
             <div className="container w-90 mt-4">
+                {message && <MessageWindow />}
                 {state.displayComp === 'Chatgpt' && <ChatGpt appendToBody={handleInsertion} />}
                 {state.displayComp === 'Giphy' && <GiphyWindow appendToBody={handleInsertion} />}
                 {state.displayComp === 'Library' && <Library appendToBody={handleInsertion} />}
                 {state.displayComp === 'AI' && <AI appendToBody={handleInsertion} />}
 
-                {state.displayComp === 'DefaultCard' && (
+                {!message && (
                     <div className="card">
                         <div className="card-body">
                             <h5 className="card-title text-center">Welcome to Skoop</h5>
@@ -158,7 +159,7 @@ const EmailComposer = () => {
                         </div>
                     </div>
                 )}
-                {message && <MessageWindow />}
+               
             </div>
             {isProfilePage && (
                 <div class="d-grid gap-2">

@@ -89,8 +89,8 @@ const Homepage = (props) => {
         <div>
             <RecordingButton />
             <EmailComposer />
-
             <ChatWindowSelection />
+
         </div>
     );
 };

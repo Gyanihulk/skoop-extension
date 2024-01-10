@@ -23,7 +23,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["index.html","icons/icon.png"],
+      "resources": ["index.html","icons/icon.png","icons/move.png","icons/resize.png"],
       "matches": ["<all_urls>"]
     }
   ],

@@ -44,7 +44,7 @@ const ContactInfoCard = () => {
           notes: notes
         })
       });
-      console.log("the response from backend",response)
+
       if(!response.ok) throw Error("")
       toast.success("saved successfully",{id: toastId});
     } catch (err) {
@@ -104,7 +104,7 @@ const ContactInfoCard = () => {
           }
         })
         contactDetails=await contactDetails.json();
-        console.log("the fetched contact details",contactDetails)
+  
         if(contactDetails.length>0){
           const person=contactDetails[0];
           setProfileName(person.name);
