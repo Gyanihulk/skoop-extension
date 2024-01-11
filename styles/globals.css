@@ -704,6 +704,9 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000; /* Adjust the z-index to ensure it's above your content */
 }
 
+.bold-text {
+  font-weight: bold;
+}
 
 .auto-height-textarea {
   min-height: calc(1.5em * 8); /* Minimum height for 8 lines */

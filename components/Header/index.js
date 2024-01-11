@@ -165,7 +165,11 @@ export default function Header() {
 
                     {/* Profile Dropdown */}
                     <div className={`nav-item dropdown custom ${profileOpen ? 'show' : ''}`}>
-                        <button className="btn btn-link dropstart" onClick={toggleProfileDropdown}>
+                        <button className="btn btn-link dropstart" 
+                                onClick={toggleProfileDropdown}
+                                data-mdb-toggle="tooltip"
+                                data-mdb-placement="bottom"
+                                title="User Profile">
                             <MdAccountCircle className="icon-style-normal" />
                         </button>
                         <div

@@ -10,7 +10,7 @@ export const replaceInvalidCharacters=(inputString)=>{
 }
 
 export const insertIntoLinkedInMessageWindow=async (html,selectedChatWindows)=>{
-  console.log("inside insertinto linkedin in")
+  
       const executeInsertionIntoWindow=(arr,htmlToInsert)=>{
       const messageWindows = Array.from(document.getElementsByClassName("msg-form__contenteditable"));
       arr.forEach(item=>{
@@ -23,6 +23,7 @@ export const insertIntoLinkedInMessageWindow=async (html,selectedChatWindows)=>{
         });
         contentEditableDiv.dispatchEvent(dummyInput);
       })
+      
     }
 
     try{
@@ -45,6 +46,7 @@ export const insertIntoLinkedInMessageWindow=async (html,selectedChatWindows)=>{
           console.log("the target tab is not accessible");
         }
       });
+      return true
     }catch(err){
       console.log("error during insertion to chat",err);
     }

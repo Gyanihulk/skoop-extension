@@ -10,7 +10,7 @@ const ChatWindowSelection = () => {
         useContext(GlobalStatesContext);
     const [localRefresh, setLocalRefresh] = useState(0);
     const [resetInitialItems, setResetInitialItems] = useState(0);
-
+    const { message, setMessage } = useContext(MessageContext);
     const handleSend = () => {
         const clickSendButtons = (arr) => {
             const sendButtons = Array.from(
@@ -43,7 +43,7 @@ const ChatWindowSelection = () => {
             console.log('some error occured while setting up initial array');
         }
     };
-    const { message, setMessage } = useContext(MessageContext);
+  
     const handleInsertionToWebsite = async () => {
         if (isLinkedin) {
           if(selectedChatWindows.length===0){
@@ -51,10 +51,12 @@ const ChatWindowSelection = () => {
           }
           console.log(selectedChatWindows,selectedChatWindows.length)
             await insertIntoLinkedInMessageWindow(`<p>${message}</p>`, selectedChatWindows);
-            handleSend();
+            setTimeout(()=>{handleSend();},500)
+            
         } else {
             insertHtmlAtPositionInMail(message, focusedElementId);
         }
+        setMessage();
     };
 
     function checkForExistenceOfMessageWindow(element) {

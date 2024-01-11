@@ -336,7 +336,8 @@ const RecordingButton = () => {
                         setIsUploading={setIsUploading}
                         setCapturing={setCapturing}
                         setVideoPlayerId={setVideoPlayerId}
-                        setVideoId={setVideoId}/>
+                        setVideoId={setVideoId}
+                        addToMessage={addToMessage}/>
                     </div>
                 </div>
             </div>

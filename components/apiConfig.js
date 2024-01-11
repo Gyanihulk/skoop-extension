@@ -32,7 +32,8 @@ const API_ENDPOINTS = {
     toggleFavourite: `${backendUrl}/toggleFavourite`,// PATCH
     getThumbnail: `${backendUrl}/getThumbnail/`, //GET
     getOtpForPasswordReset: `${backendUrl}/getOtpForPasswordReset?`, //GET
-    resetPasswordUsingOtp: `${backendUrl}/resetPasswordUsingOtp` //POST
+    resetPasswordUsingOtp: `${backendUrl}/resetPasswordUsingOtp`, //POST
+    skoopCrmAddPreloadedResponses: `${backendUrl}/skoopCrmAddPreloadedResponses`, // POST
 };
 
 // with POST or PATCH apis body is sent in JSON 

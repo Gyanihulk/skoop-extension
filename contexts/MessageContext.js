@@ -7,8 +7,7 @@ export const MessageProvider = ({ children }) => {
     const [message, setMessage] = useState();
 
     const addMessage = (text) => {
-       setMessage(prevMessage => (prevMessage==null?"":prevMessage) + text);
-
+       setMessage(prevMessage => (prevMessage==null?"":prevMessage) + text +" ");
     };
   return (
     <MessageContext.Provider value={{ message,addMessage ,setMessage}}>
