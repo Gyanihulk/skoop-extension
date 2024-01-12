@@ -5,7 +5,7 @@ import { FaStar, FaRegStar } from "react-icons/fa";
 import { toast } from 'react-hot-toast';
 
 const FavoritesTab = ({ favorites, currentDirectory, handleLinkInsertion, deleteVideo, toggleFavourite }) => {
-  console.log("Favorites:", favorites);
+
 
   return (
     <div>

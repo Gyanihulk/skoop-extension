@@ -23,6 +23,7 @@ import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
 import VoiceVisualization from '../AudioRecording/index.js';
 import PreviewModal from '../PreviewModal/PreviewModal.jsx';
 import { IoLink } from 'react-icons/io5';
+import MessageContext from '../../contexts/MessageContext.js';
 const videoResizeConstant = 25;
 const RecordingButton = () => {
     const [capturing, setCapturing] = useState(false);
@@ -42,7 +43,7 @@ const RecordingButton = () => {
 
     const { setGlobalRefresh, isLinkedin, selectedChatWindows,focusedElementId } = useContext(GlobalStatesContext);
     const { getThumbnail,deleteVideo } = useContext(MediaUtilsContext);
-
+    const { message, addMessage } = useContext(MessageContext);
     const handleVideoStyleSelect = (style) => {
         setSelectedVideoStyle(style);
         if (style === 'Square') {
@@ -94,7 +95,23 @@ const RecordingButton = () => {
             );
         }
     };
-
+    const addToMessage = async (videoPlayerId) => {
+        console.log(videoPlayerId,"add video link to message window")
+        if (isLinkedin) {
+            addMessage(
+                `https://share.vidyard.com/watch/${videoPlayerId}`
+            );
+        } else {
+            const thumbnail_link = await getThumbnail(videoId);
+            var ret = '';
+            if (thumbnail_link != undefined && thumbnail_link != null) {
+                ret = `<img src='${thumbnail_link}' class="inline-block-width"/><br>`;
+            }
+            addMessage(
+                ret + `<a href=https://share.vidyard.com/watch/${videoPlayerId}>Play</a>`
+            );
+        }
+    };
 
 
     const toggleIcon = () => {
@@ -183,7 +200,7 @@ const RecordingButton = () => {
     function handleVideoBlob(response) {
         if (response.videoBlob) {
             getBlobFromUrl(response.url).then((blob) => {
-                handleShare(blob, getCurrentDateTimeString(), 'New');
+                uploadVideo(blob, getCurrentDateTimeString(), 'New');
             });
         }
     }
@@ -220,7 +237,7 @@ const RecordingButton = () => {
     }, [capturing]);
     
 
-    const handleShare = async (file, videoTitle, directoryName) => {
+    const uploadVideo = async (file, videoTitle, directoryName) => {
         try {
             videoTitle = replaceInvalidCharacters(videoTitle + `_${Date.now()}`);
             const formData = new FormData();
@@ -242,13 +259,15 @@ const RecordingButton = () => {
                 body: formData,
             });
             response = await response.json();
-            toast.success('video uploaded,encoding in progress', {
+            toast.success('Video uploaded,Encoding in progress', {
                 id: loadingObj,
             });
             setIsUploading(false);
             setVideoPlayerId(response.facade_player_uuid);
             setVideoId(response.id);
+            addToMessage(response.facade_player_uuid)
             setGlobalRefresh(true);
+
         } catch (err) {
             toast.dismiss();
             console.log(err, 'err of video upload');
@@ -317,7 +336,8 @@ const RecordingButton = () => {
                         setIsUploading={setIsUploading}
                         setCapturing={setCapturing}
                         setVideoPlayerId={setVideoPlayerId}
-                        setVideoId={setVideoId}/>
+                        setVideoId={setVideoId}
+                        addToMessage={addToMessage}/>
                     </div>
                 </div>
             </div>

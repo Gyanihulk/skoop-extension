@@ -6,7 +6,7 @@ export default function Index({ navigateToPage }) {
   const [userInfo, setUserInfo] = useState(null);
 
   const handleLogin = () => {
-    console.log("button pressed");
+
     chrome.identity.getAuthToken({ interactive: true, scopes: ['openid', 'profile', 'email'] }, async function(token) {
         if (chrome.runtime.lastError) {
             // Handle error from chrome.identity.getAuthToken
@@ -14,11 +14,11 @@ export default function Index({ navigateToPage }) {
             return;
         }
 
-        console.log(token);
+
         if (token) {
             try {
                 const userInfo = await getUserInfo(token);
-                console.log(userInfo);
+  
 
                 // Store user information in state or do further processing
                 setUserInfo(userInfo);

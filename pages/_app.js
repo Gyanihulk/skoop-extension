@@ -7,6 +7,7 @@ import { ScreenProvider } from '../contexts/ScreenContext';
 import { AuthProvider } from '../contexts/AuthContext';
 import { MediaUtilsProvider } from '../contexts/MediaUtilsContext';
 import { Toaster } from 'react-hot-toast';
+import { MessageProvider } from '../contexts/MessageContext';
 
 export default function App({ Component, pageProps }) {
   return (
@@ -18,11 +19,14 @@ export default function App({ Component, pageProps }) {
     <GlobalStatesProvider>
       <ScreenProvider>
         <AuthProvider>
+          <MessageProvider>
+
             <Toaster position="top-right"/>
             <Header/>
             <Component {...pageProps} />
             <Footer />
 
+          </MessageProvider>
         </AuthProvider>
       </ScreenProvider>
       </GlobalStatesProvider>

@@ -708,4 +708,8 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-weight: bold;
 }
 
-
+.auto-height-textarea {
+  min-height: calc(1.5em * 8); /* Minimum height for 8 lines */
+  max-height: calc(1.5em * 8); /* Maximum height before showing scrollbar */
+  overflow-y: auto; /* Show scrollbar when content overflows */
+}

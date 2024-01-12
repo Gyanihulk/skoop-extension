@@ -16,7 +16,6 @@ const ChatWindowSelection = () => {
                 index: index
             };
         });
-       console.log("the combined array in setUpInitial array",combinedArray);
        return combinedArray;
     }
 
@@ -24,9 +23,7 @@ const ChatWindowSelection = () => {
         try{
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 const targetTab=tabs[0];
-                console.log("the target tab",targetTab);
                 if (targetTab && targetTab.status === 'complete') {
-                  console.log("the tab exists")
                   try{
                     chrome.scripting.executeScript({
                       target : {tabId : targetTab.id},
@@ -59,8 +56,6 @@ const ChatWindowSelection = () => {
 
     const handleCheckboxChange = (event) => {
         const { value, checked } = event.target;
-        console.log("Checked:", checked);
-        console.log("Value:", value);
         if (checked) {
             const selectedItem = initialItems.find(item => item.name === value);
             const newChatWindows=selectedChatWindows;
@@ -70,7 +65,6 @@ const ChatWindowSelection = () => {
             const newChatWindows=selectedChatWindows.filter(item => item.name !== value);
             setSelectedChatWindows(newChatWindows);
         }
-        console.log("the new selectedChatWindows",selectedChatWindows)
         setLocalRefresh(!localRefresh);
     };
 

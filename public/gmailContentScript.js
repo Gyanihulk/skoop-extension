@@ -16,7 +16,7 @@ function injectIframe() {
     container.style.position = 'fixed';
     container.style.top = '66px';
     container.style.right = '0';
-    container.style.width = '440px'; 
+    container.style.width = '460px'; 
     container.style.height = '600px'; 
     container.style.zIndex = '10000';
     container.style.display = 'block';
@@ -39,35 +39,50 @@ function injectIframe() {
 
     const dragButton = document.createElement('div');
     dragButton.id="skoop-drag-button"
-    dragButton.style.top = '18px';
-    dragButton.style.left = '13px';
-    dragButton.style.width = '20px';
-    dragButton.style.height = '20px';
+    dragButton.style.left = '10px';
+    dragButton.style.top = '10px';
+    dragButton.style.width = '40px';
+    dragButton.style.height = '40px';
     dragButton.title="Click and Drag To Move"
     dragButton.style.position = 'absolute';
     dragButton.style.cursor = 'move';
-    dragButton.style.backgroundColor="transparent";
+    dragButton.style.backgroundImage =
+        'url("' + chrome.runtime.getURL('/icons/move.png') + '")';
+        dragButton.style.backgroundSize = 'cover'; 
     dragButton.onmousedown = function(event) {
-        event.preventDefault(); // prevent default drag behavior
+        event.preventDefault();
         let shiftX = event.clientX - container.getBoundingClientRect().left;
         let shiftY = event.clientY - container.getBoundingClientRect().top;
-
-        function moveAt(pageX, pageY) {
-            container.style.left = pageX - shiftX + 'px';
-            container.style.top = pageY - shiftY + 'px';
+    
+        let currentX, currentY;
+    
+        function moveAt() {
+            container.style.left = currentX - shiftX + 'px';
+            container.style.top = currentY - shiftY + 'px';
+            requestAnimationFrame(moveAt);
         }
-
+    
         function onMouseMove(event) {
-            moveAt(event.pageX, event.pageY);
+            currentX = event.pageX;
+            currentY = event.pageY;
         }
-
-        document.addEventListener('mousemove', onMouseMove);
-
-        document.onmouseup = function() {
+    
+        function stopDrag() {
             document.removeEventListener('mousemove', onMouseMove);
             document.onmouseup = null;
-        };
+            dragButton.removeEventListener('mouseleave', stopDrag);
+            cancelAnimationFrame(moveAt);
+        }
+    
+        document.addEventListener('mousemove', onMouseMove);
+        requestAnimationFrame(moveAt);
+    
+        document.onmouseup = stopDrag;
+    
+        // Stop the drag when the cursor leaves the button
+        dragButton.addEventListener('mouseleave', stopDrag);
     };
+    
 
     // Create minimize/expand button
     const toggleButton = document.createElement('button');
@@ -90,14 +105,23 @@ function injectIframe() {
     container.appendChild(toggleButton);
     container.appendChild(iframe);
 
+    const minWidth = 300;  
+    const maxWidth = 800;  
+    const minHeight = 70; 
+    const maxHeight = 750;
     const resizer = document.createElement('div');
-    resizer.style.width = '10px';
-    resizer.style.height = '10px';
-    resizer.style.background = 'blue';
+    resizer.style.width = '30px';
+    resizer.style.height = '30px';
     resizer.style.position = 'absolute';
     resizer.style.bottom = '0';
     resizer.style.right = '0';
     resizer.style.cursor = 'se-resize';
+    resizer.style.backgroundImage =
+        'url("' + chrome.runtime.getURL('/icons/resize.png') + '")';
+        resizer.style.backgroundSize = 'cover'; 
+resizer.style.backgroundRepeat = 'no-repeat';
+resizer.style.backgroundPosition = 'center'
+resizer.style.transform = 'rotate(-90deg)';
     container.appendChild(resizer);
 
     resizer.addEventListener('mousedown', initResize, false);
@@ -125,14 +149,22 @@ function injectIframe() {
 
     function resize(e) {
         const dimensions = container.getBoundingClientRect();
-        container.style.width = (e.clientX - dimensions.left) + 'px';
-        container.style.height = (e.clientY - dimensions.top) + 'px';
+        let newWidth = e.clientX - dimensions.left;
+        let newHeight = e.clientY - dimensions.top;
+    
+        // Constrain newWidth and newHeight within min/max bounds
+        newWidth = Math.max(minWidth, Math.min(newWidth, maxWidth));
+        newHeight = Math.max(minHeight, Math.min(newHeight, maxHeight));
+    
+        container.style.width = newWidth + 'px';
+        container.style.height = newHeight + 'px';
     }
 
     function stopResize(e) {
         enableTextSelection();
         window.removeEventListener('mousemove', resize, false);
-        window.removeEventListener('mouseup', stopResize, false);
+        window.removeEventListener('mousedown', stopResize, false);
+        window.removeEventListener('mouseleave', stopResize, false);
     }
     // Append the container to the body of the document
     document.body.appendChild(container);

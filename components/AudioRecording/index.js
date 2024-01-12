@@ -14,7 +14,7 @@ import toast from 'react-hot-toast';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
 import { AiOutlineClose } from 'react-icons/ai';
 
-const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCapturing,setVideoPlayerId,setVideoId}) => {
+const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCapturing,addToMessage,setVideoPlayerId,setVideoId}) => {
     const [mediaRecorder, setMediaRecorder] = useState(null);
     const [visualizationUrl, setVisualizationUrl] = useState('');
     const [isRecording, setIsRecording] = useState(false);
@@ -39,7 +39,6 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
 
     useEffect(() => {
         if (visualizationUrl != '') {
-            console.log('handle Share in voice memo called');
             handleShare(getCurrentDateTimeString(), 'Media');
         }
     }, [visualizationUrl]);
@@ -84,8 +83,7 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
         
             setVideoPlayerId(response.facade_player_uuid);
             setVideoId(response.id);
-            console.log('the response after vidyard upload request', response);
-   
+            addToMessage(response.facade_player_uuid);
             setGlobalRefresh(true);
             setIconsVisible(true)
         } catch (err) {
@@ -154,14 +152,9 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
         );
     }
 
-    const iconaudio = {
-        fontSize: '18px',
-        color: 'black',
-        marginRight: '20px',
-    };
-
+   
     return (
-        <div id="homeDiv">
+        <div id="homeDiv" className='text-center'>
                 <button
                     onClick={isRecording ? stopRecording : startRecording}
                     id="skoop_record_button_audio"
@@ -174,9 +167,10 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
                     ) : (
                         <AiFillAudio size={30} color="white" />
                     )}
+                    
                 </button>
+                <div>{isRecording && <h6>{60 - time} </h6>}</div>
           
-            <div>{isRecording && <h6>{60 - time} seconds left</h6>}</div>
         </div>
     );
 };

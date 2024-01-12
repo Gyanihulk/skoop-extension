@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Skoop",
   "short_name": "N-C-S",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "Skoop extension ",
   "icons": {
     "16": "/icons/icon.png",
@@ -23,7 +23,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["index.html","icons/icon.png"],
+      "resources": ["index.html","icons/icon.png","icons/move.png","icons/resize.png"],
       "matches": ["<all_urls>"]
     }
   ],
