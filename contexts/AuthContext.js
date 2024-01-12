@@ -9,8 +9,18 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [isAutheticated, setisAutheticated] = useState(false);
     const [user,setUser]=useState(null)
+    const [rememberMe, setRememberMe] = useState(false);
     const {navigateToPage}=useContext(ScreenContext)
 
+    const validatePassword = (password) => {
+      if (!password) {
+        return false;
+      }    
+      // Password should contain minimum 8 characters, at least one uppercase letter, and one special character
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+,\-.;:'"<>=?/\|[\]{}~])(.{8,})$/;
+      return passwordRegex.test(password);
+    };
+  
     const handleSkoopLogin = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -23,6 +33,7 @@ export const AuthProvider = ({ children }) => {
             body: JSON.stringify({
               username: username,
               password: password,
+              rememberMe: rememberMe,
             }),
             headers: {
               'Content-type': 'application/json; charset=UTF-8',
@@ -35,7 +46,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('skoopUsername', JSON.stringify(resjson.skoopUsername));
             navigateToPage('Home');
           } else {
-            toast.error("incorrect username of password",{id: toastId});
+            toast.error("incorrect username or password",{id: toastId});
           }
         } catch (err) {
           toast.dismiss();
@@ -97,6 +108,11 @@ export const AuthProvider = ({ children }) => {
           if(data.get("password")!==data.get("confirmPassword")){
             toast.error("The Password fields do not match")
             return ;
+          }
+          const password = data.get('password');
+          if (!validatePassword(password)) {
+            toast.error('Password should contain minimum 8 characters, at least one uppercase letter, and one special character');
+            return;
           }
           if(data.get("timezone")=="Select Timezone"){
             toast.error("Please select a timezone")
@@ -182,7 +198,8 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={{isAutheticated , user, handleSkoopLogin, 
     handleSocialLogin,handleRegister,
-    verifyToken,getOtpForPasswordReset,resetPasswordUsingOtp}}>
+    verifyToken,getOtpForPasswordReset,resetPasswordUsingOtp, rememberMe,
+    setRememberMe}}>
       {children}
     </AuthContext.Provider>
   );

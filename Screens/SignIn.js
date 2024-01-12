@@ -6,8 +6,13 @@ import ScreenContext from '../contexts/ScreenContext';
 import { FaGoogle } from 'react-icons/fa6';
 import { FaLinkedin } from 'react-icons/fa';
 function SignIn() {
-    const { handleSkoopLogin, handleSocialLogin } = useContext(AuthContext);
+    const { handleSkoopLogin, handleSocialLogin, rememberMe, setRememberMe  } = useContext(AuthContext);
+
     const { navigateToPage } = useContext(ScreenContext);
+
+    const handleCheckboxChange = () => {
+        setRememberMe(!rememberMe);
+    };
     return (
         <div>
             <div className="container">
@@ -50,7 +55,17 @@ function SignIn() {
                                         required
                                     />
                                 </div>
-
+                                <div className="text-start mb-3">
+                                    <input
+                                        type="checkbox"
+                                        id="rememberMe"
+                                        checked={rememberMe}
+                                        onChange={handleCheckboxChange}
+                                    />
+                                    <label htmlFor="rememberMe" className="ms-2">
+                                        Keep me Signed In
+                                    </label>
+                                </div>
                                 <div className="text-center">
                                     <button type="submit" className="btn btn-primary mb-3 w-100">
                                         Login

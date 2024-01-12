@@ -196,19 +196,24 @@ const SettingsPassword = () => {
           "Content-type": "application/json; charset=UTF-8"
         }
       })
-      if(res.ok){
-        toast.success("Password Changed")
+      if (res.ok) {
+        toast.success("Password changed successfully");
         setValues({
           password: '',
           confirm: '',
           oldPassword: ''
-        })
+        });
+      } else if (res.status === 401) {
+        // Incorrect current password
+        toast.error("Please enter the correct current password");
+      } else {
+        throw "Error in the database";
       }
-      else throw "error in the database"
-    }catch(err){
-      toast.error('Password Not Updated, try Again');
+    } catch (err) {
+      console.error('Password not updated, try again:', err);
+      toast.error('Password not updated, try again');
     }
-  }
+  };
 
   return (
     

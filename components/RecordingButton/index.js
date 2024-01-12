@@ -215,10 +215,21 @@ const RecordingButton = () => {
             sendMessageToBackgroundScript({ action: 'stopRecording' }, handleVideoBlob);
             setCapturing(false);
         } else {
+            let height, width;
+            if (selectedVideoStyle === 'Square') {
+                height = width = 10 * videoResizeConstant;
+            } else if (selectedVideoStyle === 'Vertical Mode') {
+                height = 16 * videoResizeConstant;
+                width = 9 * videoResizeConstant;
+            } else {
+                height = 9 * videoResizeConstant;
+                width = 16 * videoResizeConstant;
+            }
+    
             sendMessageToBackgroundScript({
                 action: 'startRecording',
-                height: aspectRatio[0] * videoResizeConstant,
-                width: aspectRatio[1] * videoResizeConstant,
+                height,
+                width,
             });
             setCapturing(true);
     
