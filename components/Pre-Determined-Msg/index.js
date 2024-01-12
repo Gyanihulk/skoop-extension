@@ -94,9 +94,9 @@ function AI(props) {
     <div className="form-group mx-auto dropDown">
       <select className="form-select" value={selectedOption} onChange={handleDropdownChange} size="sm">
         <option value="AddEditResponses" className='bold-text'>
-          Add responses
+          Add New Message Template
         </option>
-        <option value="Select Response">Select saved response</option>
+        <option value="Select Response" disabled hidden>Select Message Template</option>
         {messageOptions.map((option) => (
           <option key={option.heading} value={option.heading}>
             {option.heading}
@@ -108,13 +108,13 @@ function AI(props) {
         <div className="modal-overlay modal-dialog modal-dialog-centered" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">Add or Edit Response</h5>
+              <h5 className="modal-title">Add Message Template</h5>
               <button type="button" className="custom-close-button" onClick={() => setShowModal(false)} aria-label="Close">
                 <IoMdClose/>
               </button>
             </div>
             <div className="modal-body">
-              <label className="mb-2 mt-2 text-center ">Title</label>
+              <label className="mb-2 mt-2 text-center ">Title*</label>
               <input
                 type="text"
                 required
@@ -123,7 +123,7 @@ function AI(props) {
                 onChange={(e) => handleNewResponseChange('heading', e.target.value)}
               />
 
-              <label className="mb-2 mt-2 text-center">Description</label>
+              <label className="mb-2 mt-2 text-center">Description*</label>
               <textarea
                 className="form-control"
                 required
