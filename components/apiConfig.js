@@ -36,8 +36,8 @@ const API_ENDPOINTS = {
     resetPasswordUsingOtp: `${backendUrl}/resetPasswordUsingOtp`, //POST
     skoopCrmAddPreloadedResponses: `${backendUrl}/skoopCrmAddPreloadedResponses`, // POST
     chatgptprompt: `${backendUrl}/chatgptprompt`, // GET
-    replaceCrmPreloaded:`${backendUrl}/replaceCrmPreloaded`,
-    deleteCrmPreloaded:`${backendUrl}/deleteCrmPreloaded`,
+    replaceCrmPreloaded:`${backendUrl}/replaceCrmPreloaded`, //PUT
+    deleteCrmPreloaded:`${backendUrl}/deleteCrmPreloaded`, //DELETE
     updateProfileImage: `${backendUrl}/updateProfileImage`, // POST
 };
 
