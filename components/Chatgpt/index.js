@@ -282,10 +282,10 @@ const ChatGpt = ({ appendToBody }) => {
           placeholder="Select Saved Response"
         >
           <option value="Select Prompt" disabled hidden>
-            Select Saved Prompt
+          Select prompts to generate chatgpt response 
           </option>
           <option value="AddEditPrompt" className="bold-text">
-            Add Prompt
+            Add New Prompt
           </option>
           {messageOptions.map((option) => (
             <option key={option.id} value={option.id}>

@@ -143,8 +143,6 @@ const EmailComposer = () => {
                 {state.displayComp === 'Giphy' && <GiphyWindow appendToBody={handleInsertion} />}
                 {state.displayComp === 'Library' && <Library appendToBody={handleInsertion} />}
                 {state.displayComp === 'AI' && <AI appendToBody={handleInsertion} />}
-                <br/>
-                <br/>
                 {message && <MessageWindow />}
 
                 {!message && state.displayComp === 'DefaultCard' && (
