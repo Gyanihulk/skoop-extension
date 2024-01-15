@@ -114,18 +114,17 @@ export default function Header() {
             <nav className="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
                 <div class="navbar-brand">
                     <div className="container">
-                        <div class="row justify-content-left">
+                        <div class="row justify-content-left px-3">
                             {/* <div className="col">
                                 <FaExpandArrowsAlt className="icon-style-normal" />
                             </div> */}
 
-                            <div className="col">
-                                {(scraperPage || activePage ==="AccountSettings") && (
+                            <div className="col px-5">
+                                {(activePage ==="ContactPage" || activePage ==="AccountSettings") && (
                                     <BsArrowLeftCircle
                                         className="icon-style-normal"
                                         onClick={() => {
                                             navigateToPage('Home');
-                                            setScraperPage(!scraperPage);
                                         }}
                                     />
                                 )}
@@ -135,7 +134,6 @@ export default function Header() {
                 </div>
 
                 <div className="d-flex ml-auto align-items-center">
-                      {/* Profile Info Saver */}
                     {isProfilePage && (
                         <button
                             className="btn btn-link"

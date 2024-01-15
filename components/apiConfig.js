@@ -1,7 +1,8 @@
-const backendUrl="https://skoop.sumits.in"; //https://skoop.sumits.in
+const backendUrl="http://localhost:4000"; //https://skoop.sumits.in
 
 
 const API_ENDPOINTS = {
+    backendUrl,
     skoopCalendarUrl: "https://schedule.sumits.in",
     changePassword: `${backendUrl}/changePassword`, // PATCH
     profileDetails: `${backendUrl}/userDetails`, // GET
@@ -34,6 +35,7 @@ const API_ENDPOINTS = {
     getOtpForPasswordReset: `${backendUrl}/getOtpForPasswordReset?`, //GET
     resetPasswordUsingOtp: `${backendUrl}/resetPasswordUsingOtp`, //POST
     skoopCrmAddPreloadedResponses: `${backendUrl}/skoopCrmAddPreloadedResponses`, // POST
+    updateProfileImage: `${backendUrl}/updateProfileImage`, // POST
 };
 
 // with POST or PATCH apis body is sent in JSON 
