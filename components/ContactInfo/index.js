@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BiLogoGmail } from "react-icons/bi";
 import { AiFillPhone } from "react-icons/ai";
@@ -9,6 +9,7 @@ import Scrape from '../Scraper';
 import { FaAddressBook } from "react-icons/fa";
 import { FaRegUserCircle } from "react-icons/fa";
 import toast from 'react-hot-toast';
+import GlobalStatesContext from '../../contexts/GlobalStates';
 
 const ContactInfoCard = () => {
   const [email, setEmail] = useState('');
@@ -131,13 +132,13 @@ const ContactInfoCard = () => {
     setPhone(scrapedInfo2[3]);
     setlinkedin(scrapedInfo2[4]);
   }
-
+  const {  scraperPage, isProfilePage } = useContext(GlobalStatesContext);
   useEffect(()=>{
    setRefresh(!refresh);
-  },[])
+  },[scraperPage, isProfilePage])
 
   useEffect(() => {
-    // Pre-Fill details if available
+
     (async () => {
       await getProfileDetails();
     })();

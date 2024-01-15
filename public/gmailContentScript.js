@@ -350,7 +350,7 @@ function createWebcamContainer(title,height,width) {
     const dragEnd = () => {
         isDragging = false;
         document.removeEventListener('mousemove', dragMove);
-        document.removeEventListener('mouseup', dragEnd);
+        document.removeEventListener('mousedown', dragEnd);
     };
     let seconds = 0;
     let timerInterval = null;
