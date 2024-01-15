@@ -4,6 +4,8 @@ import API_ENDPOINTS from '../apiConfig';
 import { handleCopyToClipboard } from '../../utils';
 import toast from 'react-hot-toast';
 import { IoMdClose } from "react-icons/io";
+import { GrFormEdit } from "react-icons/gr";
+import { RiDeleteBin3Fill } from "react-icons/ri";
 
 
 const ChatGpt = ({ appendToBody }) => {
@@ -12,8 +14,6 @@ const ChatGpt = ({ appendToBody }) => {
   const [loading, setLoading] = useState(false);
   const [loadingTime, setLoadingTime] = useState(0);
   const [waitingMessage, setWaitingMessage] = useState('');
-
-
   const [selectedOption, setSelectedOption] = useState('Select Prompt');
   const [messageOptions, setMessageOptions] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -118,6 +118,7 @@ const ChatGpt = ({ appendToBody }) => {
       setLoading(false);
       setWaitingMessage('');
       setPrompt(response.choices[0].message.content);
+      appendToBody(response.choices[0].message.content);
     } catch (err) {
       console.log("could not get chatGpt response", err);
       toast.error("could not get chatGpt response");
@@ -271,7 +272,8 @@ const ChatGpt = ({ appendToBody }) => {
 
   return (
     <div>
-      <div className="form-group mx-auto dropDown mb-3">
+      <div className="form-group mx-auto dropDown">
+      <div className="d-flex justify-content-between align-items-center">
         <select
           className="form-select"
           value={selectedOption}
@@ -293,25 +295,26 @@ const ChatGpt = ({ appendToBody }) => {
         </select>
 
         {selectedOption !== 'AddEditPrompt' && selectedOption !== 'Select Prompt' && (
-          <div className="d-flex justify-content-end mt-2">
+          <div className="d-flex justify-content-end">
             <div className="btn-group" role="group" aria-label="Button Group">
               <button
                 type="button"
-                className="btn btn-sm btn-primary"
+                className="btn btn-sm custom-close-button"
                 onClick={(e) => handleEditOption(e, selectedOption)}
               >
-                Edit
+              <GrFormEdit />
               </button>
               <button
                 type="button"
-                className="btn btn-sm btn-danger"
+                className="btn btn-sm custom-close-button"
                 onClick={() => handleDeleteOption(selectedOption)}
               >
-                Delete
+              <RiDeleteBin3Fill/>
               </button>
             </div>
           </div>
        )}
+      </div>
       </div>
       <div
         className="modal"
@@ -404,7 +407,7 @@ const ChatGpt = ({ appendToBody }) => {
           </>
         ) : null}
 
-        {prompt !== '' && !loading && (
+        {/* {prompt !== '' && !loading && (
           <>
             <div className="container">
               <div className="row">
@@ -429,10 +432,10 @@ const ChatGpt = ({ appendToBody }) => {
               </div>
             </div>
           </>
-        )}
+        )} */}
       </form>
 
-      {prompt !== '' && !loading && (
+      {/* {prompt !== '' && !loading && (
         <div className="d-flex justify-content-end gap-2 mt-4">
           <button
             type="button"
@@ -453,9 +456,7 @@ const ChatGpt = ({ appendToBody }) => {
             Insert
           </button>
         </div>
-      )}
-      <br />
-      <br />
+      )} */}
     </div>
   );
 };

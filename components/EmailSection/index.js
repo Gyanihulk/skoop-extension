@@ -139,13 +139,15 @@ const EmailComposer = () => {
             </ul>
 
             <div className="container w-90 mt-4">
-                {message && <MessageWindow />}
                 {state.displayComp === 'Chatgpt' && <ChatGpt appendToBody={handleInsertion} />}
                 {state.displayComp === 'Giphy' && <GiphyWindow appendToBody={handleInsertion} />}
                 {state.displayComp === 'Library' && <Library appendToBody={handleInsertion} />}
                 {state.displayComp === 'AI' && <AI appendToBody={handleInsertion} />}
+                <br/>
+                <br/>
+                {message && <MessageWindow />}
 
-                {!message && (
+                {!message && state.displayComp === 'DefaultCard' && (
                     <div className="card">
                         <div className="card-body">
                             <h5 className="card-title text-center">Welcome to Skoop</h5>

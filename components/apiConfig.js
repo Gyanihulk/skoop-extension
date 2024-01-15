@@ -35,6 +35,7 @@ const API_ENDPOINTS = {
     skoopCrmAddPreloadedResponses: `${backendUrl}/skoopCrmAddPreloadedResponses`, // POST
     chatgptprompt: `${backendUrl}/chatgptprompt`, // GET
     replaceCrmPreloaded:`${backendUrl}/replaceCrmPreloaded`,
+    deleteCrmPreloaded:`${backendUrl}/deleteCrmPreloaded`
 };
 
 // with POST or PATCH apis body is sent in JSON 
