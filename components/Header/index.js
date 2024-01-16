@@ -1,15 +1,16 @@
 import { useContext, useState, useEffect } from 'react';
 import { BsArrowLeftCircle } from 'react-icons/bs';
-import { MdAccountCircle, MdNotificationsActive, MdClose, MdSaveAlt } from 'react-icons/md';
-import { FaExpandAlt, FaExpandArrowsAlt } from 'react-icons/fa';
+import { MdAccountCircle,  MdClose, MdSaveAlt } from 'react-icons/md';
 import GlobalStatesContext from '../../contexts/GlobalStates';
 import { FaRegCalendarCheck } from 'react-icons/fa';
 import ScreenContext from '../../contexts/ScreenContext';
 import API_ENDPOINTS from '../apiConfig';
 import { FiMinimize2, FiMaximize2 } from 'react-icons/fi';
-import ProfileScraper from '../ProfileScraper/index.js';
+import AuthContext from '../../contexts/AuthContext.js';
 
 export default function Header() {
+
+    const { isAutheticated ,setisAutheticated} = useContext(AuthContext);
     const { navigateToPage, activePage } = useContext(ScreenContext);
     const { setScraperPage, scraperPage, isProfilePage } = useContext(GlobalStatesContext);
     const [expand, setExpand] = useState(false);
@@ -39,6 +40,7 @@ export default function Header() {
 
     const handleLogOut = () => {
         localStorage.setItem('accessToken', JSON.stringify('none'));
+        setisAutheticated(false);
         navigateToPage('SignIn');
     };
     const executeClose = () => {
@@ -108,7 +110,7 @@ export default function Header() {
             '_blank'
         );
     };
-
+console.log(isAutheticated,"from header")
     return (
         <>
             <nav className="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
@@ -134,16 +136,17 @@ export default function Header() {
                 </div>
 
                 <div className="d-flex ml-auto align-items-center">
+                    {isAutheticated && <>
                     {isProfilePage && (
                         <button
-                            className="btn btn-link"
-                            data-mdb-toggle="tooltip"
-                            data-mdb-placement="bottom"
-                            title="Save Profile Info "
-                            onClick={() => {
-                                navigateToPage('ContactPage');
-                                setScraperPage(!scraperPage);
-                            }}
+                        className="btn btn-link"
+                        data-mdb-toggle="tooltip"
+                        data-mdb-placement="bottom"
+                        title="Save Profile Info "
+                        onClick={() => {
+                            navigateToPage('ContactPage');
+                            setScraperPage(!scraperPage);
+                        }}
                         >
                             <MdSaveAlt className="icon-style-normal" />
                         </button>
@@ -155,7 +158,7 @@ export default function Header() {
                         data-mdb-toggle="tooltip"
                         data-mdb-placement="bottom"
                         title="Go to your Meeting Calendar Schedular"
-                    >
+                        >
                         <FaRegCalendarCheck className="icon-style-normal" />
                     </button>
 
@@ -173,14 +176,14 @@ export default function Header() {
                         <div
                             className={`ddstyle dropdown-menu ${profileOpen ? 'show' : ''}`}
                             style={{ marginLeft: '-120px' }}
-                        >
+                            >
                             <button
                                 className="dropdown-item"
                                 onClick={() => {
                                     navigateToPage('AccountSettings');
                                     toggleProfileDropdown(); 
                                 }}   
-                            >
+                                >
                                 Account Settings
                             </button>
                             <button className="dropdown-item"
@@ -193,6 +196,8 @@ export default function Header() {
                             </button>
                         </div>
                     </div>
+                                </>}
+                    
                     <button
                         className="btn btn-link"
                         data-mdb-toggle="tooltip"
