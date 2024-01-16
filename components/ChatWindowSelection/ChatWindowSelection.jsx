@@ -33,7 +33,7 @@ const ChatWindowSelection = () => {
                             var combinedArray = response[0].result;
                         
                             setInitialItems(combinedArray);
-                            const filteredArray = combinedArray.filter(item =>
+                            const filteredArray = combinedArray?.filter(item =>
                                 selectedChatWindows.some(secondItem => secondItem.name === item.name)
                             );
                             setSelectedChatWindows(filteredArray);
@@ -62,7 +62,7 @@ const ChatWindowSelection = () => {
             newChatWindows.push(selectedItem);
             setSelectedChatWindows(newChatWindows);
         } else {
-            const newChatWindows=selectedChatWindows.filter(item => item.name !== value);
+            const newChatWindows=selectedChatWindows?.filter(item => item.name !== value);
             setSelectedChatWindows(newChatWindows);
         }
         setLocalRefresh(!localRefresh);

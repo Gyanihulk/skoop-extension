@@ -1,4 +1,4 @@
-const backendUrl="http://localhost:4000"; //https://skoop.sumits.in
+const backendUrl="https://skoop.sumits.in"; //https://skoop.sumits.in
 
 
 const API_ENDPOINTS = {

@@ -28,6 +28,13 @@ export default function SignUp(props) {
 
     const { handleRegister } = useContext(AuthContext);
     const { navigateToPage } = useContext(ScreenContext);
+    const [userTimezone, setUserTimezone] = useState('');
+
+    useEffect(() => {
+        const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        setUserTimezone(detectedTimezone);
+    }, []);
+
     return (
         <div>
             <div className="container">
@@ -93,7 +100,7 @@ export default function SignUp(props) {
                                     <select className="form-select" id="timezone" name="timezone">
                                         <option selected>Select Timezone</option>
                                         {timezones.map((option, index) => (
-                                          <option key={index} value={option}>
+                                          <option key={index} value={option} selected={option === userTimezone}>
                                             {option}
                                           </option>
                                         ))}

@@ -11,7 +11,7 @@ const AccountProfile = ({ userData }) => {
     );
     useEffect(() => {
         if (userData.image_path) {
-            setProfileImage(API_ENDPOINTS.backendUrl + '/' + userData.image_path);
+            setProfileImage(userData.image_path.startsWith("public") ?API_ENDPOINTS.backendUrl + '/' + userData.image_path:userData.image_path);
         }
     }, [ userData]);
     // Function to handle the file input change event

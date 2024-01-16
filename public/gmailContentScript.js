@@ -49,40 +49,33 @@ function injectIframe() {
     dragButton.style.backgroundImage =
         'url("' + chrome.runtime.getURL('/icons/move.png') + '")';
         dragButton.style.backgroundSize = 'cover'; 
-    dragButton.onmousedown = function(event) {
-        event.preventDefault();
-        let shiftX = event.clientX - container.getBoundingClientRect().left;
-        let shiftY = event.clientY - container.getBoundingClientRect().top;
-    
-        let currentX, currentY;
-    
-        function moveAt() {
-            container.style.left = currentX - shiftX + 'px';
-            container.style.top = currentY - shiftY + 'px';
-            requestAnimationFrame(moveAt);
-        }
-    
-        function onMouseMove(event) {
-            currentX = event.pageX;
-            currentY = event.pageY;
-        }
-    
-        function stopDrag() {
-            document.removeEventListener('mousemove', onMouseMove);
-            document.onmouseup = null;
-            dragButton.removeEventListener('mouseleave', stopDrag);
-            cancelAnimationFrame(moveAt);
-        }
-    
-        document.addEventListener('mousemove', onMouseMove);
-        requestAnimationFrame(moveAt);
-    
-        document.onmouseup = stopDrag;
-    
-        // Stop the drag when the cursor leaves the button
-        dragButton.addEventListener('mouseleave', stopDrag);
+    // Drag functionality
+    let isDragging = false;
+    let dragStartX, dragStartY;
+
+    const dragStart = (e) => {
+        disableTextSelection();
+        isDragging = true;
+        dragStartX = e.clientX - container.offsetLeft;
+        dragStartY = e.clientY - container.offsetTop;
+        document.addEventListener('mousemove', dragMove);
+        document.addEventListener('mouseup', dragEnd);
     };
-    
+
+    const dragMove = (e) => {
+        if (isDragging) {
+            container.style.left = `${e.clientX - dragStartX}px`;
+            container.style.top = `${e.clientY - dragStartY}px`;
+        }
+    };
+
+    const dragEnd = () => {
+        isDragging = false;
+        enableTextSelection();
+        document.removeEventListener('mousemove', dragMove);
+        document.removeEventListener('mousedown', dragEnd);
+    };
+     dragButton.addEventListener('mousedown', dragStart);
 
     // Create minimize/expand button
     const toggleButton = document.createElement('button');
@@ -105,9 +98,9 @@ function injectIframe() {
     container.appendChild(toggleButton);
     container.appendChild(iframe);
 
-    const minWidth = 300;  
+    const minWidth = 400;  
     const maxWidth = 800;  
-    const minHeight = 70; 
+    const minHeight = 230; 
     const maxHeight = 750;
     const resizer = document.createElement('div');
     resizer.style.width = '30px';
@@ -119,9 +112,9 @@ function injectIframe() {
     resizer.style.backgroundImage =
         'url("' + chrome.runtime.getURL('/icons/resize.png') + '")';
         resizer.style.backgroundSize = 'cover'; 
-resizer.style.backgroundRepeat = 'no-repeat';
-resizer.style.backgroundPosition = 'center'
-resizer.style.transform = 'rotate(-90deg)';
+    resizer.style.backgroundRepeat = 'no-repeat';
+    resizer.style.backgroundPosition = 'center'
+    resizer.style.transform = 'rotate(-90deg)';
     container.appendChild(resizer);
 
     resizer.addEventListener('mousedown', initResize, false);
@@ -145,6 +138,11 @@ resizer.style.transform = 'rotate(-90deg)';
         disableTextSelection();
         window.addEventListener('mousemove', resize, false);
         window.addEventListener('mouseup', stopResize, false);
+        
+    }
+
+    function isResizingArea(element) {
+        console.log(element,resizer,"test")
     }
 
     function resize(e) {
@@ -168,6 +166,7 @@ resizer.style.transform = 'rotate(-90deg)';
     }
     // Append the container to the body of the document
     document.body.appendChild(container);
+    
     
 }
 

@@ -44,6 +44,7 @@ export const AuthProvider = ({ children }) => {
             const resjson = await response.json();
             localStorage.setItem('accessToken', JSON.stringify(resjson.accessToken));
             localStorage.setItem('skoopUsername', JSON.stringify(resjson.skoopUsername));
+            setisAutheticated(true);
             navigateToPage('Home');
           } else {
             toast.error("incorrect username or password",{id: toastId});
@@ -69,7 +70,7 @@ export const AuthProvider = ({ children }) => {
           });
           result = await result.json();
           console.log("the token received",result);
-
+          setisAutheticated(true);
           localStorage.setItem('accessToken', JSON.stringify(result.accessToken));
           localStorage.setItem('skoopUsername', JSON.stringify(result.skoopUsername));
           navigateToPage('Home'); 
@@ -134,7 +135,11 @@ export const AuthProvider = ({ children }) => {
               }
           })
           if(res.ok){
+            const resjson = await res.json();
+            localStorage.setItem('accessToken', JSON.stringify(resjson.accessToken));
+            localStorage.setItem('skoopUsername', JSON.stringify(resjson.skoopUsername));
             toast.success("Sign up was complete",{ id : toastId});
+            setisAutheticated(true);
             navigateToPage('Home');
           }
           else toast.error("Email already exists ",{ id : toastId})
@@ -152,6 +157,10 @@ export const AuthProvider = ({ children }) => {
               authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
             },
           });
+        
+          if(res.ok){
+            setisAutheticated(true);
+          }
           return res;
         } catch (err) {
           return { ok: false };
@@ -196,7 +205,7 @@ export const AuthProvider = ({ children }) => {
       }
 
   return (
-    <AuthContext.Provider value={{isAutheticated , user, handleSkoopLogin, 
+    <AuthContext.Provider value={{isAutheticated ,setisAutheticated, user, handleSkoopLogin, 
     handleSocialLogin,handleRegister,
     verifyToken,getOtpForPasswordReset,resetPasswordUsingOtp, rememberMe,
     setRememberMe}}>

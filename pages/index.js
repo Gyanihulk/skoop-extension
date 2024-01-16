@@ -12,15 +12,15 @@ import LoadingScreen from '../Screens/LoadingScreen';
 import AuthContext from '../contexts/AuthContext';
 
 export default function Home() {
-    const { verifyToken } = useContext(AuthContext);
+    const { verifyToken ,isAutheticated} = useContext(AuthContext);
     const { activePage,navigateToPage } = useContext(ScreenContext);
     useEffect(() => {
         (async () => {
           const res = await verifyToken();
-          console.log(res,"from index")
-          if (res.ok) {navigateToPage('Home');} else{navigateToPage("SignIn")}
+  
+          if (isAutheticated) {navigateToPage('Home');} else{navigateToPage("SignIn")}
         })();
-      }, []);
+      }, [isAutheticated]);
  
     return (
         <>

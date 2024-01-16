@@ -46,7 +46,7 @@ const ChatWindowSelection = () => {
   
     const handleInsertionToWebsite = async () => {
         if (isLinkedin) {
-          if(selectedChatWindows.length===0){
+          if(selectedChatWindows?.length===0){
               toast.error("Please select a recipitent")
           }
           console.log(selectedChatWindows,selectedChatWindows.length)
@@ -73,7 +73,7 @@ const ChatWindowSelection = () => {
             if (item.querySelector('h2').innerText == 'New message') {
                 try {
                     const profileLink = item.getElementsByClassName('msg-compose__profile-link');
-                    if (profileLink.length) {
+                    if (profileLink?.length) {
                         nameOfRecipient = profileLink[0].innerText;
                     } else {
                         nameOfRecipient = item.querySelectorAll('span')[2].innerText;
