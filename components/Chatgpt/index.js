@@ -384,8 +384,8 @@ const ChatGpt = ({ appendToBody }) => {
           </div>
         </div>
       </div>
-      <form onSubmit={sendPrompt}>
-        <div className="input-group mb-3">
+      <form onSubmit={sendPrompt} className='col-11 mx-auto'>
+        <div className="input-group mb-2">
         <textarea
           className="form-control"
           placeholder="Ask ChatGPT..."
