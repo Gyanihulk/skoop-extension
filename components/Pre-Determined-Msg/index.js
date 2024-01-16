@@ -28,23 +28,23 @@ function AI(props) {
       if (selectedMessage) {
         setSelectedDescription(selectedMessage.description || '');
         props.appendToBody(selectedMessage.description);
-        setEditingResponse(selectedMessage);
-        setIsEdit(true);
-        setShowModal(true);
       } else {
         setSelectedDescription('');
-        setEditingResponse(null);
-        setIsEdit(false);
-        setShowModal(false); 
       }
     }
   };
-  
 
-  const handleDescriptionEdit = (event) => {
-    const value = event.target.value;
-    setSelectedDescription(value);
+  const handleEditIconClick = (option) => {
+    if (option && option.heading && option.description) {
+      setEditingResponse(option);
+      setNewResponse({ heading: option.heading, description: option.description });
+      setIsEdit(true);
+      setShowModal(true);
+    } else {
+      console.error('Invalid option data for edit:', option);
+    }
   };
+  
 
   const handleNewResponseChange = (field, value) => {
     setNewResponse((prev) => ({ ...prev, [field]: value }));
@@ -94,14 +94,11 @@ function AI(props) {
         }
 
         if (isEdit && editingResponse) {
-          // Update the existing response in the state
           setMessageOptions((prevOptions) => prevOptions.map((option) => (option.id === editingResponse.id ? newResponse : option)));
         } else {
-          // Add the new response to the state
           setMessageOptions((prevOptions) => [...prevOptions, newResponse]);
         }
 
-        // Reset the form and state
         setNewResponse({ heading: '', description: '' });
         setShowModal(false);
         setIsEdit(false);
@@ -117,14 +114,6 @@ function AI(props) {
     }
   };
 
-  const handleEditResponse = (editingResponse) => {
-    console.log('Editing Response:', editingResponse);
-    setEditingResponse(editingResponse);
-    setNewResponse((prev) => ({ ...prev, heading: editingResponse.heading, description: editingResponse.description }));
-    setIsEdit(true);
-    setShowModal(true);
-  };
-  
 
   useEffect(() => {
     fetch(API_ENDPOINTS.CrmPreloadedResponses, {
@@ -193,7 +182,8 @@ function AI(props) {
   return (
     <div className="form-group mx-auto dropDown">
       <div className="d-flex justify-content-between align-items-center">
-      <select className="form-select" value={selectedOption} onChange={handleDropdownChange} size="sm">
+      <div class="form-floating w-100">
+      <select className="form-select w-100" id="floatingSelect" value={selectedOption} onChange={handleDropdownChange} size="sm">
         <option value="AddEditResponses" className='bold-text'>
           Add New Message Template
         </option>
@@ -204,26 +194,30 @@ function AI(props) {
           </option>
         ))}
       </select>
-      {selectedOption !== 'AddEditResponses' && (
+      <label for="floatingSelect">Select saved Template message to send instantly </label>
+        </div>
+        {selectedOption !== 'AddEditResponses' && (
           <div className="d-flex justify-content-end">
             <div className="btn-group" role="group" aria-label="Button Group">
               <button
                 type="button"
+                title="Edit Template"
                 className="btn btn-sm custom-close-button"
-                onClick={() => handleEditResponse(selectedOption)}
-              >
-              <GrFormEdit />
+                onClick={() => handleEditIconClick(messageOptions.find((option) => option.heading === selectedOption))}
+                >
+                <GrFormEdit />
               </button>
               <button
                 type="button"
+                title="Delete Template"
                 className="btn btn-sm custom-close-button"
                 onClick={handleDeleteResponse}
               >
-              <RiDeleteBin3Fill/>
+                <RiDeleteBin3Fill/>
               </button>
             </div>
           </div>
-       )}
+        )}
        </div>
       <div className="modal" tabIndex="-1" role="dialog" style={{ display: showModal ? 'block' : 'none' }}>
         <div className="modal-overlay modal-dialog modal-dialog-centered" role="document">

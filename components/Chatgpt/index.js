@@ -274,15 +274,17 @@ const ChatGpt = ({ appendToBody }) => {
     <div>
       <div className="form-group mx-auto dropDown">
       <div className="d-flex justify-content-between align-items-center">
+      <div class="form-floating w-100">
         <select
-          className="form-select"
+          className="form-select w-100"
+          id="floatingSelect" 
           value={selectedOption}
           onChange={handleDropdownChange}
-          size="md"
+          size="lg"
           placeholder="Select Saved Response"
         >
           <option value="Select Prompt" disabled hidden>
-          Select prompts to generate chatgpt response 
+          Select prompt 
           </option>
           <option value="AddEditPrompt" className="bold-text">
             Add New Prompt
@@ -293,12 +295,15 @@ const ChatGpt = ({ appendToBody }) => {
             </option>
           ))}
         </select>
+        <label for="floatingSelect">Select prompts to generate chatgpt response  </label>
+        </div>
 
         {selectedOption !== 'AddEditPrompt' && selectedOption !== 'Select Prompt' && (
           <div className="d-flex justify-content-end">
             <div className="btn-group" role="group" aria-label="Button Group">
               <button
                 type="button"
+                title="Edit Prompt"
                 className="btn btn-sm custom-close-button"
                 onClick={(e) => handleEditOption(e, selectedOption)}
               >
@@ -306,6 +311,7 @@ const ChatGpt = ({ appendToBody }) => {
               </button>
               <button
                 type="button"
+                title="Delete Prompt"
                 className="btn btn-sm custom-close-button"
                 onClick={() => handleDeleteOption(selectedOption)}
               >

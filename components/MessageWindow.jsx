@@ -6,7 +6,6 @@ const MessageWindow = () => {
     const textareaRef = useRef(null);
 
     useEffect(() => {
-        // Adjust the textarea height based on content
         const adjustHeight = () => {
             if (textareaRef.current) {
                 textareaRef.current.style.height = 'auto'; 
@@ -22,9 +21,12 @@ const MessageWindow = () => {
     };
     return (
         <div class="input-group">
-            <textarea ref={textareaRef} class="form-control" className="form-control auto-height-textarea" 
+            <div class="form-floating">
+            <textarea ref={textareaRef} class="form-control" id="floatingTextarea" className="form-control auto-height-textarea" 
                 aria-label="With textarea" 
                 value={message} onChange={handleTextChange} ></textarea>
+                <label for="floatingTextarea">Custom Message</label>
+        </div>
         </div>
     );
 };
