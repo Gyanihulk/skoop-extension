@@ -9,7 +9,6 @@ import Tabs from './Tabs.js';
 import VideoCard from './VideoCard.js';
 import VideoContainer from './VideoContainer.jsx';
 import { IoMdClose } from "react-icons/io";
-import Pagination from './Pagination.jsx';
 
 
 const Library = (props) => {
@@ -25,11 +24,12 @@ const Library = (props) => {
     const { getThumbnail } = useContext(MediaUtilsContext)
     const [hovered, setHovered] = useState(false);
     const [activeTab, setActiveTab] = useState('favorites');
-    const [favorites, setFavorites] = useState([]);
+    const [favorites, setFavorites] = useState([]); 
     const [tabName, setTabName] = useState('');
     const [folders, setFolders] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
 
     const handleTabChange = (tab) => {
       setActiveTab(tab);
@@ -37,53 +37,40 @@ const Library = (props) => {
       setFav(false);
     };
 
-
-    const [pagination, setPagination] = useState({
-      totalItems: 0,
-      totalPages: 0,
-      //currentPage: 1,
-    });
- 
+    const handlePageChange = (page) => {
+      setCurrentPage(page);
+    };
+  
     const handleOpen = (dir) => {
       getlinks(dir);
       setActiveTab(dir);
       setCurrentDirectory(dir);
     };
- 
+  
     const handleNewTab = () => {
       setOpenNewFolder(true);
       setTabName('');
     };
 
-
     const handleMoveVideo = async () => {
+      // After moving the video, update the state to reflect the changes
       await getlinks(currentDirectory);
     };
-   
- 
+    
+  
     const handleTabCreation = async () => {
       if (activeTab !== 'folders') {
         await createNewTab(tabName);
         setOpenNewFolder(false);
-        updateFavoritesState();
-      }
+        updateFavoritesState(); 
+      } 
     };
-   
+    
     const handleClose = () => {
       setCurrentDirectory('')
       setFav(false)
       setOpen(false)
     };
-
-
-    const updatePagination = (totalItems, totalPages, currentPage) => {
-      setPagination({
-        totalItems,
-        totalPages,
-        currentPage,
-      });
-    };
-
 
     const updateFavoritesState = async () => {
       try {
@@ -95,7 +82,7 @@ const Library = (props) => {
           }
         });
         const linksData = await linksResponse.json();
-       
+        
         // Check if linksData.links is an array before using filter
         if (Array.isArray(linksData.links)) {
           setFavorites(linksData.links.filter(item => item.is_favourite));
@@ -106,9 +93,8 @@ const Library = (props) => {
         console.log("Error updating favorites state", err);
       }
     };
-   
-   
-
+    
+    
 
     const createNewTab = async (tabName) => {
       try {
@@ -128,7 +114,6 @@ const Library = (props) => {
       }
     };
 
-
     const getDirs=async ()=>{
         try{
             var response = await fetch(API_ENDPOINTS.videoDirectories, {
@@ -146,55 +131,41 @@ const Library = (props) => {
         }
     }
 
+    const getlinks=async (dirName,favourite)=>{
+        const urlParams = new URLSearchParams();
 
-    const getlinks = async (dirName, favourite, page = 1, limit = 10) => {
-      const urlParams = new URLSearchParams();
-    
-      if (dirName !== null && dirName !== undefined) {
-        urlParams.append('directory', dirName);
-      }
-    
-      if (favourite !== null && favourite !== undefined) {
-        urlParams.append('is_favourite', favourite);
-      }
-    
-      urlParams.append('page', page);
-      urlParams.append('limit', limit);
-    
-      try {
-        var response = await fetch(API_ENDPOINTS.linkData + urlParams.toString(), {
-          method: 'GET',
-          headers: {
-            'authorization': `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-            'Content-type': 'application/json; charset=UTF-8'
-          }
-        });
-        response = await response.json();
-        console.log('API Response:', response);
-    
-        setLinks(response.links);
-        setPagination({
-          totalItems: response.totalItems,
-          totalPages: response.totalPages,
-          currentPage: response.currentPage,
-        });
-      } catch (err) {
-        toast.error('Could not fetch videos', err);
-      }
-    };
-    
+        if (dirName !== null && dirName !== undefined) {
+            urlParams.append('directory', dirName);
+        }
+        
+        if (favourite !== null && favourite !== undefined) {
+            urlParams.append('is_favourite', favourite);
+        }
 
+        try{
+            var response = await fetch(API_ENDPOINTS.linkData+ urlParams.toString(), {
+            method: "GET",
+            headers: {
+                "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+        response=await response.json()
+        setLinks(response);
+        }catch(err){
+        toast.error("could not fetch videos",err)
+        }
+    }
 
     const getFavourites=async()=>{
         if(fav==true){
             setFav(false);
             setCurrentDirectory('');
-            return
+            return 
         }
         setFav(true);
         getlinks(null,true);
     }
-
 
     const deleteVideo = async (id, dir) => {
       try {
@@ -207,13 +178,13 @@ const Library = (props) => {
         });
         await getlinks(dir);
         await updateFavoritesState();
-        fetchVideos();
+        fetchVideos(); 
       } catch (err) {
         console.log("could not delete", err);
       }
     };
-   
-   
+    
+    
     const deleteDirectory=async(dirName)=>{
         console.log("delete directory called")
         try{
@@ -237,12 +208,11 @@ const Library = (props) => {
          })();
          if(currentDirectory!='' || fav){
             if(fav){
-                getlinks(null,true, pagination.currentPage);
+                getlinks(null,true);
             }
-            else getlinks(currentDirectory, false, pagination.currentPage);
+            else getlinks(currentDirectory);
          }
-    },[globalRefresh, pagination.currentPage]);
-
+    },[globalRefresh]);
 
     const handleLinkInsertion=async(link,id)=>{
      
@@ -251,7 +221,6 @@ const Library = (props) => {
                 console.log("get thumbnail is defined");
             }
             else console.log("getthumbnail not defined");
-
 
             const thumbnail_link=await getThumbnail(id);
             console.log("the thumbnail link provided");
@@ -270,7 +239,6 @@ const Library = (props) => {
         }
     }
 
-
     const toggleFavourite = async (videoId) => {
       try {
         // Update the state immediately
@@ -286,7 +254,7 @@ const Library = (props) => {
           });
           return updatedFavorites;
         });
-   
+    
         // Send the request to the server
         const response = await fetch(API_ENDPOINTS.toggleFavourite, {
           method: "PATCH",
@@ -298,9 +266,11 @@ const Library = (props) => {
             id: videoId
           })
         });
-   
+    
+        // Handle errors if any
         if (!response.ok) {
           console.error("Toggle Favorite Error:", response.statusText);
+          // If there's an error, revert the state change
           setFavorites(prevFavorites => {
             const revertedFavorites = prevFavorites.map(favorite => {
               if (favorite.id === videoId) {
@@ -312,16 +282,16 @@ const Library = (props) => {
             return revertedFavorites;
           });
         }
-   
+    
         // Update the favorites state again to ensure consistency
         await updateFavoritesState();
       } catch (err) {
         console.log("Toggle Favorite Error:", err);
       }
     };
-   
-   
-   
+    
+    
+    
     useEffect(() => {
       const fetchData = async () => {
         try {
@@ -335,7 +305,7 @@ const Library = (props) => {
           });
           const dirsData = await dirsResponse.json();
           setDirs(dirsData);
- 
+  
           // Fetch all links
           const linksResponse = await fetch(API_ENDPOINTS.linkData, {
             method: "GET",
@@ -346,36 +316,20 @@ const Library = (props) => {
           });
           const linksData = await linksResponse.json();
           setLinks(linksData);
- 
-          // Update favorites state based on links
+          console.log('Total Items:', totalItems);
+          console.log('Total Pages:', totalPages);
+
           updateFavoritesState(linksData);
         } catch (err) {
           console.log("Error fetching data", err);
         }
       };
- 
+  
       fetchData();
     }, [globalRefresh]);
-
-
-    const handlePageChange = async (newPage) => {
-      console.log('handlePageChange triggered. New Page:', newPage);
     
-      if (newPage >= 1 && newPage <= pagination.totalPages) {
-        try {
-          setCurrentPage(newPage);
     
-          if (fav) {
-            await getlinks(null, true, newPage, 10);
-          } else {
-            await getlinks(currentDirectory, false, newPage, 10);
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      }
-    };
-   
+
   return (
     <div>
       <Tabs
@@ -386,9 +340,8 @@ const Library = (props) => {
       />
       <br/>
 
-
     {/* User Input Modals */}
-   
+    
     <div className="modal modal-overlay" style={{ display: openNewFolder ? 'block' : 'none' }}>
       <div className=" modal-dialog modal-dialog-centered">
         <div className="modal-content">
@@ -404,7 +357,6 @@ const Library = (props) => {
         </div>
       </div>
     </div>
-
 
     {/* <div className="modal" style={{ display: dirToRename !== '' ? 'block' : 'none' }}>
         <div className="modal-dialog">
@@ -446,18 +398,12 @@ const Library = (props) => {
                  handleLinkInsertion={handleLinkInsertion}
                  deleteVideo={deleteVideo}
                 toggleFavourite={toggleFavourite}
-                pagination={pagination}/>
-
-
-    <Pagination
-      currentPage={currentPage}
-      totalPages={pagination.totalPages}
-      onPageChange={(newPage) => handlePageChange(newPage)}
-    />
-               
+                currentPage={currentPage}
+                totalPages={totalPages}
+                handlePageChange={handlePageChange}/>
+                
 </div>
   )
 }
-
 
 export default Library
