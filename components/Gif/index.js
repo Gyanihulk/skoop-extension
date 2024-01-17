@@ -28,11 +28,24 @@ function GiphyWindow(props) {
     }
   };
 
+
+  const extractShortenedUrl = (url) => {
+    try {
+      const parsedUrl = new URL(url);
+      const shortenedUrl = `${parsedUrl.origin}${parsedUrl.pathname}`;
+      return shortenedUrl;
+    } catch (error) {
+      console.error('Error extracting shortened URL:', error);
+      return url; 
+    }
+  };
+
   const handleInsertion = (url) => {
+    const shortenedUrl = extractShortenedUrl(url);
     if (!isLinkedin) {
-      props.appendToBody(`<img src=${url} style="width: ${sizeOfGif}%; height: auto;" >`);
+      props.appendToBody(`<img src=${shortenedUrl} style="width: ${sizeOfGif}%; height: auto;" >`);
     } else {
-      props.appendToBody(url);
+      props.appendToBody(shortenedUrl);
     }
   };
 

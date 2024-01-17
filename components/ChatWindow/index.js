@@ -92,12 +92,10 @@ const ChatComponent = (props) => {
 
   return (
     <div className="centered-container">
-      <AI 
-      appendToBody={appendToBody}/>
+
         <div className="card mx-auto w-70"> 
         <div className="card-footer bg-white position-relative bottom-0 m-0 p-1">
-          
-        
+           
       {/* tabs start here */}
       <div className="chat-window-tab">
       <ul class="nav nav-pills mb-3 justify-content-center">
@@ -166,6 +164,9 @@ const ChatComponent = (props) => {
       </div>
     </div>
     </div>
+    <AI 
+      appendToBody={appendToBody}/>
+      
       {isProfilePage && 
   
           <div class="d-grid gap-2">
