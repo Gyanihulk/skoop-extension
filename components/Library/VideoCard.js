@@ -19,7 +19,6 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
 
 
   const handleMoveClick = () => {
-    console.log('Move button clicked for video ID:', video.id);
     setShowMovePopup(true);
   };
 
@@ -37,9 +36,6 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
 
   const handleRenameSave = async () => {
     try {
-      console.log('Video ID:', video.id);
-      console.log('New Title:', newTitle);
-      
       const response = await fetch(API_ENDPOINTS.renameVideo +`/${video.id}`, {
         method: 'PATCH',
         headers: {
@@ -50,19 +46,15 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
           newTitle: newTitle
         }),
       });
-  
-      console.log('Rename Response:', response);
-  
+    
       if (response.ok) {
         video.video_title = newTitle;
         handleCloseRenamePopup();
         toast.success('Video renamed successfully');
       } else {
-        console.error('Rename operation failed:', response.statusText);
         toast.error('Failed to rename video');
       }
     } catch (error) {
-      console.error('Error renaming video:', error);
       toast.error('Failed to rename video');
     }
   };
@@ -71,9 +63,8 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
     try {
       await deleteVideo(video.id);
       toast.success('Video deleted successfully');
-      fetchVideos(); // Refresh the folder immediately after deletion
+      fetchVideos(); 
     } catch (error) {
-      console.error('Error deleting video:', error);
       toast.error('Failed to delete video');
     }
   };
@@ -84,7 +75,6 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
       toast.success(video.is_favourite ? 'Removed from favorites' : 'Added to favorites');
       fetchVideos(); 
     } catch (error) {
-      console.error('Error toggling favorite:', error);
       toast.error('Failed to toggle favorite status');
     }
   };

@@ -90,7 +90,6 @@ function AI(props) {
         const contentType = response.headers.get('content-type');
         if (contentType && contentType.includes('application/json')) {
           const responseData = await response.json();
-          console.log('Response data:', responseData);
         }
 
         if (isEdit && editingResponse) {
@@ -106,7 +105,6 @@ function AI(props) {
 
         toast.success('Response saved successfully!');
       } else {
-        console.error('Failed to save response:', response.status, response.statusText);
         toast.error('Failed to save response. Please try again.');
       }
     } catch (error) {
@@ -125,7 +123,6 @@ function AI(props) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log('Fetched Message Options:', data);
         setMessageOptions(data);
       })
       .catch((error) => console.error('Error:', error));
@@ -146,7 +143,6 @@ function AI(props) {
   const handleDeleteResponse = async () => {
     try {
       if (!editingResponse || !editingResponse.id) {
-        console.error('Invalid response data for delete.');
         toast.error('Failed to delete response. Please try again.');
         return;
       }
@@ -170,7 +166,6 @@ function AI(props) {
   
         toast.success('Response deleted successfully!');
       } else {
-        console.error('Failed to delete response:', response.status, response.statusText);
         toast.error('Failed to delete response. Please try again.');
       }
     } catch (error) {

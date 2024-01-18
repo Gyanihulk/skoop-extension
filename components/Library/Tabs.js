@@ -5,7 +5,6 @@ import VideoContainer from './VideoContainer';
 
 const Tabs = ({ activeTab, handleTabChange, handleNewTab, folders }) => (
   <div className="container">
-    {console.log(folders,"from tabs")}
     <div className="row">
       <div className="col-12">
         <div className="d-flex overflow-auto">

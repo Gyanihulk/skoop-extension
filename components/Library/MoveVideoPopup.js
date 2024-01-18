@@ -35,8 +35,6 @@ const MoveVideoPopup = ({ videoId, onClose, onMove, fetchVideos }) => {
 
   const handleMove = async (folderName) => {
     try {
-      console.log('Video ID:', videoId);
-      console.log('Destination Folder:', folderName);
       const response = await fetch(API_ENDPOINTS.moveVideos, {
         method: 'PATCH',
         headers: {
@@ -48,7 +46,6 @@ const MoveVideoPopup = ({ videoId, onClose, onMove, fetchVideos }) => {
           to: folderName,
         }),
       });
-      console.log('Move Response:', response);
 
       if (response.ok) {
         await onMove();  

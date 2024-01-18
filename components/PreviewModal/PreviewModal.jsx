@@ -1,4 +1,5 @@
 import React from 'react'
+import { IoMdClose } from "react-icons/io";
 
 const PreviewModal = ({prev,setPrev,preview}) => {
   return (
@@ -6,7 +7,8 @@ const PreviewModal = ({prev,setPrev,preview}) => {
     <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
       <div className="modal-content">
         <div className="modal-header">
-          <button type="button" className="btn-close" onClick={preview}>
+          <button type="button" className="custom-close-button" onClick={preview} aria-label="Close">
+          <IoMdClose/>
           </button>
         </div>
         <div className="modal-body">
@@ -16,7 +18,7 @@ const PreviewModal = ({prev,setPrev,preview}) => {
             autoPlay
             loop
             controls
-            onClick={(e) => e.stopPropagation()} // Prevent clicks on the video from closing the modal
+            onClick={(e) => e.stopPropagation()} 
           ></video>
         </div>
       </div>

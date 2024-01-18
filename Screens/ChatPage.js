@@ -16,7 +16,6 @@ const ChatPage = (props) => {
 
   // Send the message to the background script
   chrome.runtime.sendMessage(message, function(response) {
-    console.log('Received response:', response);
     if(response && response?.url.startsWith("www.linkedin.com")){
       setIsLinkedin(true)
     }

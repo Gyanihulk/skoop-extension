@@ -49,7 +49,6 @@ const ContactInfoCard = () => {
       if(!response.ok) throw Error("")
       toast.success("saved successfully",{id: toastId});
     } catch (err) {
-      console.log("the error in saving contact info",err);
       toast.dismiss();
       toast.error("some error occured")
     }

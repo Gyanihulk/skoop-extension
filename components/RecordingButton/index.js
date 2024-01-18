@@ -24,6 +24,10 @@ import VoiceVisualization from '../AudioRecording/index.js';
 import PreviewModal from '../PreviewModal/PreviewModal.jsx';
 import { IoLink } from 'react-icons/io5';
 import MessageContext from '../../contexts/MessageContext.js';
+import RenameVideoPopup from '../Library/RenameVideoPopup.js';
+import { FaPencilAlt } from 'react-icons/fa';
+import { IoMdClose } from 'react-icons/io';
+
 const videoResizeConstant = 25;
 const RecordingButton = () => {
     const [capturing, setCapturing] = useState(false);
@@ -40,6 +44,9 @@ const RecordingButton = () => {
     const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
     const [selectedVideoStyle, setSelectedVideoStyle] = useState('Vertical Mode');
     const [iconsVisible, setIconsVisible] = useState(true);
+    const [videoTitle, setVideoTitle] = useState('');
+    const [showRenameModal, setShowRenameModal] = useState(false);
+    const [newVideoTitle, setNewVideoTitle] = useState('');
 
     const { setGlobalRefresh, isLinkedin, selectedChatWindows,focusedElementId } = useContext(GlobalStatesContext);
     const { getThumbnail,deleteVideo } = useContext(MediaUtilsContext);
@@ -96,7 +103,6 @@ const RecordingButton = () => {
         }
     };
     const addToMessage = async (videoPlayerId) => {
-        console.log(videoPlayerId,"add video link to message window")
         if (isLinkedin) {
             addMessage(
                 `https://share.vidyard.com/watch/${videoPlayerId}`
@@ -250,7 +256,8 @@ const RecordingButton = () => {
 
     const uploadVideo = async (file, videoTitle, directoryName) => {
         try {
-            videoTitle = replaceInvalidCharacters(videoTitle + `_${Date.now()}`);
+            videoTitle = replaceInvalidCharacters(videoTitle);
+            setVideoTitle(videoTitle);
             const formData = new FormData();
             formData.append('data', file, `${videoTitle}.webm`);
             const customHeaders = new Headers();
@@ -281,10 +288,60 @@ const RecordingButton = () => {
 
         } catch (err) {
             toast.dismiss();
-            console.log(err, 'err of video upload');
             toast.error('could not upload');
         }
     };
+
+    useEffect(() => {
+        if (bloburl && isUploading === false) {
+            preview();
+        }
+    }, [bloburl, isUploading]);
+
+    useEffect(() => {
+        setVideoTitle(videoTitle);
+    }, [capturing]);
+
+    //rename modal 
+
+    const handleRenameClick = () => {
+        setNewVideoTitle(videoTitle); 
+        setShowRenameModal(true);
+      };
+    
+      // Function to close the rename modal
+      const handleCloseRenameModal = () => {
+        setShowRenameModal(false);
+      };
+
+      const handleRenameSave = async () => {
+        try {
+          
+          const response = await fetch(API_ENDPOINTS.renameVideo +`/${videoId}`, {
+            method: 'PATCH',
+            headers: {
+              authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+              'Content-type': 'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify({
+              newTitle: newVideoTitle
+            }),
+          });
+            
+          if (response.ok) {
+            setVideoTitle(newVideoTitle);
+            handleCloseRenameModal();
+            toast.success('Video renamed successfully');
+          } else {
+            toast.error('Failed to rename video');
+          }
+        } catch (error) {
+          toast.error('Failed to rename video');
+        }
+      };
+
+
+
     return (
         <><div className='pt-3'>
 
@@ -357,16 +414,14 @@ const RecordingButton = () => {
                 <div class="row justify-content-center">
                     {!capturing && !isUploading && bloburl && iconsVisible && (
                                 <div class="col-auto">
-                                    <button
-                                        data-mdb-toggle="tooltip"
-                                        data-mdb-placement="bottom"
-                                        title="Download the recorded video"
-                                        className="videoOption"
-                                        onClick={handleDownload}
-                                    >
-                                        <FaDownload id="mail_icons" />
-                                    </button>
-
+                                    {videoTitle !== '' && (
+                                        <div className="video-title">
+                                            <h7>{videoTitle}</h7>
+                                            <button className="btn btn-link" onClick={handleRenameClick}>
+                                            <FaPencilAlt />
+                                            </button>
+                                        </div>
+                                    )}
                                     <button
                                         data-mdb-toggle="tooltip"
                                         data-mdb-placement="bottom"
@@ -400,6 +455,16 @@ const RecordingButton = () => {
                                     <button
                                         data-mdb-toggle="tooltip"
                                         data-mdb-placement="bottom"
+                                        title="Download the recorded video"
+                                        className="videoOption"
+                                        onClick={handleDownload}
+                                    >
+                                        <FaDownload id="mail_icons" />
+                                    </button>
+
+                                    <button
+                                        data-mdb-toggle="tooltip"
+                                        data-mdb-placement="bottom"
                                         title="Delete the video"
                                         className="delete"
                                         onClick={handleDeleteVideo}
@@ -409,7 +474,7 @@ const RecordingButton = () => {
 
                                     {videoPlayerId !== '' && (
                                         <>
-                                            <button
+                                            {/* <button
                                                 className="videoOption"
                                                 data-bs-toggle="tooltip"
                                                 data-bs-placement="bottom"
@@ -417,7 +482,7 @@ const RecordingButton = () => {
                                                 onClick={handleInsertion}
                                             >
                                                 <MdOutlineSendTimeExtension id="mail_icons" />
-                                            </button>
+                                            </button> */}
 
                                             <button
                                                 className="videoOption"
@@ -431,6 +496,14 @@ const RecordingButton = () => {
                                     )}
                                 </div>
                             )}
+                             {showRenameModal && (
+                                <RenameVideoPopup
+                                    newTitle={newVideoTitle}
+                                    onClose={handleCloseRenameModal}
+                                    onSave={handleRenameSave}
+                                    onTitleChange={(e) => setNewVideoTitle(e.target.value)}
+                                />
+                                )}
                 </div>
             </div>
 

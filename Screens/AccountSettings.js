@@ -121,7 +121,6 @@ const AccountProfileDetails = ({ userData, onUpdateProfile }) => {
             toast.success('Details updated successfully');
             setIsEditable(false);
         } catch (err) {
-            console.error('Error updating profile:', err);
             toast.error('Some error occurred');
         }
     };
@@ -336,7 +335,6 @@ function AccountSettings(props) {
     const [profileData, setProfileData] = useState({});
 
     const handleProfileUpdate = (newProfileData) => {
-        console.log('Updating profile:', newProfileData);
         setProfileData((prevData) => ({
             ...prevData,
             ...newProfileData,

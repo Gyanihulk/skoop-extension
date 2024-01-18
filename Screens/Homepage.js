@@ -54,10 +54,8 @@ const Homepage = (props) => {
     const messageHandler = (message) => {
         if (message.action === 'skoopMsgIsProfilePage') {
             setIsProfilePage(true);
-            console.log('is profile page message received');
         } else if (message.action === 'skoopMsgIsNotProfilePage') {
             setIsProfilePage(false);
-            console.log('is not a profile page');
         } else if (message.action === 'skoopFocusedElementChanged') {
             setFocusedElementId(message.elementId);
         }

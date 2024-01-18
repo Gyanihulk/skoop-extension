@@ -35,7 +35,6 @@ function GiphyWindow(props) {
       const shortenedUrl = `${parsedUrl.origin}${parsedUrl.pathname}`;
       return shortenedUrl;
     } catch (error) {
-      console.error('Error extracting shortened URL:', error);
       return url; 
     }
   };

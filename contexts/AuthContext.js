@@ -69,19 +69,16 @@ export const AuthProvider = ({ children }) => {
             }),
           });
           result = await result.json();
-          console.log("the token received",result);
           setisAutheticated(true);
           localStorage.setItem('accessToken', JSON.stringify(result.accessToken));
           localStorage.setItem('skoopUsername', JSON.stringify(result.skoopUsername));
           navigateToPage('Home'); 
         } catch (err) {
-          console.log("the error",err);
           toast.error("could not sign in")
         }
       }
     
       const handleSocialLogin = async (type) => {
-        console.log(chrome.identity.getRedirectURL())
         try {
           if (type === 2) {
             const GoogleAuthUrl=`https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=120051053340-6o9itlmoo5ruo2k8l0qi42sf3nagbmkv.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(chrome.identity.getRedirectURL())}&scope=profile%20email%20openid`
@@ -97,7 +94,6 @@ export const AuthProvider = ({ children }) => {
             });
           }
         } catch (err) {
-          console.log(err);
           toast.error('Something went wrong, please try again');
         }
       };
@@ -144,7 +140,6 @@ export const AuthProvider = ({ children }) => {
           }
           else toast.error("Email already exists ",{ id : toastId})
         }catch(err){
-          console.log(err)
           toast.dismiss();
           toast.error("something went wrong");
         }

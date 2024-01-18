@@ -2,7 +2,6 @@ import React from 'react';
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
-   console.log("pageno:",pageNumbers)
 
    const renderButtons = () => {
     return Array.from({ length: totalPages+1 }, (_, index) => (
@@ -10,6 +9,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         <li key={index} className={`page-item ${currentPage === index ? 'active' : ''}`}>
         <button
             key={index}
+            className="page-link"
             onClick={() => onPageChange(index + 1)}
             disabled={currentPage === index + 1}
         >

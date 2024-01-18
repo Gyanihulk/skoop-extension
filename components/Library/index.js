@@ -124,7 +124,6 @@ const Library = (props) => {
                 }
                 })
                 response= await response.json()
-                console.log("get dirs call was a success")
                 setFolders(response)
         }catch(err){
             console.log("could not fetch library folders",err)
@@ -223,7 +222,6 @@ const Library = (props) => {
             else console.log("getthumbnail not defined");
 
             const thumbnail_link=await getThumbnail(id);
-            console.log("the thumbnail link provided");
             var ret
             if(thumbnail_link!=undefined && thumbnail_link!=null){
                 ret=`<img src='${thumbnail_link}' className="inline-block-width"/><br>`
@@ -234,7 +232,6 @@ const Library = (props) => {
         else{
             const url = link;
             const facade_player_uuid = url.substring(url.lastIndexOf("/") + 1);
-            console.log(facade_player_uuid)
             props.appendToBody(`https://share.vidyard.com/watch/${facade_player_uuid}`);
         }
     }
@@ -247,7 +244,6 @@ const Library = (props) => {
             if (favorite.id === videoId) {
               // Toggle the is_favourite property
               const updatedFavorite = { ...favorite, is_favourite: !favorite.is_favourite };
-              console.log('Updated Favorite:', updatedFavorite);
               return updatedFavorite;
             }
             return favorite;
@@ -269,7 +265,6 @@ const Library = (props) => {
     
         // Handle errors if any
         if (!response.ok) {
-          console.error("Toggle Favorite Error:", response.statusText);
           // If there's an error, revert the state change
           setFavorites(prevFavorites => {
             const revertedFavorites = prevFavorites.map(favorite => {
@@ -316,9 +311,6 @@ const Library = (props) => {
           });
           const linksData = await linksResponse.json();
           setLinks(linksData);
-          console.log('Total Items:', totalItems);
-          console.log('Total Pages:', totalPages);
-
           updateFavoritesState(linksData);
         } catch (err) {
           console.log("Error fetching data", err);

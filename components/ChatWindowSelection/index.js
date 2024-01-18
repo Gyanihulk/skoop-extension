@@ -49,7 +49,6 @@ const ChatWindowSelection = () => {
           if(selectedChatWindows?.length===0){
               toast.error("Please select a recipitent")
           }
-          console.log(selectedChatWindows,selectedChatWindows.length)
             await insertIntoLinkedInMessageWindow(`<p>${message}</p>`, selectedChatWindows);
             setTimeout(()=>{handleSend();},500)
             
@@ -99,9 +98,7 @@ const ChatWindowSelection = () => {
         try {
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 const targetTab = tabs[0];
-                console.log('the target tab', targetTab);
                 if (targetTab) {
-                    console.log('the tab exists');
                     try {
                         chrome.scripting
                             .executeScript({

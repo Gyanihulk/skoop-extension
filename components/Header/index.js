@@ -7,6 +7,8 @@ import ScreenContext from '../../contexts/ScreenContext';
 import API_ENDPOINTS from '../apiConfig';
 import { FiMinimize2, FiMaximize2 } from 'react-icons/fi';
 import AuthContext from '../../contexts/AuthContext.js';
+import CarouselComponent from '../HelperVideos/index.js';
+import { MdContactSupport } from "react-icons/md";
 
 export default function Header() {
 
@@ -14,6 +16,7 @@ export default function Header() {
     const { navigateToPage, activePage } = useContext(ScreenContext);
     const { setScraperPage, scraperPage, isProfilePage } = useContext(GlobalStatesContext);
     const [expand, setExpand] = useState(false);
+    const [isCarouselOpen, setIsCarouselOpen] = useState(false);
 
     const [profileOpen, setProfileOpen] = useState(false);
 
@@ -32,7 +35,9 @@ export default function Header() {
         };
     }, [profileOpen]);
 
-    
+    const toggleCarousel = () => {
+        setIsCarouselOpen(!isCarouselOpen);
+      };
 
     const toggleProfileDropdown = () => {
         setProfileOpen(!profileOpen);
@@ -57,7 +62,6 @@ export default function Header() {
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 const targetTab = tabs[0];
                 if (targetTab) {
-                    console.log('the tab exists');
                     try {
                         chrome.scripting.executeScript({
                             target: { tabId: targetTab.id },
@@ -79,7 +83,6 @@ export default function Header() {
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 const targetTab = tabs[0];
                 if (targetTab) {
-                    console.log('the tab exists');
                     try {
                         chrome.scripting.executeScript({
                             target: { tabId: targetTab.id },
@@ -110,7 +113,6 @@ export default function Header() {
             '_blank'
         );
     };
-console.log(isAutheticated,"from header")
     return (
         <>
             <nav className="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
@@ -151,6 +153,16 @@ console.log(isAutheticated,"from header")
                             <MdSaveAlt className="icon-style-normal" />
                         </button>
                     )}
+
+                    <button
+                    className="btn btn-link"
+                    data-mdb-toggle="tooltip"
+                    data-mdb-placement="bottom"
+                    title="Open Carousel"
+                    onClick={toggleCarousel}
+                    >
+                    <MdContactSupport className="icon-style-normal"/>
+                    </button>
                     {/* Calendar Link */}
                     <button
                         className="btn btn-link"
@@ -222,6 +234,18 @@ console.log(isAutheticated,"from header")
                     </button>
                 </div>
             </nav>
+            {isCarouselOpen && (
+                <div className="custom-modal-overlay">
+                    <div className="custom-modal">
+                    <button type="button" className="custom-close-button" onClick={() => setIsCarouselOpen(false)} aria-label="Close">
+                    <MdClose />
+                    </button>
+                        <CarouselComponent />
+                    </div>
+                </div>
+            )}
         </>
     );
 }
+
+

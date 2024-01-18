@@ -4,7 +4,6 @@ import VideoCard from './VideoCard';
 import Pagination from './Pagination';
 
 const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFavourite, currentPage, totalPages, handlePageChange }) => {
-  console.log(folderName, 'from videoContainer');
   const [videos, setVideos] = useState([]);
 
   const fetchVideos = async () => {
@@ -20,7 +19,6 @@ const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFa
         }
       );
       const data = await response.json();
-      console.log(data);
       setVideos(data.links);
     } catch (error) {
       console.error('Error fetching videos:', error);

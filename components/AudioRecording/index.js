@@ -88,7 +88,6 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
             setIconsVisible(true)
         } catch (err) {
             toast.dismiss();
-            console.log(err, 'err of Voice Memo upload');
             toast.error('could not upload');
         }
     };

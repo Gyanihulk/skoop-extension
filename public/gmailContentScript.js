@@ -201,8 +201,6 @@ function createButton() {
         return;
     }
 
-    console.log('Adding Extension button');
-
     // Create the button container
     const buttonContainer = document.createElement('div');
     buttonContainer.id = buttonId;
@@ -252,13 +250,11 @@ createButton();
 
 function getHostUrl() {
     const hostUrl = new URL(window.location.href).hostname;
-    console.log('Sending ', hostUrl);
     return hostUrl;
 }
 
 function resizeIframe(newWidth, newHeight) {
     // Select the iframe element by ID
-    console.log(`Resizing extesnion to ${newWidth},${newHeight}`);
     const skoopExtensionContainer = document.getElementById('skoop-extension-container');
 
     // Check if the element exists
@@ -273,7 +269,6 @@ function resizeIframe(newWidth, newHeight) {
 }
 
 function createWebcamContainer(title,height,width) {
-    console.log('starting webcamcontainer ',title,height,width);
     const container = document.createElement('div');
     container.id = 'skoop-webcam-container';
     container.style.position = 'fixed';
@@ -425,7 +420,6 @@ function createWebcamContainer(title,height,width) {
 function stopWebcam(container) {
   if (container && container.hasChildNodes()) {
     container.style.display = 'none';
-    console.log(container,"updated timer from function") 
     // Retrieve all video elements within the container
     const videos = container.getElementsByTagName('video');
 
@@ -449,7 +443,6 @@ let recordedChunks = [];
 let skoopVideoContainer;
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'collectClasses') {
-        console.log('getting classes');
         const classes = collectClasses();
         const url = getHostUrl();
         sendResponse({ classes: classes, url });
@@ -499,7 +492,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                    
                     const stopButton = document.getElementById('video-stop-button');
                     if (stopButton) {
-                        console.log("stop stream")
                         stopButton.addEventListener('click', stopStream);
                     }
                 })
@@ -514,16 +506,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     if (request.action === 'stopRecording') {
         skoopVideoContainer=document.getElementById("skoop-webcam-container")
-        console.log(skoopVideoContainer,"message from stopRecording action")
         stopWebcam(skoopVideoContainer);
         skoopVideoContainer.stopTimer();
         skoopVideoContainer.resetTimer();
         mediaRecorder.stop();
         mediaRecorder.onstop = () => {
             const blob = new Blob(recordedChunks, { type: 'video/webm' });
-            console.log(blob, 'from content script');
             const blobUrl = URL.createObjectURL(blob);
-            console.log(blobUrl, 'Blob URL from content script');
             recordedChunks = [];
             sendResponse({ videoBlob: blob, url: blobUrl });
         };
@@ -531,7 +520,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true;
     }
     if (request.action === 'showVideoPreview') {
-        console.log(request)
       
         return true;
     }

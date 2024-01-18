@@ -120,7 +120,6 @@ const ChatGpt = ({ appendToBody }) => {
       setPrompt(response.choices[0].message.content);
       appendToBody(response.choices[0].message.content);
     } catch (err) {
-      console.log("could not get chatGpt response", err);
       toast.error("could not get chatGpt response");
     }
   };
@@ -138,7 +137,6 @@ const ChatGpt = ({ appendToBody }) => {
       const data = await response.json();
       setMessageOptions(data);
     } catch (error) {
-      console.error('Error fetching prompts:', error);
       toast.error('Error fetching prompts');
     }
   };
@@ -174,7 +172,6 @@ const ChatGpt = ({ appendToBody }) => {
         toast.error('Please fill in all required fields.');
       }
     } catch (error) {
-      console.error('Error adding prompt:', error);
       toast.error('Error adding prompt');
     }
   };
@@ -183,7 +180,6 @@ const ChatGpt = ({ appendToBody }) => {
 
   const deletePrompt = async (id) => {
     try {
-      console.log('Deleting prompt with id:', id);
  
       const response = await fetch(`${API_ENDPOINTS.chatgptprompt}/${id}`, {
         method: 'DELETE',
@@ -192,9 +188,7 @@ const ChatGpt = ({ appendToBody }) => {
           'Content-type': 'application/json; charset=UTF-8',
         },
       });
- 
-      console.log('Response:', response);
- 
+  
       if (!response.ok) {
         const errorMessage = await response.text();
         throw new Error(`Failed to delete prompt. Server response: ${errorMessage}`);
@@ -204,7 +198,6 @@ const ChatGpt = ({ appendToBody }) => {
       fetchPrompts();
       toast.success('Template deleted successfully!');
     } catch (error) {
-      console.error('Error deleting prompt:', error);
       toast.error('Error deleting prompt');
     }
   };
@@ -239,7 +232,6 @@ const ChatGpt = ({ appendToBody }) => {
         toast.error('Please fill in all required fields and ensure you are editing a valid prompt.');
       }
     } catch (error) {
-      console.error('Error updating prompt:', error);
       toast.error('Error updating prompt');
     }
   };
@@ -251,8 +243,6 @@ const ChatGpt = ({ appendToBody }) => {
 
   const handleEditOption = (event, id) => {
     event.preventDefault();
-    console.log("ID:", id);
-    console.log("Message Options:", messageOptions);
 
   const selectedPrompt = messageOptions.find((option) => option.id === parseInt(id, 10));
 
