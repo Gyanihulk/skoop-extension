@@ -49,14 +49,17 @@ const ChatWindowSelection = () => {
           if(selectedChatWindows?.length===0){
               toast.error("Please select a recipitent")
           }
-          console.log(selectedChatWindows,selectedChatWindows.length)
+          console.log(selectedChatWindows,selectedChatWindows?.length)
             await insertIntoLinkedInMessageWindow(`<p>${message}</p>`, selectedChatWindows);
             setTimeout(()=>{handleSend();},500)
             
         } else {
             insertHtmlAtPositionInMail(message, focusedElementId);
         }
-        setMessage();
+        if(selectedChatWindows?.length!==0){
+            setMessage();
+        }
+        
     };
 
     function checkForExistenceOfMessageWindow(element) {
@@ -68,7 +71,7 @@ const ChatWindowSelection = () => {
         const validChatWindows = allChatWindows.filter((element) =>
             checkForExistenceOfMessageWindow(element)
         );
-        var combinedArray = validChatWindows.map((item, index) => {
+        var combinedArray = validChatWindows?.map((item, index) => {
             var nameOfRecipient;
             if (item.querySelector('h2').innerText == 'New message') {
                 try {
@@ -176,9 +179,10 @@ const ChatWindowSelection = () => {
             <div className="container selection-container p-4 my-2">
                 {isLinkedin && (
                     <>
-                      {initialItems.length>0?<h8 className="text-center mb-4 fw-bold fst-italic">Select Recipients</h8>:<p>No chat window is open.</p>}
+                      {initialItems?.length>0?
+                      <h8 className="text-center mb-4 fw-bold fst-italic">Select Recipients</h8>:<p>No chat window is open.</p>}
                         <div className="row row-cols-2 g-3 mt-2">
-                            {initialItems.map((item, index) => (
+                            {initialItems?.map((item, index) => (
                                 <div key={index} className="col">
                                     <div className="form-check">
                                         <input
