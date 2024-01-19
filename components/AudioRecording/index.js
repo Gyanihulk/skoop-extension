@@ -22,6 +22,7 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
     const [isTakingInput, setIsTakingInput] = useState(false);
     const [time, setTime] = useState(0);
     const [duration, setDuration] = useState(0);
+    const [showModal, setShowModal] = useState(false);
     const continuousCanvasRef = useRef(null);
 
 
@@ -32,6 +33,7 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
     useEffect(() => {
         let intervalId;
         if (isRecording) {
+            setShowModal(true);
             intervalId = setInterval(() => setTime(time + 1), 1000);
             if (time == 60) {
                 stopRecording();
@@ -140,6 +142,7 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
     const stopRecording = () => {
         mediaRecorder.stop();
         setIsRecording(false);
+        setShowModal(false);
         setDuration(time);
         setTime(0);
     };
@@ -169,28 +172,52 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
         );
     }
 
+    const closeModal = () => {
+        setShowModal(false);
+        stopRecording();
+
+      };
+
+      const stopRecordingAndCloseModal = () => {
+        stopRecording();
+        setShowModal(false);
+      };
    
-    return (
+      return (
         <div id="homeDiv" className='text-center'>
-                <button
-                    onClick={isRecording ? stopRecording : startRecording}
-                    id="skoop_record_button_audio"
-                    data-mdb-toggle="tooltip"
-                    data-mdb-placement="bottom"
-                    title="Record Audio"
-                >
-                    {isRecording ? (
-                        <FaStop size={30} color="white" />
-                    ) : (
-                        <AiFillAudio size={30} color="white" />
-                    )}
-                    
-                </button>
-                <div>{isRecording && <h6>{60 - time} </h6>}</div>
-                {isRecording && <canvas id="continuous" ref={continuousCanvasRef}></canvas>}
-
-        </div>
-    );
-};
-
-export default VoiceVisualization;
+          <button
+            onClick={isRecording ? stopRecordingAndCloseModal : startRecording}
+            id="skoop_record_button_audio"
+            data-mdb-toggle="tooltip"
+            data-mdb-placement="bottom"
+            title="Record Audio"
+            style={{ zIndex: 2 }}
+          >
+            {isRecording ? (
+              <FaStop size={30} color="white" />
+            ) : (
+              <AiFillAudio size={30} color="white" />
+            )}
+          </button>
+          <div>
+            <div className="modal" style={{ display: showModal ? 'block' : 'none' }}>
+              <div className="modal-dialog modal-sm modal-dialog-centered">
+                <div className="modal-content">
+                  <div className="modal-body"style={{ maxHeight: '150px'}}>
+                    {isRecording && <canvas id="continuous" ref={continuousCanvasRef}></canvas>}
+                  </div>
+                  <div className="modal-footer d-flex justify-content-between">
+                        <div>{isRecording && <h6>Time Remaining: {60 - time} Sec</h6>}</div>
+                        <button type="button" className="btn btn-danger btn-sm" onClick={stopRecordingAndCloseModal}>
+                        Stop Recording
+                        </button>
+                    </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      );
+    };
+    
+    export default VoiceVisualization;
