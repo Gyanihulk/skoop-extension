@@ -27,18 +27,11 @@ const Library = (props) => {
     const [favorites, setFavorites] = useState([]); 
     const [tabName, setTabName] = useState('');
     const [folders, setFolders] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [totalItems, setTotalItems] = useState(0);
 
     const handleTabChange = (tab) => {
       setActiveTab(tab);
       setCurrentDirectory(tab);
       setFav(false);
-    };
-
-    const handlePageChange = (page) => {
-      setCurrentPage(page);
     };
   
     const handleOpen = (dir) => {
@@ -316,9 +309,8 @@ const Library = (props) => {
           });
           const linksData = await linksResponse.json();
           setLinks(linksData);
-          console.log('Total Items:', totalItems);
-          console.log('Total Pages:', totalPages);
-
+  
+          // Update favorites state based on links
           updateFavoritesState(linksData);
         } catch (err) {
           console.log("Error fetching data", err);
@@ -397,10 +389,7 @@ const Library = (props) => {
     <VideoContainer folderName={activeTab === 'favorites' ? 'favorites' : activeTab}    
                  handleLinkInsertion={handleLinkInsertion}
                  deleteVideo={deleteVideo}
-                toggleFavourite={toggleFavourite}
-                currentPage={currentPage}
-                totalPages={totalPages}
-                handlePageChange={handlePageChange}/>
+                toggleFavourite={toggleFavourite}/>
                 
 </div>
   )
