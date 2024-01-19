@@ -15,7 +15,6 @@ const CarouselComponent = () => {
             width="500"
             height="315"
             src="https://www.youtube.com/embed/trYK7uAOUAM?si=T1qQ8Dqot-JCxx92"
-            frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
           ></iframe>
