@@ -271,14 +271,14 @@ const RecordingButton = (continuousCanvasRefProp) => {
             );
             customHeaders.append('title1', videoTitle);
             setIsUploading(true);
-            const loadingObj = toast.loading('uploading video...');
+            const loadingObj = toast.loading('Uploading Video...');
             var response = await fetch(API_ENDPOINTS.vidyardUpload, {
                 method: 'POST',
                 headers: customHeaders,
                 body: formData,
             });
             response = await response.json();
-            toast.success('Video uploaded,Encoding in progress', {
+            toast.success('Video Uploaded, Encoding in progress', {
                 id: loadingObj,
             });
             setIsUploading(false);
@@ -416,7 +416,7 @@ const RecordingButton = (continuousCanvasRefProp) => {
                     {!capturing && !isUploading && bloburl && iconsVisible && (
                                 <div class="col-auto">
                                     {videoTitle !== '' && (
-                                        <div className="d-flex align-items-center video-title">
+                                        <div className="d-flex align-items-center text-truncate video-title">
                                         <h7>{videoTitle}</h7>
                                         <button className="btn btn-link ml-2" onClick={handleRenameClick}>
                                             <FaEdit /> 

@@ -158,7 +158,7 @@ export default function Header() {
                     className="btn btn-link"
                     data-mdb-toggle="tooltip"
                     data-mdb-placement="bottom"
-                    title="Open Carousel"
+                    title="Helper Videos"
                     onClick={toggleCarousel}
                     >
                     <MdContactSupport className="icon-style-normal"/>
