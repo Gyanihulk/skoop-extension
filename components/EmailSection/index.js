@@ -23,7 +23,9 @@ const EmailComposer = () => {
         useContext(GlobalStatesContext);
     const { message, addMessage } = useContext(MessageContext);
     const handleInsertion = (text) => {
-        addMessage(text);
+        const newText = text + '\n';
+
+        addMessage(newText);
 
         if (isLinkedin) {
         } else {
