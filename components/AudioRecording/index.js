@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef} from 'react';
 import { AiFillAudio } from 'react-icons/ai';
 import { UserInput } from '../UserInput/index.js';
 import { MdFileUpload } from 'react-icons/md';
@@ -13,6 +13,7 @@ import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import toast from 'react-hot-toast';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
 import { AiOutlineClose } from 'react-icons/ai';
+import { continuousVisualizer } from 'sound-visualizer';
 
 const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCapturing,addToMessage,setVideoPlayerId,setVideoId}) => {
     const [mediaRecorder, setMediaRecorder] = useState(null);
@@ -21,6 +22,8 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
     const [isTakingInput, setIsTakingInput] = useState(false);
     const [time, setTime] = useState(0);
     const [duration, setDuration] = useState(0);
+    const continuousCanvasRef = useRef(null);
+
 
     const { globalRefresh, setGlobalRefresh, isLinkedin, selectedChatWindows } =
         useContext(GlobalStatesContext);
@@ -43,6 +46,20 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
         }
     }, [visualizationUrl]);
 
+    useEffect(() => {
+        if (isRecording && continuousCanvasRef.current) {
+          const { start, stop, reset } = continuousVisualizer(mediaRecorder.stream, continuousCanvasRef.current, {});
+          start();
+    
+          const stopContinuous = () => {
+            stop();
+          };
+    
+          return () => {
+            stopContinuous();
+          };
+        }
+      }, [isRecording, mediaRecorder]);
 
 
     const handleShare = async (audioTitle, directoryName) => {
@@ -55,6 +72,7 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
             const blob = await blobres.blob();
             const audioUrl = URL.createObjectURL(blob);
             setBlobUrl(audioUrl)
+
             const formData = new FormData();
             let file = new File([blob], 'recording');
             formData.append('data', file, `${audioTitle}.wav`);
@@ -169,7 +187,8 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
                     
                 </button>
                 <div>{isRecording && <h6>{60 - time} </h6>}</div>
-          
+                {isRecording && <canvas id="continuous" ref={continuousCanvasRef}></canvas>}
+
         </div>
     );
 };

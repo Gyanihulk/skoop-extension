@@ -100,6 +100,16 @@ const ForgotPassword = () => {
               <h2 className="text-center text-dark text-decoration-underline mb-3">Step 2</h2>
               <div className="mb-3">
                 <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter OTP"
+                  value={OTP}
+                  onChange={(e) => setOTP(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <input
                   type="password"
                   className="form-control"
                   placeholder="Enter New Password"
@@ -115,16 +125,6 @@ const ForgotPassword = () => {
                   placeholder="Confirm Password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter OTP"
-                  value={OTP}
-                  onChange={(e) => setOTP(e.target.value)}
                   required
                 />
               </div>

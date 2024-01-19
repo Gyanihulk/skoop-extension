@@ -1019,6 +1019,13 @@ react-router@6.20.1:
   dependencies:
     "@remix-run/router" "1.13.1"
 
+react-sound-visualizer@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/react-sound-visualizer/-/react-sound-visualizer-1.1.1.tgz#c28d89426fac6811310790981d7eee47a91c1bf6"
+  integrity sha512-KlOorFcBT7rL5KZJ+gbijM6HFGuZs/28wuVmUdI57C93EuSvIgZJj0NHMRZ3AEJK9wnQQPwx/TR/RRX0gNriuA==
+  dependencies:
+    sound-visualizer "^1.2.0"
+
 react-webcam@^7.2.0:
   version "7.2.0"
   resolved "https://registry.npmjs.org/react-webcam/-/react-webcam-7.2.0.tgz"
@@ -1111,6 +1118,11 @@ simple-update-notifier@^1.0.7:
   integrity sha512-VpsrsJSUcJEseSbMHkrsrAVSdvVS5I96Qo1QAQ4FxQ9wXFcB+pjj7FB7/us9+GcgfW4ziHtYMc1J0PLczb55mg==
   dependencies:
     semver "~7.0.0"
+
+sound-visualizer@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/sound-visualizer/-/sound-visualizer-1.2.0.tgz#1b67ac4266a4a38d7c073928d41aafaed298a25d"
+  integrity sha512-+pfeIBHtxAa06I4LhlYdZCuSVEArrJ0OZ4dBHNdy4jN6XnZflEaBCjDmf0xbBcxvrzURw4iL2We3/MdHGn6UPg==
 
 source-map-js@^1.0.2:
   version "1.0.2"

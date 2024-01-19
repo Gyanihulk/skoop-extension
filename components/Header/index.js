@@ -235,14 +235,9 @@ export default function Header() {
                 </div>
             </nav>
             {isCarouselOpen && (
-                <div className="custom-modal-overlay">
-                    <div className="custom-modal">
-                    <button type="button" className="custom-close-button" onClick={() => setIsCarouselOpen(false)} aria-label="Close">
-                    <MdClose />
-                    </button>
+                    <div>
                         <CarouselComponent />
                     </div>
-                </div>
             )}
         </>
     );

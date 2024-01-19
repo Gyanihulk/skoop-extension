@@ -25,11 +25,11 @@ import PreviewModal from '../PreviewModal/PreviewModal.jsx';
 import { IoLink } from 'react-icons/io5';
 import MessageContext from '../../contexts/MessageContext.js';
 import RenameVideoPopup from '../Library/RenameVideoPopup.js';
-import { FaPencilAlt } from 'react-icons/fa';
+import { FaEdit } from "react-icons/fa";
 import { IoMdClose } from 'react-icons/io';
 
 const videoResizeConstant = 25;
-const RecordingButton = () => {
+const RecordingButton = (continuousCanvasRefProp) => {
     const [capturing, setCapturing] = useState(false);
     const [prev, setPrev] = useState('');
     const [time, setTime] = useState(0);
@@ -118,6 +118,7 @@ const RecordingButton = () => {
             );
         }
     };
+    
 
 
     const toggleIcon = () => {
@@ -415,12 +416,12 @@ const RecordingButton = () => {
                     {!capturing && !isUploading && bloburl && iconsVisible && (
                                 <div class="col-auto">
                                     {videoTitle !== '' && (
-                                        <div className="video-title">
-                                            <h7>{videoTitle}</h7>
-                                            <button className="btn btn-link" onClick={handleRenameClick}>
-                                            <FaPencilAlt />
-                                            </button>
-                                        </div>
+                                        <div className="d-flex align-items-center video-title">
+                                        <h7>{videoTitle}</h7>
+                                        <button className="btn btn-link ml-2" onClick={handleRenameClick}>
+                                            <FaEdit /> 
+                                        </button>
+                                    </div>
                                     )}
                                     <button
                                         data-mdb-toggle="tooltip"
