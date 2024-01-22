@@ -2,44 +2,67 @@ import React from 'react';
 
 const CarouselComponent = () => {
   return (
-    <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
-      <ol className="carousel-indicators">
-        <li data-target="#carouselExampleIndicators" data-slide-to="0" className="active"></li>
-        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-      </ol>
-      <div className="carousel-inner">
-        <div className="carousel-item active">
-          <iframe
-            title="YouTube Video 1"
-            width="500"
-            height="315"
-            src="https://www.youtube.com/embed/trYK7uAOUAM?si=T1qQ8Dqot-JCxx92"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-          ></iframe>
+    <div className="container mt-2" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+      <div className="accordion" id="accordionExample">
+
+        <div className="card mb-2">
+          <div id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+            <h5 className="mb-1 d-flex justify-content-center align-items-center">
+              <button className="btn btn-outline btn-sm btn-block text-center collapsed" type="button">
+                Getting Started with skoop!
+              </button>
+            </h5>
+          </div>
+          <div id="collapseOne" className="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+            <div className="card-body">
+              <iframe title="YouTube Video 1" width="100%" height="280"
+                src="https://www.youtube.com/embed/trYK7uAOUAM?si=T1qQ8Dqot-JCxx92"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen></iframe>
+            </div>
+          </div>
         </div>
 
-        <div className="carousel-item">
-          <img src="https://blog.planview.com/wp-content/uploads/2020/01/Top-6-Software-Development-Methodologies.jpg" className="d-block w-100" alt="Slide 2" />
+        <div className="card mb-2">
+          <div id="headingTwo" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            <h5 className="mb-1 d-flex justify-content-center align-items-center">
+              <button className="btn btn-outline btn-sm btn-block text-center collapsed" type="button">
+                How to use chatgpt functionality?
+              </button>
+            </h5>
+          </div>
+          <div id="collapseTwo" className="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+            <div className="card-body">
+              <iframe title="YouTube Video 2" width="100%" height="280"
+                src="https://www.youtube.com/embed/trYK7uAOUAM?si=T1qQ8Dqot-JCxx92"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; full-screen"
+                allowFullScreen></iframe>
+            </div>
+          </div>
         </div>
 
-        <div className="carousel-item">
-          <img src="https://blogassets.leverageedu.com/blog/wp-content/uploads/2020/09/21203035/development-economics.png" className="d-block w-100" alt="Slide 3" />
+        <div className="card mb-2">
+          <div id="headingThree" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+            <h8 className="mb-0 d-flex justify-content-center align-items-center">
+              <button className="btn btn-outline btn-sm btn-block text-center collapsed" type="button">
+                How to use gif functionality?
+              </button>
+            </h8>
+          </div>
+          <div id="collapseThree" className="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+            <div className="card-body">
+            <iframe class="vidyard_iframe" title="Vidyard's Video FAQ" src="https://play.vidyard.com/1GhS9iy9saFmmZSxatNUcc.html?" 
+            allow="fullscreen https://play.vidyard.com"
+            width="100%" height="280"  frameborder="0" allowtransparency="true"></iframe>
+            </div>
+          </div>
         </div>
       </div>
-    <a className="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-        <span className="carousel-control-prev-icon" aria-hidden="true" style={{ color: 'black' }}></span>
-        <span className="sr-only" style={{ color: 'black' }}>Previous</span>
-    </a>
-
-    <a className="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-        <span className="carousel-control-next-icon" aria-hidden="true" style={{ color: 'black' }}></span>
-        <span className="sr-only" style={{ color: 'black' }}>Next</span>
-        </a>
-
+      <hr className="my-2" />
     </div>
   );
 };
 
 export default CarouselComponent;
+
+
