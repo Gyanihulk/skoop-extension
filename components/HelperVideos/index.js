@@ -13,20 +13,40 @@ const CarouselComponent = () => {
   return (
     <div className="container mt-2" style={{ maxHeight: '400px', overflowY: 'auto' }}>
       <div className="accordion" id="accordionExample">
-
-        <div className="card mb-2">
-          <div id="headingThree" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+        
+        <div className="card mb-2 mt-2">
+          <div id="headingfive" data-toggle="collapse" data-target="#collapsefive" aria-expanded="false" aria-controls="collapseThree">
             <h8 className="mb-1 mt-1 d-flex justify-content-center align-items-center hover-pointer">
-            Skoop Demo Tutorial
+            How to send Video
             </h8>
           </div>
-          <div id="collapseThree" className="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+          <div id="collapsefive" className="collapse" aria-labelledby="headingfive" data-parent="#accordionExample">
             <div className="card-body">
-            <iframe class="vidyard_iframe" title="Vidyard's Video FAQ" src="https://play.vidyard.com/cWx3qYJFnpZ4KNxxE85Axd.html?" 
+            <iframe class="vidyard_iframe" title="Vidyard's Video FAQ" src="https://play.vidyard.com/2ZvdQMJWiHaN6GHDMwG6wG.html?" 
             width="100%" height="280"  frameborder="2" allowtransparency="true"></iframe>
              <button
                 className="btn btn-link btn-sm position-absolute bottom-0 end-0 m-4"
-                onClick={() => openPopup("https://play.vidyard.com/cWx3qYJFnpZ4KNxxE85Axd.html?")}
+                onClick={() => openPopup("https://play.vidyard.com/2ZvdQMJWiHaN6GHDMwG6wG.html?")}
+              >
+                <BsFullscreen size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="card mb-2 mt-2">
+          <div id="headingseven" data-toggle="collapse" data-target="#collapseseven" aria-expanded="false" aria-controls="collapseThree">
+            <h8 className="mb-1 mt-1 d-flex justify-content-center align-items-center hover-pointer">
+            How to send Audio
+            </h8>
+          </div>
+          <div id="collapseseven" className="collapse" aria-labelledby="headingseven" data-parent="#accordionExample">
+            <div className="card-body">
+            <iframe class="vidyard_iframe" title="Vidyard's Video FAQ" src="https://play.vidyard.com/JXjqZR2ACN5aoZNJxWkZJJ.html?" 
+            width="100%" height="280"  frameborder="2" allowtransparency="true"></iframe>
+             <button
+                className="btn btn-link btn-sm position-absolute bottom-0 end-0 m-4"
+                onClick={() => openPopup("https://play.vidyard.com/JXjqZR2ACN5aoZNJxWkZJJ.html?")}
               >
                 <BsFullscreen size={16} />
               </button>
@@ -53,32 +73,11 @@ const CarouselComponent = () => {
             </div>
           </div>
           </div>
-        
-
-        <div className="card mb-2 mt-2">
-          <div id="headingfive" data-toggle="collapse" data-target="#collapsefive" aria-expanded="false" aria-controls="collapseThree">
-            <h8 className="mb-1 mt-1 d-flex justify-content-center align-items-center hover-pointer">
-            How to record & send video
-            </h8>
-          </div>
-          <div id="collapsefive" className="collapse" aria-labelledby="headingfive" data-parent="#accordionExample">
-            <div className="card-body">
-            <iframe class="vidyard_iframe" title="Vidyard's Video FAQ" src="https://play.vidyard.com/2ZvdQMJWiHaN6GHDMwG6wG.html?" 
-            width="100%" height="280"  frameborder="2" allowtransparency="true"></iframe>
-             <button
-                className="btn btn-link btn-sm position-absolute bottom-0 end-0 m-4"
-                onClick={() => openPopup("https://play.vidyard.com/2ZvdQMJWiHaN6GHDMwG6wG.html?")}
-              >
-                <BsFullscreen size={16} />
-              </button>
-            </div>
-          </div>
-        </div>
 
         <div className="card mb-2 mt-2">
           <div id="headingsix" data-toggle="collapse" data-target="#collapsesix" aria-expanded="false" aria-controls="collapseThree">
             <h8 className="mb-1 mt-1 d-flex justify-content-center align-items-center hover-pointer">
-            How to add and send GIF
+            How to send GIF
             </h8>
           </div>
           <div id="collapsesix" className="collapse" aria-labelledby="headingsix" data-parent="#accordionExample">
@@ -96,18 +95,18 @@ const CarouselComponent = () => {
         </div>
 
         <div className="card mb-2 mt-2">
-          <div id="headingseven" data-toggle="collapse" data-target="#collapseseven" aria-expanded="false" aria-controls="collapseThree">
+          <div id="headingThree" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
             <h8 className="mb-1 mt-1 d-flex justify-content-center align-items-center hover-pointer">
-            How to record and send Audio
+            Skoop Detailed Demo
             </h8>
           </div>
-          <div id="collapseseven" className="collapse" aria-labelledby="headingseven" data-parent="#accordionExample">
+          <div id="collapseThree" className="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
             <div className="card-body">
-            <iframe class="vidyard_iframe" title="Vidyard's Video FAQ" src="https://play.vidyard.com/JXjqZR2ACN5aoZNJxWkZJJ.html?" 
+            <iframe class="vidyard_iframe" title="Vidyard's Video FAQ" src="https://play.vidyard.com/cWx3qYJFnpZ4KNxxE85Axd.html?" 
             width="100%" height="280"  frameborder="2" allowtransparency="true"></iframe>
              <button
                 className="btn btn-link btn-sm position-absolute bottom-0 end-0 m-4"
-                onClick={() => openPopup("https://play.vidyard.com/JXjqZR2ACN5aoZNJxWkZJJ.html?")}
+                onClick={() => openPopup("https://play.vidyard.com/cWx3qYJFnpZ4KNxxE85Axd.html?")}
               >
                 <BsFullscreen size={16} />
               </button>
