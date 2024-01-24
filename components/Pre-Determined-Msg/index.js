@@ -155,7 +155,6 @@ function AI(props) {
       });
   
       if (response.ok) {
-        // Remove the deleted response from the state
         setMessageOptions((prevOptions) => prevOptions.filter((option) => option.id !== editingResponse.id));
   
         // Reset the form and state

@@ -713,3 +713,8 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-height: calc(1.5em * 8); /* Maximum height before showing scrollbar */
   overflow-y: auto; /* Show scrollbar when content overflows */
 }
+
+.hover-pointer {
+  cursor: pointer;
+}
+

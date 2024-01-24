@@ -294,12 +294,6 @@ const RecordingButton = (continuousCanvasRefProp) => {
     };
 
     useEffect(() => {
-        if (bloburl && isUploading === false) {
-            preview();
-        }
-    }, [bloburl, isUploading]);
-
-    useEffect(() => {
         setVideoTitle(videoTitle);
     }, [capturing]);
 
