@@ -278,7 +278,7 @@ const RecordingButton = (continuousCanvasRefProp) => {
                 body: formData,
             });
             response = await response.json();
-            toast.success('Video Uploaded, Encoding in progress', {
+            toast.success('Video Uploaded & Add to Textarea', {
                 id: loadingObj,
             });
             setIsUploading(false);

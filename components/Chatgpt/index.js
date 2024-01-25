@@ -22,7 +22,7 @@ const ChatGpt = ({ appendToBody }) => {
   const [editingPrompt, setEditingPrompt] = useState(null);
   const [titleError, setTitleError] = useState('');
   const [descriptionError, setDescriptionError] = useState('');
-
+  const [responseGenerated, setResponseGenerated] = useState(false); 
 
 
   const handleDropdownChange = (event) => {
@@ -63,7 +63,6 @@ const ChatGpt = ({ appendToBody }) => {
     }
   };
   
-
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -119,6 +118,7 @@ const ChatGpt = ({ appendToBody }) => {
       setWaitingMessage('');
       setPrompt(response.choices[0].message.content);
       appendToBody(response.choices[0].message.content);
+      setResponseGenerated(true);
     } catch (err) {
       toast.error("could not get chatGpt response");
     }
@@ -259,6 +259,58 @@ const ChatGpt = ({ appendToBody }) => {
   }
 };
 
+//integration to template
+
+
+const handleMixOption = async (selectedOption) => {
+  try {
+    if (selectedOption !== 'Select Prompt' && selectedOption !== 'AddEditPrompt') {
+      const selectedPrompt = messageOptions.find((option) => option.id === parseInt(selectedOption, 10));
+
+      if (selectedPrompt) {
+
+        addMixedOption(selectedPrompt.heading, prompt);
+      } else {
+        console.error("Selected prompt not found");
+      }
+    }
+  } catch (error) {
+    console.error('Error mixing options:', error);
+  }
+};
+
+
+const addMixedOption = async (heading, description) => {
+  try {
+    const response = await fetch(API_ENDPOINTS.skoopCrmAddPreloadedResponses, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+      },
+      body: JSON.stringify({
+        heading,
+        description,
+      }),
+    });
+
+    if (response.ok) {
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const responseData = await response.json();
+      }
+
+      setMessageOptions((prevOptions) => [...prevOptions, { heading, description }]);
+      toast.success('Response added Template Message successfully!');
+    } else {
+      toast.error('Failed to add as template message. Please try again.');
+    }
+  } catch (error) {
+    console.error('Error to add as template message:', error);
+  }
+};
+
+
 
   return (
     <div>
@@ -393,6 +445,17 @@ const ChatGpt = ({ appendToBody }) => {
             </button>
           </div>
         </div>
+        {responseGenerated && (
+        <div className="d-flex justify-content-end mb-2">
+            <button
+              type="button"
+              className="btn btn-outline-primary btn-sm"
+              onClick={() => handleMixOption(selectedOption)}
+            >
+              Save Response as Template
+            </button>
+          </div>
+        )}
 
         {loading ? (
           <>
