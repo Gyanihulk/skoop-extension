@@ -47,6 +47,7 @@ const RecordingButton = (continuousCanvasRefProp) => {
     const [videoTitle, setVideoTitle] = useState('');
     const [showRenameModal, setShowRenameModal] = useState(false);
     const [newVideoTitle, setNewVideoTitle] = useState('');
+    const [uploadedVideoName, setUploadedVideoName] = useState('');
 
     const { setGlobalRefresh, isLinkedin, selectedChatWindows,focusedElementId } = useContext(GlobalStatesContext);
     const { getThumbnail,deleteVideo } = useContext(MediaUtilsContext);
@@ -88,7 +89,7 @@ const RecordingButton = (continuousCanvasRefProp) => {
     const handleInsertion = async () => {
         if (isLinkedin) {
             insertIntoLinkedInMessageWindow(
-                `<p>https://share.vidyard.com/watch/${videoPlayerId}</p>`,
+                `<p>https://skoop.hubs.vidyard.com/watch/${videoPlayerId}</p>`,
                 selectedChatWindows
             );
         } else {
@@ -98,14 +99,14 @@ const RecordingButton = (continuousCanvasRefProp) => {
                 ret = `<img src='${thumbnail_link}' class="inline-block-width"/><br>`;
             }
             insertHtmlAtPositionInMail(
-                ret + `<a href=https://share.vidyard.com/watch/${videoPlayerId}>Play</a>`,focusedElementId
+                ret + `<a href=https://skoop.hubs.vidyard.com/watch/${videoPlayerId}>Play</a>`,focusedElementId
             );
         }
     };
     const addToMessage = async (videoPlayerId) => {
         if (isLinkedin) {
             addMessage(
-                `https://share.vidyard.com/watch/${videoPlayerId}`
+                `https://skoop.hubs.vidyard.com/watch/${videoPlayerId}`
             );
         } else {
             const thumbnail_link = await getThumbnail(videoId);
@@ -114,9 +115,11 @@ const RecordingButton = (continuousCanvasRefProp) => {
                 ret = `<img src='${thumbnail_link}' class="inline-block-width"/><br>`;
             }
             addMessage(
-                ret + `<a href=https://share.vidyard.com/watch/${videoPlayerId}>Play</a>`
+                ret + `<a href=https://skoop.hubs.vidyard.com/watch/${videoPlayerId}>Play</a>`
             );
         }
+        window.scrollTo(0, document.body.scrollHeight);
+
     };
     
 
@@ -257,7 +260,7 @@ const RecordingButton = (continuousCanvasRefProp) => {
 
     const uploadVideo = async (file, videoTitle, directoryName) => {
         try {
-            videoTitle = replaceInvalidCharacters(videoTitle);
+            videoTitle = replaceInvalidCharacters(videoTitle + `_${Date.now()}`);
             setVideoTitle(videoTitle);
             const formData = new FormData();
             formData.append('data', file, `${videoTitle}.webm`);
@@ -286,6 +289,9 @@ const RecordingButton = (continuousCanvasRefProp) => {
             setVideoId(response.id);
             addToMessage(response.facade_player_uuid)
             setGlobalRefresh(true);
+            
+            // Set the uploaded video name in the state
+            setUploadedVideoName(response.name);
 
         } catch (err) {
             toast.dismiss();
@@ -300,7 +306,7 @@ const RecordingButton = (continuousCanvasRefProp) => {
     //rename modal 
 
     const handleRenameClick = () => {
-        setNewVideoTitle(videoTitle); 
+        setNewVideoTitle(uploadedVideoName); 
         setShowRenameModal(true);
       };
     
@@ -325,6 +331,7 @@ const RecordingButton = (continuousCanvasRefProp) => {
             
           if (response.ok) {
             setVideoTitle(newVideoTitle);
+            setUploadedVideoName(newVideoTitle);
             handleCloseRenameModal();
             toast.success('Video renamed successfully');
           } else {
@@ -409,13 +416,15 @@ const RecordingButton = (continuousCanvasRefProp) => {
                 <div class="row justify-content-center">
                     {!capturing && !isUploading && bloburl && iconsVisible && (
                                 <div class="col-auto">
-                                    {videoTitle !== '' && (
-                                        <div className="d-flex align-items-center text-truncate video-title">
-                                        <h7>{videoTitle}</h7>
-                                        <button className="btn btn-link ml-2" onClick={handleRenameClick}>
+                                   {uploadedVideoName !== '' && (
+                                        <div className="d-flex align-items-center">
+                                            <h7 className="text-truncate uploadedvideotitle" >
+                                            {uploadedVideoName}
+                                            </h7>
+                                            <button className="btn btn-link ml-2" onClick={handleRenameClick}>
                                             <FaEdit /> 
-                                        </button>
-                                    </div>
+                                            </button>
+                                        </div>
                                     )}
                                     <button
                                         data-mdb-toggle="tooltip"
@@ -423,7 +432,7 @@ const RecordingButton = (continuousCanvasRefProp) => {
                                         title="copy the video link"
                                         className="videoOption"
                                         onClick={() => {
-                                            handleCopyToClipboard(`https://share.vidyard.com/watch/${videoPlayerId}`)
+                                            handleCopyToClipboard(`https://skoop.hubs.vidyard.com/watch/${videoPlayerId}`)
                                         }}
                                     >
                                         <IoLink id="mail_icons" />

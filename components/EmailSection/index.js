@@ -30,6 +30,7 @@ const EmailComposer = () => {
         if (isLinkedin) {
         } else {
         }
+        window.scrollTo(0, document.body.scrollHeight);
     };
  
 
@@ -47,12 +48,14 @@ const EmailComposer = () => {
                     localStorage.getItem('skoopUsername')
                 )}`
             );
+            toast.success('Meeting Calendar link added successfully!');
         } else {
             handleInsertion(
                 `<a href="${API_ENDPOINTS.skoopCalendarUrl}/?username=${JSON.parse(
                     localStorage.getItem('skoopUsername')
                 )}">Schedule Virtual Appointment</a>`
             );
+            toast.success('Meeting Calendar link added successfully!');
         }
     };
 
