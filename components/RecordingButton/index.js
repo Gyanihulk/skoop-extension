@@ -281,7 +281,7 @@ const RecordingButton = (continuousCanvasRefProp) => {
                 body: formData,
             });
             response = await response.json();
-            toast.success('Video Uploaded & Add to Textarea', {
+            toast.success('Link Added to Custom Message', {
                 id: loadingObj,
             });
             setIsUploading(false);
@@ -297,6 +297,7 @@ const RecordingButton = (continuousCanvasRefProp) => {
             toast.dismiss();
             toast.error('could not upload');
         }
+        window.scrollTo(0, document.body.scrollHeight);
     };
 
     useEffect(() => {
