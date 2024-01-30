@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
     
       const handleAuthCode = async (authCode, type) => {
         const url = type === 1 ? API_ENDPOINTS.linkedInLogIn : API_ENDPOINTS.GoogleLogIn;
-
+        
         try {
           var result = await fetch(url, {
             method: 'POST',
@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }) => {
       const handleSocialLogin = async (type) => {
         try {
           if (type === 2) {
-            const GoogleAuthUrl=`https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=120051053340-6o9itlmoo5ruo2k8l0qi42sf3nagbmkv.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(chrome.identity.getRedirectURL())}&scope=profile%20email%20openid`
+            const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=120051053340-6o9itlmoo5ruo2k8l0qi42sf3nagbmkv.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(chrome.identity.getRedirectURL())}&scope=profile%20email%20openid%20https://www.googleapis.com/auth/calendar&access_type=offline&prompt=consent`;
             chrome.identity.launchWebAuthFlow({ url: GoogleAuthUrl, interactive: true },async function(redirectUrl) {
               const code = new URL(redirectUrl).searchParams.get('code');
               handleAuthCode(code,type);

@@ -10,18 +10,18 @@ import AccountSettings from '../Screens/AccountSettings';
 import ForgotPassword from '../Screens/ForgotPassword';
 import LoadingScreen from '../Screens/LoadingScreen';
 import AuthContext from '../contexts/AuthContext';
+import CalendarSync from '../Screens/CalendarSync';
 
 export default function Home() {
-    const { verifyToken ,isAutheticated} = useContext(AuthContext);
+    const { verifyToken ,isAutheticated,firstLogin} = useContext(AuthContext);
     const { activePage,navigateToPage } = useContext(ScreenContext);
     useEffect(() => {
         (async () => {
           const res = await verifyToken();
   
-          if (isAutheticated) {navigateToPage('Home');} else{navigateToPage("SignIn")}
+          if (isAutheticated ) {if(firstLogin){navigateToPage('CalendarSync')}else{navigateToPage('Home');}} else{navigateToPage("SignIn")}
         })();
       }, [isAutheticated]);
- 
     return (
         <>
             {activePage === ' ' && <LoadingScreen />}
@@ -33,6 +33,8 @@ export default function Home() {
             {activePage=='ContactPage' && <ContactPage/>}
             {activePage=='ProfileScraper' && <ProfileScraper/>}
             {activePage=='ForgotPassword' && <ForgotPassword/>}
+            {activePage=='CalendarSync' && <CalendarSync/>}
+            
         </>
     );
 }

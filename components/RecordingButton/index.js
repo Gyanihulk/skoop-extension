@@ -85,23 +85,7 @@ const RecordingButton = (continuousCanvasRefProp) => {
         toggleVideoSettings();
     };
 
-    const handleInsertion = async () => {
-        if (isLinkedin) {
-            insertIntoLinkedInMessageWindow(
-                `<p>https://share.vidyard.com/watch/${videoPlayerId}</p>`,
-                selectedChatWindows
-            );
-        } else {
-            const thumbnail_link = await getThumbnail(videoId);
-            var ret = '';
-            if (thumbnail_link != undefined && thumbnail_link != null) {
-                ret = `<img src='${thumbnail_link}' class="inline-block-width"/><br>`;
-            }
-            insertHtmlAtPositionInMail(
-                ret + `<a href=https://share.vidyard.com/watch/${videoPlayerId}>Play</a>`,focusedElementId
-            );
-        }
-    };
+    
     const addToMessage = async (videoPlayerId) => {
         if (isLinkedin) {
             addMessage(

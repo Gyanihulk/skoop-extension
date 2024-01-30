@@ -1,4 +1,4 @@
-const backendUrl="https://skoop.sumits.in"; //https://skoop.sumits.in
+const backendUrl="http://localhost:4000"; //https://skoop.sumits.in http://localhost:4000
 
 
 const API_ENDPOINTS = {
@@ -39,6 +39,7 @@ const API_ENDPOINTS = {
     replaceCrmPreloaded:`${backendUrl}/replaceCrmPreloaded`, //PUT
     deleteCrmPreloaded:`${backendUrl}/deleteCrmPreloaded`, //DELETE
     updateProfileImage: `${backendUrl}/updateProfileImage`, // POST
+    userPreferences:`${backendUrl}/user-appointment-preferences`// POST
 };
 
 // with POST or PATCH apis body is sent in JSON 
