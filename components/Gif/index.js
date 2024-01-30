@@ -45,6 +45,8 @@ function GiphyWindow(props) {
       props.appendToBody(`<img src=${shortenedUrl} style="width: ${sizeOfGif}%; height: auto;" >`);
     } else {
       props.appendToBody(shortenedUrl);
+
+      window.scrollTo(0, document.body.scrollHeight);
     }
   };
 

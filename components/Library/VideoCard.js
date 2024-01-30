@@ -114,7 +114,7 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
               className="btn btn-link btn-sm"
               onClick={() => {
                 handleLinkInsertion(video.link, video.id);
-                toast.success('Link inserted to mail body');
+                toast.success('Link inserted');
               }}
             >
               <IoIosLink />

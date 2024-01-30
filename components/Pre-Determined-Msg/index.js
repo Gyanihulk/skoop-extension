@@ -35,7 +35,7 @@ function AI(props) {
   };
 
   const handleEditIconClick = (option) => {
-    if (option && option.heading && option.description) {
+    if (option && option.heading && option.description && option.id) {
       setEditingResponse(option);
       setNewResponse({ heading: option.heading, description: option.description });
       setIsEdit(true);
@@ -44,6 +44,17 @@ function AI(props) {
       console.error('Invalid option data for edit:', option);
     }
   };
+  const handleDeleteIconClick = (selectedOption) => {
+    const selectedMessage = messageOptions.find((option) => option.heading === selectedOption);
+  
+    if (selectedMessage) {
+      handleDeleteResponse(selectedMessage.id);
+    } else {
+      console.error('Selected option not found:', selectedOption);
+    }
+  };
+  
+  
   
 
   const handleNewResponseChange = (field, value) => {
@@ -140,14 +151,14 @@ function AI(props) {
   }, [editingResponse, isEdit]);
   
 
-  const handleDeleteResponse = async () => {
+  const handleDeleteResponse = async (id) => {
     try {
-      if (!editingResponse || !editingResponse.id) {
-        toast.error('Failed to delete response. Please try again.');
+      if (!id && id !== 0) {
+        toast.error('Failed to delete. Please try again.');
         return;
       }
   
-      const response = await fetch(`${API_ENDPOINTS.deleteCrmPreloaded}/${editingResponse.id}`, {
+      const response = await fetch(`${API_ENDPOINTS.deleteCrmPreloaded}/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
@@ -155,7 +166,7 @@ function AI(props) {
       });
   
       if (response.ok) {
-        setMessageOptions((prevOptions) => prevOptions.filter((option) => option.id !== editingResponse.id));
+        setMessageOptions((prevOptions) => prevOptions.filter((option) => option.id !== id));
   
         // Reset the form and state
         setNewResponse({ heading: '', description: '' });
@@ -171,6 +182,7 @@ function AI(props) {
       console.error('Error:', error);
     }
   };
+  
   
 
   return (
@@ -205,8 +217,8 @@ function AI(props) {
                 type="button"
                 title="Delete Template"
                 className="btn btn-sm custom-close-button"
-                onClick={handleDeleteResponse}
-              >
+                onClick={() => handleDeleteIconClick(selectedOption)}
+                >
                 <RiDeleteBin3Fill/>
               </button>
             </div>

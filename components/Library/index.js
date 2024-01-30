@@ -225,7 +225,7 @@ const Library = (props) => {
         else{
             const url = link;
             const facade_player_uuid = url.substring(url.lastIndexOf("/") + 1);
-            props.appendToBody(`https://share.vidyard.com/watch/${facade_player_uuid}`);
+            props.appendToBody(`https://skoop.hubs.vidyard.com/watch/${facade_player_uuid}`);
         }
     }
 
