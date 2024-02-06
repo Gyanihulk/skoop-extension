@@ -343,6 +343,7 @@ const UserPreferencesForm = () => {
     useEffect(() => {
         const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         setUserTimezone(detectedTimezone);
+        
     }, []);
     const handleChange = (event) => {
         setValues((prevState) => ({
@@ -418,13 +419,19 @@ const UserPreferencesForm = () => {
                     </div>
                     <div className="mb-3">
                         <label htmlFor="timeZone" className="form-label">Time Zone*</label>
-                        <select className="form-select" id="timezone" name="timezone"  value={values.timeZone}>
-                                        <option selected>Select Timezone</option>
-                                        {timezones.map((option, index) => (
-                                          <option key={index} value={option} selected={option === userTimezone}>
-                                            {option}
-                                          </option>
-                                        ))}
+                        <select
+                            className="form-select"
+                            id="timezone"
+                            name="timeZone"
+                            value={values.timeZone}
+                            onChange={handleChange}
+                        >
+                            <option value="" disabled>Select Timezone</option>
+                            {timezones.map((option, index) => (
+                                <option key={index} value={option}>
+                                    {option}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div className="mb-3">

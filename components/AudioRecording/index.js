@@ -1,18 +1,14 @@
 import React, { useState, useEffect, useContext, useRef} from 'react';
 import { AiFillAudio } from 'react-icons/ai';
 import { UserInput } from '../UserInput/index.js';
-import { MdFileUpload } from 'react-icons/md';
-import { IoMdDownload } from 'react-icons/io';
-import { MdDeleteForever } from 'react-icons/md';
 import { FaStop } from 'react-icons/fa';
 
 import API_ENDPOINTS from '../apiConfig.js';
 import { getCurrentDateTimeString, replaceInvalidCharacters } from '../../utils/index.js';
-import { PiExportFill } from 'react-icons/pi';
+
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import toast from 'react-hot-toast';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
-import { AiOutlineClose } from 'react-icons/ai';
 import { continuousVisualizer } from 'sound-visualizer';
 
 const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCapturing,addToMessage,setVideoPlayerId,setVideoId}) => {
@@ -66,7 +62,6 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
 
     const handleShare = async (audioTitle, directoryName) => {
         try {
-            setCapturing(false)
             setIsUploading(true)
             var title1 = audioTitle;
             audioTitle = replaceInvalidCharacters(audioTitle + `_${Date.now()}`);
@@ -114,8 +109,6 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
 
     const startRecording = async () => {
         try {
-
-    setCapturing(true)
             const micStream = await navigator.mediaDevices.getUserMedia({
                 audio: true,
                 video: false,

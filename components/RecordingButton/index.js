@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext ,useRef} from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import API_ENDPOINTS from '../apiConfig.js';
 import { FaDownload } from 'react-icons/fa6';
 import { FaTimesCircle } from 'react-icons/fa';
@@ -25,7 +25,7 @@ import PreviewModal from '../PreviewModal/PreviewModal.jsx';
 import { IoLink } from 'react-icons/io5';
 import MessageContext from '../../contexts/MessageContext.js';
 import RenameVideoPopup from '../Library/RenameVideoPopup.js';
-import { FaEdit } from "react-icons/fa";
+import { FaEdit } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
 
 const videoResizeConstant = 25;
@@ -49,8 +49,9 @@ const RecordingButton = (continuousCanvasRefProp) => {
     const [newVideoTitle, setNewVideoTitle] = useState('');
     const [uploadedVideoName, setUploadedVideoName] = useState('');
 
-    const { setGlobalRefresh, isLinkedin, selectedChatWindows,focusedElementId } = useContext(GlobalStatesContext);
-    const { getThumbnail,deleteVideo } = useContext(MediaUtilsContext);
+    const { setGlobalRefresh, isLinkedin, selectedChatWindows, focusedElementId } =
+        useContext(GlobalStatesContext);
+    const { getThumbnail, deleteVideo } = useContext(MediaUtilsContext);
     const { message, addMessage } = useContext(MessageContext);
     const handleVideoStyleSelect = (style) => {
         setSelectedVideoStyle(style);
@@ -86,11 +87,11 @@ const RecordingButton = (continuousCanvasRefProp) => {
         toggleVideoSettings();
     };
 
-    
     const addToMessage = async (videoPlayerId) => {
         if (isLinkedin) {
             addMessage(
                 `https://skoop.hubs.vidyard.com/watch/${videoPlayerId}`
+                // ?email=${JSON.parse(localStorage.getItem('skoopUsername'))}&duration=60
             );
         } else {
             const thumbnail_link = await getThumbnail(videoId);
@@ -103,10 +104,7 @@ const RecordingButton = (continuousCanvasRefProp) => {
             );
         }
         window.scrollTo(0, document.body.scrollHeight);
-
     };
-    
-
 
     const toggleIcon = () => {
         setIsPlaying((prevIsPlaying) => !prevIsPlaying);
@@ -128,7 +126,6 @@ const RecordingButton = (continuousCanvasRefProp) => {
         let intervalId;
         if (capturing) {
             intervalId = setInterval(() => setTime(time + 1), 1000);
-          
         }
         return () => clearInterval(intervalId);
     }, [capturing, time]);
@@ -149,12 +146,12 @@ const RecordingButton = (continuousCanvasRefProp) => {
 
     //useable functions
 
-    const handleDeleteVideo=async()=>{
-        const isDeleted=await deleteVideo(videoId);
-        if(isDeleted){
+    const handleDeleteVideo = async () => {
+        const isDeleted = await deleteVideo(videoId);
+        if (isDeleted) {
             setIconsVisible(false);
         }
-    }
+    };
 
     const handleDownload = React.useCallback(() => {
         if (bloburl) {
@@ -201,46 +198,68 @@ const RecordingButton = (continuousCanvasRefProp) => {
 
     const capturingRef = useRef(capturing);
     let stopTimeoutId;
-    
-    const startVideoCapture = () => {
-        if (capturing) {
-            clearTimeout(stopTimeoutId);
-            setPrev('');
-            sendMessageToBackgroundScript({ action: 'stopRecording' }, handleVideoBlob);
-            setCapturing(false);
+
+    const startVideoCapture = (restart = false,event) => {
+        if (event) {
+            event.stopPropagation();
+        }
+        let height, width;
+        if (selectedVideoStyle === 'Square') {
+            height = width = 10 * videoResizeConstant;
+        } else if (selectedVideoStyle === 'Vertical Mode') {
+            height = 16 * videoResizeConstant;
+            width = 9 * videoResizeConstant;
         } else {
-            let height, width;
-            if (selectedVideoStyle === 'Square') {
-                height = width = 10 * videoResizeConstant;
-            } else if (selectedVideoStyle === 'Vertical Mode') {
-                height = 16 * videoResizeConstant;
-                width = 9 * videoResizeConstant;
+            height = 9 * videoResizeConstant;
+            width = 16 * videoResizeConstant;
+        }
+
+        if (capturing) {
+            if (restart) {
+                
+                sendMessageToBackgroundScript({ action: 'stopRecording' });
+                sendMessageToBackgroundScript({
+                    action: 'startRecording',
+                    height,
+                    width,
+                });
+                clearTimeout(stopTimeoutId);
+
+                // Restart the timer
+                stopTimeoutId = setTimeout(() => {
+                    if (capturingRef.current) {
+                        setPrev('');
+                        sendMessageToBackgroundScript({ action: 'stopRecording' }, handleVideoBlob);
+                        setCapturing(false);
+                    }
+                }, 95000);
             } else {
-                height = 9 * videoResizeConstant;
-                width = 16 * videoResizeConstant;
+                clearTimeout(stopTimeoutId);
+                setPrev('');
+                sendMessageToBackgroundScript({ action: 'stopRecording' }, handleVideoBlob);
+                setCapturing(false);
             }
-    
+        } else {
             sendMessageToBackgroundScript({
                 action: 'startRecording',
                 height,
                 width,
             });
             setCapturing(true);
-    
+
             stopTimeoutId = setTimeout(() => {
                 if (capturingRef.current) {
                     setPrev('');
                     sendMessageToBackgroundScript({ action: 'stopRecording' }, handleVideoBlob);
                     setCapturing(false);
                 }
-            }, 95000); // Stops recording after 90 + 5 seconds
+            }, 95000);
         }
     };
     
     useEffect(() => {
         capturingRef.current = capturing;
     }, [capturing]);
-    
 
     const uploadVideo = async (file, videoTitle, directoryName) => {
         try {
@@ -271,12 +290,11 @@ const RecordingButton = (continuousCanvasRefProp) => {
             setIsUploading(false);
             setVideoPlayerId(response.facade_player_uuid);
             setVideoId(response.id);
-            addToMessage(response.facade_player_uuid)
+            addToMessage(response.facade_player_uuid);
             setGlobalRefresh(true);
-            
+
             // Set the uploaded video name in the state
             setUploadedVideoName(response.name);
-
         } catch (err) {
             toast.dismiss();
             toast.error('could not upload');
@@ -288,182 +306,203 @@ const RecordingButton = (continuousCanvasRefProp) => {
         setVideoTitle(videoTitle);
     }, [capturing]);
 
-    //rename modal 
+    //rename modal
 
     const handleRenameClick = () => {
-        setNewVideoTitle(uploadedVideoName); 
+        setNewVideoTitle(uploadedVideoName);
         setShowRenameModal(true);
-      };
-    
-      // Function to close the rename modal
-      const handleCloseRenameModal = () => {
+    };
+
+    // Function to close the rename modal
+    const handleCloseRenameModal = () => {
         setShowRenameModal(false);
-      };
+    };
 
-      const handleRenameSave = async () => {
+    const handleRenameSave = async () => {
         try {
-          
-          const response = await fetch(API_ENDPOINTS.renameVideo +`/${videoId}`, {
-            method: 'PATCH',
-            headers: {
-              authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-              'Content-type': 'application/json; charset=UTF-8',
-            },
-            body: JSON.stringify({
-              newTitle: newVideoTitle
-            }),
-          });
-            
-          if (response.ok) {
-            setVideoTitle(newVideoTitle);
-            setUploadedVideoName(newVideoTitle);
-            handleCloseRenameModal();
-            toast.success('Video renamed successfully');
-          } else {
-            toast.error('Failed to rename video');
-          }
+            const response = await fetch(API_ENDPOINTS.renameVideo + `/${videoId}`, {
+                method: 'PATCH',
+                headers: {
+                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify({
+                    newTitle: newVideoTitle,
+                }),
+            });
+
+            if (response.ok) {
+                setVideoTitle(newVideoTitle);
+                setUploadedVideoName(newVideoTitle);
+                handleCloseRenameModal();
+                toast.success('Video renamed successfully');
+            } else {
+                toast.error('Failed to rename video.');
+            }
         } catch (error) {
-          toast.error('Failed to rename video');
+            toast.error('Failed to rename video.');
         }
-      };
-
-
+    };
 
     return (
-        <><div className='pt-3'>
-
-        
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-auto">
-                        {!countdown && (
-                            <>
-                                <button
-                                    variant="outlined"
-                                    color={capturing ? 'secondary' : 'primary'}
-                                    onClick={startVideoCapture}
-                                    size="small"
-                                    disabled={isUploading}
-                                    title="Record Video"
-                                    id="skoop_record_button"
-                                >
-                                    {capturing ? 'Stop' : 'Rec'}
-                                </button>
-                                <button className="btn btn-link" onClick={handleIconClick}>
-                                    <MdOutlineVideoSettings
-                                        className="icon-style-normal"
-                                        title="Select the video orientation/Aspect Ratio"
-                                    />
-                                </button>
-                                <div className={`dropdown-menu ${videoSettingsOpen ? 'show' : ''}`}>
-                                    <button
-                                        className={`dropdown-item ${
-                                            selectedVideoStyle === 'Vertical Mode' ? 'active' : ''
-                                        }`}
-                                        onClick={() => handleVideoStyleSelect('Vertical Mode')}
-                                    >
-                                        Vertical (9:16)
-                                    </button>
-                                    <button
-                                        className={`dropdown-item ${
-                                            selectedVideoStyle === 'Horizontal' ? 'active' : ''
-                                        }`}
-                                        onClick={() => handleVideoStyleSelect('Horizontal')}
-                                    >
-                                        Horizontal (16:9)
-                                    </button>
-                                    <button
-                                        className={`dropdown-item ${
-                                            selectedVideoStyle === 'Square' ? 'active' : ''
-                                        }`}
-                                        onClick={() => handleVideoStyleSelect('Square')}
-                                    >
-                                        Square (1:1)
-                                    </button>
-                                </div>
-                            </>
-                        )}
-                    </div>
-                    <div class="col-auto">
-                        <VoiceVisualization 
-                        setIconsVisible={setIconsVisible} 
-                        setBlobUrl={setBlobUrl}
-                        setIsUploading={setIsUploading}
-                        setCapturing={setCapturing}
-                        setVideoPlayerId={setVideoPlayerId}
-                        setVideoId={setVideoId}
-                        addToMessage={addToMessage}/>
-                    </div>
-                </div>
-            </div>
-
-            <div class="container">
-                <div class="row justify-content-center">
-                    {!capturing && !isUploading && bloburl && iconsVisible && (
-                                <div class="col-auto">
-                                   {uploadedVideoName !== '' && (
-                                        <div className="d-flex align-items-center">
-                                            <h7 className="text-truncate uploadedvideotitle" >
-                                            {uploadedVideoName}
-                                            </h7>
-                                            <button className="btn btn-link ml-2" onClick={handleRenameClick}>
-                                            <FaEdit /> 
-                                            </button>
-                                        </div>
+        <>
+            <div className="pt-3">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-auto">
+                            {!countdown && (
+                                <>
+                                    {capturing && (
+                                        <button
+                                            variant="outlined"
+                                            color="secondary"
+                                            onClick={(e) => startVideoCapture(true, e)}
+                                            size="small"
+                                            disabled={!capturing || isUploading}
+                                            title="Record Video"
+                                            id="skoop_record_button"
+                                        >
+                                            Restart
+                                        </button>
                                     )}
                                     <button
-                                        data-mdb-toggle="tooltip"
-                                        data-mdb-placement="bottom"
-                                        title="copy the video link"
-                                        className="videoOption"
-                                        onClick={() => {
-                                            handleCopyToClipboard(`https://skoop.hubs.vidyard.com/watch/${videoPlayerId}`)
-                                        }}
+                                        variant="outlined"
+                                        color={capturing ? 'secondary' : 'primary'}
+                                        onClick={(e) => startVideoCapture(false, e)}
+                                        size="small"
+                                        disabled={isUploading}
+                                        title="Record Video"
+                                        id="skoop_record_button"
                                     >
-                                        <IoLink id="mail_icons" />
+                                        {capturing ? 'Stop' : 'Rec'}
                                     </button>
-                                    
-                                    <button
-                                        data-mdb-toggle="tooltip"
-                                        data-mdb-placement="bottom"
-                                        title={
-                                            isPlaying
-                                                ? 'Close the Preview video'
-                                                : 'Play the recorded video'
-                                        }
-                                        className="videoOption"
-                                        onClick={preview}
+                                    <button className="btn btn-link" onClick={handleIconClick}>
+                                        <MdOutlineVideoSettings
+                                            className="icon-style-normal"
+                                            title="Select the video orientation/Aspect Ratio"
+                                        />
+                                    </button>
+                                    <div
+                                        className={`dropdown-menu ${
+                                            videoSettingsOpen ? 'show' : ''
+                                        }`}
                                     >
-                                        {isPlaying ? (
-                                            <FaTimesCircle id="mail_icons" />
-                                        ) : (
-                                            <FaRegCirclePlay id="mail_icons" />
-                                        )}
-                                    </button>
+                                        <button
+                                            className={`dropdown-item ${
+                                                selectedVideoStyle === 'Vertical Mode'
+                                                    ? 'active'
+                                                    : ''
+                                            }`}
+                                            onClick={() => handleVideoStyleSelect('Vertical Mode')}
+                                        >
+                                            Vertical (9:16)
+                                        </button>
+                                        <button
+                                            className={`dropdown-item ${
+                                                selectedVideoStyle === 'Horizontal' ? 'active' : ''
+                                            }`}
+                                            onClick={() => handleVideoStyleSelect('Horizontal')}
+                                        >
+                                            Horizontal (16:9)
+                                        </button>
+                                        <button
+                                            className={`dropdown-item ${
+                                                selectedVideoStyle === 'Square' ? 'active' : ''
+                                            }`}
+                                            onClick={() => handleVideoStyleSelect('Square')}
+                                        >
+                                            Square (1:1)
+                                        </button>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                        <div class="col-auto">
+                            <VoiceVisualization
+                                setIconsVisible={setIconsVisible}
+                                setBlobUrl={setBlobUrl}
+                                setIsUploading={setIsUploading}
+                                setCapturing={setCapturing}
+                                setVideoPlayerId={setVideoPlayerId}
+                                setVideoId={setVideoId}
+                                addToMessage={addToMessage}
+                            />
+                        </div>
+                    </div>
+                </div>
 
-                                    <button
-                                        data-mdb-toggle="tooltip"
-                                        data-mdb-placement="bottom"
-                                        title="Download the recorded video"
-                                        className="videoOption"
-                                        onClick={handleDownload}
-                                    >
-                                        <FaDownload id="mail_icons" />
-                                    </button>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        {!capturing && !isUploading && bloburl && iconsVisible && (
+                            <div class="col-auto">
+                                {uploadedVideoName !== '' && (
+                                    <div className="d-flex align-items-center">
+                                        <h7 className="text-truncate uploadedvideotitle">
+                                            {uploadedVideoName}
+                                        </h7>
+                                        <button
+                                            className="btn btn-link ml-2"
+                                            onClick={handleRenameClick}
+                                        >
+                                            <FaEdit />
+                                        </button>
+                                    </div>
+                                )}
+                                <button
+                                    data-mdb-toggle="tooltip"
+                                    data-mdb-placement="bottom"
+                                    title="copy the video link"
+                                    className="videoOption"
+                                    onClick={() => {
+                                        handleCopyToClipboard(
+                                            `https://skoop.hubs.vidyard.com/watch/${videoPlayerId}`
+                                        );
+                                    }}
+                                >
+                                    <IoLink id="mail_icons" />
+                                </button>
 
-                                    <button
-                                        data-mdb-toggle="tooltip"
-                                        data-mdb-placement="bottom"
-                                        title="Delete the video"
-                                        className="delete"
-                                        onClick={handleDeleteVideo}
-                                    >
-                                        <MdDeleteForever id="mail_icons" />
-                                    </button>
+                                <button
+                                    data-mdb-toggle="tooltip"
+                                    data-mdb-placement="bottom"
+                                    title={
+                                        isPlaying
+                                            ? 'Close the Preview video'
+                                            : 'Play the recorded video'
+                                    }
+                                    className="videoOption"
+                                    onClick={preview}
+                                >
+                                    {isPlaying ? (
+                                        <FaTimesCircle id="mail_icons" />
+                                    ) : (
+                                        <FaRegCirclePlay id="mail_icons" />
+                                    )}
+                                </button>
 
-                                    {videoPlayerId !== '' && (
-                                        <>
-                                            {/* <button
+                                <button
+                                    data-mdb-toggle="tooltip"
+                                    data-mdb-placement="bottom"
+                                    title="Download the recorded video"
+                                    className="videoOption"
+                                    onClick={handleDownload}
+                                >
+                                    <FaDownload id="mail_icons" />
+                                </button>
+
+                                <button
+                                    data-mdb-toggle="tooltip"
+                                    data-mdb-placement="bottom"
+                                    title="Delete the video"
+                                    className="delete"
+                                    onClick={handleDeleteVideo}
+                                >
+                                    <MdDeleteForever id="mail_icons" />
+                                </button>
+
+                                {videoPlayerId !== '' && (
+                                    <>
+                                        {/* <button
                                                 className="videoOption"
                                                 data-bs-toggle="tooltip"
                                                 data-bs-placement="bottom"
@@ -473,30 +512,30 @@ const RecordingButton = (continuousCanvasRefProp) => {
                                                 <MdOutlineSendTimeExtension id="mail_icons" />
                                             </button> */}
 
-                                            <button
-                                                className="videoOption"
-                                                onClick={() => {
-                                                    setIconsVisible(false);
-                                                }}
-                                            >
-                                                <AiOutlineClose id="mail_icons" />
-                                            </button>
-                                        </>
-                                    )}
-                                </div>
-                            )}
-                             {showRenameModal && (
-                                <RenameVideoPopup
-                                    newTitle={newVideoTitle}
-                                    onClose={handleCloseRenameModal}
-                                    onSave={handleRenameSave}
-                                    onTitleChange={(e) => setNewVideoTitle(e.target.value)}
-                                />
+                                        <button
+                                            className="videoOption"
+                                            onClick={() => {
+                                                setIconsVisible(false);
+                                            }}
+                                        >
+                                            <AiOutlineClose id="mail_icons" />
+                                        </button>
+                                    </>
                                 )}
+                            </div>
+                        )}
+                        {showRenameModal && (
+                            <RenameVideoPopup
+                                newTitle={newVideoTitle}
+                                onClose={handleCloseRenameModal}
+                                onSave={handleRenameSave}
+                                onTitleChange={(e) => setNewVideoTitle(e.target.value)}
+                            />
+                        )}
+                    </div>
                 </div>
-            </div>
 
-            {prev !== '' && <PreviewModal prev={prev} preview={preview} setPrev={setPrev} />}
+                {prev !== '' && <PreviewModal prev={prev} preview={preview} setPrev={setPrev} />}
             </div>
         </>
     );

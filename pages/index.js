@@ -13,28 +13,33 @@ import AuthContext from '../contexts/AuthContext';
 import CalendarSync from '../Screens/CalendarSync';
 
 export default function Home() {
-    const { verifyToken ,isAutheticated,firstLogin} = useContext(AuthContext);
-    const { activePage,navigateToPage } = useContext(ScreenContext);
+    const { verifyToken, isAutheticated, newUser } = useContext(AuthContext);
+    const { activePage, navigateToPage } = useContext(ScreenContext);
     useEffect(() => {
         (async () => {
-          const res = await verifyToken();
-  
-          if (isAutheticated ) {if(firstLogin){navigateToPage('CalendarSync')}else{navigateToPage('Home');}} else{navigateToPage("SignIn")}
+            const res = await verifyToken();
+            if (isAutheticated && newUser) {
+                navigateToPage('CalendarSync');
+            } else if (isAutheticated) {
+                navigateToPage('Home');
+            } else {
+                navigateToPage('SignIn');
+            }
         })();
-      }, [isAutheticated]);
+    }, [isAutheticated,newUser]);
+
     return (
         <>
             {activePage === ' ' && <LoadingScreen />}
             {activePage === 'Home' && <Homepage />}
             {activePage === 'SignIn' && <SignIn />}
             {activePage === 'SignUp' && <SignUp />}
-            {activePage === 'AccountSettings' && <AccountSettings />}
-            {activePage=='ChatPage' && <ChatPage/>}
-            {activePage=='ContactPage' && <ContactPage/>}
-            {activePage=='ProfileScraper' && <ProfileScraper/>}
-            {activePage=='ForgotPassword' && <ForgotPassword/>}
-            {activePage=='CalendarSync' && <CalendarSync/>}
-            
+            {activePage === 'AccountSettings' && <AccountSettings/>}
+            {activePage == 'ChatPage' && <ChatPage />}
+            {activePage == 'ContactPage' && <ContactPage />}
+            {activePage == 'ProfileScraper' && <ProfileScraper />}
+            {activePage == 'ForgotPassword' && <ForgotPassword />}
+            {activePage == 'CalendarSync' && <CalendarSync />}
         </>
     );
 }
