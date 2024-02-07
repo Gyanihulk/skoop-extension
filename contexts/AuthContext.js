@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import API_ENDPOINTS from '../components/apiConfig';
 import ScreenContext from './ScreenContext';
 import toast from 'react-hot-toast';
@@ -6,11 +6,12 @@ import toast from 'react-hot-toast';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [isAutheticated, setisAutheticated] = useState(false);
+    const [isAutheticated, setisAutheticated] = useState();
     const [user, setUser] = useState(null);
     const [rememberMe, setRememberMe] = useState(false);
     const { navigateToPage } = useContext(ScreenContext);
     const [newUser, setNewUser] = useState(false);
+    
     const validatePassword = (password) => {
         if (!password) {
             return false;
@@ -25,7 +26,7 @@ export const AuthProvider = ({ children }) => {
         const data = new FormData(event.currentTarget);
         const username = data.get('username');
         const password = data.get('password');
-        const toastId = toast.loading('signing in...');
+        const toastId = toast.loading('Signing In...');
         try {
             const response = await fetch(API_ENDPOINTS.signIn, {
                 method: 'POST',
@@ -71,7 +72,6 @@ export const AuthProvider = ({ children }) => {
             console.log(response.status, typeof response.status);
             if (Number(response.status) === 200) {
                 let result = await response.json();
-                console.log(result, 'from auth context');
                 setisAutheticated(true);
                 localStorage.setItem('accessToken', JSON.stringify(result.accessToken));
                 localStorage.setItem('skoopUsername', JSON.stringify(result.skoopUsername));
@@ -87,10 +87,12 @@ export const AuthProvider = ({ children }) => {
         } catch (err) {
             console.log(err);
             toast.error('Could not sign in');
+            navigateToPage('SignInIntro');
         }
     };
 
     const handleSocialLogin = async (type) => {
+        navigateToPage(' ');
         try {
             if (type === 2) {
                 const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=120051053340-6o9itlmoo5ruo2k8l0qi42sf3nagbmkv.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
@@ -126,6 +128,7 @@ export const AuthProvider = ({ children }) => {
                 method: 'POST',
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
+                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
                 },
                 body: JSON.stringify({
                     code: authCode,
@@ -134,7 +137,7 @@ export const AuthProvider = ({ children }) => {
             });
             console.log(response)
             if (Number(response.status) === 200) {
-                
+                navigateToPage("Home")
             } else {
                 toast.error('Could not sign in.');
             }
@@ -145,7 +148,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const calendarSync = async (type) => {
-        console.log(type);
+        navigateToPage(' ');
         if (type === 'google') {
             const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=120051053340-6o9itlmoo5ruo2k8l0qi42sf3nagbmkv.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
                 chrome.identity.getRedirectURL()
@@ -198,10 +201,6 @@ export const AuthProvider = ({ children }) => {
         event.preventDefault();
         try {
             const data = new FormData(event.currentTarget);
-            if (data.get('password') !== data.get('confirmPassword')) {
-                toast.error('The Password fields do not match');
-                return;
-            }
             const password = data.get('password');
             if (!validatePassword(password)) {
                 toast.error(
@@ -213,7 +212,7 @@ export const AuthProvider = ({ children }) => {
                 toast.error('Please select a timezone');
                 return;
             }
-            const toastId = toast.loading('signing up ...');
+            const toastId = toast.loading('Signing Up ...');
             const res = await fetch(API_ENDPOINTS.signUp, {
                 method: 'POST',
                 body: JSON.stringify({
@@ -253,6 +252,8 @@ export const AuthProvider = ({ children }) => {
 
             if (res.ok) {
                 setisAutheticated(true);
+            }else{
+                setisAutheticated(false);
             }
             return res;
         } catch (err) {
@@ -299,6 +300,28 @@ export const AuthProvider = ({ children }) => {
             return false;
         }
     };
+    const getCalendarUrl = async (authCode, type) => {
+        try {
+            var response = await fetch(API_ENDPOINTS.getCalendarUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                }
+
+            });
+            if (Number(response.status) === 200) {
+                console.log(response)
+                const data = await response.text(); 
+                return data
+            } else {
+                toast.error('Could not get calendar url.');
+            }
+        } catch (err) {
+            console.log(err);
+            toast.error('Could not get calendar url');
+        }
+    };
 
     return (
         <AuthContext.Provider
@@ -316,6 +339,7 @@ export const AuthProvider = ({ children }) => {
                 setRememberMe,
                 newUser,
                 calendarSync,
+                getCalendarUrl
             }}
         >
             {children}

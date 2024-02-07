@@ -18,8 +18,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });
       chrome.tabs.sendMessage(targetTab.id, {
         action: 'resizeIframe',
-        width: request.width?request.width:'150px',
-        height: request.height?request.height:'600px'
+        width: request.width?request.width:'430px',
+        height: request.height?request.height:'812px',
+        screen:"HomePage"
       }, (response) => {
         if (response) {
           console.log(response.result);
@@ -114,6 +115,33 @@ if (request.message === 'ContactPage') {
         action: 'resizeIframe',
         width: request.width?request.width:'150px',
         height: request.height?request.height:'600px'
+      }, (response) => {
+        if (response) {
+          console.log(response.result);
+        } else {
+          console.error('Error resizing iframe:', chrome.runtime.lastError);
+        }
+      }); 
+    
+    }
+  });
+  
+}
+if (request.message === 'Welcome') {
+  console.log("SignIn")
+  chrome.tabs.query({}, (tabs) => {
+    const urlToFindGoogle = "https://mail.google.com/mail";
+    const urlToFindLinkedIn = "https://www.linkedin.com/";
+    
+
+    // Find the tab with either the Google Mail URL or the LinkedIn URL
+    const targetTab = tabs.find(tab => tab.active && (tab.url.startsWith(urlToFindGoogle) || tab.url.startsWith(urlToFindLinkedIn)));    
+
+    if (targetTab) {
+      chrome.tabs.sendMessage(targetTab.id, {
+        action: 'resizeIframe',
+        width: request.width?request.width:'375px',
+        height: request.height?request.height:'812px'
       }, (response) => {
         if (response) {
           console.log(response.result);

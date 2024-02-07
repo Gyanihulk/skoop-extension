@@ -40,16 +40,6 @@ const CalendarSync = () => {
                         </div>
                         <span class="badge badge-primary badge-pill"></span>
                     </a>
-                    <div
-                        onClick={()=>calendarSync('calendly')}
-                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                    >
-                        <div>
-                            <h5 class="mb-1">Calendly </h5>
-                            <p class="mb-1">Sync Events with Calendly.</p>
-                        </div>
-                        <span class="badge badge-primary badge-pill"></span>
-                    </div>
                 </div>
 
                 <div onClick={()=>navigateToPage('Home')} class="btn btn-link mt-4">

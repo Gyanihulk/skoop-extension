@@ -11,6 +11,9 @@ import ForgotPassword from '../Screens/ForgotPassword';
 import LoadingScreen from '../Screens/LoadingScreen';
 import AuthContext from '../contexts/AuthContext';
 import CalendarSync from '../Screens/CalendarSync';
+import Welcome from '../Screens/Welcome';
+import SignIn2 from '../Screens/SignIn2';
+import Header from '../components/Header';
 
 export default function Home() {
     const { verifyToken, isAutheticated, newUser } = useContext(AuthContext);
@@ -18,18 +21,24 @@ export default function Home() {
     useEffect(() => {
         (async () => {
             const res = await verifyToken();
+            const showWelcomePage=localStorage.getItem('welcomePageShown')
             if (isAutheticated && newUser) {
                 navigateToPage('CalendarSync');
             } else if (isAutheticated) {
                 navigateToPage('Home');
-            } else {
-                navigateToPage('SignIn');
+            } else if(!showWelcomePage){
+                navigateToPage('Welcome');
+               
+            }else if(!isAutheticated){
+                navigateToPage('SignInIntro');
             }
         })();
     }, [isAutheticated,newUser]);
 
     return (
         <>
+        {!["Welcome", "SignInIntro", "SignIn","SignUp" ," "].includes(activePage) && <Header />}
+
             {activePage === ' ' && <LoadingScreen />}
             {activePage === 'Home' && <Homepage />}
             {activePage === 'SignIn' && <SignIn />}
@@ -40,6 +49,8 @@ export default function Home() {
             {activePage == 'ProfileScraper' && <ProfileScraper />}
             {activePage == 'ForgotPassword' && <ForgotPassword />}
             {activePage == 'CalendarSync' && <CalendarSync />}
+            {activePage=='Welcome' && <Welcome/>}
+            {activePage=='SignInIntro' && <SignIn2/>}
         </>
     );
 }

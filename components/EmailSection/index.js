@@ -14,6 +14,7 @@ import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import { SiGooglemeet } from 'react-icons/si';
 import MessageWindow from '../MessageWindow.jsx';
 import MessageContext from '../../contexts/MessageContext.js';
+import AuthContext from '../../contexts/AuthContext.js';
 const EmailComposer = () => {
     const [state, setState] = useState({
         displayComp: 'DefaultCard',
@@ -22,6 +23,7 @@ const EmailComposer = () => {
     const { isLinkedin, selectedChatWindows, focusedElementId, isProfilePage } =
         useContext(GlobalStatesContext);
     const { message, addMessage } = useContext(MessageContext);
+    const { getCalendarUrl } = useContext(AuthContext);
     const handleInsertion = (text) => {
         const newText = text + '\n';
 
@@ -41,19 +43,16 @@ const EmailComposer = () => {
         });
     };
 
-    const addMeetSchedulingLink = () => {
+    const addMeetSchedulingLink = async () => {
+        const url=await getCalendarUrl()
         if (isLinkedin) {
             handleInsertion(
-                `${API_ENDPOINTS.skoopCalendarUrl}/?username=${JSON.parse(
-                    localStorage.getItem('skoopUsername')
-                )}`
+                url
             );
             toast.success('Meeting Calendar link added successfully!');
         } else {
             handleInsertion(
-                `<a href="${API_ENDPOINTS.skoopCalendarUrl}/?username=${JSON.parse(
-                    localStorage.getItem('skoopUsername')
-                )}">Schedule Virtual Appointment</a>`
+                `<a href="${url}">Schedule Virtual Appointment</a>`
             );
             toast.success('Meeting Calendar link added successfully!');
         }

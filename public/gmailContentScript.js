@@ -16,11 +16,13 @@ function injectIframe() {
     container.style.position = 'fixed';
     container.style.top = '66px';
     container.style.right = '0';
-    container.style.width = '460px'; 
-    container.style.height = '600px'; 
+    container.style.width = '375px'; 
+    container.style.height = '812px'; 
     container.style.zIndex = '10000';
     container.style.display = 'block';
     container.style.border = '1px solid #000'; 
+    container.style.borderRadius='20px';
+    container.style.backgroundClip="padding-box";
 
 
 
@@ -86,7 +88,7 @@ function injectIframe() {
     let isMinimized = false;
     toggleButton.onclick = function() {
         if (isMinimized) {
-            container.style.height = '600px';
+            container.style.height = '800px';
         } else {
             container.style.height = '61px';
         }
@@ -115,7 +117,7 @@ function injectIframe() {
     resizer.style.backgroundRepeat = 'no-repeat';
     resizer.style.backgroundPosition = 'center'
     resizer.style.transform = 'rotate(-90deg)';
-    container.appendChild(resizer);
+    // container.appendChild(resizer);
 
     resizer.addEventListener('mousedown', initResize, false);
 
@@ -263,6 +265,10 @@ function resizeIframe(newWidth, newHeight) {
         skoopExtensionContainer.style.width = newWidth;
         skoopExtensionContainer.style.height = newHeight;
         skoopExtensionContainer.style.top = '66px';
+console.log(newWidth);
+        if(newWidth=='430px'){
+            skoopExtensionContainer.style.borderRadius='0px';
+        }
     } else {
         console.log('Iframe with id "skoop-extension-iframe" not found.');
     }

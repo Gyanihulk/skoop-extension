@@ -46,7 +46,7 @@ export default function Header() {
     const handleLogOut = () => {
         localStorage.setItem('accessToken', JSON.stringify('none'));
         setisAutheticated(false);
-        navigateToPage('SignIn');
+        navigateToPage('SignInIntro');
     };
     const executeClose = () => {
         const container = document.getElementById('skoop-extension-container');

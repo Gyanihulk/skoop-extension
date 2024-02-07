@@ -351,6 +351,7 @@ const UserPreferencesForm = () => {
             [event.target.name]: event.target.value,
         }));
     };
+    
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -433,6 +434,7 @@ const UserPreferencesForm = () => {
                                 </option>
                             ))}
                         </select>
+
                     </div>
                     <div className="mb-3">
                         <label htmlFor="additionalDetails" className="form-label">Additional Details</label>
@@ -455,6 +457,7 @@ const UserPreferencesForm = () => {
         </div>
     );
 };
+
 
 function AccountSettings(props) {
     const [profileData, setProfileData] = useState({});

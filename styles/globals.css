@@ -1,4 +1,5 @@
-
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato&family=Poppins:wght@200;300;400&display=swap');
 .sbl-circ-ripple {
   height: 56px;
   width: 56px;
@@ -723,4 +724,145 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 150px;
 }
 
+.custom-button {
+  z-index: 9999999;
+}
 
+.no-border {
+  border: 0;
+}
+
+.App {
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+}
+
+.text-white {
+  color: white;
+}
+
+
+.email-button {
+  background-color: white;
+  color: #2D68C4;
+  border: none;
+  font-size: 16px;
+}
+
+.button-size{
+  font-size: 16px;
+}
+
+.footer-font {
+  color: #FF8210;
+  text-decoration: none;
+}
+
+.password-icon {
+  z-index: 1;
+  color: inherit;
+  background: none;
+  border: none;
+}
+
+
+.linkedin-button {
+  background-color: #007BB5;
+  border: none;
+  font-size: 16px;
+}
+
+.button-icon {
+  margin-right: 5px;
+  font-size: 20px;
+}
+
+.custom-border-none {
+  border: none;
+}
+
+
+.custom-text-color {
+  color: #2C2D2E80;
+}
+
+.custom-h1 {
+  font-size: 6rem; /* Adjust size as needed */
+  color: #FF8210;
+  font-family: Hiatus, sans-serif; /* Specify the desired font family */
+  font-weight: bold;
+}
+
+.get-started{
+  background-color: #2D68C4;
+}
+
+.full-page {
+  background-image: url('https://i0.wp.com/demo.athemes.com/sydney-redesign/wp-content/uploads/sites/103/2019/10/video_image.png');
+  background-size: cover;
+  background-position: center;
+  height: 90vh;
+}
+
+
+.full-page2 {
+  background-image: url('https://images.unsplash.com/photo-1593697972496-8f31cba830f2?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-size: cover;
+  background-position: center;
+  height: 90vh;
+}
+
+.skoop-font{
+  font-size: 40px;
+}
+
+.Logo {
+  background-image: url("/styles/Images/Skoopskoop.png");
+}
+
+
+.get-started-button{
+  width: 311px;
+  height: 52px;
+  position: absolute;
+  bottom: 48px;
+  background: transparent;
+}
+
+.welcome-background-image {
+  background-image: url('/screens/Welcome.png');
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-repeat: no-repeat;
+}
+.signin-background-image {
+  background-image: url('/screens/Signin.png');
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-repeat: no-repeat;
+  font-family: 'Montserrat', sans-serif;
+}
+
+
+
+.form-control-sign-in::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: rgba(44, 45, 46, 0.5);
+  opacity: 1; /* Firefox */
+}
+
+.form-control-sign-in:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: rgba(44, 45, 46, 0.5);
+}
+
+.form-control-sign-in::-ms-input-placeholder { /* Microsoft Edge */
+  color: rgba(44, 45, 46, 0.5);
+}

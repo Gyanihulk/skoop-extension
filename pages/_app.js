@@ -3,11 +3,12 @@ import Header from '../components/Header';
 import '../styles/globals.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { GlobalStatesProvider } from '../contexts/GlobalStates';
-import { ScreenProvider } from '../contexts/ScreenContext';
+import ScreenContext, { ScreenProvider } from '../contexts/ScreenContext';
 import { AuthProvider } from '../contexts/AuthContext';
 import { MediaUtilsProvider } from '../contexts/MediaUtilsContext';
 import { Toaster } from 'react-hot-toast';
 import { MessageProvider } from '../contexts/MessageContext';
+import { useContext } from 'react';
 
 export default function App({ Component, pageProps }) {
   return (
@@ -22,9 +23,8 @@ export default function App({ Component, pageProps }) {
           <MessageProvider>
 
             <Toaster position="top-right"/>
-            <Header/>
+            
             <Component {...pageProps} />
-            <Footer />
 
           </MessageProvider>
         </AuthProvider>
