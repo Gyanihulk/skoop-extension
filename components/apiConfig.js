@@ -1,4 +1,4 @@
-const backendUrl="http://localhost:4000"; //https://skoop.sumits.in http://localhost:4000
+const backendUrl="https://skoop.sumits.in"; //https://skoop.sumits.in http://localhost:4000
 
 
 const API_ENDPOINTS = {
@@ -40,8 +40,9 @@ const API_ENDPOINTS = {
     deleteCrmPreloaded:`${backendUrl}/deleteCrmPreloaded`, //DELETE
     updateProfileImage: `${backendUrl}/updateProfileImage`, // POST
     userPreferences:`${backendUrl}/user-appointment-preferences`,// POST
-    syncCalendar:`${backendUrl}/sync-calendar`,
-    getCalendarUrl:`${backendUrl}/getcalendarurl`,// POST
+    syncCalendar:`${backendUrl}/sync-calendar`,// POST
+    getCalendarUrl:`${backendUrl}/getcalendarurl`, //GET
+    updateCalendarUrl:`${backendUrl}/update-calendar-url`,// POST
 };
 
 // with POST or PATCH apis body is sent in JSON 

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FaRegEdit } from 'react-icons/fa';
 import { IoCheckmarkDoneSharp } from 'react-icons/io5';
 import API_ENDPOINTS from '../components/apiConfig';
 import { toast } from 'react-hot-toast';
 import { timezones } from '../lib/timezones';
+import AuthContext from '../contexts/AuthContext';
 const AccountProfile = ({ userData }) => {
     // State for the profile image URL
     const [profileImage, setProfileImage] = useState(
@@ -333,18 +334,10 @@ const SettingsPassword = () => {
 
 const UserPreferencesForm = () => {
     const [values, setValues] = useState({
-        preferredStartTime: '',
-        preferredEndTime: '',
-        timeZone: '',
-        additionalDetails: ''
+        calendarUrl: '',
+       
     });
-    const [userTimezone, setUserTimezone] = useState('');
-
-    useEffect(() => {
-        const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        setUserTimezone(detectedTimezone);
-        
-    }, []);
+   
     const handleChange = (event) => {
         setValues((prevState) => ({
             ...prevState,
@@ -359,10 +352,7 @@ const UserPreferencesForm = () => {
             const res = await fetch(API_ENDPOINTS.userPreferences, {
                 method: 'POST',
                 body: JSON.stringify({
-                    preferred_start_time: values.preferredStartTime,
-                    preferred_end_time: values.preferredEndTime,
-                    time_zone: values.timeZone,
-                    additional_details: values.additionalDetails
+                    calendarUrl:values.calendarUrl
                 }),
                 headers: {
                     "Content-type": "application/json; charset=UTF-8",
@@ -373,11 +363,7 @@ const UserPreferencesForm = () => {
             if (res.ok) {
                 toast.success('Preferences saved successfully');
                 setValues({
-                    email: '',
-                    preferredStartTime: '',
-                    preferredEndTime: '',
-                    timeZone: '',
-                    additionalDetails: ''
+                    calendarUrl: '',
                 });
             } else {
                 throw new Error(data.message || 'Error saving preferences');
@@ -459,6 +445,79 @@ const UserPreferencesForm = () => {
 };
 
 
+const CalendarUrlForm = () => {
+    const [calendarUrl, setCalendarUrl] = useState('');
+    const { getCalendarUrl } = useContext(AuthContext);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const url = await getCalendarUrl();
+                setCalendarUrl(url);
+            } catch (error) {
+                toast.error('Failed to retrieve calendar URL.');
+            }
+        })();
+    }, []);
+
+    const handleChange = (event) => {
+        setCalendarUrl(event.target.value);
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            const res = await fetch(API_ENDPOINTS.updateCalendarUrl, { // Replace with your API endpoint
+                method: 'POST',
+                body: JSON.stringify({ calendarUrl }),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                    'Authorization': `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                },
+            });
+            const data = await res.text();
+            if (res.ok) {
+                toast.success('Calendar link updated successfully');
+            } else {
+                throw new Error(data.message || 'Error saving calendar URL');
+            }
+        } catch (err) {
+            toast.error(err.message || 'Failed to update calendar link. Please try again.');
+        }
+    };
+
+    return (
+        <div className="card">
+            <div className="card-header bg-secondary card-header-custom">
+                <h6 className="mb-0 text-white">Appointment booking link</h6>
+            </div>
+            <form onSubmit={handleSubmit}>
+                <div className="card-body">
+                    <div className="mb-3">
+                        <label htmlFor="calendarUrl" className="form-label">Your Appointment Booking Link</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="calendarUrl"
+                            name="calendarUrl"
+                            value={calendarUrl}
+                            onChange={handleChange}
+                            placeholder="Enter your calendar link"
+                            required
+                        />
+                    </div>
+                </div>
+                <div className="card-footer d-flex justify-content-end">
+                    <button type="submit" className="btn btn-primary">
+                        <IoCheckmarkDoneSharp /> Save Preferences
+                    </button>
+                </div>
+            </form>
+        </div>
+    );
+};
+
+
 function AccountSettings(props) {
     const [profileData, setProfileData] = useState({});
 
@@ -498,7 +557,10 @@ function AccountSettings(props) {
     return (
         <>
             <div className="container-fluid mt-2 p-2">
-                <div>
+                <div className="mt-2">
+                    <SettingsPassword />
+                </div >
+                <div className="mt-2">
                     <AccountProfile userData={profileData} />
                 </div>
                 {/* <div className="mt-1">
@@ -507,10 +569,10 @@ function AccountSettings(props) {
             onUpdateProfile={handleProfileUpdate}
           />
         </div> */}
+                
                 <div className="mt-2">
-                    <SettingsPassword />
+                    <CalendarUrlForm/>
                 </div>
-
                 <div className="mt-2">
                     <UserPreferencesForm/>
                 </div>
