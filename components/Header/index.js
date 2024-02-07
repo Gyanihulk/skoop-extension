@@ -118,7 +118,7 @@ export default function Header() {
             <nav className="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
                 <div class="navbar-brand">
                     <div className="container">
-                        <div class="row justify-content-left px-3">
+                        <div class="row justify-content-left">
                             {/* <div className="col">
                                 <FaExpandArrowsAlt className="icon-style-normal" />
                             </div> */}

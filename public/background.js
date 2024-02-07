@@ -18,8 +18,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });
       chrome.tabs.sendMessage(targetTab.id, {
         action: 'resizeIframe',
-        width: request.width?request.width:'430px',
-        height: request.height?request.height:'812px',
+        width: request.width?request.width:'450px',
+        height: request.height?request.height:'600px',
         screen:"HomePage"
       }, (response) => {
         if (response) {

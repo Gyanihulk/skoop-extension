@@ -37,7 +37,7 @@ export default function Home() {
 
     return (
         <>
-        {!["Welcome", "SignInIntro", "SignIn","SignUp" ," "].includes(activePage) && <Header />}
+        {!["Welcome", "SignInIntro", "SignIn","SignUp" ," ","CalendarSync"].includes(activePage) && <Header />}
 
             {activePage === ' ' && <LoadingScreen />}
             {activePage === 'Home' && <Homepage />}

@@ -266,7 +266,7 @@ function resizeIframe(newWidth, newHeight) {
         skoopExtensionContainer.style.height = newHeight;
         skoopExtensionContainer.style.top = '66px';
 console.log(newWidth);
-        if(newWidth=='430px'){
+        if(newWidth=='450px'){
             skoopExtensionContainer.style.borderRadius='0px';
         }
     } else {

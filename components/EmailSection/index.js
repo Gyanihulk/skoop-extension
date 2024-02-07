@@ -25,13 +25,8 @@ const EmailComposer = () => {
     const { message, addMessage } = useContext(MessageContext);
     const { getCalendarUrl } = useContext(AuthContext);
     const handleInsertion = (text) => {
-        const newText = text + '\n';
-
+        const newText = text + ' \n ';
         addMessage(newText);
-
-        if (isLinkedin) {
-        } else {
-        }
         window.scrollTo(0, document.body.scrollHeight);
     };
  

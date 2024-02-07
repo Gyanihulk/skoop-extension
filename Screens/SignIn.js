@@ -152,17 +152,6 @@ function SignIn() {
                                             <FcGoogle className='button-icon' /> Continue with Google
                                         </button>
                                     </div>
-
-                                    {/* <div class="d-flex justify-content-around">
-                                        {' '}
-                                        <FaGoogle size={64} color="red" className="clickable-icon" onClick={() => handleSocialLogin(2)} />
-                                        <FaLinkedin
-                                            size={64}
-                                            color="#0A66C2"
-                                            onClick={() => handleSocialLogin(1)}
-                                            className="clickable-icon"
-                                        />
-                                    </div> */}
                                 </div>
                                 <div
                                     id="emailHelp"

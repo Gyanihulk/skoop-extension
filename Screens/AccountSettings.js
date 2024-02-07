@@ -334,10 +334,18 @@ const SettingsPassword = () => {
 
 const UserPreferencesForm = () => {
     const [values, setValues] = useState({
-        calendarUrl: '',
-       
+        preferredStartTime: '',
+        preferredEndTime: '',
+        timeZone: '',
+        additionalDetails: ''
     });
-   
+    const [userTimezone, setUserTimezone] = useState('');
+
+    useEffect(() => {
+        const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        setUserTimezone(detectedTimezone);
+        
+    }, []);
     const handleChange = (event) => {
         setValues((prevState) => ({
             ...prevState,
@@ -352,7 +360,10 @@ const UserPreferencesForm = () => {
             const res = await fetch(API_ENDPOINTS.userPreferences, {
                 method: 'POST',
                 body: JSON.stringify({
-                    calendarUrl:values.calendarUrl
+                    preferred_start_time: values.preferredStartTime,
+                    preferred_end_time: values.preferredEndTime,
+                    time_zone: values.timeZone,
+                    additional_details: values.additionalDetails
                 }),
                 headers: {
                     "Content-type": "application/json; charset=UTF-8",
@@ -363,7 +374,11 @@ const UserPreferencesForm = () => {
             if (res.ok) {
                 toast.success('Preferences saved successfully');
                 setValues({
-                    calendarUrl: '',
+                    email: '',
+                    preferredStartTime: '',
+                    preferredEndTime: '',
+                    timeZone: '',
+                    additionalDetails: ''
                 });
             } else {
                 throw new Error(data.message || 'Error saving preferences');
@@ -444,7 +459,6 @@ const UserPreferencesForm = () => {
     );
 };
 
-
 const CalendarUrlForm = () => {
     const [calendarUrl, setCalendarUrl] = useState('');
     const { getCalendarUrl } = useContext(AuthContext);
@@ -518,6 +532,7 @@ const CalendarUrlForm = () => {
 };
 
 
+
 function AccountSettings(props) {
     const [profileData, setProfileData] = useState({});
 
@@ -557,10 +572,7 @@ function AccountSettings(props) {
     return (
         <>
             <div className="container-fluid mt-2 p-2">
-                <div className="mt-2">
-                    <SettingsPassword />
-                </div >
-                <div className="mt-2">
+                <div>
                     <AccountProfile userData={profileData} />
                 </div>
                 {/* <div className="mt-1">
@@ -569,10 +581,13 @@ function AccountSettings(props) {
             onUpdateProfile={handleProfileUpdate}
           />
         </div> */}
-                
                 <div className="mt-2">
-                    <CalendarUrlForm/>
+                    <CalendarUrlForm />
                 </div>
+                <div className="mt-2">
+                    <SettingsPassword />
+                </div>
+
                 <div className="mt-2">
                     <UserPreferencesForm/>
                 </div>
