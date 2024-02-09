@@ -9,32 +9,32 @@ import API_ENDPOINTS from '../components/apiConfig';
 const CalendarSync = () => {
     const { calendarSync  } = useContext(AuthContext);
     const {  navigateToPage } = useContext(ScreenContext);
-useEffect(()=>{
-    const handleSubmit = async () => {
+// useEffect(()=>{
+//     const handleSubmit = async () => {
 
-        const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        try {
-            const res = await fetch(API_ENDPOINTS.userPreferences, {
-                method: 'POST',
-                body: JSON.stringify({
-                    preferred_start_time: "09:00",
-                    preferred_end_time: "17:00",
-                    time_zone: detectedTimezone,
-                    additional_details: "Update this details from the extnsion account settings"
-                }),
-                headers: {
-                    "Content-type": "application/json; charset=UTF-8",
-                    "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                },
-            });
-console.log(res.json())
+//         const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+//         try {
+//             const res = await fetch(API_ENDPOINTS.userPreferences, {
+//                 method: 'POST',
+//                 body: JSON.stringify({
+//                     preferred_start_time: "09:00",
+//                     preferred_end_time: "17:00",
+//                     time_zone: detectedTimezone,
+//                     additional_details: "Update this details from the extnsion account settings"
+//                 }),
+//                 headers: {
+//                     "Content-type": "application/json; charset=UTF-8",
+//                     "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+//                 },
+//             });
+// console.log(res.json())
             
-        } catch (err) {
-           console.log(err)
-        }
-    };
-    handleSubmit();
-},[])
+//         } catch (err) {
+//            console.log(err)
+//         }
+//     };
+//     handleSubmit();
+// },[])
     
     return (
         <>
@@ -58,7 +58,7 @@ console.log(res.json())
                         <span class="badge badge-primary badge-pill"></span>
                     </div>
                     <div
-                     onClick={()=>navigateToPage('Home')}
+                     onClick={()=>calendarSync('microsoft')}
                         href="#"
                         class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                     >

@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
     const [rememberMe, setRememberMe] = useState(false);
     const { navigateToPage } = useContext(ScreenContext);
     const [newUser, setNewUser] = useState(false);
-    
+
     const validatePassword = (password) => {
         if (!password) {
             return false;
@@ -95,7 +95,7 @@ export const AuthProvider = ({ children }) => {
         navigateToPage(' ');
         try {
             if (type === 2) {
-                const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=120051053340-6o9itlmoo5ruo2k8l0qi42sf3nagbmkv.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
+                const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=148000187265-8v7ggl7msakbtt5qbk1vddvtkjegkpf4.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
                     chrome.identity.getRedirectURL()
                 )}&scope=profile%20email%20openid%20&access_type=offline`;
                 chrome.identity.launchWebAuthFlow(
@@ -135,9 +135,9 @@ export const AuthProvider = ({ children }) => {
                     type,
                 }),
             });
-            console.log(response)
+            console.log(response);
             if (Number(response.status) === 200) {
-                navigateToPage("Home")
+                navigateToPage('Home');
             } else {
                 toast.error('Could not sign in.');
             }
@@ -150,7 +150,7 @@ export const AuthProvider = ({ children }) => {
     const calendarSync = async (type) => {
         navigateToPage(' ');
         if (type === 'google') {
-            const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=120051053340-6o9itlmoo5ruo2k8l0qi42sf3nagbmkv.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
+            const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=148000187265-8v7ggl7msakbtt5qbk1vddvtkjegkpf4.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
                 chrome.identity.getRedirectURL()
             )}&scope=https://www.googleapis.com/auth/calendar&access_type=offline&prompt=consent`;
             chrome.identity.launchWebAuthFlow(
@@ -191,8 +191,29 @@ export const AuthProvider = ({ children }) => {
                         return;
                     }
                     handleCalendarAuthCode(code, type);
-                    // Exchange the authorization code for an access token
                     
+                }
+            );
+        } else if (type == 'microsoft') {
+            console.log(type)
+            const microsoftAuthUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=bf6b5ce3-919e-4a92-819f-b9147926e3d0&response_type=code&redirect_uri=${encodeURIComponent(
+                chrome.identity.getRedirectURL()
+            )}&scope=User.Read%20Calendars.ReadWrite%20offline_access&response_mode=query&state=12345&nonce=678910`;
+            chrome.identity.launchWebAuthFlow(
+                { url: microsoftAuthUrl, interactive: true },
+                async function (redirectUrl) {
+                    if (chrome.runtime.lastError || !redirectUrl) {
+                        // Handle errors or user cancellation here
+                        console.error(
+                            chrome.runtime.lastError
+                                ? chrome.runtime.lastError.message
+                                : 'No redirect URL'
+                        );
+                        return;
+                    }
+                    const code = new URL(redirectUrl).searchParams.get('code');
+                    console.log(code, type)
+                    handleCalendarAuthCode(code, type); 
                 }
             );
         }
@@ -252,7 +273,7 @@ export const AuthProvider = ({ children }) => {
 
             if (res.ok) {
                 setisAutheticated(true);
-            }else{
+            } else {
                 setisAutheticated(false);
             }
             return res;
@@ -307,13 +328,12 @@ export const AuthProvider = ({ children }) => {
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
                     authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                }
-
+                },
             });
             if (Number(response.status) === 200) {
-                console.log(response)
-                const data = await response.text(); 
-                return data
+                console.log(response);
+                const data = await response.text();
+                return data;
             } else {
                 toast.error('Could not get calendar url.');
             }
@@ -339,7 +359,7 @@ export const AuthProvider = ({ children }) => {
                 setRememberMe,
                 newUser,
                 calendarSync,
-                getCalendarUrl
+                getCalendarUrl,
             }}
         >
             {children}
