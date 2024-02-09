@@ -16,11 +16,11 @@ export const ScreenProvider = ({ children }) => {
       setActivePage(page);
     };
     useEffect(()=>{
-if(activePage=="Home"){
-  sendMessageToBackgroundScript({ message: 'HomePage' });
-}else if(["Welcome", "SignInIntro", "SignIn","SignUp"].includes(activePage)){
-  sendMessageToBackgroundScript({ message: 'Welcome' });
-}
+// if(activePage=="Home"){
+//   sendMessageToBackgroundScript({ message: 'HomePage' });
+// }else if(["Welcome", "SignInIntro", "SignIn","SignUp"].includes(activePage)){
+//   sendMessageToBackgroundScript({ message: 'Welcome' });
+// }
 
     },[activePage])
   return (

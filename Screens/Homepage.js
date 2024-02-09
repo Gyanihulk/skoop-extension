@@ -1,14 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { PiSwap } from 'react-icons/pi';
+
 import API_ENDPOINTS from '../components/apiConfig.js';
 import GlobalStatesContext from '../contexts/GlobalStates.js';
 import RecordingButton from '../components/RecordingButton/index.js';
-import VoiceVisualization from '../components/AudioRecording/index.js';
-import EmailComposer from '../components/EmailSection/index.js';
-import ProfileScraper from '../components/ProfileScraper/index.js';
-import ChatComponent from '../components/ChatWindow/index.js';
 import ChatWindowSelection from '../components/ChatWindowSelection/index.js';
+import MessageComposer from '../components/MessageComposer/index.js';
 const Homepage = (props) => {
     const {
         setIsLinkedin,
@@ -62,6 +59,7 @@ const Homepage = (props) => {
     };
 
     useEffect(() => {
+        if(chrome.runtime.onMessage){
         try {
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 const targetTab = tabs[0];
@@ -80,14 +78,14 @@ const Homepage = (props) => {
         chrome.runtime.onMessage.addListener(messageHandler);
         return () => {
             chrome.runtime.onMessage.removeListener(messageHandler);
-        };
+        };}
     }, []);
 
     return (
-        <div>
+        <div className='mt-5'>
             <RecordingButton />
-            <EmailComposer />
-            <ChatWindowSelection />
+       
+            <MessageComposer />
 
         </div>
     );

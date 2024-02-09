@@ -5,7 +5,7 @@ import { IoMdClose } from "react-icons/io";
 const VideoPreviewPopup = ({ video, onClose }) => {
   return (
     <div className="modal" style={{ display: 'block' }} tabIndex="-1" role="dialog" aria-hidden="true">
-      <div className="modal-dialog modal-overlay modal-dialog-centered">
+      <div className=" modal-overlay modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
             <button type="button" className="custom-close-button" onClick={onClose} aria-label="Close">

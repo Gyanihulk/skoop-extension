@@ -92,7 +92,6 @@ export const AuthProvider = ({ children }) => {
     };
 
     const handleSocialLogin = async (type) => {
-        navigateToPage(' ');
         try {
             if (type === 2) {
                 const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=148000187265-8v7ggl7msakbtt5qbk1vddvtkjegkpf4.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(

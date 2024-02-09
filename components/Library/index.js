@@ -330,7 +330,7 @@ const Library = (props) => {
     {/* User Input Modals */}
     
     <div className="modal modal-overlay" style={{ display: openNewFolder ? 'block' : 'none' }}>
-      <div className=" modal-dialog modal-dialog-centered">
+      <div className="modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">Create New Folder</h5>
@@ -345,29 +345,7 @@ const Library = (props) => {
       </div>
     </div>
 
-    {/* <div className="modal" style={{ display: dirToRename !== '' ? 'block' : 'none' }}>
-        <div className="modal-dialog">
-            <div className="modal-content">
-                <div className="modal-header">
-                    <h5 className="modal-title">Rename {dirToRename} to:</h5>
-                    <button type="button" className="close" onClick={() => { setDirToRename('') }}>
-                        <span>&times;</span>
-                    </button>
-                </div>
-                <div className="modal-body">
-                    <NewFolderInput
-                        closePopup={async () => { setDirToRename(''); getDirs() }}
-                        oldDirectoryName={dirToRename}
-                    />
-                </div>
-                <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" onClick={async () => { setDirToRename(''); getDirs() }}>
-                        Close
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div> */}
+
 
 
     {activeTab === 'favorites' && (

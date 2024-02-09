@@ -13,17 +13,6 @@ function injectIframe() {
     // Create the container
     const container = document.createElement('div');
     container.id = 'skoop-extension-container';
-    container.style.position = 'fixed';
-    container.style.top = '66px';
-    container.style.right = '0';
-    container.style.width = '375px'; 
-    container.style.height = '812px'; 
-    container.style.zIndex = '10000';
-    container.style.display = 'block';
-    container.style.border = '1px solid #000'; 
-    container.style.borderRadius='20px';
-    container.style.backgroundClip="padding-box";
-
 
 
     container.ondragstart = function () {
@@ -41,13 +30,14 @@ function injectIframe() {
 
     const dragButton = document.createElement('div');
     dragButton.id="skoop-drag-button"
-    dragButton.style.left = '10px';
-    dragButton.style.top = '10px';
-    dragButton.style.width = '40px';
-    dragButton.style.height = '40px';
-    dragButton.title="Click and Drag To Move"
+    dragButton.style.left = '40px';
+    dragButton.style.top = '19px';
+    dragButton.style.width = '24px';
+    dragButton.style.height = '24px';
     dragButton.style.position = 'absolute';
     dragButton.style.cursor = 'move';
+    dragButton.title="Click and Drag To Move"
+
     dragButton.style.backgroundImage =
         'url("' + chrome.runtime.getURL('/icons/move.png') + '")';
         dragButton.style.backgroundSize = 'cover'; 

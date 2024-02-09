@@ -11,58 +11,9 @@ const ChatWindowSelection = () => {
     const [localRefresh, setLocalRefresh] = useState(0);
     const [resetInitialItems, setResetInitialItems] = useState(0);
     const { message, setMessage } = useContext(MessageContext);
-    const handleSend = () => {
-        const clickSendButtons = (arr) => {
-            const sendButtons = Array.from(
-                document.getElementsByClassName('msg-form__send-button')
-            );
-            arr.forEach((item) => {
-                const btn = sendButtons[item.index];
-                btn.click();
-            });
-        };
 
-        try {
-            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                const targetTab = tabs[0];
-                if (targetTab) {
-                    try {
-                        chrome.scripting.executeScript({
-                            target: { tabId: targetTab.id },
-                            func: clickSendButtons,
-                            args: [selectedChatWindows],
-                        });
-                    } catch (err) {
-                        console.log('some error occured in executing script', err);
-                    }
-                } else {
-                    console.log('the target tab is not accessible');
-                }
-            });
-        } catch (err) {
-            console.log('some error occured while setting up initial array');
-        }
-    };
   
-    const handleInsertionToWebsite = async () => {
-        if (isLinkedin) {
-          if(selectedChatWindows?.length===0){
-              toast.error("Please select a recipitent")
-              return;
-          }
-          console.log(selectedChatWindows,selectedChatWindows?.length)
-            await insertIntoLinkedInMessageWindow(`<p>${message}</p>`, selectedChatWindows);
-            setTimeout(()=>{handleSend();},500)
-            toast.success("Message Sent Successfully!!")
-            
-        } else {
-            insertHtmlAtPositionInMail(message, focusedElementId);
-        }
-        if(selectedChatWindows?.length!==0){
-            setMessage();
-        }
-        
-    };
+  
 
     function checkForExistenceOfMessageWindow(element) {
         return element.querySelector('.msg-form__contenteditable') != null;
@@ -152,10 +103,13 @@ const ChatWindowSelection = () => {
     };
 
     useEffect(() => {
-        chrome.runtime.onMessage.addListener(messageHandler);
-        return () => {
-            chrome.runtime.onMessage.removeListener(messageHandler);
-        };
+        if(chrome.runtime.onMessage){
+            chrome.runtime.onMessage.addListener(messageHandler);
+            return () => {
+                chrome.runtime.onMessage.removeListener(messageHandler);
+            };
+        }
+        
     }, []);
 
     const handleCheckboxChange = (event) => {
@@ -201,15 +155,7 @@ const ChatWindowSelection = () => {
                         </div>
                     </>
                 )}
-                <div class="d-grid gap-2">
-                    <button
-                        class="btn btn-primary mt-3"
-                        type="button"
-                        onClick={handleInsertionToWebsite}
-                    >
-                        SEND
-                    </button>
-                </div>
+               
             </div>
         );
     

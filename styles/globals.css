@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;400;500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lato&family=Poppins:wght@200;300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato&family=Poppins:wght@200;300;400;500&display=swap');
 .sbl-circ-ripple {
   height: 56px;
   width: 56px;
@@ -46,33 +46,36 @@
 }
 
 #skoop_record_button {
-  border-radius: 50%;
-  border: 1px solid #d10202;
-  outline: 1px solid #d10202;
-  outline-offset: 5px;
-  background-color: #d10202;
-  color: white;
-  width: 65px;
-  height: 65px;
-  padding: 2px;
-  margin-top: 7px;
-  margin-bottom: 10px;
-  margin: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px; /* Assuming the button is 100x100 pixels */
+  height: 100px;
+  background-color: #2D68C4; /* The blue background color from your design tool */
+  color: white; /* Assuming the text color is white */
+  border-radius: 50%; /* This will make it a circle */
+  border: none; /* No border by default, adjust if necessary */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adjust for your desired shadow */
+  cursor: pointer;
+  outline: none; /* Removes the outline on focus for a cleaner look */
+  font-size: 16px; /* Adjust as necessary */
+  text-decoration: none; /* In case it's an anchor tag */
+  transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transition for hover effects */
+
 }
 
-#skoop_record_button_audio {
-  border-radius: 50%;
-  border: 1px solid #0A66C2;
-  outline: 1px solid #0A66C2;
-  outline-offset: 5px;
-  background-color: #0A66C2;
-  color: white;
-  width: 65px;
-  height: 65px;
-  padding: 2px;
-  margin-top: 7px;
-  margin-bottom: 10px;
+#skoop_record_button button{
+  width: 60px !important;
+  text-align: center;
 }
+.record-button-bottom-text{
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 15px;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+
 @keyframes bg-scrolling-reverse {
   100% {
     background-position: 50px 50px;
@@ -84,12 +87,9 @@
   }
 }
 
-/* Emailcomposer tab */
-.custom-nav-link {
-  width: 100%;
-  margin-right: 24px;
+#floatingTextarea{
+  height: 149px !important;
 }
-
 /* Chatwindow */
 
 .centered-container {
@@ -160,10 +160,6 @@
   color: black;
 }
 
-.nav-link {
-  padding-right: 15px;
-  margin-left: 15px;
-}
 
 .icon-style {
   color: black;
@@ -172,7 +168,7 @@
 
 .icon-style-normal {
   color: #0d6efd;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .background-color {
@@ -350,9 +346,7 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: inline-block;
 }
 
-.modal-display-block {
-  display: block;
-}
+
 
 .card-overflow-hidden {
   overflow: hidden;
@@ -612,33 +606,13 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   height: 30px;
 }
 .modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   background-color: rgba(0, 0, 0, 0.2); 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
+  width: 375px;
 }
 
-.modal-dialog {
-  position: relative;
-  max-width: 600px;
-  width: 90%;
-}
-
-.modal-content {
-  position: relative; /* Needed for the absolute positioning of the close button */
-  background-color: #fff;
-  border-radius: 4px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.modal-body {
-  position: relative;
+.modal-header{
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
 }
 
 .embed-responsive-item {
@@ -696,15 +670,7 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border: none;
 }
 
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Adjust the last value for the desired transparency */
-  z-index: 1000; /* Adjust the z-index to ensure it's above your content */
-}
+
 
 .bold-text {
   font-weight: bold;
@@ -865,4 +831,61 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
 .form-control-sign-in::-ms-input-placeholder { /* Microsoft Edge */
   color: rgba(44, 45, 46, 0.5);
+}
+
+
+#Header , #messageFooter{
+  background-color: #2D68C4;
+}
+
+#messageFooter{
+  bottom: 0;
+}
+#Header svg{
+  color: white;
+}
+
+.header-icon{
+  padding: 5px !important;
+}
+.header-text{
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  color:#FFFFFF;
+  font-weight: 500;
+  text-align: justify;
+  padding: 0%;
+}
+
+
+.btn-outline-warning {
+  color: #fff !important;
+  border-color: #fff !important;
+}
+
+.btn-outline-warning:hover {
+    color: #212529 !important ; /* Dark text color for contrast */
+    background-color: #fff !important; /* White background */
+    border-color: #fff !important; /* Maintain the white border */
+}
+
+.send-button {
+  border-radius: 20px !important; /* Adjust as needed for rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* This adds the drop shadow */
+  position: relative; /* Needed to position the label correctly */
+  border: 2px  #000000; 
+  background-color: #fff !important;
+  width: 80px;
+  height:28px;
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  font-family: 'Lato', sans-serif;
+  font-weight: 400;
+}
+
+#footermessage{
+  position: fixed;
+ bottom: 0px; 
+ width: 100% !important;
 }

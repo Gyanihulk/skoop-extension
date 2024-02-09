@@ -371,7 +371,7 @@ const addMixedOption = async (heading, description) => {
         style={{ display: showModal ? 'block' : 'none' }}
       >
         <div
-          className="modal-overlay modal-dialog modal-dialog-centered"
+          className="modal-overlay  modal-dialog-centered"
           role="document"
         >
           <div className="modal-content">

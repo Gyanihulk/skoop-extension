@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
 import { BsArrowLeftCircle } from 'react-icons/bs';
-import { MdAccountCircle,  MdClose, MdSaveAlt } from 'react-icons/md';
+import { MdAccountCircle, MdClose, MdSaveAlt } from 'react-icons/md';
 import GlobalStatesContext from '../../contexts/GlobalStates';
 import { FaRegCalendarCheck } from 'react-icons/fa';
 import ScreenContext from '../../contexts/ScreenContext';
@@ -8,11 +8,10 @@ import API_ENDPOINTS from '../apiConfig';
 import { FiMinimize2, FiMaximize2 } from 'react-icons/fi';
 import AuthContext from '../../contexts/AuthContext.js';
 import CarouselComponent from '../HelperVideos/index.js';
-import { MdContactSupport } from "react-icons/md";
+import { MdContactSupport } from 'react-icons/md';
 
 export default function Header() {
-
-    const { isAutheticated ,setisAutheticated} = useContext(AuthContext);
+    const { isAutheticated, setisAutheticated } = useContext(AuthContext);
     const { navigateToPage, activePage } = useContext(ScreenContext);
     const { setScraperPage, scraperPage, isProfilePage } = useContext(GlobalStatesContext);
     const [expand, setExpand] = useState(false);
@@ -37,7 +36,7 @@ export default function Header() {
 
     const toggleCarousel = () => {
         setIsCarouselOpen(!isCarouselOpen);
-      };
+    };
 
     const toggleProfileDropdown = () => {
         setProfileOpen(!profileOpen);
@@ -108,23 +107,34 @@ export default function Header() {
 
     const openCalendarWindow = () => {
         document.body.style.overflow = 'auto';
-        window.open(
-            `${API_ENDPOINTS.skoopCalendarUrl}/index.php/user/login`,
-            '_blank'
-        );
+        window.open(`${API_ENDPOINTS.skoopCalendarUrl}/index.php/user/login`, '_blank');
     };
     return (
         <>
-            <nav className="navbar navbar-expand-lg navbar-light bg-light justify-content-between">
-                <div class="navbar-brand">
+            <nav className="navbar pe-3" id="Header">
+                <div class="navbar-brand d-flex flex-row">
                     <div className="container">
                         <div class="row justify-content-left">
-                            {/* <div className="col">
-                                <FaExpandArrowsAlt className="icon-style-normal" />
-                            </div> */}
+                            <div className="col">
+                                <svg
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        fill-rule="evenodd"
+                                        clip-rule="evenodd"
+                                        d="M5.60005 16.8H18.4C18.84 16.8 19.2 16.44 19.2 16C19.2 15.56 18.84 15.2 18.4 15.2H5.60005C5.16005 15.2 4.80005 15.56 4.80005 16C4.80005 16.44 5.16005 16.8 5.60005 16.8ZM5.60005 12.8H18.4C18.84 12.8 19.2 12.44 19.2 12C19.2 11.56 18.84 11.2 18.4 11.2H5.60005C5.16005 11.2 4.80005 11.56 4.80005 12C4.80005 12.44 5.16005 12.8 5.60005 12.8ZM4.80005 8.00001C4.80005 8.44001 5.16005 8.80001 5.60005 8.80001H18.4C18.84 8.80001 19.2 8.44001 19.2 8.00001C19.2 7.56001 18.84 7.20001 18.4 7.20001H5.60005C5.16005 7.20001 4.80005 7.56001 4.80005 8.00001Z"
+                                        fill="white"
+                                    />
+                                </svg>
+                            </div>
 
-                            <div className="col px-5">
-                                {(activePage ==="ContactPage" || activePage ==="AccountSettings") && (
+                            <div className="col ps-4">
+                                {(activePage === 'ContactPage' ||
+                                    activePage === 'AccountSettings') && (
                                     <BsArrowLeftCircle
                                         className="icon-style-normal"
                                         onClick={() => {
@@ -132,115 +142,176 @@ export default function Header() {
                                         }}
                                     />
                                 )}
+                               
                             </div>
+                            
+                            
                         </div>
                     </div>
+                    <div className="d-flex flex-column justify-content-end header-text">
+                                    Skoop App
+                            </div>
                 </div>
 
-                <div className="d-flex ml-auto align-items-center">
-                    {isAutheticated && <>
-                    {isProfilePage && (
-                        <button
-                        className="btn btn-link"
-                        data-mdb-toggle="tooltip"
-                        data-mdb-placement="bottom"
-                        title="Save Profile Info "
-                        onClick={() => {
-                            navigateToPage('ContactPage');
-                            setScraperPage(!scraperPage);
-                        }}
-                        >
-                            <MdSaveAlt className="icon-style-normal" />
-                        </button>
+                <div className="d-flex ml-auto align-items-right">
+                    {isAutheticated && (
+                        <>
+                            {isProfilePage && (
+                                <button
+                                    className="btn btn-link header-icon"
+                                    data-mdb-toggle="tooltip"
+                                    data-mdb-placement="bottom"
+                                    title="Save Profile Info "
+                                    onClick={() => {
+                                        navigateToPage('ContactPage');
+                                        setScraperPage(!scraperPage);
+                                    }}
+                                >
+                                    <MdSaveAlt className="icon-style-normal" />
+                                </button>
+                            )}
+
+                            <button
+                                className="btn btn-link header-icon"
+                                data-mdb-toggle="tooltip"
+                                data-mdb-placement="bottom"
+                                title="Helper Videos"
+                                onClick={toggleCarousel}
+                            >
+                                <MdContactSupport className="icon-style-normal" />
+                            </button>
+                            {/* Calendar Link */}
+                            <button
+                                className="btn btn-link header-icon"
+                                onClick={openCalendarWindow}
+                                data-mdb-toggle="tooltip"
+                                data-mdb-placement="bottom"
+                                title="Go to your Meeting Calendar Schedular"
+                            >
+                                <FaRegCalendarCheck className="icon-style-normal" />
+                            </button>
+
+                            {/* Profile Dropdown */}
+                            <div
+                                className={`nav-item dropdown custom ${profileOpen ? 'show' : ''}`}
+                            >
+                                <button
+                                    className="btn btn-link header-icon dropstart"
+                                    onClick={toggleProfileDropdown}
+                                    data-mdb-toggle="tooltip"
+                                    data-mdb-placement="bottom"
+                                    title="User Profile"
+                                >
+                                    <svg
+                                        width="14"
+                                        height="14"
+                                        viewBox="0 0 14 14"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            clip-rule="evenodd"
+                                            d="M7.0001 6.99998C8.7681 6.99998 10.2001 5.56798 10.2001 3.79998C10.2001 2.03198 8.7681 0.599976 7.0001 0.599976C5.2321 0.599976 3.8001 2.03198 3.8001 3.79998C3.8001 5.56798 5.2321 6.99998 7.0001 6.99998ZM7.0001 8.59998C4.8641 8.59998 0.600098 9.67198 0.600098 11.8V12.6C0.600098 13.04 0.960098 13.4 1.4001 13.4H12.6001C13.0401 13.4 13.4001 13.04 13.4001 12.6V11.8C13.4001 9.67198 9.1361 8.59998 7.0001 8.59998Z"
+                                            fill="white"
+                                        />
+                                    </svg>
+                                </button>
+                                <div
+                                    className={`ddstyle dropdown-menu ${profileOpen ? 'show' : ''}`}
+                                    style={{ marginLeft: '-120px' }}
+                                >
+                                    <button
+                                        className="dropdown-item"
+                                        onClick={() => {
+                                            navigateToPage('AccountSettings');
+                                            toggleProfileDropdown();
+                                        }}
+                                    >
+                                        Account Settings
+                                    </button>
+                                    <button
+                                        className="dropdown-item"
+                                        onClick={() => {
+                                            handleLogOut();
+                                            toggleProfileDropdown();
+                                        }}
+                                    >
+                                        Logout
+                                    </button>
+                                </div>
+                            </div>
+                        </>
                     )}
 
                     <button
-                    className="btn btn-link"
-                    data-mdb-toggle="tooltip"
-                    data-mdb-placement="bottom"
-                    title="Helper Videos"
-                    onClick={toggleCarousel}
-                    >
-                    <MdContactSupport className="icon-style-normal"/>
-                    </button>
-                    {/* Calendar Link */}
-                    <button
-                        className="btn btn-link"
-                        onClick={openCalendarWindow}
-                        data-mdb-toggle="tooltip"
-                        data-mdb-placement="bottom"
-                        title="Go to your Meeting Calendar Schedular"
-                        >
-                        <FaRegCalendarCheck className="icon-style-normal" />
-                    </button>
-
-                  
-
-                    {/* Profile Dropdown */}
-                    <div className={`nav-item dropdown custom ${profileOpen ? 'show' : ''}`}>
-                        <button className="btn btn-link dropstart" 
-                                onClick={toggleProfileDropdown}
-                                data-mdb-toggle="tooltip"
-                                data-mdb-placement="bottom"
-                                title="User Profile">
-                            <MdAccountCircle className="icon-style-normal" />
-                        </button>
-                        <div
-                            className={`ddstyle dropdown-menu ${profileOpen ? 'show' : ''}`}
-                            style={{ marginLeft: '-120px' }}
-                            >
-                            <button
-                                className="dropdown-item"
-                                onClick={() => {
-                                    navigateToPage('AccountSettings');
-                                    toggleProfileDropdown(); 
-                                }}   
-                                >
-                                Account Settings
-                            </button>
-                            <button className="dropdown-item"
-                            onClick={() => {
-                                handleLogOut();
-                                toggleProfileDropdown();
-                            }}
-                            >
-                                Logout
-                            </button>
-                        </div>
-                    </div>
-                                </>}
-                    
-                    <button
-                        className="btn btn-link"
+                        className="btn btn-link header-icon"
                         data-mdb-toggle="tooltip"
                         data-mdb-placement="bottom"
                         title="Expand/Shrink"
                         onClick={expandMinimizeExtension}
                     >
                         {expand ? (
-                            <FiMaximize2 className="icon-style-normal" />
+                            <svg
+                                width="10"
+                                height="2"
+                                viewBox="0 0 10 2"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    clip-rule="evenodd"
+                                    d="M0.999951 0.200012H8.99995C9.43995 0.200012 9.79995 0.560012 9.79995 1.00001C9.79995 1.44001 9.43995 1.80001 8.99995 1.80001H0.999951C0.559951 1.80001 0.199951 1.44001 0.199951 1.00001C0.199951 0.560012 0.559951 0.200012 0.999951 0.200012Z"
+                                    fill="white"
+                                />
+                            </svg>
                         ) : (
-                            <FiMinimize2 className="icon-style-normal" />
+                            <svg
+                                width="10"
+                                height="2"
+                                viewBox="0 0 10 2"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    clip-rule="evenodd"
+                                    d="M0.999951 0.200012H8.99995C9.43995 0.200012 9.79995 0.560012 9.79995 1.00001C9.79995 1.44001 9.43995 1.80001 8.99995 1.80001H0.999951C0.559951 1.80001 0.199951 1.44001 0.199951 1.00001C0.199951 0.560012 0.559951 0.200012 0.999951 0.200012Z"
+                                    fill="white"
+                                />
+                            </svg>
                         )}
                     </button>
                     <button
-                        className="btn btn-link"
+                        className="btn btn-link header-icon"
                         data-mdb-toggle="tooltip"
                         data-mdb-placement="bottom"
                         title="Close"
                         onClick={closeExtension}
                     >
-                        <MdClose className="icon-style-normal" />
+                        <svg
+                            width="11"
+                            height="11"
+                            viewBox="0 0 11 11"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                fill-rule="evenodd"
+                                clip-rule="evenodd"
+                                d="M10.7139 0.642013C10.5644 0.492211 10.3615 0.408024 10.1499 0.408024C9.93829 0.408024 9.73537 0.492211 9.5859 0.642013L5.6739 4.54601L1.7619 0.634013C1.61244 0.484211 1.40952 0.400024 1.1979 0.400024C0.986288 0.400024 0.783368 0.484211 0.633902 0.634013C0.321902 0.946013 0.321902 1.45001 0.633902 1.76201L4.5459 5.67401L0.633902 9.58601C0.321902 9.89801 0.321902 10.402 0.633902 10.714C0.945902 11.026 1.4499 11.026 1.7619 10.714L5.6739 6.80201L9.5859 10.714C9.8979 11.026 10.4019 11.026 10.7139 10.714C11.0259 10.402 11.0259 9.89801 10.7139 9.58601L6.8019 5.67401L10.7139 1.76201C11.0179 1.45801 11.0179 0.946013 10.7139 0.642013Z"
+                                fill="white"
+                            />
+                        </svg>
                     </button>
                 </div>
             </nav>
             {isCarouselOpen && (
-                    <div>
-                        <CarouselComponent />
-                    </div>
+                <div>
+                    <CarouselComponent />
+                </div>
             )}
         </>
     );
 }
-
-

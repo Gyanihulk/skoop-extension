@@ -20,16 +20,13 @@ const MessageWindow = () => {
         setMessage(event.target.value);
     };
     return (
-        <div className='col-11 mx-auto'>
-        <div class="input-group">
-            <div class="form-floating">
+        
+   
             <textarea ref={textareaRef} class="form-control" id="floatingTextarea" className="form-control auto-height-textarea" 
-                aria-label="With textarea" 
+                placeholder='Type your message' aria-label="With textarea" 
                 value={message} onChange={handleTextChange} ></textarea>
-                <label for="floatingTextarea">Custom Message</label>
-        </div>
-        </div>
-        </div>
+   
+        
     );
 };
 

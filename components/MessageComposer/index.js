@@ -8,28 +8,26 @@ import ChatGpt from '../Chatgpt/index.js';
 import GiphyWindow from '../Gif/index.js';
 import Library from '../Library/index.js';
 import AI from '../Pre-Determined-Msg/index.js';
-import API_ENDPOINTS from '../apiConfig.js';
 import { insertHtmlAtPositionInMail, insertIntoLinkedInMessageWindow } from '../../utils/index.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
-import { SiGooglemeet } from 'react-icons/si';
 import MessageWindow from '../MessageWindow.jsx';
 import MessageContext from '../../contexts/MessageContext.js';
 import AuthContext from '../../contexts/AuthContext.js';
-const EmailComposer = () => {
+import ChatWindowSelection from '../ChatWindowSelection/index.js';
+const MessageComposer = () => {
     const [state, setState] = useState({
         displayComp: 'DefaultCard',
     });
 
     const { isLinkedin, selectedChatWindows, focusedElementId, isProfilePage } =
         useContext(GlobalStatesContext);
-    const { message, addMessage } = useContext(MessageContext);
+    const { message, addMessage, setMessage } = useContext(MessageContext);
     const { getCalendarUrl } = useContext(AuthContext);
     const handleInsertion = (text) => {
         const newText = text + ' \n ';
         addMessage(newText);
         window.scrollTo(0, document.body.scrollHeight);
     };
- 
 
     const componentDisplaySwitch = (input) => {
         setState({
@@ -39,16 +37,12 @@ const EmailComposer = () => {
     };
 
     const addMeetSchedulingLink = async () => {
-        const url=await getCalendarUrl()
+        const url = await getCalendarUrl();
         if (isLinkedin) {
-            handleInsertion(
-                url
-            );
+            handleInsertion(url);
             toast.success('Meeting Calendar link added successfully!');
         } else {
-            handleInsertion(
-                `<a href="${url}">Schedule Virtual Appointment</a>`
-            );
+            handleInsertion(`<a href="${url}">Schedule Virtual Appointment</a>`);
             toast.success('Meeting Calendar link added successfully!');
         }
     };
@@ -62,15 +56,15 @@ const EmailComposer = () => {
     };
 
     const renderNavItem = (eventKey, icon, tooltipText) => (
-        <li className="nav-item" key={eventKey}>
+        <li key={eventKey}>
             <a
-                className={`nav-link ${state.displayComp === eventKey ? 'active' : ''}`}
+                className={`px-1 ${state.displayComp === eventKey ? 'active' : ''}`}
                 onClick={() => handleIconClick(eventKey)}
                 data-bs-toggle="tooltip"
                 data-bs-placement="bottom"
                 title={tooltipText}
             >
-                {React.cloneElement(icon, { size: 20 })}
+                {React.cloneElement(icon, { size: 20, color: '#FFFFFF' })}
                 <span className="d-none d-sm-inline">{tooltipText}</span>
             </a>
         </li>
@@ -109,42 +103,68 @@ const EmailComposer = () => {
             console.log('some error occured while setting up initial array');
         }
     };
+    const handleSend = () => {
+        const clickSendButtons = (arr) => {
+            const sendButtons = Array.from(
+                document.getElementsByClassName('msg-form__send-button')
+            );
+            arr.forEach((item) => {
+                const btn = sendButtons[item.index];
+                btn.click();
+            });
+        };
 
+        try {
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                const targetTab = tabs[0];
+                if (targetTab) {
+                    try {
+                        chrome.scripting.executeScript({
+                            target: { tabId: targetTab.id },
+                            func: clickSendButtons,
+                            args: [selectedChatWindows],
+                        });
+                    } catch (err) {
+                        console.log('some error occured in executing script', err);
+                    }
+                } else {
+                    console.log('the target tab is not accessible');
+                }
+            });
+        } catch (err) {
+            console.log('some error occured while setting up initial array');
+        }
+    };
+    const handleInsertionToWebsite = async () => {
+        if (isLinkedin) {
+            if (selectedChatWindows?.length === 0) {
+                toast.error('Please select a recipitent');
+                return;
+            }
+
+            await insertIntoLinkedInMessageWindow(`<p>${message}</p>`, selectedChatWindows);
+            setTimeout(() => {
+                handleSend();
+            }, 500);
+            toast.success('Message Sent Successfully!!');
+        } else {
+            insertHtmlAtPositionInMail(message, focusedElementId);
+        }
+        if (selectedChatWindows?.length !== 0) {
+            setMessage();
+        }
+    };
     return (
-        <div>
-            {/* <div className="d-grid gap-2 col-10 mx-auto mt-4">
-        <button
-          className="btn btn-primary btn-block"
-          onClick={addMeetSchedulingLink}
-        >
-          Schedule a Meet
-        </button>
-      </div> */}
-
-            <ul className="nav nav-pills justify-content-center mt-2">
-                {renderNavItem('Chatgpt', <AiFillRobot />, 'Send Chatgpt responses to Mail')}
-                {renderNavItem('Giphy', <HiMiniGif />, 'Send your favorite GIFs to Mail')}
-                {renderNavItem('AI', <FaListAlt />, 'Send predetermined custom message responses.')}
-                {renderNavItem(
-                    'Library',
-                    <MdVideoLibrary />,
-                    'Send any recorded video or audio file'
-                )}
-                {renderNavItem(
-                    'ScheduleMeet',
-                    <GrSchedulePlay />,
-                    'Send link to schedule virtual appointment.'
-                )}
-            </ul>
-
-            <div className="container w-90 mt-4">
+        <div id='footermessage' className=' w-full'>
+       <ChatWindowSelection/>
+            <MessageWindow />
+            <div className="container mt-4">
                 {state.displayComp === 'Chatgpt' && <ChatGpt appendToBody={handleInsertion} />}
                 {state.displayComp === 'Giphy' && <GiphyWindow appendToBody={handleInsertion} />}
                 {state.displayComp === 'Library' && <Library appendToBody={handleInsertion} />}
                 {state.displayComp === 'AI' && <AI appendToBody={handleInsertion} />}
-                {message && <MessageWindow />}
 
-                {!message && state.displayComp === 'DefaultCard' && (
+                {/* {!message && state.displayComp === 'DefaultCard' && (
                     <div className="card">
                         <div className="card-body">
                             <h5 className="card-title text-center">Welcome to Skoop</h5>
@@ -157,9 +177,47 @@ const EmailComposer = () => {
                             </p>
                         </div>
                     </div>
-                )}
-               
+                )} */}
             </div>
+            <nav className="navbar pe-3" id="messageFooter" >
+                <div class="navbar-brand d-flex flex-row ps-2">
+                    <ul className="nav">
+                        {renderNavItem(
+                            'Chatgpt',
+                            <AiFillRobot />,
+                            'Send Chatgpt responses to Mail'
+                        )}
+                        {renderNavItem('Giphy', <HiMiniGif />, 'Send your favorite GIFs to Mail')}
+                        {renderNavItem(
+                            'AI',
+                            <FaListAlt />,
+                            'Send predetermined custom message responses.'
+                        )}
+                        {renderNavItem(
+                            'Library',
+                            <MdVideoLibrary />,
+                            'Send any recorded video or audio file'
+                        )}
+                        {renderNavItem(
+                            'ScheduleMeet',
+                            <GrSchedulePlay />,
+                            'Send link to schedule virtual appointment.'
+                        )}
+                    </ul>
+                </div>
+                <div className="d-flex flex-row  align-items-right ">
+                
+         
+                <button
+                    className="btn send-button d-flex  align-items-center justify-content-center"
+                    type="button"
+                    onClick={handleInsertionToWebsite}
+                >
+                    Send
+                </button>
+     
+                </div>
+            </nav>
             {isProfilePage && (
                 <div class="d-grid gap-2">
                     <button
@@ -171,8 +229,9 @@ const EmailComposer = () => {
                     </button>
                 </div>
             )}
+            
         </div>
     );
 };
 
-export default EmailComposer;
+export default MessageComposer;

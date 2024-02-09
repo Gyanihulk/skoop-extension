@@ -4,7 +4,7 @@ import { IoMdClose } from "react-icons/io";
 const PreviewModal = ({prev,setPrev,preview}) => {
   return (
     <div className="modal-overlay" onClick={() => setPrev('')}>
-    <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+    <div  onClick={(e) => e.stopPropagation()}>
       <div className="modal-content">
         <div className="modal-header d-flex justify-content-end">
           <button type="button" className="close custom-close-button" onClick={preview} aria-label="Close">

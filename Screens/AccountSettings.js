@@ -523,7 +523,7 @@ const CalendarUrlForm = () => {
                 </div>
                 <div className="card-footer d-flex justify-content-end">
                     <button type="submit" className="btn btn-primary">
-                        <IoCheckmarkDoneSharp /> Save Preferences
+                        <IoCheckmarkDoneSharp /> Save 
                     </button>
                 </div>
             </form>

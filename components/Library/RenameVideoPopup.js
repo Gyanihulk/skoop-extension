@@ -15,7 +15,7 @@ const RenameVideoPopup = ({ newTitle, onClose, onSave, onTitleChange }) => {
   return (
     <div className="modal" style={{ display: 'block' }}>
   <div className="modal-display-block" />
-  <div className="modal-dialog modal-overlay modal-dialog-centered">
+  <div className=" modal-overlay modal-dialog-centered">
     <div className="modal-content">
       <div className="modal-header">
         <h6 className="modal-title">Rename Video</h6>

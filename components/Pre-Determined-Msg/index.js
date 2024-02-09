@@ -226,7 +226,7 @@ function AI(props) {
         )}
        </div>
       <div className="modal" tabIndex="-1" role="dialog" style={{ display: showModal ? 'block' : 'none' }}>
-        <div className="modal-overlay modal-dialog modal-dialog-centered" role="document">
+        <div className="modal-overlay modal-dialog-centered" role="document">
           <div className="modal-content">
             <div className="modal-header">
             <h5 className="modal-title">{isEdit ? 'Edit' : 'Add'} Message Template</h5>
