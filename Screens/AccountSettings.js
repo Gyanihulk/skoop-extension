@@ -5,6 +5,7 @@ import API_ENDPOINTS from '../components/apiConfig';
 import { toast } from 'react-hot-toast';
 import { timezones } from '../lib/timezones';
 import AuthContext from '../contexts/AuthContext';
+import { isStartTimeBeforeEndTime } from '../lib/helpers';
 const AccountProfile = ({ userData }) => {
     // State for the profile image URL
     const [profileImage, setProfileImage] = useState(
@@ -337,14 +338,16 @@ const UserPreferencesForm = () => {
         preferredStartTime: '',
         preferredEndTime: '',
         timeZone: '',
-        additionalDetails: ''
+        additionalDetails: '',
+        breakStartTime: '',
+        breakEndTime: '',
     });
-    const [userTimezone, setUserTimezone] = useState('');
+
 
     useEffect(() => {
         const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        setUserTimezone(detectedTimezone);
-        
+
+        values.timeZone = detectedTimezone;
     }, []);
     const handleChange = (event) => {
         setValues((prevState) => ({
@@ -356,38 +359,37 @@ const UserPreferencesForm = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        console.log(values)
+        if (isStartTimeBeforeEndTime(values.preferredStartTime, values.preferredEndTime) && isStartTimeBeforeEndTime(values.breakStartTime, values.breakEndTime) && isStartTimeBeforeEndTime(values.preferredStartTime, values.breakStartTime)) {
         try {
             const res = await fetch(API_ENDPOINTS.userPreferences, {
                 method: 'POST',
                 body: JSON.stringify({
                     preferred_start_time: values.preferredStartTime,
                     preferred_end_time: values.preferredEndTime,
+                    break_start_time: values.breakStartTime,
+                    break_end_time: values.breakEndTime,
                     time_zone: values.timeZone,
-                    additional_details: values.additionalDetails
+                    additional_details: values.additionalDetails,
                 }),
                 headers: {
-                    "Content-type": "application/json; charset=UTF-8",
-                    "authorization": `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                    'Content-type': 'application/json; charset=UTF-8',
+                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
                 },
             });
             const data = await res.json();
             if (res.ok) {
                 toast.success('Preferences saved successfully');
-                setValues({
-                    email: '',
-                    preferredStartTime: '',
-                    preferredEndTime: '',
-                    timeZone: '',
-                    additionalDetails: ''
-                });
+                
             } else {
                 throw new Error(data.message || 'Error saving preferences');
             }
         } catch (err) {
             toast.error(err.message || 'Preferences not saved. Please try again.');
+        }}else{
+            toast.error('Preffered Start time OR Break time is greater than End Time');
         }
     };
-
     return (
         <div className="card">
             <div className="card-header bg-secondary card-header-custom">
@@ -406,7 +408,34 @@ const UserPreferencesForm = () => {
                             onChange={handleChange}
                             required
                         />
-                    </div>
+                    </div><div className="mb-3">
+                                <label htmlFor="breakStartTime" className="form-label">
+                                    Break Start Time *
+                                </label>
+                                <input
+                                    type="time"
+                                    className="form-control"
+                                    id="breakStartTime"
+                                    name="breakStartTime"
+                                    value={values.breakStartTime}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="breakEndTime" className="form-label">
+                                    Break End Time *
+                                </label>
+                                <input
+                                    type="time"
+                                    className="form-control"
+                                    id="breakEndTime"
+                                    name="breakEndTime"
+                                    value={values.breakEndTime}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </div>
                     <div className="mb-3">
                         <label htmlFor="preferredEndTime" className="form-label">Preferred End Time*</label>
                         <input

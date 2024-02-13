@@ -96,7 +96,7 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
             title={video.video_title}
             width="100%"
             height="100vw"
-            src={video.link}
+            src={'https://skoop.hubs.vidyard.com/watch/'+video.link}
             allow="autoplay; fullscreen; picture-in-picture"
             className="no-border"
           />
