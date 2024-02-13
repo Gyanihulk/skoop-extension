@@ -187,7 +187,6 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
             data-mdb-toggle="tooltip"
             data-mdb-placement="bottom"
             title="Record Audio"
-            style={{ zIndex: 2 }}
           >
             {isRecording ? (
               // <FaStop size={30} color="white" />

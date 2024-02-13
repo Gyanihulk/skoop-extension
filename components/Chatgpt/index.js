@@ -164,7 +164,7 @@ const ChatGpt = ({ appendToBody }) => {
         setShowModal(false);
         setNewPrompt({ heading: '', description: '' });
         fetchPrompts();
-        toast.success('New Template added successfully!');
+        toast.success('New Prompt added successfully!');
       } else {
         // Set validation errors if the fields are empty
         setTitleError(newPrompt.heading ? '' : 'Title is required');
@@ -262,53 +262,9 @@ const ChatGpt = ({ appendToBody }) => {
 //integration to template
 
 
-const handleMixOption = async (selectedOption) => {
-  try {
-    if (selectedOption !== 'Select Prompt' && selectedOption !== 'AddEditPrompt') {
-      const selectedPrompt = messageOptions.find((option) => option.id === parseInt(selectedOption, 10));
-
-      if (selectedPrompt) {
-
-        addMixedOption(selectedPrompt.heading, prompt);
-      } else {
-        console.error("Selected prompt not found");
-      }
-    }
-  } catch (error) {
-    console.error('Error mixing options:', error);
-  }
-};
 
 
-const addMixedOption = async (heading, description) => {
-  try {
-    const response = await fetch(API_ENDPOINTS.skoopCrmAddPreloadedResponses, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-      },
-      body: JSON.stringify({
-        heading,
-        description,
-      }),
-    });
 
-    if (response.ok) {
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        const responseData = await response.json();
-      }
-
-      setMessageOptions((prevOptions) => [...prevOptions, { heading, description }]);
-      toast.success('Response added Template Message successfully!');
-    } else {
-      toast.error('Failed to add as template message. Please try again.');
-    }
-  } catch (error) {
-    console.error('Error to add as template message:', error);
-  }
-};
 
 
 
@@ -337,7 +293,7 @@ const addMixedOption = async (heading, description) => {
             </option>
           ))}
         </select>
-        <label for="floatingSelect">Select prompts to generate chatgpt response  </label>
+        <label for="floatingSelect">Saved chatgpt prompts </label>
         </div>
 
         {selectedOption !== 'AddEditPrompt' && selectedOption !== 'Select Prompt' && (
@@ -445,17 +401,6 @@ const addMixedOption = async (heading, description) => {
             </button>
           </div>
         </div>
-        {responseGenerated && (
-        <div className="d-flex justify-content-end mb-2">
-            <button
-              type="button"
-              className="btn btn-outline-primary btn-sm"
-              onClick={() => handleMixOption(selectedOption)}
-            >
-              Save Response as Template
-            </button>
-          </div>
-        )}
 
         {loading ? (
           <>
@@ -466,56 +411,10 @@ const addMixedOption = async (heading, description) => {
           </>
         ) : null}
 
-        {/* {prompt !== '' && !loading && (
-          <>
-            <div className="container">
-              <div className="row">
-                <div className="col-md-6 offset-md-3">
-                  <label className="mb-2 text-center">Response</label>
-                  <textarea
-                    className="form-control"
-                    aria-multiline="auto"
-                    name="prompt"
-                    value={prompt}
-                    onChange={handleChange}
-                    onInput={(e) => {
-                      e.target.style.height = 'auto';
-                      e.target.style.height = `${e.target.scrollHeight}px`;
-                    }}
-                  />
-                  <div className="row">
-                    <div className="col-sm-7"></div>
-                    <div className="col-sm-5 d-flex justify-content-end"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        )} */}
+       
       </form>
 
-      {/* {prompt !== '' && !loading && (
-        <div className="d-flex justify-content-end gap-2 mt-4">
-          <button
-            type="button"
-            className="btn btn-outline-primary chatgpt-button"
-            onClick={() => {
-              handleCopyToClipboard(prompt);
-            }}
-          >
-            Copy
-          </button>
-          <button
-            type="button"
-            className="btn btn-outline-primary chatgpt-button"
-            onClick={() => {
-              appendToBody(prompt);
-            }}
-          >
-            Insert
-          </button>
-        </div>
-      )} */}
+      
     </div>
   );
 };

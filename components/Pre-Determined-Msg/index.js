@@ -200,7 +200,7 @@ function AI(props) {
           </option>
         ))}
       </select>
-      <label for="floatingSelect">Select saved Template message to send instantly </label>
+      <label for="floatingSelect">Select saved Template </label>
         </div>
         {selectedOption !== 'AddEditResponses' && (
           <div className="d-flex justify-content-end">

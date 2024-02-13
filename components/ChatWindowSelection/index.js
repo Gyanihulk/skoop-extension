@@ -10,7 +10,7 @@ const ChatWindowSelection = () => {
         useContext(GlobalStatesContext);
     const [localRefresh, setLocalRefresh] = useState(0);
     const [resetInitialItems, setResetInitialItems] = useState(0);
-    const { message, setMessage } = useContext(MessageContext);
+   
 
   
   
@@ -130,12 +130,12 @@ const ChatWindowSelection = () => {
 
    
         return (
-            <div className="container selection-container p-4 my-1">
+            <div className="container selection-container p-4 bg-white">
                 {isLinkedin && (
                     <>
                       {initialItems?.length>0?
                       <h8 className="text-center mb-1 fw-bold fst-italic">Select Recipients</h8>:<p>No chat window is open.</p>}
-                        <div className="row row-cols-2 g-3 mt-1">
+                        <div className="row row-cols-2 g-3 mt-1 ">
                             {initialItems?.map((item, index) => (
                                 <div key={index} className="col">
                                     <div className="form-check">

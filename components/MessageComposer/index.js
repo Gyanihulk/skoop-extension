@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { AiFillRobot } from 'react-icons/ai';
 import { HiMiniGif } from 'react-icons/hi2';
 import { GrSchedulePlay } from 'react-icons/gr';
@@ -14,12 +14,12 @@ import MessageWindow from '../MessageWindow.jsx';
 import MessageContext from '../../contexts/MessageContext.js';
 import AuthContext from '../../contexts/AuthContext.js';
 import ChatWindowSelection from '../ChatWindowSelection/index.js';
+import toast from 'react-hot-toast';
+import API_ENDPOINTS from '../apiConfig.js';
 const MessageComposer = () => {
-    const [state, setState] = useState({
-        displayComp: 'DefaultCard',
-    });
+    const [displayComp, setDisplayComp] = useState('DefaultCard');
 
-    const { isLinkedin, selectedChatWindows, focusedElementId, isProfilePage } =
+    const { isLinkedin, selectedChatWindows, focusedElementId, isProfilePage,expand } =
         useContext(GlobalStatesContext);
     const { message, addMessage, setMessage } = useContext(MessageContext);
     const { getCalendarUrl } = useContext(AuthContext);
@@ -29,12 +29,6 @@ const MessageComposer = () => {
         window.scrollTo(0, document.body.scrollHeight);
     };
 
-    const componentDisplaySwitch = (input) => {
-        setState({
-            ...state,
-            displayComp: input,
-        });
-    };
 
     const addMeetSchedulingLink = async () => {
         const url = await getCalendarUrl();
@@ -48,23 +42,30 @@ const MessageComposer = () => {
     };
 
     const handleIconClick = (eventKey) => {
+        console.log(eventKey,displayComp,displayComp==eventKey)
         if (eventKey === 'ScheduleMeet') {
             addMeetSchedulingLink();
             return;
         }
-        componentDisplaySwitch(eventKey);
+        if(displayComp==eventKey){
+            console.log("inside")
+            setDisplayComp('DefaultCard'); 
+        }else{
+            setDisplayComp(eventKey);
+        }
+      
     };
 
     const renderNavItem = (eventKey, icon, tooltipText) => (
         <li key={eventKey}>
             <a
-                className={`px-1 ${state.displayComp === eventKey ? 'active' : ''}`}
+                className={`px-1 ${displayComp === eventKey ? 'text-black' : 'text-white'}`}
                 onClick={() => handleIconClick(eventKey)}
                 data-bs-toggle="tooltip"
                 data-bs-placement="bottom"
                 title={tooltipText}
             >
-                {React.cloneElement(icon, { size: 20, color: '#FFFFFF' })}
+                {React.cloneElement(icon, { size: 20})}
                 <span className="d-none d-sm-inline">{tooltipText}</span>
             </a>
         </li>
@@ -154,30 +155,42 @@ const MessageComposer = () => {
             setMessage();
         }
     };
+    const saveMessageAsTemplate = async () => {
+        const heading=new Date().toISOString();
+        try {
+          const response = await fetch(API_ENDPOINTS.skoopCrmAddPreloadedResponses, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+            },
+            body: JSON.stringify({
+              heading:"Saved message"+heading,
+              description:message,
+            }),
+          });
+      
+          if (response.ok) {
+            toast.success('Message saved to template successfully');
+          } else {
+            toast.error('Failed to add as template message. Please try again.');
+          }
+        } catch (error) {
+          console.error('Error to add as template message:', error);
+          toast.error('Failed to add as template message. Please try again.');
+        }
+      };
     return (
-        <div id='footermessage' className=' w-full'>
+        !expand && <div id='footermessage' className=' w-full'>
        <ChatWindowSelection/>
-            <MessageWindow />
-            <div className="container mt-4">
-                {state.displayComp === 'Chatgpt' && <ChatGpt appendToBody={handleInsertion} />}
-                {state.displayComp === 'Giphy' && <GiphyWindow appendToBody={handleInsertion} />}
-                {state.displayComp === 'Library' && <Library appendToBody={handleInsertion} />}
-                {state.displayComp === 'AI' && <AI appendToBody={handleInsertion} />}
-
-                {/* {!message && state.displayComp === 'DefaultCard' && (
-                    <div className="card">
-                        <div className="card-body">
-                            <h5 className="card-title text-center">Welcome to Skoop</h5>
-                            <p className="card-text text-center">
-                                This is your default view. You can switch between different tabs on
-                                the Top to explore various features.
-                                <br />
-                                Explore the features and make the most out of your{' '}
-                                {isLinkedin ? 'Chatting' : 'Email '} experience!
-                            </p>
-                        </div>
-                    </div>
-                )} */}
+           
+            <div className="container">
+            {displayComp === 'AI' && <AI appendToBody={handleInsertion} />}
+                {displayComp === 'Chatgpt' && <ChatGpt appendToBody={handleInsertion} />}
+                
+                {displayComp === 'Giphy' && <GiphyWindow appendToBody={handleInsertion} />}
+                {displayComp === 'Library' && <Library appendToBody={handleInsertion} />}
+                <MessageWindow />
             </div>
             <nav className="navbar pe-3" id="messageFooter" >
                 <div class="navbar-brand d-flex flex-row ps-2">
@@ -207,7 +220,16 @@ const MessageComposer = () => {
                 </div>
                 <div className="d-flex flex-row  align-items-right ">
                 
-         
+                
+            {message && <button
+              type="button"
+              className="btn send-button  d-flex  align-items-center justify-content-center"
+              onClick={() => saveMessageAsTemplate()}
+              title='Save the custom message as Template'
+            >
+              Save 
+            </button>}
+        
                 <button
                     className="btn send-button d-flex  align-items-center justify-content-center"
                     type="button"

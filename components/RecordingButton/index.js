@@ -574,15 +574,15 @@ const RecordingButton = () => {
                                 </button>
                             </div>
                             <div className="modal-body d-flex flex-row justify-content-between px-4 align-items-center">
-                                <div onClick={() =>
+                                <div className={`p-2 border-video-selector ${selectedVideoStyle=='Vertical Mode'?'bg-selected-videoMode':""}`} onClick={() =>
                                                     handleVideoStyleSelect('Vertical Mode')
                                                 }>
                                     <Vertical />
                                 </div>
-                                <div  onClick={() => handleVideoStyleSelect('Horizontal')}  >
+                                <div className={`p-2 border-video-selector ${selectedVideoStyle=='Horizontal'?'bg-selected-videoMode':""}`} onClick={() => handleVideoStyleSelect('Horizontal')}  >
                                     <Horizontal  />
                                 </div>
-                                <div onClick={() => handleVideoStyleSelect('Square')}>
+                                <div className={`p-2 border-video-selector ${selectedVideoStyle=='Square'?'bg-selected-videoMode':""}`} onClick={() => handleVideoStyleSelect('Square')}>
                                     <Square   />
                                 </div>
                             </div>

@@ -90,13 +90,13 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
 
   return (
     <div className="col-6" key={video.id}>
-      <div className="card mb-1 card-overflow-hidden">
+      <div className="card mb-1 card-overflow-hidden min-width-165">
       <div className="video-card position-relative" onClick={handlePreviewClick}>
           <iframe
             title={video.video_title}
             width="100%"
             height="100vw"
-            src={'https://skoop.hubs.vidyard.com/watch/'+video.link}
+            src={video.link}
             allow="autoplay; fullscreen; picture-in-picture"
             className="no-border"
           />
@@ -108,7 +108,7 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
           <h8 className="card-title text-truncate title-width" title={video.video_title}>
             {video.video_title}
           </h8>
-          <div className="btn-group d-flex flex-wrap" role="group">
+          <div className="d-flex flex-wrap" role="group">
             <button
               title="Insert link to mail body"
               className="btn btn-link btn-sm"
@@ -137,7 +137,7 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
                 <FaRegStar />
               )}
             </button>
-            <div className="d-flex flex-wrap justify-content-center">
+            
               <button
                 title="Rename video"
                 className="btn btn-link btn-sm"
@@ -152,7 +152,7 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
               >
                 <MdMoveUp />
               </button>
-            </div>
+            
           </div>
           {showMovePopup && (
             <MoveVideoPopup

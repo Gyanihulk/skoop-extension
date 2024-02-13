@@ -5,18 +5,18 @@ import GlobalStatesContext from '../../contexts/GlobalStates';
 import { FaRegCalendarCheck } from 'react-icons/fa';
 import ScreenContext from '../../contexts/ScreenContext';
 import API_ENDPOINTS from '../apiConfig';
-import { FiMinimize2, FiMaximize2 } from 'react-icons/fi';
 import AuthContext from '../../contexts/AuthContext.js';
 import CarouselComponent from '../HelperVideos/index.js';
 import { MdContactSupport } from 'react-icons/md';
+import MessageContext from '../../contexts/MessageContext.js';
 
 export default function Header() {
     const { isAutheticated, setisAutheticated } = useContext(AuthContext);
     const { navigateToPage, activePage } = useContext(ScreenContext);
-    const { setScraperPage, scraperPage, isProfilePage } = useContext(GlobalStatesContext);
-    const [expand, setExpand] = useState(false);
+    const { setScraperPage, scraperPage, isProfilePage, expand, setExpand} = useContext(GlobalStatesContext);
+    
     const [isCarouselOpen, setIsCarouselOpen] = useState(false);
-
+    const { message, setMessage } = useContext(MessageContext);
     const [profileOpen, setProfileOpen] = useState(false);
 
     useEffect(() => {
@@ -45,6 +45,7 @@ export default function Header() {
     const handleLogOut = () => {
         localStorage.setItem('accessToken', JSON.stringify('none'));
         setisAutheticated(false);
+        setMessage();
         navigateToPage('SignInIntro');
     };
     const executeClose = () => {
