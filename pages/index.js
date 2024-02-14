@@ -14,6 +14,7 @@ import CalendarSync from '../Screens/CalendarSync';
 import Welcome from '../Screens/Welcome';
 import SignIn2 from '../Screens/SignIn2';
 import Header from '../components/Header';
+import SignInWith from '../Screens/SignInWith';
 
 export default function Home() {
     const { verifyToken, isAutheticated, newUser } = useContext(AuthContext);
@@ -37,20 +38,20 @@ export default function Home() {
     // let activePage='CalendarSync'
     return (
         <>
-        {!["Welcome", "SignInIntro", "SignIn","SignUp" ," ","CalendarSync"].includes(activePage) && <Header />}
+        {!["Welcome", "SignInIntro","SignIn","SignUp"," ","CalendarSync","ForgotPassword"].includes(activePage) && <Header />}
 
-            {activePage === ' ' && <LoadingScreen />}
-            {activePage === 'Home' && <Homepage />}
-            {activePage === 'SignIn' && <SignIn />}
-            {activePage === 'SignUp' && <SignUp />}
-            {activePage === 'AccountSettings' && <AccountSettings/>}
-            {activePage == 'ChatPage' && <ChatPage />}
-            {activePage == 'ContactPage' && <ContactPage />}
-            {activePage == 'ProfileScraper' && <ProfileScraper />}
-            {activePage == 'ForgotPassword' && <ForgotPassword />}
-            {activePage == 'CalendarSync' && <CalendarSync />}
-            {activePage=='Welcome' && <Welcome/>}
-            {activePage=='SignInIntro' && <SignIn2/>}
+        {activePage === " " && <LoadingScreen />}
+      {activePage === "Home" && <Homepage />}
+      {activePage === "SignIn" && <SignIn />}
+      {activePage === "SignUp" && <SignUp />}
+      {activePage === "AccountSettings" && <AccountSettings />}
+      {activePage == "ChatPage" && <ChatPage />}
+      {activePage == "ContactPage" && <ContactPage />}
+      {activePage == "ProfileScraper" && <ProfileScraper />}
+      {activePage == "ForgotPassword" && <ForgotPassword />}
+      {activePage == "CalendarSync" && <CalendarSync />}
+      {activePage == "Welcome" && <Welcome />}
+      {activePage == "SignInIntro" && <SignInWith />}
         </>
     );
 }

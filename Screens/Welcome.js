@@ -6,12 +6,17 @@ const Welcome = () => {
     const { navigateToPage } = useContext(ScreenContext);
 
     return (
-        <div className="welcome-background-image">
-            <button
-                className="get-started-button"
-                onClick={() => {navigateToPage('SignInIntro'); localStorage.setItem('welcomePageShown',true)}}
-            >
-            </button>
+        <div className="welcome-main">
+            <div className='welcome-logo'>
+                <img src="/screens/logo.png" alt="Skoop" />
+            </div>
+            <div className='welcom-content'>
+                <h3>Welcome to</h3>
+                <h1>Skoop<br />Application</h1>
+                <button className='get-start-btn' onClick={() => { navigateToPage('SignInIntro'); localStorage.setItem('welcomePageShown', true) }}>
+                    Get started
+                </button>
+            </div>
         </div>
     );
 };

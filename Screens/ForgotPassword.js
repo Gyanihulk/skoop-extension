@@ -1,170 +1,71 @@
-import React, { useState, useContext } from 'react';
-import AuthContext from '../contexts/AuthContext';
-import ScreenContext from '../contexts/ScreenContext';
-import toast, { Toaster } from 'react-hot-toast';
+import React, { useState, useContext } from "react";
+import { MdEmail } from "react-icons/md";
+import { IoMdArrowBack } from "react-icons/io";
+import CustomInputBox from "./components/CustomInputBox";
+import ScreenContext from "../contexts/ScreenContext";
 
 const ForgotPassword = () => {
-  const [step, setStep] = useState(1);
-  const [email, setEmail] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [OTP, setOTP] = useState('');
-  const { getOtpForPasswordReset, resetPasswordUsingOtp } = useContext(AuthContext);
+  const [isForgotSubmit, setIsForgotSubmit] = useState(false);
   const { navigateToPage } = useContext(ScreenContext);
 
-  const showToast = (message, type = 'success') => {
-    toast[type](message);
-  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const emailValue = event.target.elements.email.value.trim();
 
-  const handleSubmitForm1 = async (e) => {
-    e.preventDefault();
-    const isOtpSent = await getOtpForPasswordReset(email);
-    if (!isOtpSent) {
-      showToast('Could not send OTP', 'error');
-      return;
-    }
-    showToast('OTP sent');
-    setStep(2); 
-  };
-
-  const handleSubmitForm2 = async (e) => {
-    e.preventDefault();
-    if (confirmPassword !== newPassword) {
-      showToast('Confirm password and new password fields do not match', 'error');
-      return;
-    }
-    const isPasswordReset = await resetPasswordUsingOtp(email, OTP, newPassword);
-    if (!isPasswordReset) {
-      showToast('Password reset failed', 'error');
+    if (!emailValue) {
+      console.log(`forgot password 1: ${emailValue}`);
+      setIsForgotSubmit(false);
     } else {
-      showToast('Password reset successful', 'success');
-      navigateToPage('SignIn');
+      console.log(`forgot password 2: ${emailValue}`);
+      setIsForgotSubmit(true);
     }
   };
 
   return (
-    <div className="container">
-  <div className="row">
-    <div className="col-md-6 offset-md-3">
-      <div className="card my-1">
-      <Toaster position="top-right" />
-        {step === 1 && (
-          <form
-            className="card-body cardbody-color p-lg-5"
-            onSubmit={handleSubmitForm1}
-          >
-            <h2 className="text-center text-dark mt-3">Forgot Password ?</h2>
-            <p className="text-center">You can reset your password here.</p>
-            <div className="text-center">
-             <img
-                src="chrome-extension://gplimcomjkejccjoafekbjedgmlclpag/icons/icon.png"
-                className="img-fluid profile-image-pic img-thumbnail rounded-circle my-2"
-                width="100px"
-                alt="profile"
-              />          
-            </div>
-            <h4 className="text-center text-dark text-decoration-underline mb-3">Step 1</h4>
-            <div className="mb-3">
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Enter Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+    <div class="container px-4 forgot-password-main mt-5">
+      <div
+        className="d-flex cursor-pointer"
+        onClick={() => navigateToPage("SignIn")}
+      >
+        <IoMdArrowBack size={20} />
+        <h6 className="ms-1">Back to Login</h6>
+      </div>
+      <div className="forgot-password-content">
+        {!isForgotSubmit ? (
+          <form onSubmit={handleSubmit}>
+            <h3>Forgot Password</h3>
+            <p class="text-muted fs-6 mb-4">
+              Enter your email and we'll send you instructions on how to reset
+              your password.
+            </p>
+            <div class="form-group">
+              <CustomInputBox
+                type="email"
+                placeholder="Email address"
+                name="email"
               />
             </div>
-            <div className="text-center">
-              <button type="submit" className="btn btn-primary mb-2 w-100">
-                Next
-              </button>
-            </div>
-          </form>
-        )}
-
-        {step === 2 && (
-          <div>
-            <form
-              className="card-body cardbody-color p-lg-5"
-              onSubmit={handleSubmitForm2}
+            <button
+              type="submit"
+              class="btn btn-primary w-100 mt-5 py-2"
+              style={{ backgroundColor: "#2D68C4" }}
             >
-              <div className="text-center">
-              <img
-                  src="chrome-extension://gplimcomjkejccjoafekbjedgmlclpag/icons/icon.png"
-                  className="img-fluid profile-image-pic img-thumbnail rounded-circle my-3"
-                  width="100px"
-                  alt="profile"
-                />          
-              </div>
-
-              <h2 className="text-center text-dark text-decoration-underline mb-3">Step 2</h2>
-              <div className="mb-3">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter OTP"
-                  value={OTP}
-                  onChange={(e) => setOTP(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <input
-                  type="password"
-                  className="form-control"
-                  placeholder="Enter New Password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <input
-                  type="password"
-                  className="form-control"
-                  placeholder="Confirm Password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="text-center">
-                <button type="submit" className="btn btn-primary w-100">
-                  Submit
-                </button>
-              </div>
-            </form>
-
-            <div className="text-center">
-              <button
-                onClick={handleSubmitForm1}
-                className="btn btn-link"
-              >
-                Send OTP Again
-              </button>
-              <button
-                onClick={() => setStep(1)}
-                className="btn btn-link text-dark"
-              >
-                Back
-              </button>
+              Submit
+            </button>
+          </form>
+        ) : (
+          <div className="d-flex flex-column justify-content-center align-content-center">
+            <div className="d-flex justify-content-center w-100 mb-4">
+              <MdEmail size={60} color="#2D68C4" />
             </div>
+            <p className="text-center">
+              Email has been sent to your registered email. Please check the
+              reset link to reset the password.
+            </p>
           </div>
         )}
-
-        <div className="text-center mb-3">
-          <button
-            onClick={() => navigateToPage("SignIn")}
-            className="btn btn-outline-dark btn-sm"
-          >
-            Go to Sign In
-          </button>
-        </div>
       </div>
     </div>
-  </div>
-</div>
-
   );
 };
 
