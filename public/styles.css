@@ -3,17 +3,17 @@
     border-radius: 10px; 
 }
 
-#skoop-extension-container{
+#skoop-extension-container {
     position: fixed;
-    top: 66px;
+    top: 8vh; 
     right: 0;
-    width: 375px;
-    height: 812px;
+    width: 20vw; 
+    height: 80vh; 
     z-index: 10000;
     display: block;
     border: 1px solid #000;
     background-clip: padding-box;
-}
+  }
 
 .skoop-drag-button{
     left: 10px;
@@ -25,3 +25,4 @@
     border: none; 
     border-radius: 5px; 
 }
+

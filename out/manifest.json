@@ -12,11 +12,7 @@
   },
   "permissions": [
     "identity",         
-    "https://www.googleapis.com/",
-    "camera",
-    "microphone",
-    "tabs" ,"<all_urls>", "scripting", "https://mail.google.com/",
-    "https://www.linkedin.com/",
+    "tabs" , "scripting",
     "activeTab",
     "storage",
     "clipboardWrite"
