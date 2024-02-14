@@ -14,6 +14,7 @@ const MessageWindow = () => {
         };
 
         adjustHeight();
+        console.log(message)
     }, [message]); 
 
     const handleTextChange = (event) => {
@@ -24,7 +25,7 @@ const MessageWindow = () => {
    
             <textarea ref={textareaRef} class="form-control" id="floatingTextarea" className="form-control auto-height-textarea" 
                 placeholder='Type your message' aria-label="With textarea" 
-                value={message} onChange={handleTextChange} ></textarea>
+                value={message==null?'':message} onChange={handleTextChange} ></textarea>
    
         
     );

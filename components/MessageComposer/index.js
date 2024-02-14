@@ -29,7 +29,7 @@ const MessageComposer = () => {
         window.scrollTo(0, document.body.scrollHeight);
     };
 
-
+    useEffect(()=>{},[message])
     const addMeetSchedulingLink = async () => {
         const url = await getCalendarUrl();
         if (isLinkedin) {
@@ -152,7 +152,7 @@ const MessageComposer = () => {
             insertHtmlAtPositionInMail(message, focusedElementId);
         }
         if (selectedChatWindows?.length !== 0) {
-            setMessage();
+            setMessage(null);
         }
     };
     const saveMessageAsTemplate = async () => {

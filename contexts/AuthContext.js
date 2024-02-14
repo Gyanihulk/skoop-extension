@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import API_ENDPOINTS from '../components/apiConfig';
 import ScreenContext from './ScreenContext';
 import toast from 'react-hot-toast';
+import { sendMessageToBackgroundScript } from '../lib/sendMessageToBackground';
 
 const AuthContext = createContext();
 
@@ -44,6 +45,7 @@ export const AuthProvider = ({ children }) => {
                 const resjson = await response.json();
                 localStorage.setItem('accessToken', JSON.stringify(resjson.accessToken));
                 localStorage.setItem('skoopUsername', JSON.stringify(resjson.skoopUsername));
+                sendMessageToBackgroundScript({action: "storeToken", token: resjson.accessToken});
                 setisAutheticated(true);
                 navigateToPage('Home');
             } else {
@@ -75,6 +77,7 @@ export const AuthProvider = ({ children }) => {
                 setisAutheticated(true);
                 localStorage.setItem('accessToken', JSON.stringify(result.accessToken));
                 localStorage.setItem('skoopUsername', JSON.stringify(result.skoopUsername));
+                sendMessageToBackgroundScript({action: "storeToken", token: result.accessToken});
                 if (result.newUser) {
                     setNewUser(true);
                     navigateToPage('CalendarSync');
@@ -82,7 +85,7 @@ export const AuthProvider = ({ children }) => {
                     navigateToPage('Home');
                 }
             } else {
-                toast.error('Could not sign in.');
+                toast.error('Could not sign in Correctly.');
             }
         } catch (err) {
             console.log(err);
@@ -251,10 +254,12 @@ export const AuthProvider = ({ children }) => {
                 const resjson = await res.json();
                 localStorage.setItem('accessToken', JSON.stringify(resjson.accessToken));
                 localStorage.setItem('skoopUsername', JSON.stringify(resjson.skoopUsername));
+                sendMessageToBackgroundScript({action: "storeToken", token: resjson.accessToken});
                 toast.success('Sign up was complete', { id: toastId });
                 setNewUser(true);
                 setisAutheticated(true);
                 navigateToPage('CalendarSync');
+                
             } else toast.error('Email already exists ', { id: toastId });
         } catch (err) {
             toast.dismiss();

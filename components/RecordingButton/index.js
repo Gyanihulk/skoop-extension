@@ -43,7 +43,7 @@ const RecordingButton = () => {
     const [isUploading, setIsUploading] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [bloburl, setBlobUrl] = useState(null);
-    const [aspectRatio, setAspectRatio] = useState([9, 16]);
+
     const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
     const [selectedVideoStyle, setSelectedVideoStyle] = useState('Vertical Mode');
     const [iconsVisible, setIconsVisible] = useState(true);
@@ -51,21 +51,13 @@ const RecordingButton = () => {
     const [showRenameModal, setShowRenameModal] = useState(false);
     const [newVideoTitle, setNewVideoTitle] = useState('');
     const [uploadedVideoName, setUploadedVideoName] = useState('');
-
+    
     const { setGlobalRefresh, isLinkedin, selectedChatWindows, focusedElementId } =
         useContext(GlobalStatesContext);
     const { getThumbnail, deleteVideo } = useContext(MediaUtilsContext);
-    const { message, addMessage } = useContext(MessageContext);
+    const {  addMessage } = useContext(MessageContext);
     const handleVideoStyleSelect = (style) => {
-        console.log(style)
         setSelectedVideoStyle(style);
-        if (style === 'Square') {
-            setAspectRatio([10, 10]);
-        } else if (style === 'Vertical Mode') {
-            setAspectRatio([16, 9]);
-        } else {
-            setAspectRatio([9, 16]);
-        }
         toggleVideoSettings();
     };
     const toggleVideoSettings = () => {

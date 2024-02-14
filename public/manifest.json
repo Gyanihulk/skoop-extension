@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Skoop",
   "short_name": "N-C-S",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Skoop extension ",
   "icons": {
     "16": "/icons/icon.png",
@@ -28,6 +28,10 @@
       "matches": ["*://mail.google.com/*","*://www.linkedin.com/*"],
       "js": ["gmailContentScript.js"],
       "css": ["styles.css"]
+    },
+    {
+      "matches": ["*://skoopcrm.sumits.in/*"],
+      "js": ["contentScriptCrm.js"]
     }
   ],
   "oauth2": {

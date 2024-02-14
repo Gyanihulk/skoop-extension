@@ -57,7 +57,11 @@ if (request.action === 'startRecording' || request.action === 'stopRecording') {
   });
 
 }
-
+if (request.action === "storeToken" && request.token) {
+  chrome.storage.local.set({skoopCrmAccessToken: request.token}, function() {
+    console.log("Token stored in extension local storage.");
+  });
+}
 if (request.message === 'ChatPage') {
   console.log("SignIn")
   chrome.tabs.query({}, (tabs) => {
