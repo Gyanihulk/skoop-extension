@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FcGoogle } from "react-icons/fc";
+import AuthContext from "../../../contexts/AuthContext";
 
 const ContinueWithGoogleButton = () => {
-  const handleContinueWithGoogle = () => {
-    // Handle continue with Google
-  };
-
+ 
+  const { handleSocialLogin } = useContext(AuthContext);
   return (
     <button
       className="btn w-100 btn-outline-dark py-2"
-      onClick={handleContinueWithGoogle}
+      onClick={() => handleSocialLogin(2)}
       style={{ borderColor: "#dee2e6" }}
+      
     >
       <FcGoogle />
       <span className="fs-6"> Continue with Google</span>

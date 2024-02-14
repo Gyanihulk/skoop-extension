@@ -12,7 +12,6 @@ import LoadingScreen from '../Screens/LoadingScreen';
 import AuthContext from '../contexts/AuthContext';
 import CalendarSync from '../Screens/CalendarSync';
 import Welcome from '../Screens/Welcome';
-import SignIn2 from '../Screens/SignIn2';
 import Header from '../components/Header';
 import SignInWith from '../Screens/SignInWith';
 
