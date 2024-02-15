@@ -186,7 +186,7 @@ function AI(props) {
   
 
   return (
-    <div className="form-group mx-auto dropDown">
+    <div className="form-group mx-auto bg-white">
       <div className="d-flex justify-content-between align-items-center">
       <div class="form-floating w-100">
       <select className="form-select w-100" id="floatingSelect" value={selectedOption} onChange={handleDropdownChange} size="sm">

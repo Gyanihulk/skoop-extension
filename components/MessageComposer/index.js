@@ -137,23 +137,28 @@ const MessageComposer = () => {
         }
     };
     const handleInsertionToWebsite = async () => {
-        if (isLinkedin) {
-            if (selectedChatWindows?.length === 0) {
-                toast.error('Please select a recipitent');
-                return;
+       if(message===null || message===undefined){
+        toast.error('Please add message!!');
+        return;
+    }
+            if (isLinkedin) {
+                if (selectedChatWindows?.length === 0) {
+                    toast.error('Please select a recipitent');
+                    return;
+                }
+                await insertIntoLinkedInMessageWindow(`<p>${message}</p>`, selectedChatWindows);
+                setTimeout(() => {
+                    handleSend();
+                }, 500);
+                toast.success('Message Sent Successfully!!');
+            } else {
+                insertHtmlAtPositionInMail(message, focusedElementId);
             }
-
-            await insertIntoLinkedInMessageWindow(`<p>${message}</p>`, selectedChatWindows);
-            setTimeout(() => {
-                handleSend();
-            }, 500);
-            toast.success('Message Sent Successfully!!');
-        } else {
-            insertHtmlAtPositionInMail(message, focusedElementId);
-        }
-        if (selectedChatWindows?.length !== 0) {
-            setMessage(null);
-        }
+            if (selectedChatWindows?.length !== 0) {
+                setMessage();
+            }
+       
+        
     };
     const saveMessageAsTemplate = async () => {
         const heading=new Date().toISOString();
@@ -182,9 +187,20 @@ const MessageComposer = () => {
       };
     return (
         !expand && <div id='footermessage' className=' w-full'>
+            {isProfilePage && (
+                <div class="d-grid gap-2">
+                    <button
+                        class="btn btn-primary mt-3"
+                        type="button"
+                        onClick={handleOpenMessageWindow}
+                    >
+                        Message profile
+                    </button>
+                </div>
+            )}
        <ChatWindowSelection/>
            
-            <div className="container">
+            <div className="container bg-white">
             {displayComp === 'AI' && <AI appendToBody={handleInsertion} />}
                 {displayComp === 'Chatgpt' && <ChatGpt appendToBody={handleInsertion} />}
                 
@@ -240,17 +256,7 @@ const MessageComposer = () => {
      
                 </div>
             </nav>
-            {isProfilePage && (
-                <div class="d-grid gap-2">
-                    <button
-                        class="btn btn-primary mt-3"
-                        type="button"
-                        onClick={handleOpenMessageWindow}
-                    >
-                        Message profile
-                    </button>
-                </div>
-            )}
+            
             
         </div>
     );

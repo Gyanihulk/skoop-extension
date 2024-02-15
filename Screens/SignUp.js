@@ -40,7 +40,7 @@ export default function SignUp(props) {
                 <form
                   onSubmit={handleRegister}
                   style={{
-                    paddingTop: "80px",
+                    paddingTop: "60px",
                     fontFamily: "'Lato', sans-serif",
                   }}
                 >

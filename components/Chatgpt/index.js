@@ -270,7 +270,7 @@ const ChatGpt = ({ appendToBody }) => {
 
   return (
     <div>
-      <div className="form-group mx-auto dropDown">
+      <div className="form-group mx-auto dropDown bg-white">
       <div className="d-flex justify-content-between align-items-center">
       <div class="form-floating w-100">
         <select

@@ -13,7 +13,7 @@ const Welcome = () => {
             <div className='welcom-content'>
                 <h3>Welcome to</h3>
                 <h1>Skoop<br />Application</h1>
-                <button className='get-start-btn' onClick={() => { navigateToPage('SignInIntro'); localStorage.setItem('welcomePageShown', true) }}>
+                <button className='get-start-btnw-100' onClick={() => { navigateToPage('SignInIntro'); localStorage.setItem('welcomePageShown', true) }}>
                     Get started
                 </button>
             </div>
