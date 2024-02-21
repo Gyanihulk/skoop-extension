@@ -1,33 +1,32 @@
 import React, { useContext } from "react";
-import SignInForm from "./components/SignInForm";
-import ContinueWithLinkedInButton from "./components/button/ContinueWithLinkedInButton";
-import ContinueWithGoogleButton from "./components/button/ContinueWithGoogleButton";
 import ScreenContext from "../contexts/ScreenContext";
+import SignInForm from "../components/Auth/SignInForm";
+import ContinueWithLinkedInButton from "../components/Auth/button/ContinueWithLinkedInButton";
+import ContinueWithGoogleButton from "../components/Auth/button/ContinueWithGoogleButton";
 
 const SignIn = () => {
   const { navigateToPage } = useContext(ScreenContext);
 
   return (
-    <div className="sign-in-main container px-4 py-5">
-      <div className="mb-3">
+    <div className="sign-in-main container px-4 pt-5">
+      <div className="mb-3 auth-head-content">
         <h1>Welcome Back!</h1>
-        <span class="text-secondary">Sign in with email</span>
+        <p>Sign in with email</p>
       </div>
-      <div>
+      <div className="sign-in-form">
         <SignInForm />
       </div>
       <div className="mt-5">
-        <div className="text-center mb-4">
+        <div className="text-center mb-4 or-with-label">
           <span>or Sign in with</span>
         </div>
         <ContinueWithLinkedInButton />
         <ContinueWithGoogleButton />
-        <div className="text-center mt-3">
+        <div className="text-center mt-2 new-to-skoop-label">
           New to Skoop?{" "}
           <span
             onClick={() => navigateToPage("SignUp")}
-            className="fw-bold cursor-pointer"
-            style={{ color: "#FF8210" }}
+            className="cursor-pointer"
           >
             Create account
           </span>

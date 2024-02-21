@@ -1,24 +1,65 @@
 import React, { useState, useContext } from "react";
-import { MdEmail } from "react-icons/md";
 import { IoMdArrowBack } from "react-icons/io";
-import CustomInputBox from "./components/CustomInputBox";
+import CustomInputBox from "../components/Auth/CustomInputBox";
 import ScreenContext from "../contexts/ScreenContext";
+import CustomButton from "../components/Auth/button/CustomButton";
+import OtpTimer from "otp-timer";
+import AuthContext from "../contexts/AuthContext";
 
 const ForgotPassword = () => {
-  const [isForgotSubmit, setIsForgotSubmit] = useState(false);
   const { navigateToPage } = useContext(ScreenContext);
+  const { getOtpForPasswordReset, resetPasswordUsingOtp } =
+    useContext(AuthContext);
 
-  const handleSubmit = (event) => {
+  const [isOTPSent, setIsOTPSent] = useState(false);
+  const [emailValue, setEmailValue] = useState();
+  const [otpEmpty, setOTPEmpty] = useState(false);
+  const [passwordEmpty, setPasswordEmpty] = useState(false);
+  const [confirmPasswordEmpty, setConfirmPasswordEmpty] = useState(false);
+  const [isPasswordMatch, setIsPasswordMatch] = useState(false);
+
+  const handleSendOTP = (event) => {
     event.preventDefault();
-    const emailValue = event.target.elements.email.value.trim();
+    const email = event.target.elements.email.value.trim();
 
-    if (!emailValue) {
-      console.log(`forgot password 1: ${emailValue}`);
-      setIsForgotSubmit(false);
+    setEmailValue(email);
+    setIsOTPSent(!emailValue);
+
+    if (email) {
+      getOtpForPasswordReset(email);
+      setIsOTPSent(true);
     } else {
-      console.log(`forgot password 2: ${emailValue}`);
-      setIsForgotSubmit(true);
+      setIsOTPSent(false);
     }
+  };
+
+  const handleResetPassword = (event) => {
+    event.preventDefault();
+
+    const otpValue = event.target.elements.otp.value.trim();
+    const passwordValue = event.target.elements.password.value.trim();
+    const confirmPasswordValue =
+      event.target.elements.confirmPassword.value.trim();
+
+    setOTPEmpty(!otpValue);
+    setPasswordEmpty(!passwordValue);
+    setConfirmPasswordEmpty(!confirmPasswordValue);
+
+    if (otpValue && passwordValue && confirmPasswordValue) {
+      if (passwordValue === confirmPasswordValue) {
+        resetPasswordUsingOtp(emailValue, otpValue, passwordValue);
+      } else {
+        setIsPasswordMatch(true);
+      }
+      console.log(`Email value: ${emailValue}`);
+      console.log(`OTP: ${otpValue}`);
+      console.log(`Password: ${passwordValue}`);
+      console.log(`Confirm Password: ${confirmPasswordValue}`);
+    }
+  };
+
+  const handleResendOTP = () => {
+    getOtpForPasswordReset(emailValue);
   };
 
   return (
@@ -31,8 +72,8 @@ const ForgotPassword = () => {
         <h6 className="ms-1">Back to Login</h6>
       </div>
       <div className="forgot-password-content">
-        {!isForgotSubmit ? (
-          <form onSubmit={handleSubmit}>
+        {!isOTPSent ? (
+          <form onSubmit={handleSendOTP}>
             <h3>Forgot Password</h3>
             <p class="text-muted fs-6 mb-4">
               Enter your email and we'll send you instructions on how to reset
@@ -45,24 +86,60 @@ const ForgotPassword = () => {
                 name="email"
               />
             </div>
-            <button
-              type="submit"
-              class="btn btn-primary w-100 mt-5 py-2"
-              style={{ backgroundColor: "#2D68C4" }}
-            >
-              Submit
-            </button>
+            <div className="mt-3">
+              <CustomButton type="submit" child="Submit" />
+            </div>
           </form>
         ) : (
-          <div className="d-flex flex-column justify-content-center align-content-center">
-            <div className="d-flex justify-content-center w-100 mb-4">
-              <MdEmail size={60} color="#2D68C4" />
+          <form onSubmit={handleResetPassword}>
+            <div class="form-group">
+              <CustomInputBox type="text" placeholder="Enter OTP" name="otp" />
+              {otpEmpty && (
+                <label className="mb-1" style={{ color: "#E31A1A" }}>
+                  Please enter otp!
+                </label>
+              )}
+              <CustomInputBox
+                type="password"
+                placeholder="New password"
+                name="password"
+              />
+              {passwordEmpty && (
+                <label className="mb-1" style={{ color: "#E31A1A" }}>
+                  Please enter password!
+                </label>
+              )}
+              <CustomInputBox
+                type="password"
+                placeholder="Confirm password"
+                name="confirmPassword"
+              />
+              {confirmPasswordEmpty && (
+                <label className="mb-1" style={{ color: "#E31A1A" }}>
+                  Please enter confirm password!
+                </label>
+              )}
+              {isPasswordMatch && (
+                <label className="text-danger mb-1">
+                  Password does not match!
+                </label>
+              )}
             </div>
-            <p className="text-center">
-              Email has been sent to your registered email. Please check the
-              reset link to reset the password.
-            </p>
-          </div>
+            <div className="mt-3">
+              <CustomButton type="submit" child="Change Password" />
+              <div className="d-flex justify-content-between mt-2">
+                <OtpTimer
+                  seconds={30}
+                  minutes={0}
+                  buttonColor={"#321fdb"}
+                  background={"#fff"}
+                  resend={handleResendOTP}
+                  text={"Resend OTP in"}
+                  ButtonText={"Resend OTP"}
+                />
+              </div>
+            </div>
+          </form>
         )}
       </div>
     </div>

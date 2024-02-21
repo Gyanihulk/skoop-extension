@@ -1,32 +1,34 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;400;500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lato&family=Poppins:wght@200;300;400;500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@600;400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato&family=Poppins:wght@200;300;400;500&display=swap");
 
+.gb_Pa.gb_Td .gb_b.gb_w {
+  margin-right: 2.5rem;
+}
 #skoop-webcam-container {
-    border: 2px solid #000000; 
-    border-radius: 10px; 
+  border: 2px solid #000000;
+  border-radius: 10px;
 }
 
 #skoop-extension-container {
-    position: fixed;
-    top: 8vh; 
-    right: 0;
-    width: 20vw; 
-    height: 80vh; 
-    z-index: 10000;
-    display: block;
-    border: 1px solid #000;
-    background-clip: padding-box;
-    min-width: 415px;
-  }
-
-.skoop-drag-button{
-    left: 10px;
-    top: 10px;
-    width: 40px;
-    height: 40px;
-    position: absolute;
-    cursor: move;
-    border: none; 
-    border-radius: 5px; 
+  position: fixed;
+  top: 12px;
+  right: 0;
+  width: 20vw;
+  height: 80vh;
+  z-index: 10000;
+  display: block;
+  border: 1px solid #000;
+  background-clip: padding-box;
+  min-width: 415px;
 }
 
+.skoop-drag-button {
+  left: 10px;
+  top: 10px;
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  cursor: move;
+  border: none;
+  border-radius: 5px;
+}

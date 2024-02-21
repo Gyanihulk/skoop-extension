@@ -3,17 +3,15 @@ import { FaLinkedinIn } from "react-icons/fa6";
 import AuthContext from "../../../contexts/AuthContext";
 
 const ContinueWithLinkedInButton = () => {
- 
   const { handleSocialLogin } = useContext(AuthContext);
   return (
     <button
-      className="btn w-100 py-2 mb-3 text-white"
-      s
+      className="btn w-100 mb-2 text-white"
+      id="sign-in-with-linkedIn"
       onClick={() => handleSocialLogin(1)}
-      style={{ backgroundColor: "#007BB5" }}
     >
-      <FaLinkedinIn />
-      <span className="fs-6"> Continue with LinkedIn</span>
+      <FaLinkedinIn size={20} />
+      <span className="ms-2 fs-6"> Continue with LinkedIn</span>
     </button>
   );
 };

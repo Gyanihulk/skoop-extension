@@ -1,15 +1,11 @@
+/* Lato */
+@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 
+/* Montserrat */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
 
-
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;400;500&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lato&family=Poppins:wght@200;300;400;500&display=swap');
-
-* {
-  font-family: "Montserrat", sans-serif;
-}
-
-
-
+/* Poppins */
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
 .sbl-circ-ripple {
   height: 56px;
@@ -53,7 +49,7 @@
   }
 }
 .status_bar {
-  color: #0A66C2;
+  color: #0a66c2;
 }
 
 #skoop_record_button {
@@ -62,7 +58,7 @@
   justify-content: center;
   width: 100px; /* Assuming the button is 100x100 pixels */
   height: 100px;
-  background-color: #2D68C4; /* The blue background color from your design tool */
+  background-color: #2d68c4; /* The blue background color from your design tool */
   color: white; /* Assuming the text color is white */
   border-radius: 50%; /* This will make it a circle */
   border: none; /* No border by default, adjust if necessary */
@@ -72,20 +68,18 @@
   font-size: 16px; /* Adjust as necessary */
   text-decoration: none; /* In case it's an anchor tag */
   transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transition for hover effects */
-
 }
 
-#skoop_record_button button{
+#skoop_record_button button {
   width: 60px !important;
   text-align: center;
 }
-.record-button-bottom-text{
-  font-family: 'Montserrat', sans-serif;
+.record-button-bottom-text {
+  font-family: "Montserrat", sans-serif;
   margin-top: 15px;
   font-size: 14px;
   font-weight: 400;
 }
-
 
 @keyframes bg-scrolling-reverse {
   100% {
@@ -98,7 +92,7 @@
   }
 }
 
-#floatingTextarea{
+#floatingTextarea {
   height: 149px !important;
 }
 /* Chatwindow */
@@ -121,8 +115,6 @@
   margin: 0;
   border: none;
 }
-
-
 
 /* Chatwindow links preview*/
 .linkpreviewcard {
@@ -170,7 +162,6 @@
   background-color: transparent;
   color: black;
 }
-
 
 .icon-style {
   color: black;
@@ -269,14 +260,14 @@
 }
 
 .custom-dropdown {
-position: relative;
+  position: relative;
 }
 
 .custom-dropdown-menu {
-margin-left: -150px; 
+  margin-left: -150px;
 }
 
-.brand-text{
+.brand-text {
   margin-left: -50px;
 }
 
@@ -299,8 +290,7 @@ margin-left: -150px;
   width: 70%;
 }
 
-
-.chatgpt-button{
+.chatgpt-button {
   font-size: 14px;
 }
 
@@ -334,17 +324,17 @@ margin-left: -150px;
 }
 
 .gif-result {
-cursor: pointer;
-display: inline-block;
-margin: 0;
-width: 25%;
+  cursor: pointer;
+  display: inline-block;
+  margin: 0;
+  width: 25%;
 }
 
 .gif-img {
-width: 100%;
-height: auto;
-border-radius: 8px;
-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .no-wrap {
@@ -358,12 +348,9 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: inline-block;
 }
 
-
-
 .card-overflow-hidden {
   overflow: hidden;
 }
-
 
 .lib-button {
   margin-right: 8px;
@@ -421,7 +408,7 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
 .customTextContainer {
   margin-left: 7px;
-  max-width: '100px'
+  max-width: "100px";
 }
 
 .customDirectoryName {
@@ -444,7 +431,7 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   color: #0d6efd;
   border: none;
   background: none;
-  cursor: pointer; 
+  cursor: pointer;
 }
 
 .custom-Cards {
@@ -464,7 +451,7 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
 }
 
-.bgcolour{
+.bgcolour {
   background-color: black;
 }
 
@@ -483,7 +470,7 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   color: #0d6efd;
   border: none;
   margin-right: 6px;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 
 /* pre determined msg */
@@ -508,12 +495,12 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .button-size {
-  font-size: '14px'
+  font-size: "14px";
 }
 
 .save-button {
-  font-size: '14px';
-  color: '#0a66c2'
+  font-size: "14px";
+  color: "#0a66c2";
 }
 
 /* video recorder */
@@ -564,8 +551,6 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   height: 100%;
 }
 
-
-
 /* window selection */
 
 .selection-container {
@@ -591,14 +576,12 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
 }
 
-
 /*home page audio/video toggle icon*/
 .swapicon {
   font-size: 30px;
   margin-left: 20px;
   cursor: pointer;
 }
-
 
 .loading-screen-container {
   display: flex;
@@ -621,8 +604,8 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: rgba(0, 0, 0, 0.2); 
 }
 
-.modal-header{
-  font-family: 'Montserrat', sans-serif;
+.modal-header {
+  font-family: "Montserrat", sans-serif;
   font-size: 16px;
 }
 
@@ -681,8 +664,6 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border: none;
 }
 
-
-
 .bold-text {
   font-weight: bold;
 }
@@ -721,20 +702,19 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   color: white;
 }
 
-
 .email-button {
   background-color: white;
-  color: #2D68C4;
+  color: #2d68c4;
   border: none;
   font-size: 16px;
 }
 
-.button-size{
+.button-size {
   font-size: 16px;
 }
 
 .footer-font {
-  color: #FF8210;
+  color: #ff8210;
   text-decoration: none;
 }
 
@@ -745,9 +725,8 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border: none;
 }
 
-
 .linkedin-button {
-  background-color: #007BB5;
+  background-color: #007bb5;
   border: none;
   font-size: 16px;
 }
@@ -761,38 +740,36 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border: none;
 }
 
-
 .custom-text-color {
-  color: #2C2D2E80;
+  color: #2c2d2e80;
 }
 
 .custom-h1 {
   font-size: 6rem; /* Adjust size as needed */
-  color: #FF8210;
+  color: #ff8210;
   font-family: Hiatus, sans-serif; /* Specify the desired font family */
   font-weight: bold;
 }
 
-.get-started{
-  background-color: #2D68C4;
+.get-started {
+  background-color: #2d68c4;
 }
 
 .full-page {
-  background-image: url('https://i0.wp.com/demo.athemes.com/sydney-redesign/wp-content/uploads/sites/103/2019/10/video_image.png');
+  background-image: url("https://i0.wp.com/demo.athemes.com/sydney-redesign/wp-content/uploads/sites/103/2019/10/video_image.png");
   background-size: cover;
   background-position: center;
   height: 90vh;
 }
-
 
 .full-page2 {
-  background-image: url('https://images.unsplash.com/photo-1593697972496-8f31cba830f2?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-image: url("https://images.unsplash.com/photo-1593697972496-8f31cba830f2?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
   background-size: cover;
   background-position: center;
   height: 90vh;
 }
 
-.skoop-font{
+.skoop-font {
   font-size: 40px;
 }
 
@@ -800,8 +777,7 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-image: url("/styles/Images/Skoopskoop.png");
 }
 
-
-.get-started-button{
+.get-started-button {
   width: 311px;
   height: 52px;
   position: absolute;
@@ -810,7 +786,7 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .welcome-background-image {
-  background-image: url('/screens/Welcome.png');
+  background-image: url("/screens/Welcome.png");
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -819,55 +795,55 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-repeat: no-repeat;
 }
 .signin-background-image {
-  background-image: url('/screens/Signin.png');
+  background-image: url("/screens/Signin.png");
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   background-repeat: no-repeat;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
 }
 
-
-
-.form-control-sign-in::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+.form-control-sign-in::placeholder {
+  /* Chrome, Firefox, Opera, Safari 10.1+ */
   color: rgba(44, 45, 46, 0.5);
   opacity: 1; /* Firefox */
 }
 
-.form-control-sign-in:-ms-input-placeholder { /* Internet Explorer 10-11 */
+.form-control-sign-in:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
   color: rgba(44, 45, 46, 0.5);
 }
 
-.form-control-sign-in::-ms-input-placeholder { /* Microsoft Edge */
+.form-control-sign-in::-ms-input-placeholder {
+  /* Microsoft Edge */
   color: rgba(44, 45, 46, 0.5);
 }
 
-
-#Header , #messageFooter{
-  background-color: #2D68C4;
+#Header,
+#messageFooter {
+  background-color: #2d68c4;
 }
 
-#messageFooter{
+#messageFooter {
   bottom: 0;
 }
-#Header svg{
+#Header svg {
   color: white;
 }
 
-.header-icon{
+.header-icon {
   padding: 5px !important;
 }
-.header-text{
-  font-family: 'Lato', sans-serif;
+.header-text {
+  font-family: "Lato", sans-serif;
   font-size: 16px;
-  color:#FFFFFF;
+  color: #ffffff;
   font-weight: 500;
   text-align: justify;
   padding: 0%;
 }
-
 
 .btn-outline-warning {
   color: #fff !important;
@@ -875,48 +851,46 @@ box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .btn-outline-warning:hover {
-    color: #212529 !important ; /* Dark text color for contrast */
-    background-color: #fff !important; /* White background */
-    border-color: #fff !important; /* Maintain the white border */
+  color: #212529 !important ; /* Dark text color for contrast */
+  background-color: #fff !important; /* White background */
+  border-color: #fff !important; /* Maintain the white border */
 }
 
 .send-button {
   border-radius: 20px !important; /* Adjust as needed for rounded corners */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* This adds the drop shadow */
   position: relative; /* Needed to position the label correctly */
-  border: 2px  #000000; 
+  border: 2px #000000;
   background-color: #fff !important;
   width: 80px;
-  height:28px;
-  display: flex; 
-  align-items: center; 
-  justify-content: center; 
-  font-family: 'Lato', sans-serif;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Lato", sans-serif;
   font-weight: 400;
 }
 
-#footermessage{
+#footermessage {
   position: fixed;
- bottom: 0px; 
- width: 100% !important;
+  bottom: 0px;
+  width: 100% !important;
 }
 .max-height-500 {
   max-height: 300px;
   overflow-y: auto; /* Make content scrollable if it exceeds max height */
 }
-.card{
-min-width: 165px !important;
+.card {
+  min-width: 165px !important;
 }
 .bg-selected-videoMode {
   background-color: rgba(45, 104, 196, 0.15) !important;
 }
-.border-video-selector{
+.border-video-selector {
   border-radius: 10%;
-  border-color: #A9AAAB !important;
+  border-color: #a9aaab !important;
   border: 1px solid;
 }
-
-
 
 .skoop-font {
   font-size: 40px;
@@ -1016,36 +990,6 @@ min-width: 165px !important;
   color: rgba(44, 45, 46, 0.5);
 }
 
-
-
-#custom-input:focus {
-  border-color: #ff8210;
-  box-shadow: none;
-}
-
 .cursor-pointer {
   cursor: pointer;
-}
-
-.forgot-password-content {
-  height: 76vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-
-#email:focus {
-  border-color: #ff8210;
-  box-shadow: none;
-}
-
-#username:focus {
-  border-color: #ff8210;
-  box-shadow: none;
-}
-
-#password:focus {
-  border-color: #ff8210;
-  box-shadow: none;
 }

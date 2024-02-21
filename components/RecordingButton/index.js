@@ -31,7 +31,7 @@ import Vertical from '../VideoScreenLayoutSVG/Vertical.jsx';
 import Horizontal from '../VideoScreenLayoutSVG/Horizontal.jsx';
 import Square from '../VideoScreenLayoutSVG/Square.jsx';
 
-const videoResizeConstant = 25;
+const videoResizeConstant = 40;
 const RecordingButton = () => {
     const [capturing, setCapturing] = useState(false);
     const [prev, setPrev] = useState('');
@@ -261,11 +261,11 @@ const RecordingButton = () => {
             videoTitle = replaceInvalidCharacters(videoTitle + `_${Date.now()}`);
             setVideoTitle(videoTitle);
             const formData = new FormData();
-            formData.append('data', file, `${videoTitle}.webm`);
+            formData.append('data', file, `${videoTitle}.mp4`);
             const customHeaders = new Headers();
             customHeaders.append('title', videoTitle);
             customHeaders.append('directory_name', directoryName);
-            customHeaders.append('type', 'webm');
+            customHeaders.append('type', 'mp4');
             customHeaders.append(
                 'authorization',
                 `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`
