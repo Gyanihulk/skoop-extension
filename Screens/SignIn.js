@@ -22,11 +22,11 @@ const SignIn = () => {
         </div>
         <ContinueWithLinkedInButton />
         <ContinueWithGoogleButton />
-        <div className="text-center mt-2 new-to-skoop-label">
+        <div className="text-center mt-2 auth-footer-label">
           New to Skoop?{" "}
           <span
             onClick={() => navigateToPage("SignUp")}
-            className="cursor-pointer"
+            className="cursor-pointer orange-label"
           >
             Create account
           </span>

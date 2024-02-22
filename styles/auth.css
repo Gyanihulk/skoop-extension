@@ -11,7 +11,7 @@
 .auth-head-content p {
   color: #2c2d2e80;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .sign-in-form {
@@ -57,6 +57,18 @@
   color: #a9aaabcc;
 }
 
+#time-zone-dropdown {
+  color: #2a2b39;
+  border-color: #a9aaabcc;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+#time-zone-dropdown:focus {
+  border-color: #ff8210;
+  box-shadow: none;
+}
+
 #custom-btn {
   background-color: #2d68c4;
   padding: 12px;
@@ -99,13 +111,24 @@
   background-color: transparent;
 }
 
-.new-to-skoop-label {
+.auth-footer-label {
   font-family: "Montserrat", sans-serif;
   color: #2a2b39;
 }
 
-.new-to-skoop-label span {
+.orange-label {
   font-weight: 600;
+  color: #ff8210;
+}
+
+.sign-up-privacy-policy {
+  font-family: "Montserrat", sans-serif;
+  color: #2a2b39;
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.sign-up-privacy-policy span {
   color: #ff8210;
 }
 
@@ -114,4 +137,76 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.password-with-tooltip {
+  position: relative;
+}
+
+#password-tooltip {
+  position: absolute;
+  top: 3.5rem;
+  left: 11rem;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  width: 22rem;
+  z-index: 999;
+  font-family: "Montserrat", sans-serif;
+}
+
+#password-tooltip h5 {
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+#password-tooltip ul li {
+  font-size: 14px;
+}
+
+#time-zone-dropdown::placeholder {
+  font-family: "Montserrat", sans-serif;
+  color: #a9aaabcc;
+}
+
+.time-zone-main {
+  font-family: "Montserrat", sans-serif;
+}
+
+.time-zone-head h2 {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+#timezone-search-input-box {
+  color: #2a2b39;
+  border-color: #a9aaabcc;
+  font-family: "Montserrat", sans-serif;
+  padding: 12px 12px 12px 3rem;
+  border-radius: 8px;
+}
+
+#timezone-search-input-box:focus {
+  border-color: #ff8210;
+  box-shadow: none;
+}
+
+#timezone-list-container {
+  height: 200;
+}
+
+.timezone-item {
+  font-weight: 400;
+  font-size: 16px;
+  padding: 12px;
+  border-bottom: 1px solid #a9aaab99;
+}
+
+#selected-timezone {
+  background-color: #eee3fc;
+  display: flex;
+  justify-content: space-between;
 }

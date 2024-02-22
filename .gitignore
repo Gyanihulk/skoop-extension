@@ -6,3 +6,5 @@
 out/
 version/
 out/*.html
+yarn.lock
+package-lock.json

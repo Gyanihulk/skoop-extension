@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 import { isStartTimeBeforeEndTime } from '../lib/helpers';
 
 const CalendarSync = () => {
-    const { calendarSync } = useContext(AuthContext);
+    const { calendarSync ,setNewUser} = useContext(AuthContext);
     const { navigateToPage } = useContext(ScreenContext);
     const [values, setValues] = useState({
         preferredStartTime: '',
@@ -22,11 +22,12 @@ const CalendarSync = () => {
     });
     const [google, setGoogle] = useState(false);
     const [microsoft, setMicrosoft] = useState(false);
+
     useEffect(() => {
         const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
         values.timeZone = detectedTimezone;
     }, []);
+
     const handleChange = (event) => {
         setValues((prevState) => ({
             ...prevState,
@@ -36,7 +37,7 @@ const CalendarSync = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log(values)
+        setNewUser(false)
         if (isStartTimeBeforeEndTime(values.preferredStartTime, values.preferredEndTime) && isStartTimeBeforeEndTime(values.breakStartTime, values.breakEndTime) && isStartTimeBeforeEndTime(values.preferredStartTime, values.breakStartTime)) {
         try {
             const res = await fetch(API_ENDPOINTS.userPreferences, {
@@ -225,7 +226,7 @@ const CalendarSync = () => {
                                 <IoCheckmarkDoneSharp /> Save Preferences
                             </button>
                         </div>
-                        <div onClick={() => navigateToPage('Home')} class="btn btn-link mt-4">
+                        <div onClick={() => {setNewUser(false);navigateToPage('Home')}} class="btn btn-link mt-4">
                             Continue without Skoop Appointment booking System 
                             <p>You can add your calendar link for from account setting.</p>
                         </div>

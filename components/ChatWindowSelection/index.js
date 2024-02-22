@@ -1,19 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import GlobalStatesContext from '../../contexts/GlobalStates';
-import MessageContext from '../../contexts/MessageContext';
-import { insertHtmlAtPositionInMail, insertIntoLinkedInMessageWindow } from '../../utils';
-import toast from 'react-hot-toast';
+
 
 const ChatWindowSelection = () => {
     const [initialItems, setInitialItems] = useState([]);
-    const { selectedChatWindows, setSelectedChatWindows, isLinkedin,focusedElementId } =
+    const { selectedChatWindows, setSelectedChatWindows, isLinkedin, focusedElementId } =
         useContext(GlobalStatesContext);
     const [localRefresh, setLocalRefresh] = useState(0);
     const [resetInitialItems, setResetInitialItems] = useState(0);
-   
-
-  
-  
 
     function checkForExistenceOfMessageWindow(element) {
         return element.querySelector('.msg-form__contenteditable') != null;
@@ -95,21 +89,18 @@ const ChatWindowSelection = () => {
     const messageHandler = (message) => {
         if (message.action === 'elementAdded') {
             setResetInitialItems(Math.random());
-          
         } else if (message.action === 'elementRemoved') {
             setResetInitialItems(Math.random());
-           
         }
     };
 
     useEffect(() => {
-        if(chrome.runtime.onMessage){
+        if (chrome.runtime.onMessage) {
             chrome.runtime.onMessage.addListener(messageHandler);
             return () => {
                 chrome.runtime.onMessage.removeListener(messageHandler);
             };
         }
-        
     }, []);
 
     const handleCheckboxChange = (event) => {
@@ -128,37 +119,38 @@ const ChatWindowSelection = () => {
         setLocalRefresh(!localRefresh);
     };
 
-   
-        return (
-            <div id="chatWindowsList" className="container selection-container px-4 bg-white">
-                {isLinkedin && (
-                    <>
-                      {initialItems?.length>0?
-                      <h8 className="text-small fw-bold ">Select Recipients</h8>:<p>Please open any chat window.</p>}
-                        <div className="row row-cols-3">
-                            {initialItems?.map((item, index) => (
-                                <div key={index} className="col">
-                                    <div className="d-flex flex-row">
-                                        <input
-                                            type="checkbox"
-                                            className="form-check-input"
-                                            value={item.name}
-                                            checked={selectedChatWindows.some(
-                                                (checkedItem) => checkedItem.name === item.name
-                                            )}
-                                            onChange={handleCheckboxChange}
-                                        />
-                                        <label className="form-check-label">{item.name}</label>
-                                    </div>
+    return (
+        <div id="chatWindowsList" className="container selection-container px-4 bg-white">
+            {isLinkedin && (
+                <>
+                    {initialItems?.length > 0 ? (
+                        <label className="fw-bold">Select Recipients</label>
+                    ) : (
+                        <p>Please open any chat window.</p>
+                    )}
+                    <div className="row row-cols-3">
+                        {initialItems?.map((item, index) => (
+                            <div key={index} className="col">
+                                <div className="d-flex flex-row">
+                                    <input
+                                        type="checkbox"
+                                        className="form-check-input"
+                                        value={item.name}
+                                        checked={selectedChatWindows.some(
+                                            (checkedItem) => checkedItem.name === item.name
+                                        )}
+                                        onChange={handleCheckboxChange}
+                                    />
+                                    <label className="form-check-label">{item.name}</label>
                                 </div>
-                            ))}
-                        </div>
-                    </>
-                )}
-               
-            </div>
-        );
-    
+                            </div>
+                        ))}
+                        
+                    </div>
+                </>
+            )}
+        </div>
+    );
 };
 
 export default ChatWindowSelection;

@@ -7,6 +7,8 @@ const CustomPasswordInputBox = ({
   onChange,
   value,
   isEmpty,
+  onFocus,
+  onBlur,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -18,13 +20,13 @@ const CustomPasswordInputBox = ({
     <div className="position-relative custom-password-input-box">
       <input
         type={showPassword ? "text" : "password"}
-        className={`form-control mt-4 rounded-3 ${
-          isEmpty ? "input-empty" : ""
-        }`}
+        className={`form-control mt-3 ${isEmpty ? "input-empty" : ""}`}
         id="custom-password-input-box"
         placeholder={placeholder}
         name={name}
         onChange={onChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
         value={value}
       />
       <button

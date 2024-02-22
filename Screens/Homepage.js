@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import API_ENDPOINTS from '../components/apiConfig.js';
 import GlobalStatesContext from '../contexts/GlobalStates.js';
 import RecordingButton from '../components/RecordingButton/index.js';
-import ChatWindowSelection from '../components/ChatWindowSelection/index.js';
+
 import MessageComposer from '../components/MessageComposer/index.js';
 const Homepage = (props) => {
     const {
