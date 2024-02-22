@@ -43,7 +43,8 @@ const RecordingButton = () => {
     const [isUploading, setIsUploading] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [bloburl, setBlobUrl] = useState(null);
-
+    const [height,setHeight]=useState(16 * videoResizeConstant)
+    const [width,setWidth]=useState(9 * videoResizeConstant)
     const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
     const [selectedVideoStyle, setSelectedVideoStyle] = useState('Vertical Mode');
     const [iconsVisible, setIconsVisible] = useState(true);
@@ -58,6 +59,16 @@ const RecordingButton = () => {
     const {  addMessage } = useContext(MessageContext);
     const handleVideoStyleSelect = (style) => {
         setSelectedVideoStyle(style);
+        if (style === 'Square') {
+           setHeight(10 * videoResizeConstant);
+           setWidth(10 * videoResizeConstant);
+        } else if (style === 'Vertical Mode') {
+            setHeight(16 * videoResizeConstant);
+            setWidth(9 * videoResizeConstant);
+        } else {
+            setWidth(16 * videoResizeConstant);
+            setHeight(9 * videoResizeConstant);
+        }
         toggleVideoSettings();
     };
     const toggleVideoSettings = () => {
@@ -192,69 +203,25 @@ const RecordingButton = () => {
         }
     }
 
-    const capturingRef = useRef(capturing);
-    let stopTimeoutId;
 
-    const startVideoCapture = (restart = false, event) => {
+
+    const startVideoCapture = async (restart = false, event) => {
         if (event) {
             event.stopPropagation();
         }
-        let height, width;
-        if (selectedVideoStyle === 'Square') {
-            height = width = 10 * videoResizeConstant;
-        } else if (selectedVideoStyle === 'Vertical Mode') {
-            height = 16 * videoResizeConstant;
-            width = 9 * videoResizeConstant;
-        } else {
-            height = 9 * videoResizeConstant;
-            width = 16 * videoResizeConstant;
-        }
+     if(capturing){
+        return 
+     }
 
-        if (capturing) {
-            if (restart) {
-                sendMessageToBackgroundScript({ action: 'stopRecording' });
-                sendMessageToBackgroundScript({
-                    action: 'startRecording',
-                    height,
-                    width,
-                });
-                clearTimeout(stopTimeoutId);
-
-                // Restart the timer
-                stopTimeoutId = setTimeout(() => {
-                    if (capturingRef.current) {
-                        setPrev('');
-                        sendMessageToBackgroundScript({ action: 'stopRecording' }, handleVideoBlob);
-                        setCapturing(false);
-                    }
-                }, 95000);
-            } else {
-                clearTimeout(stopTimeoutId);
-                setPrev('');
-                sendMessageToBackgroundScript({ action: 'stopRecording' }, handleVideoBlob);
-                setCapturing(false);
-            }
-        } else {
-            sendMessageToBackgroundScript({
+             sendMessageToBackgroundScript({
                 action: 'startRecording',
                 height,
                 width,
-            });
+            },handleVideoBlob);
             setCapturing(true);
-
-            stopTimeoutId = setTimeout(() => {
-                if (capturingRef.current) {
-                    setPrev('');
-                    sendMessageToBackgroundScript({ action: 'stopRecording' }, handleVideoBlob);
-                    setCapturing(false);
-                }
-            }, 95000);
-        }
+      
     };
 
-    useEffect(() => {
-        capturingRef.current = capturing;
-    }, [capturing]);
 
     const uploadVideo = async (file, videoTitle, directoryName) => {
         try {
@@ -262,6 +229,8 @@ const RecordingButton = () => {
             setVideoTitle(videoTitle);
             const formData = new FormData();
             formData.append('data', file, `${videoTitle}.mp4`);
+            formData.append('height',parseInt(height))
+            formData.append('width',parseInt(width))
             const customHeaders = new Headers();
             customHeaders.append('title', videoTitle);
             customHeaders.append('directory_name', directoryName);
@@ -287,7 +256,7 @@ const RecordingButton = () => {
             setVideoId(response.id);
             addToMessage(response.facade_player_uuid);
             setGlobalRefresh(true);
-
+            setCapturing(false);
             // Set the uploaded video name in the state
             setUploadedVideoName(response.name);
         } catch (err) {
@@ -346,8 +315,8 @@ const RecordingButton = () => {
                     <div class="row justify-content-between px-5">
                         <div class="col-auto">
                             <div className="d-flex flex-column">
-                                {!countdown && (
-                                    <>
+                           
+                            
                                         <div
                                             className="d-flex flex-column"
                                             variant="outlined"
@@ -358,52 +327,27 @@ const RecordingButton = () => {
                                             title="Record Video"
                                             id="skoop_record_button"
                                         >
-                                            {capturing && (
-                                                <button
-                                                    className="btn btn-outline-warning "
-                                                    onClick={(e) => startVideoCapture(true, e)}
-                                                    size="small"
-                                                    disabled={!capturing || isUploading}
-                                                    title="Record Video"
-                                                >
-                                                    Restart
-                                                </button>
-                                            )}
+                                            
                                             <span class="icon">
                                                 {capturing ? (
-                                                    <button
-                                                        className="btn btn-outline-warning "
-                                                        size="small"
-                                                        disabled={!capturing || isUploading}
-                                                        title="Record Video"
-                                                    >
-                                                        Stop
-                                                    </button>
-                                                ) : (
-                                                    <svg
-                                                        width="60"
-                                                        height="60"
-                                                        viewBox="0 0 60 60"
-                                                        fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                    >
-                                                        <path
-                                                            fill-rule="evenodd"
-                                                            clip-rule="evenodd"
-                                                            d="M25.5681 22.5681V36.5681C25.5681 37.3881 26.5081 37.8681 27.1681 37.3681L36.5081 30.3681C37.0481 29.9681 37.0481 29.1681 36.5081 28.7681L27.1681 21.7681C26.5081 21.2681 25.5681 21.7481 25.5681 22.5681ZM27.5681 12.0281C27.5681 10.7481 26.3881 9.76808 25.1481 10.0481C22.9081 10.5681 20.7881 11.4481 18.9081 12.6481C17.8481 13.3281 17.6881 14.8481 18.5881 15.7481C19.2281 16.3881 20.2481 16.5481 21.0081 16.0681C22.5481 15.0881 24.2481 14.3681 26.0881 13.9681C26.9681 13.7681 27.5681 12.9481 27.5681 12.0281ZM15.7681 18.5881C14.8481 17.6881 13.3481 17.8281 12.6681 18.9081C11.4681 20.7881 10.5881 22.9081 10.0681 25.1481C9.78807 26.3881 10.7481 27.5681 12.0281 27.5681C12.9281 27.5681 13.7681 26.9681 13.9481 26.0881C14.3481 24.2681 15.0881 22.5481 16.0481 21.0281C16.5681 20.2481 16.4081 19.2281 15.7681 18.5881ZM12.0281 31.5681C10.7481 31.5681 9.76807 32.7481 10.0481 33.9881C10.5681 36.2281 11.4481 38.3281 12.6481 40.2281C13.3281 41.3081 14.8481 41.4481 15.7481 40.5481C16.3881 39.9081 16.5481 38.8881 16.0481 38.1281C15.0681 36.6081 14.3481 34.9081 13.9481 33.0681C13.7681 32.1681 12.9481 31.5681 12.0281 31.5681ZM18.9081 46.4681C20.8081 47.6681 22.9081 48.5481 25.1481 49.0681C26.3881 49.3481 27.5681 48.3681 27.5681 47.1081C27.5681 46.2081 26.9681 45.3681 26.0881 45.1881C24.2681 44.7881 22.5481 44.0481 21.0281 43.0881C20.2481 42.6081 19.2481 42.7481 18.6081 43.4081C17.6881 44.2881 17.8281 45.7881 18.9081 46.4681ZM49.5681 29.5681C49.5681 39.0281 42.9681 46.9881 34.1081 49.0481C32.8681 49.3481 31.6681 48.3681 31.6681 47.0881C31.6681 46.1681 32.2881 45.3681 33.1681 45.1481C40.2681 43.5081 45.5681 37.1481 45.5681 29.5681C45.5681 21.9881 40.2681 15.6281 33.1681 13.9881C32.2881 13.7881 31.6681 12.9681 31.6681 12.0481C31.6681 10.7681 32.8681 9.78807 34.1081 10.0881C42.9681 12.1481 49.5681 20.1081 49.5681 29.5681Z"
-                                                            fill="white"
-                                                        />
+                                                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <circle cx="14" cy="14" r="14" fill="#E31A1A"/>
                                                     </svg>
+                                                ) : (
+                                                    <svg width="41" height="40" viewBox="0 0 41 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5452 15.0455V24.3788C17.5452 24.9255 18.1719 25.2455 18.6119 24.9121L24.8386 20.2455C25.1986 19.9788 25.1986 19.4455 24.8386 19.1788L18.6119 14.5121C18.1719 14.1788 17.5452 14.4988 17.5452 15.0455ZM18.8786 8.0188C18.8786 7.16546 18.0919 6.51213 17.2652 6.6988C15.7719 7.04546 14.3586 7.63213 13.1052 8.43213C12.3986 8.88546 12.2919 9.8988 12.8919 10.4988C13.3186 10.9255 13.9986 11.0321 14.5052 10.7121C15.5319 10.0588 16.6652 9.5788 17.8919 9.31213C18.4786 9.1788 18.8786 8.63213 18.8786 8.0188ZM11.0119 12.3921C10.3986 11.7921 9.39855 11.8855 8.94522 12.6055C8.14522 13.8588 7.55855 15.2721 7.21189 16.7655C7.02522 17.5921 7.66522 18.3788 8.51855 18.3788C9.11855 18.3788 9.67855 17.9788 9.79855 17.3921C10.0652 16.1788 10.5586 15.0321 11.1986 14.0188C11.5452 13.4988 11.4386 12.8188 11.0119 12.3921ZM8.51855 21.0455C7.66522 21.0455 7.01189 21.8321 7.19855 22.6588C7.54522 24.1521 8.13189 25.5521 8.93189 26.8188C9.38522 27.5388 10.3986 27.6321 10.9986 27.0321C11.4252 26.6055 11.5319 25.9255 11.1986 25.4188C10.5452 24.4055 10.0652 23.2721 9.79855 22.0455C9.67855 21.4455 9.13189 21.0455 8.51855 21.0455ZM13.1052 30.9788C14.3719 31.7788 15.7719 32.3655 17.2652 32.7121C18.0919 32.8988 18.8786 32.2455 18.8786 31.4055C18.8786 30.8055 18.4786 30.2455 17.8919 30.1255C16.6786 29.8588 15.5319 29.3655 14.5186 28.7255C13.9986 28.4055 13.3319 28.4988 12.9052 28.9388C12.2919 29.5255 12.3852 30.5255 13.1052 30.9788ZM33.5452 19.7121C33.5452 26.0188 29.1452 31.3255 23.2386 32.6988C22.4119 32.8988 21.6119 32.2455 21.6119 31.3921C21.6119 30.7788 22.0252 30.2455 22.6119 30.0988C27.3452 29.0055 30.8786 24.7655 30.8786 19.7121C30.8786 14.6588 27.3452 10.4188 22.6119 9.32546C22.0252 9.19213 21.6119 8.64546 21.6119 8.03213C21.6119 7.1788 22.4119 6.52546 23.2386 6.72546C29.1452 8.0988 33.5452 13.4055 33.5452 19.7121Z" fill="#2D68C4"/>
+                                                        </svg>
+
                                                 )}
                                             </span>
 
-                                            {/* {capturing ? 'Stop' : 'Rec'} */}
+                                           
                                         </div>
-                                    </>
-                                )}
+                               
+                               
                                 <span className="d-flex flex-row record-button-bottom-text">
                                     {' '}
-                                    Record video{' '}
+                                     {capturing ? isUploading?'Uploading...':'Recording...' : 'Record Video'} {' '}
                                     <div
                                         className="d-flex flex-column justify-content-center ps-1"
                                         onClick={handleIconClick}

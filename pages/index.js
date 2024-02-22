@@ -34,7 +34,7 @@ export default function Home() {
             }
         })();
     }, [isAutheticated,newUser]);
-    // let activePage='CalendarSync'
+    // let activePage='Home'
     return (
         <>
         {!["Welcome", "SignInIntro","SignIn","SignUp"," ","CalendarSync","ForgotPassword"].includes(activePage) && <Header />}
