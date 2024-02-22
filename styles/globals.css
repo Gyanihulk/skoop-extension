@@ -72,7 +72,12 @@
 #skoop_record_button svg {
 color: #2D68C4;
 }
-
+#skoop_record_button svg:hover{
+  color:white; 
+}
+#skoop_record_button:hover  {
+  background-color: #2D68C4; 
+}
 .record-button-bottom-text{
   font-size: small;
 }
