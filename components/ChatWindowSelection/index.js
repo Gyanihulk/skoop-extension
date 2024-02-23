@@ -120,17 +120,17 @@ const ChatWindowSelection = () => {
     };
 
     return (
-        <div id="chatWindowsList" className="container selection-container px-4 bg-white">
+        <div id="chatWindowsList" className="container selection-container bg-white">
             {isLinkedin && (
                 <>
                     {initialItems?.length > 0 ? (
-                        <label className="fw-bold">Select Recipients</label>
+                        <div className="fw-bold fs-6">Select Recipients</div>
                     ) : (
-                        <p>Please open any chat window.</p>
+                        <div className="fw-bold fs-6">Please open any chat window.</div>
                     )}
-                    <div className="row row-cols-3">
+                    <div className="row">
                         {initialItems?.map((item, index) => (
-                            <div key={index} className="col">
+                            <div key={index} className="col-4">
                                 <div className="d-flex flex-row">
                                     <input
                                         type="checkbox"

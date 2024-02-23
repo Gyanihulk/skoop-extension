@@ -115,25 +115,8 @@ export default function Header() {
             <nav className="navbar pe-3" id="Header">
                 <div class="navbar-brand d-flex flex-row">
                     <div className="container">
-                        <div class="row justify-content-left">
-                            <div className="col">
-                                <svg
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        fill-rule="evenodd"
-                                        clip-rule="evenodd"
-                                        d="M5.60005 16.8H18.4C18.84 16.8 19.2 16.44 19.2 16C19.2 15.56 18.84 15.2 18.4 15.2H5.60005C5.16005 15.2 4.80005 15.56 4.80005 16C4.80005 16.44 5.16005 16.8 5.60005 16.8ZM5.60005 12.8H18.4C18.84 12.8 19.2 12.44 19.2 12C19.2 11.56 18.84 11.2 18.4 11.2H5.60005C5.16005 11.2 4.80005 11.56 4.80005 12C4.80005 12.44 5.16005 12.8 5.60005 12.8ZM4.80005 8.00001C4.80005 8.44001 5.16005 8.80001 5.60005 8.80001H18.4C18.84 8.80001 19.2 8.44001 19.2 8.00001C19.2 7.56001 18.84 7.20001 18.4 7.20001H5.60005C5.16005 7.20001 4.80005 7.56001 4.80005 8.00001Z"
-                                        fill="white"
-                                    />
-                                </svg>
-                            </div>
-
-                            <div className="col ps-4">
+                        <div class="ps-4">
+                            
                                 {(activePage === 'ContactPage' ||
                                     activePage === 'AccountSettings') && (
                                     <BsArrowLeftCircle
@@ -144,7 +127,7 @@ export default function Header() {
                                     />
                                 )}
                                
-                            </div>
+                         
                             
                             
                         </div>

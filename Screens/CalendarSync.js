@@ -37,7 +37,7 @@ const CalendarSync = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setNewUser(false)
+      
         if (isStartTimeBeforeEndTime(values.preferredStartTime, values.preferredEndTime) && isStartTimeBeforeEndTime(values.breakStartTime, values.breakEndTime) && isStartTimeBeforeEndTime(values.preferredStartTime, values.breakStartTime)) {
         try {
             const res = await fetch(API_ENDPOINTS.userPreferences, {
@@ -58,11 +58,13 @@ const CalendarSync = () => {
             const data = await res.json();
             if (res.ok) {
                 toast.success('Preferences saved successfully');
+                
                 if(google){
-                    calendarSync('google')
+                    await calendarSync('google')
                 }else if(microsoft){
-                    calendarSync('microsoft')
+                   await calendarSync('microsoft')
                 }
+                setNewUser(false)
             } else {
                 throw new Error(data.message || 'Error saving preferences');
             }

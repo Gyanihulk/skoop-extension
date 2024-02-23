@@ -7,6 +7,9 @@
 /* Poppins */
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
 .sbl-circ-ripple {
   height: 56px;
   width: 56px;
@@ -75,9 +78,12 @@
 
 #skoop_record_button:hover  {
   background-color: #2D68C4; 
+
 }
 .record-button-bottom-text{
-  font-size: small;
+  font-size: smaller;
+  margin-top: 2px;
+  font-family: "Montserrat", sans-serif ;
 }
 #floatingTextarea {
   height: 149px !important;
@@ -986,3 +992,102 @@
   font-size: small;
   padding-left: 1vh;
   }
+
+
+  .nav-btn{
+    font-family: "Montserrat", sans-serif ;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+  
+  }
+  .nav-button{
+    font-family: "Montserrat", sans-serif ;
+    width:100%;
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    padding-left:0;
+    transition: all 0.3s ease;
+  }
+  ul.nav-button li{
+    display: grid;
+    place-items: center;
+    min-width:calc(25% - 1.5rem);
+    cursor: pointer;
+  
+  }
+  ul.nav-button li svg{
+    width: 20px;
+    height: 20px;
+  }
+   ul.nav-button li svg path{
+    width: 20px;
+    height: 20px;
+  }
+  .bg-active{
+    background-color: #2d68c4;
+  }
+  
+  .margin-bottom-8{
+    margin-bottom: 8rem;
+  }
+  .light-secondary{
+    background: #a9aaab;
+    color:#fff;
+  }
+
+  .svg-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* Define classes for the SVG's path */
+.svg-icon.default-path path:nth-child(1){
+    fill: #2A2B39;
+}
+
+.svg-icon.active-path path:nth-child(1){
+  fill:#fff;
+}
+
+.svg-icon.default-path path:nth-child(2){
+  fill:#fff;
+}
+
+.svg-icon.active-path path:nth-child(2){
+fill: #2A2B39;
+}
+.chatgpt-container{
+  border:4px solid #EAEAEA;
+  border-radius:10px;
+  padding:1rem;
+  background-color: #FBF7FF;
+  font-family: "Montserrat", sans-serif ;
+}
+
+.chatgpt-container .heading{
+  font-size: 16px; 
+  line-height:1;
+}
+.generate-response{
+  background-color: #A9AAAB !important;
+  font-size: 14px !important;
+  border-radius: 10px !important;
+}
+
+#chatWindowsList{font-family: "Plus Jakarta Sans", sans-serif; font-size: 10px;}
+.form-check-label{
+  white-space: nowrap;       /* Prevents the text from wrapping to the next line */
+  overflow: hidden;          /* Hides the overflow of text */
+  text-overflow: ellipsis;   /* Adds an ellipsis to signify that there is more text */
+  display: block;            /* Optional: Ensures the label is a block-level element */
+  max-width: 150px;   
+}
+
+.form-check-input{
+  transform: scale(1.5); 
+}

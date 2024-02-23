@@ -28,7 +28,7 @@ function injectIframe() {
 
     const dragButton = document.createElement('div');
     dragButton.id = 'skoop-drag-button';
-    dragButton.style.left = '40px';
+    dragButton.style.left = '10px';
     dragButton.style.top = '19px';
     dragButton.style.width = '24px';
     dragButton.style.height = '24px';
@@ -275,18 +275,15 @@ function createWebcamContainer(title, height, width) {
     overlay.style.width = '100%';
     overlay.style.height = '100%';
     overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Black color with opacity
-    overlay.style.zIndex = '10'; 
-    overlay.style.display="none";
-    container.showOverlay=()=>{
-        overlay.style.display="block"
-
-    }
-    container.hideOverlay=()=>{
-        overlay.style.display="none"
-
-    }
+    overlay.style.zIndex = '10';
+    overlay.style.display = 'none';
+    container.showOverlay = () => {
+        overlay.style.display = 'block';
+    };
+    container.hideOverlay = () => {
+        overlay.style.display = 'none';
+    };
     container.appendChild(overlay);
-    // Create timer display
     const timerDisplay = document.createElement('span');
     timerDisplay.style.position = 'absolute';
     timerDisplay.style.top = '10px';
@@ -300,7 +297,7 @@ function createWebcamContainer(title, height, width) {
     const countDownTimer = document.createElement('div');
     countDownTimer.style.position = 'absolute';
     countDownTimer.style.top = '50%';
-    countDownTimer.style.zIndex="20"
+    countDownTimer.style.zIndex = '20';
     countDownTimer.style.left = '50%';
     countDownTimer.style.transform = 'translate(-50%, -50%)';
     countDownTimer.style.fontSize = '125px';
@@ -394,7 +391,7 @@ function createWebcamContainer(title, height, width) {
     container.showCountdown = () => {
         let countdown = 3;
         countDownTimer.style.display = 'block';
-        overlay.style.display="block"
+        overlay.style.display = 'block';
         countDownTimer.innerText = countdown;
         const countdownInterval = setInterval(() => {
             countdown--; // Decrement countdown each second
@@ -403,7 +400,7 @@ function createWebcamContainer(title, height, width) {
             if (countdown <= 0) {
                 clearInterval(countdownInterval); // Clear countdown interval
                 countDownTimer.style.display = 'none';
-                overlay.style.display="none"
+                overlay.style.display = 'none';
                 timerDisplay.innerText = '00:00'; // Optionally clear the display or set to "00:00"
                 container.startTimer();
                 mediaRecorder.start();
@@ -486,11 +483,12 @@ function createWebcamContainer(title, height, width) {
     pauseButton.style.backgroundColor = 'white';
     pauseButton.style.border = 'none';
     pauseButton.style.borderRadius = '50%';
-    pauseButton.style.cursor = 'pointer';
+    // pauseButton.style.cursor = 'pointer';
     pauseButton.onclick = function () {
         console.log('Pause button clicked');
         // Add your pause button functionality here
     };
+    pauseButton.disabled = true;
     pauseButton.style.width = '40px';
     pauseButton.style.height = '40px';
     pauseButton.style.marginLeft = '8px';
@@ -529,29 +527,13 @@ function createWebcamContainer(title, height, width) {
 }
 
 // Function to stop the webcam
-function stopWebcam(container) {
-    if (container && container.hasChildNodes()) {
-        container.style.display = 'none';
-        // Retrieve all video elements within the container
-        const videos = container.getElementsByTagName('video');
 
-        const video = videos[videos.length - 1]; // Last video element
-
-        if (video && video.srcObject) {
-            video.srcObject.getTracks().forEach((track) => track.stop());
-            container.removeChild(video);
-        } else {
-            console.error('The last video element is undefined, or srcObject is null.');
-        }
-    } else {
-        console.error('Container is null, or there are no video elements.');
-    }
-}
 
 let mediaRecorder;
 let recordedChunks = [];
 let skoopVideoContainer;
 let isRecording = false;
+let isRestarting = false;
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'collectClasses') {
         const classes = collectClasses();
@@ -576,6 +558,35 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     audio: true,
                 })
                 .then((stream) => {
+                    function startRecording() {
+                        mediaRecorder = new MediaRecorder(stream);
+                        mediaRecorder.ondataavailable = (event) => {
+                            if (event.data.size > 0) recordedChunks.push(event.data);
+                        };
+                        mediaRecorder.onstop = () => {
+                            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                            const blobUrl = URL.createObjectURL(blob);
+                            recordedChunks = [];
+                            isRecording = false;
+                            console.log(isRestarting, 'is restarting ');
+                            if (!isRestarting) {
+                                const videos = skoopVideoContainer.getElementsByTagName('video');
+
+                                    const video = videos[videos.length - 1]; // Last video element
+
+                                    if (video && video.srcObject) {
+                                        video.srcObject.getTracks().forEach((track) => track.stop());
+                                        skoopVideoContainer.removeChild(video);
+                                    } else {
+                                        console.error('The last video element is undefined, or srcObject is null.');
+                                    }
+
+                                sendResponse({ videoBlob: blob, url: blobUrl });
+                            }
+                        };
+                        isRecording = true;
+                        mediaRecorder.start();
+                    }
                     const video = document.createElement('video');
                     video.id = 'skoop-video-recording';
                     video.srcObject = stream;
@@ -587,39 +598,33 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     video.style.borderRadius = '10px';
                     video.className = 'skoop-video-recorder';
                     skoopVideoContainer.style.height = request.height + 98 + 'px';
-                    skoopVideoContainer.style.width = request.width + 3 + 'px';
+                    skoopVideoContainer.style.width = request.width + 2 + 'px';
                     skoopVideoContainer.appendChild(video);
                     skoopVideoContainer.style;
-                    isRecording = true;
-                    mediaRecorder = new MediaRecorder(stream);
-                    mediaRecorder.ondataavailable = (event) => {
-                        if (event.data.size > 0) recordedChunks.push(event.data);
-                    };
-                    mediaRecorder.onstop = () => {
-                        const blob = new Blob(recordedChunks, { type: 'video/webm' });
-                        const blobUrl = URL.createObjectURL(blob);
-                        recordedChunks = [];
-                        isRecording = false;
-                        sendResponse({ videoBlob: blob, url: blobUrl });
-                    };
+
                     skoopVideoContainer.showCountdown();
+
                     function stopStream() {
                         console.log('Stop Button pressed');
-                        stopWebcam(skoopVideoContainer);
+                  
+                        if (!isRestarting) {
+                            skoopVideoContainer.style.display = 'none';
+                        }
                         skoopVideoContainer.stopTimer();
                         skoopVideoContainer.resetTimer();
                         mediaRecorder.stop();
+                        isRecording = false;
                     }
                     setTimeout(() => {
-                        mediaRecorder.start();
+                        startRecording();
                     }, 3000);
-                    
+
                     setTimeout(() => {
                         if (isRecording) {
                             stopStream();
                         }
                     }, 93000);
-                   
+
                     skoopVideoContainer.style.display = 'block';
 
                     const stopButton = document.getElementById('video-stop-button');
@@ -629,16 +634,29 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
                     function restartStream() {
                         recordedChunks = [];
+                        skoopVideoContainer.showCountdown();
+
+                        isRestarting = true;
+                        stopStream();
+                        setTimeout(() => {
+                            startRecording();
+                            isRestarting = false;
+                        }, 3000);
+                        setTimeout(() => {
+                            if (isRecording) {
+                                stopStream();
+                            }
+                        }, 93000);
                     }
 
                     const restartButton = document.getElementById('video-restart-button');
                     if (restartButton) {
                         restartButton.addEventListener('click', restartStream);
                     }
+                    
                 })
                 .catch((err) => {
                     console.error(`[Creating web cam in website]: ${err}`);
-                    // Handle the error here (e.g., show a message to the user)
                 });
         } else {
             console.log('getUserMedia not supported');
@@ -646,21 +664,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true;
     }
 
-    if (request.action === 'stopRecording') {
-        skoopVideoContainer = document.getElementById('skoop-webcam-container');
-        stopWebcam(skoopVideoContainer);
-        skoopVideoContainer.stopTimer();
-        skoopVideoContainer.resetTimer();
-        mediaRecorder.stop();
-        mediaRecorder.onstop = () => {
-            const blob = new Blob(recordedChunks, { type: 'video/webm' });
-            const blobUrl = URL.createObjectURL(blob);
-            recordedChunks = [];
-            sendResponse({ videoBlob: blob, url: blobUrl });
-        };
-
-        return true;
-    }
     if (request.action === 'showVideoPreview') {
         return true;
     }

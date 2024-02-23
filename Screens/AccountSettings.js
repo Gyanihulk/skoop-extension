@@ -613,9 +613,9 @@ function AccountSettings(props) {
                 <div className="mt-2">
                     <CalendarUrlForm />
                 </div>
-                <div className="mt-2">
+                {/* <div className="mt-2">
                     <SettingsPassword />
-                </div>
+                </div> */}
 
                 <div className="mt-2">
                     <UserPreferencesForm/>

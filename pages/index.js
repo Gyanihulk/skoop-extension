@@ -21,9 +21,6 @@ export default function Home() {
   const { activePage, navigateToPage } = useContext(ScreenContext);
   useEffect(() => {
     (async () => {
-      console.log(`isAuthenticated: ${isAutheticated}`);
-      console.log(`newUser: ${newUser}`);
-
       const res = await verifyToken();
       const showWelcomePage = localStorage.getItem("welcomePageShown");
       if (isAutheticated && newUser) {
@@ -37,7 +34,7 @@ export default function Home() {
       }
     })();
   }, [isAutheticated, newUser]);
-
+// let activePage='Home'
   return (
     <>
       {![

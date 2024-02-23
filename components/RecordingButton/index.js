@@ -43,8 +43,8 @@ const RecordingButton = () => {
     const [isUploading, setIsUploading] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [bloburl, setBlobUrl] = useState(null);
-    const [height,setHeight]=useState(16 * videoResizeConstant)
-    const [width,setWidth]=useState(9 * videoResizeConstant)
+    const [height, setHeight] = useState(16 * videoResizeConstant);
+    const [width, setWidth] = useState(9 * videoResizeConstant);
     const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
     const [selectedVideoStyle, setSelectedVideoStyle] = useState('Vertical Mode');
     const [iconsVisible, setIconsVisible] = useState(true);
@@ -52,16 +52,16 @@ const RecordingButton = () => {
     const [showRenameModal, setShowRenameModal] = useState(false);
     const [newVideoTitle, setNewVideoTitle] = useState('');
     const [uploadedVideoName, setUploadedVideoName] = useState('');
-    
+
     const { setGlobalRefresh, isLinkedin, selectedChatWindows, focusedElementId } =
         useContext(GlobalStatesContext);
     const { getThumbnail, deleteVideo } = useContext(MediaUtilsContext);
-    const {  addMessage } = useContext(MessageContext);
+    const { addMessage } = useContext(MessageContext);
     const handleVideoStyleSelect = (style) => {
         setSelectedVideoStyle(style);
         if (style === 'Square') {
-           setHeight(10 * videoResizeConstant);
-           setWidth(10 * videoResizeConstant);
+            setHeight(10 * videoResizeConstant);
+            setWidth(10 * videoResizeConstant);
         } else if (style === 'Vertical Mode') {
             setHeight(16 * videoResizeConstant);
             setWidth(9 * videoResizeConstant);
@@ -203,25 +203,24 @@ const RecordingButton = () => {
         }
     }
 
-
-
     const startVideoCapture = async (restart = false, event) => {
         if (event) {
             event.stopPropagation();
         }
-     if(capturing){
-        return 
-     }
+        if (capturing) {
+            return;
+        }
 
-             sendMessageToBackgroundScript({
+        sendMessageToBackgroundScript(
+            {
                 action: 'startRecording',
                 height,
                 width,
-            },handleVideoBlob);
-            setCapturing(true);
-      
+            },
+            handleVideoBlob
+        );
+        setCapturing(true);
     };
-
 
     const uploadVideo = async (file, videoTitle, directoryName) => {
         try {
@@ -229,8 +228,8 @@ const RecordingButton = () => {
             setVideoTitle(videoTitle);
             const formData = new FormData();
             formData.append('data', file, `${videoTitle}.mp4`);
-            formData.append('height',parseInt(height))
-            formData.append('width',parseInt(width))
+            formData.append('height', parseInt(height));
+            formData.append('width', parseInt(width));
             const customHeaders = new Headers();
             customHeaders.append('title', videoTitle);
             customHeaders.append('directory_name', directoryName);
@@ -310,44 +309,58 @@ const RecordingButton = () => {
 
     return (
         <>
-            <div className="pt-3">
+            <div className="pt-1">
                 <div class="container">
                     <div class="row justify-content-between px-5">
                         <div class="col-auto">
-                            <div className="d-flex flex-column">
-                           
-                            
-                                        <div
-                                            className="d-flex flex-column"
-                                            variant="outlined"
-                                            color={capturing ? 'secondary' : 'primary'}
-                                            onClick={(e) => startVideoCapture(false, e)}
-                                            size="small"
-                                            disabled={isUploading}
-                                            title="Record Video"
-                                            id="skoop_record_button"
-                                        >
-                                            
-                                            <span class="icon">
-                                                {capturing ? (
-                                                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <circle cx="14" cy="14" r="14" fill="#E31A1A"/>
-                                                    </svg>
-                                                ) : (
-                                                    <svg width="41" height="40" viewBox="0 0 41 40" fill="currentcolor" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5452 15.0455V24.3788C17.5452 24.9255 18.1719 25.2455 18.6119 24.9121L24.8386 20.2455C25.1986 19.9788 25.1986 19.4455 24.8386 19.1788L18.6119 14.5121C18.1719 14.1788 17.5452 14.4988 17.5452 15.0455ZM18.8786 8.0188C18.8786 7.16546 18.0919 6.51213 17.2652 6.6988C15.7719 7.04546 14.3586 7.63213 13.1052 8.43213C12.3986 8.88546 12.2919 9.8988 12.8919 10.4988C13.3186 10.9255 13.9986 11.0321 14.5052 10.7121C15.5319 10.0588 16.6652 9.5788 17.8919 9.31213C18.4786 9.1788 18.8786 8.63213 18.8786 8.0188ZM11.0119 12.3921C10.3986 11.7921 9.39855 11.8855 8.94522 12.6055C8.14522 13.8588 7.55855 15.2721 7.21189 16.7655C7.02522 17.5921 7.66522 18.3788 8.51855 18.3788C9.11855 18.3788 9.67855 17.9788 9.79855 17.3921C10.0652 16.1788 10.5586 15.0321 11.1986 14.0188C11.5452 13.4988 11.4386 12.8188 11.0119 12.3921ZM8.51855 21.0455C7.66522 21.0455 7.01189 21.8321 7.19855 22.6588C7.54522 24.1521 8.13189 25.5521 8.93189 26.8188C9.38522 27.5388 10.3986 27.6321 10.9986 27.0321C11.4252 26.6055 11.5319 25.9255 11.1986 25.4188C10.5452 24.4055 10.0652 23.2721 9.79855 22.0455C9.67855 21.4455 9.13189 21.0455 8.51855 21.0455ZM13.1052 30.9788C14.3719 31.7788 15.7719 32.3655 17.2652 32.7121C18.0919 32.8988 18.8786 32.2455 18.8786 31.4055C18.8786 30.8055 18.4786 30.2455 17.8919 30.1255C16.6786 29.8588 15.5319 29.3655 14.5186 28.7255C13.9986 28.4055 13.3319 28.4988 12.9052 28.9388C12.2919 29.5255 12.3852 30.5255 13.1052 30.9788ZM33.5452 19.7121C33.5452 26.0188 29.1452 31.3255 23.2386 32.6988C22.4119 32.8988 21.6119 32.2455 21.6119 31.3921C21.6119 30.7788 22.0252 30.2455 22.6119 30.0988C27.3452 29.0055 30.8786 24.7655 30.8786 19.7121C30.8786 14.6588 27.3452 10.4188 22.6119 9.32546C22.0252 9.19213 21.6119 8.64546 21.6119 8.03213C21.6119 7.1788 22.4119 6.52546 23.2386 6.72546C29.1452 8.0988 33.5452 13.4055 33.5452 19.7121Z" fill="#2D68C4"/>
-                                                        </svg>
+                            <div className="d-flex flex-column align-items-center">
+                                <div
+                                    className="d-flex flex-column"
+                                    variant="outlined"
+                                    color={capturing ? 'secondary' : 'primary'}
+                                    onClick={(e) => startVideoCapture(false, e)}
+                                    size="small"
+                                    disabled={isUploading}
+                                    title="Record Video"
+                                    id="skoop_record_button"
+                                >
+                                    <span class="icon">
+                                        {capturing ? (
+                                            <svg
+                                                width="28"
+                                                height="28"
+                                                viewBox="0 0 28 28"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <circle cx="14" cy="14" r="14" fill="#E31A1A" />
+                                            </svg>
+                                        ) : (
+                                            <svg
+                                                width="41"
+                                                height="40"
+                                                viewBox="0 0 41 40"
+                                                fill="currentcolor"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    clip-rule="evenodd"
+                                                    d="M17.5452 15.0455V24.3788C17.5452 24.9255 18.1719 25.2455 18.6119 24.9121L24.8386 20.2455C25.1986 19.9788 25.1986 19.4455 24.8386 19.1788L18.6119 14.5121C18.1719 14.1788 17.5452 14.4988 17.5452 15.0455ZM18.8786 8.0188C18.8786 7.16546 18.0919 6.51213 17.2652 6.6988C15.7719 7.04546 14.3586 7.63213 13.1052 8.43213C12.3986 8.88546 12.2919 9.8988 12.8919 10.4988C13.3186 10.9255 13.9986 11.0321 14.5052 10.7121C15.5319 10.0588 16.6652 9.5788 17.8919 9.31213C18.4786 9.1788 18.8786 8.63213 18.8786 8.0188ZM11.0119 12.3921C10.3986 11.7921 9.39855 11.8855 8.94522 12.6055C8.14522 13.8588 7.55855 15.2721 7.21189 16.7655C7.02522 17.5921 7.66522 18.3788 8.51855 18.3788C9.11855 18.3788 9.67855 17.9788 9.79855 17.3921C10.0652 16.1788 10.5586 15.0321 11.1986 14.0188C11.5452 13.4988 11.4386 12.8188 11.0119 12.3921ZM8.51855 21.0455C7.66522 21.0455 7.01189 21.8321 7.19855 22.6588C7.54522 24.1521 8.13189 25.5521 8.93189 26.8188C9.38522 27.5388 10.3986 27.6321 10.9986 27.0321C11.4252 26.6055 11.5319 25.9255 11.1986 25.4188C10.5452 24.4055 10.0652 23.2721 9.79855 22.0455C9.67855 21.4455 9.13189 21.0455 8.51855 21.0455ZM13.1052 30.9788C14.3719 31.7788 15.7719 32.3655 17.2652 32.7121C18.0919 32.8988 18.8786 32.2455 18.8786 31.4055C18.8786 30.8055 18.4786 30.2455 17.8919 30.1255C16.6786 29.8588 15.5319 29.3655 14.5186 28.7255C13.9986 28.4055 13.3319 28.4988 12.9052 28.9388C12.2919 29.5255 12.3852 30.5255 13.1052 30.9788ZM33.5452 19.7121C33.5452 26.0188 29.1452 31.3255 23.2386 32.6988C22.4119 32.8988 21.6119 32.2455 21.6119 31.3921C21.6119 30.7788 22.0252 30.2455 22.6119 30.0988C27.3452 29.0055 30.8786 24.7655 30.8786 19.7121C30.8786 14.6588 27.3452 10.4188 22.6119 9.32546C22.0252 9.19213 21.6119 8.64546 21.6119 8.03213C21.6119 7.1788 22.4119 6.52546 23.2386 6.72546C29.1452 8.0988 33.5452 13.4055 33.5452 19.7121Z"
+                                                    fill="#2D68C4"
+                                                />
+                                            </svg>
+                                        )}
+                                    </span>
+                                </div>
 
-                                                )}
-                                            </span>
-
-                                           
-                                        </div>
-                               
-                               
                                 <span className="d-flex flex-row record-button-bottom-text">
                                     {' '}
-                                     {capturing ? isUploading?'Uploading...':'Recording...' : 'Record Video'} {' '}
+                                    {capturing
+                                        ? isUploading
+                                            ? 'Uploading...'
+                                            : 'Recording...'
+                                        : 'Record Video'}{' '}
                                     <div
                                         className="d-flex flex-column justify-content-center ps-1"
                                         onClick={handleIconClick}
@@ -489,42 +502,64 @@ const RecordingButton = () => {
                 {prev !== '' && <PreviewModal prev={prev} preview={preview} setPrev={setPrev} />}
                 
             </div>
-            <div
-                    className="modal"
-                    style={{ display: videoSettingsOpen ? 'block' : 'none' }}
-                >
-                    <div
-                        className="modal-overlay modal-dialog-centered"
-                        role="document"
-                    >
-                        <div className="modal-content mx-4">
-                            <div className="modal-header">
-                                Video settings
-                                <button
-                                    type="button"
-                                    className="custom-close-button"
-                                    onClick={() => setShowModal(false)}
-                                    aria-label="Close"
+            <div className="modal" style={{ display: videoSettingsOpen ? 'block' : 'none' }}>
+                <div className="modal-overlay modal-dialog-centered" role="document">
+                    <div className="modal-content mx-4">
+                        <div className="modal-header">
+                            Video settings
+                            <button
+                                type="button"
+                                className="custom-close-button"
+                                onClick={() => setShowModal(false)}
+                                aria-label="Close"
+                            >
+                                <IoMdClose />
+                            </button>
+                        </div>
+                        <div className="modal-body d-flex flex-row align-items-center ">
+                            <div className='text-center'>
+                                <div
+                                    className={` mx-3 p-2 border-video-selector ${
+                                        selectedVideoStyle == 'Vertical Mode'
+                                            ? 'bg-selected-videoMode'
+                                            : ''
+                                    }`}
+                                    onClick={() => handleVideoStyleSelect('Vertical Mode')}
                                 >
-                                    <IoMdClose />
-                                </button>
-                            </div>
-                            <div className="modal-body d-flex flex-row justify-content-between px-4 align-items-center">
-                                <div className={`p-2 border-video-selector ${selectedVideoStyle=='Vertical Mode'?'bg-selected-videoMode':""}`} onClick={() =>
-                                                    handleVideoStyleSelect('Vertical Mode')
-                                                }>
                                     <Vertical />
                                 </div>
-                                <div className={`p-2 border-video-selector ${selectedVideoStyle=='Horizontal'?'bg-selected-videoMode':""}`} onClick={() => handleVideoStyleSelect('Horizontal')}  >
-                                    <Horizontal  />
+                                <span className='record-button-bottom-text' >Vertical (9:16)</span>
+                            </div>
+                            <div className='text-center' >
+                                <div
+                                    className={` mx-3 p-2 border-video-selector ${
+                                        selectedVideoStyle == 'Horizontal'
+                                            ? 'bg-selected-videoMode'
+                                            : ''
+                                    }`}
+                                    onClick={() => handleVideoStyleSelect('Horizontal')}
+                                >
+                                    <Horizontal />
                                 </div>
-                                <div className={`p-2 border-video-selector ${selectedVideoStyle=='Square'?'bg-selected-videoMode':""}`} onClick={() => handleVideoStyleSelect('Square')}>
-                                    <Square   />
+                                <span className='record-button-bottom-text'>Horizontal (9:16) </span>
+                            </div>
+                            <div className='text-center' >
+                                <div
+                                    className={` mx-3 p-2 border-video-selector ${
+                                        selectedVideoStyle == 'Square'
+                                            ? 'bg-selected-videoMode'
+                                            : ''
+                                    }`}
+                                    onClick={() => handleVideoStyleSelect('Square')}
+                                >
+                                    <Square />
                                 </div>
+                                <span className='record-button-bottom-text' >Square (1:1)</span>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
         </>
     );
 };

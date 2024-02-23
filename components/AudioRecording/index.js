@@ -74,6 +74,8 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
             let file = new File([blob], 'recording');
             formData.append('data', file, `${audioTitle}.wav`);
             const customHeaders = new Headers();
+            formData.append('height', 500);
+            formData.append('width', 500);
             customHeaders.append('title', audioTitle);
             customHeaders.append('directory_name', directoryName);
             customHeaders.append('duration', duration);
@@ -84,7 +86,7 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
             );
             customHeaders.append('title1', title1);
        
-            const loadingObj = toast.loading('uploading Voice Memo...');
+            const loadingObj = toast.loading('Uploading Voice Memo...');
             var response = await fetch(API_ENDPOINTS.vidyardUpload, {
                 method: 'POST',
                 headers: customHeaders,
@@ -177,8 +179,8 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
       };
    
       return (
-        <div id="homeDiv" className='text-center'>
-          <div className='d-flex flex-column'>
+        <div id="homeDiv" >
+          <div className='d-flex flex-column align-items-center'>
 
           
           <button
@@ -190,9 +192,15 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
           >
             {isRecording ? (
             
-              <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M29.8418 36C33.1618 36 35.8418 33.32 35.8418 30V18C35.8418 14.68 33.1618 12 29.8418 12C26.5218 12 23.8418 14.68 23.8418 18V30C23.8418 33.32 26.5218 36 29.8418 36ZM41.6618 30C40.6818 30 39.8618 30.72 39.7018 31.7C38.8818 36.4 34.7818 40 29.8418 40C24.9018 40 20.8018 36.4 19.9818 31.7C19.8218 30.72 19.0018 30 18.0218 30C16.8018 30 15.8418 31.08 16.0218 32.28C17.0018 38.28 21.8018 42.98 27.8418 43.84V48C27.8418 49.1 28.7418 50 29.8418 50C30.9418 50 31.8418 49.1 31.8418 48V43.84C37.8818 42.98 42.6818 38.28 43.6618 32.28C43.8618 31.08 42.8818 30 41.6618 30Z" fill="white"/>
-</svg>
+            <svg
+            width="28"
+            height="28"
+            viewBox="0 0 28 28"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <circle cx="14" cy="14" r="14" fill="#E31A1A" />
+        </svg>
 
             ) : (
              
