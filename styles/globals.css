@@ -2,7 +2,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 
 /* Montserrat */
-@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+/* @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap"); */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
 /* Poppins */
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
@@ -10,6 +11,71 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 
+
+/* variables */
+:root {
+  /* colors */
+  --light-pink: #eee3fc;
+  --lighter-pink: #fbf7ff;
+
+  /* measures */
+}
+
+/* background color */
+.light-pink {
+  background-color: var(--light-pink);
+}
+.lighter-pink {
+  background-color: var(--lighter-pink);
+}
+
+.py-4-5 {
+  padding-top: 2.2rem;
+  padding-bottom: 2.2rem;
+}
+
+.my-4-2 {
+  margin-top: 32px;
+  margin-bottom: 32px;
+}
+
+.py-4-2 {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.mx--1 {
+  margin-right: 16px;
+  margin-left: 16px;
+}
+
+.px--1 {
+  margin-right: 16px;
+  margin-left: 16px;
+}
+.p-0-5 {
+  padding: 8px;
+}
+
+.border-radius-12 {
+  border-radius: 12px !important;
+}
+
+.border-bottom-light-pink {
+  border-bottom: 0.5px solid #eee3fc;
+}
+
+.card-title {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  color: #2a2b39;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+/* general css */
 .sbl-circ-ripple {
   height: 56px;
   width: 56px;
@@ -595,7 +661,7 @@
   height: 30px;
 }
 .modal-overlay {
-  background-color: rgba(0, 0, 0, 0.2); 
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .modal-header{
@@ -633,13 +699,220 @@
 
 /*Account Settings*/
 
+#account-settings {
+  min-height: 100vh;
+  background: var(--lighter-pink);
+}
+
+#account-settings .card {
+  box-shadow: 0px 2px 6px 0px #0000001a;
+  border: 0;
+}
+
+.outline {
+  box-shadow: 0px 2px 6px 0px #0000001a;
+  border: 0;
+}
+
+input[type="time"] {
+  position: relative;
+  overflow: hidden;
+}
+
+input[type="time"] {
+  position: relative;
+}
+
+.inputfield {
+  position: relative;
+  width: 100px;
+}
+
+input[type="time"]:focus::-webkit-calendar-picker-indicator {
+  bottom: 0;
+  color: transparent;
+  cursor: pointer;
+  height: auto;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  font-size: 20px;
+  color: rgba(88, 88, 116, 1);
+}
+
+input[type="time"]#preferredStartTime.filled:before {
+  content: "Preferred start time*";
+  color: rgba(44, 45, 46, 0.5);
+  position: absolute;
+  background: #fff;
+  width: auto;
+  top: 25%;
+}
+
+input[type="time"]#preferredStartTime.filled,
+input[type="time"]#preferredEndTime.filled,
+input[type="time"]#breakStartTime.filled,
+input[type="time"]#breakEndTime.filled {
+  padding: 1.7px 12px;
+}
+input[type="time"]#preferredStartTime.filled:focus,
+input[type="time"]#preferredEndTime.filled:focus,
+input[type="time"]#breakStartTime.filled:focus,
+input[type="time"]#breakEndTime.filled:focus {
+  padding: 7.7px 12px;
+}
+
+input[type="time"]#preferredStartTime.filled:focus:before {
+  width: 0;
+  content: "";
+}
+
+input[type="time"]#preferredEndTime.filled:before {
+  content: "Preferred End Time*";
+  color: rgba(44, 45, 46, 0.5);
+  position: absolute;
+  background: #fff;
+  width: auto;
+  top: 25%;
+}
+
+input[type="time"]#breakStartTime.filled:before {
+  content: "Break Start Time *";
+  color: rgba(44, 45, 46, 0.5);
+  position: absolute;
+  background: #fff;
+  width: auto;
+  top: 25%;
+}
+
+input[type="time"]#breakEndTime.filled:before {
+  content: "Break End Time *";
+  color: rgba(44, 45, 46, 0.5);
+  position: absolute;
+  background: #fff;
+  width: auto;
+  top: 25%;
+}
+
+input[type="time"]#breakStartTime.filled:focus:before,
+input[type="time"]#breakEndTime.filled:focus:before,
+input[type="time"]#preferredEndTime.filled:focus:before {
+  width: 0;
+  content: "";
+}
+
+.card-btn {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 24px;
+  gap: 10px;
+  background: #2d68c4;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: #ffffff;
+}
+
+.account-card {
+  filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.1));
+  border-radius: 12px;
+}
+
+.profile-text-sm {
+  height: 8px;
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+  color: #2a2b39;
+}
+
+.profile-name {
+  color: #2a2b39;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 17px;
+  letter-spacing: 0em;
+  text-align: left;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.profile-text {
+  height: 8px;
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  color: #2a2b39;
+  opacity: 0.8;
+}
+
+select.form-select,
+textarea.form-control,
+input.form-control {
+  box-sizing: border-box;
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  color: #2a2b39;
+  opacity: 0.8;
+  box-sizing: border-box;
+  padding: 7.7px 12px;
+  gap: 2px;
+  border: 0.5px solid rgba(169, 170, 171, 0.8);
+  border-radius: 4px;
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+}
+input[type="time"].form-control {
+  padding: 1.7px 12px;
+}
+input[type="time"].form-control:focus {
+  padding: 7.7px 12px;
+}
+input.form-control::-ms-input-placeholder {
+  color: rgba(169, 170, 171, 0.8) !important;
+}
+
+select.form-select {
+  padding: 7.7px 12px;
+}
+
+.profile-card {
+  padding: 20px;
+}
+
 .card-with-border {
   border: 2px solid grey;
 }
 
 .rounded-circle-custom {
-  height: 80px;
-  width: 80px;
+  height: 60px;
+  width: 60px;
   margin-right: 5px;
 }
 
@@ -648,7 +921,11 @@
 }
 
 .card-header-custom {
-  border-bottom: 0;
+  padding: 8px 16px;
+}
+
+.toggle-collapse svg {
+  transition: all 0.5s ease;
 }
 
 /* RenameVideoPopup*/
