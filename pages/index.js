@@ -3,7 +3,6 @@ import Homepage from "../Screens/Homepage";
 import SignIn from "../Screens/SignIn";
 import SignUp from "../Screens/SignUp";
 import ScreenContext from "../contexts/ScreenContext";
-import ChatPage from "../Screens/ChatPage";
 import ContactPage from "../Screens/ContactPage";
 import ProfileScraper from "../components/ProfileScraper";
 import AccountSettings from "../Screens/AccountSettings";
@@ -52,7 +51,6 @@ export default function Home() {
       {activePage === "SignIn" && <SignIn />}
       {activePage === "SignUp" && <SignUp />}
       {activePage === "AccountSettings" && <AccountSettings />}
-      {activePage == "ChatPage" && <ChatPage />}
       {activePage == "ContactPage" && <ContactPage />}
       {activePage == "ProfileScraper" && <ProfileScraper />}
       {activePage == "ForgotPassword" && <ForgotPassword />}

@@ -52,7 +52,7 @@
   }
 }
 .status_bar {
-  color: #0a66c2;
+  color: #0A66C2;
 }
 
 #skoop_record_button {
@@ -107,6 +107,8 @@
   margin: 0;
   border: none;
 }
+
+
 
 /* Chatwindow links preview*/
 .linkpreviewcard {
@@ -596,8 +598,8 @@
   background-color: rgba(0, 0, 0, 0.2); 
 }
 
-.modal-header {
-  font-family: "Montserrat", sans-serif;
+.modal-header{
+  font-family: 'Montserrat', sans-serif;
   font-size: 16px;
 }
 

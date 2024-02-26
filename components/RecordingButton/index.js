@@ -53,7 +53,7 @@ const RecordingButton = () => {
     const [newVideoTitle, setNewVideoTitle] = useState('');
     const [uploadedVideoName, setUploadedVideoName] = useState('');
 
-    const { setGlobalRefresh, isLinkedin, selectedChatWindows, focusedElementId } =
+    const { setGlobalRefresh, isLinkedin,setLatestVideoId, latestBlob,setLatestBlob } =
         useContext(GlobalStatesContext);
     const { getThumbnail, deleteVideo } = useContext(MediaUtilsContext);
     const { addMessage } = useContext(MessageContext);
@@ -197,7 +197,9 @@ const RecordingButton = () => {
 
     function handleVideoBlob(response) {
         if (response.videoBlob) {
+            
             getBlobFromUrl(response.url).then((blob) => {
+                setLatestBlob(blob)
                 uploadVideo(blob, getCurrentDateTimeString(), 'New');
             });
         }
@@ -247,16 +249,18 @@ const RecordingButton = () => {
                 body: formData,
             });
             response = await response.json();
+            console.log(response.facade_player_uuid)
+           
             toast.success('Video link Added to Custom Message', {
                 id: loadingObj,
             });
             setIsUploading(false);
+            setLatestVideoId(response.facade_player_uuid)
             setVideoPlayerId(response.facade_player_uuid);
-            setVideoId(response.id);
             addToMessage(response.facade_player_uuid);
+            setVideoId(response.id);
             setGlobalRefresh(true);
             setCapturing(false);
-            // Set the uploaded video name in the state
             setUploadedVideoName(response.name);
         } catch (err) {
             toast.dismiss();

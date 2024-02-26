@@ -18,7 +18,7 @@ const API_ENDPOINTS = {
     videoDirectories: `${backendUrl}/videoDirectories`, // GET
     linkData: `${backendUrl}/linkdata?`, // GET
     addLinkData: `${backendUrl}/addlinkdata`, // POST
-    vidyardUpload: `${backendUrl}/vidyardUpload`, // POST
+    vidyardUpload: `https://skoop.sumits.in/vidyardUpload`, // POST
     signIn: `${backendUrl}/login`, // POST
     tokenStatus: `${backendUrl}/tokenStatus`, // GET
     signUp: `${backendUrl}/signup`, // POST
@@ -42,7 +42,8 @@ const API_ENDPOINTS = {
     userPreferences:`${backendUrl}/user-appointment-preferences`,// POST
     syncCalendar:`${backendUrl}/sync-calendar`,// POST
     getCalendarUrl:`${backendUrl}/getcalendarurl`, //GET
-    updateCalendarUrl:`${backendUrl}/update-calendar-url`,// POST
+    updateCalendarUrl:`${backendUrl}/update-calendar-url`,// POST,
+    updateThumbnailImage:`${backendUrl}/updateThumbnail`, // POST,
 };
 
 // with POST or PATCH apis body is sent in JSON 

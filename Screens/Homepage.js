@@ -6,12 +6,10 @@ import GlobalStatesContext from '../contexts/GlobalStates.js';
 import RecordingButton from '../components/RecordingButton/index.js';
 
 import MessageComposer from '../components/MessageComposer/index.js';
+import { VideoPreview } from '../components/videoPreview.jsx';
 const Homepage = (props) => {
     const {
         setIsLinkedin,
-        isLinkedin,
-        setLatestVideoUrl,
-        isProfilePage,
         setIsProfilePage,
         setFocusedElementId,
     } = useContext(GlobalStatesContext);
@@ -84,7 +82,7 @@ const Homepage = (props) => {
     return (
         <div className='mt-4'>
             <RecordingButton />
-       
+       <VideoPreview/>
             <MessageComposer />
 
         </div>

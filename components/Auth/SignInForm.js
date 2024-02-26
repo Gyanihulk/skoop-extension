@@ -33,8 +33,8 @@ const SignInForm = () => {
       console.log("form submitting: ", { username, password });
       handleSkoopLogin(username, password);
     } else {
-      setIsUsernameEmpty(true);
-      setIsPasswordEmpty(true);
+      setIsUsernameEmpty(username.trip() === "");
+      setIsPasswordEmpty(password.trip() === "");
       console.log("username or password can not be empty!");
     }
   };

@@ -79,12 +79,6 @@
   font-size: 16px;
 }
 
-.forgot-password-label {
-  color: #2a2b39e5;
-  font-family: "Montserrat", sans-serif;
-  font-weight: 500;
-}
-
 .or-with-label {
   font-family: "Montserrat", sans-serif;
   color: #2a2b39e5;
@@ -132,11 +126,49 @@
   color: #ff8210;
 }
 
+.forgot-password-head div h6 {
+  font-family: "Lato", sans-serif;
+  color: #2c2d2e;
+}
+
+.forgot-password-head div img {
+  width: 8rem;
+}
+
 .forgot-password-content {
-  height: 76vh;
+  height: 44vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.forgot-password-title {
+  font-family: "Lato", sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.forgot-password-description {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.forgot-password-step-label {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+}
+
+.resend-otp {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+}
+
+.forgot-password-label {
+  color: #2a2b39e5;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
 }
 
 .password-with-tooltip {
