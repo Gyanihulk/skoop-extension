@@ -11,7 +11,7 @@ import toast from 'react-hot-toast';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
 import { continuousVisualizer } from 'sound-visualizer';
 
-const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCapturing,addToMessage,setVideoPlayerId,setVideoId}) => {
+const VoiceVisualization = ({setBlobUrl,setIsUploading,setCapturing,addToMessage,setVideoPlayerId,setVideoId}) => {
     const [mediaRecorder, setMediaRecorder] = useState(null);
     const [visualizationUrl, setVisualizationUrl] = useState('');
     const [isRecording, setIsRecording] = useState(false);
@@ -102,7 +102,6 @@ const VoiceVisualization = ({setIconsVisible,setBlobUrl,setIsUploading,setCaptur
             setVideoId(response.id);
             addToMessage(response.facade_player_uuid);
             setGlobalRefresh(true);
-            setIconsVisible(true)
         } catch (err) {
             toast.dismiss();
             toast.error('could not upload');

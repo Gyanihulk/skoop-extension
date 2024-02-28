@@ -29,7 +29,7 @@ function injectIframe() {
     const dragButton = document.createElement('div');
     dragButton.id = 'skoop-drag-button';
     dragButton.style.left = '10px';
-    dragButton.style.top = '19px';
+    dragButton.style.top = '14px';
     dragButton.style.width = '24px';
     dragButton.style.height = '24px';
     dragButton.style.position = 'absolute';

@@ -141,10 +141,9 @@ export function getCurrentDateTimeString() {
 }
 
 export const handleCopyToClipboard=(dataToCopy)=>{
-  console.log("inside copy to clipboard procedure")
+  
 
   const executeCopy=(data)=>{
-    console.log("the data to copy inside executeCopy",data)
     navigator.clipboard.writeText(data);
   }
 

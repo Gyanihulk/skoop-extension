@@ -25,7 +25,7 @@ import PreviewModal from '../PreviewModal/PreviewModal.jsx';
 import { IoLink } from 'react-icons/io5';
 import MessageContext from '../../contexts/MessageContext.js';
 import RenameVideoPopup from '../Library/RenameVideoPopup.js';
-import { FaEdit } from 'react-icons/fa';
+
 import { IoMdClose } from 'react-icons/io';
 import Vertical from '../VideoScreenLayoutSVG/Vertical.jsx';
 import Horizontal from '../VideoScreenLayoutSVG/Horizontal.jsx';
@@ -36,26 +36,24 @@ const RecordingButton = () => {
     const [capturing, setCapturing] = useState(false);
     const [prev, setPrev] = useState('');
     const [time, setTime] = useState(0);
-    const [videoPlayerId, setVideoPlayerId] = useState('');
     const [videoId, setVideoId] = useState('');
     const [countdown, setCountdown] = useState(false);
     const [countTimer, setCountTimer] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
-    const [isPlaying, setIsPlaying] = useState(false);
+
     const [bloburl, setBlobUrl] = useState(null);
     const [height, setHeight] = useState(16 * videoResizeConstant);
     const [width, setWidth] = useState(9 * videoResizeConstant);
     const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
     const [selectedVideoStyle, setSelectedVideoStyle] = useState('Vertical Mode');
-    const [iconsVisible, setIconsVisible] = useState(true);
-    const [videoTitle, setVideoTitle] = useState('');
-    const [showRenameModal, setShowRenameModal] = useState(false);
-    const [newVideoTitle, setNewVideoTitle] = useState('');
-    const [uploadedVideoName, setUploadedVideoName] = useState('');
 
-    const { setGlobalRefresh, isLinkedin,setLatestVideoId, latestBlob,setLatestBlob } =
+    const [videoTitle, setVideoTitle] = useState('');
+
+
+
+    const { setGlobalRefresh, isLinkedin,setLatestVideo, setLatestBlob } =
         useContext(GlobalStatesContext);
-    const { getThumbnail, deleteVideo } = useContext(MediaUtilsContext);
+    const { getThumbnail } = useContext(MediaUtilsContext);
     const { addMessage } = useContext(MessageContext);
     const handleVideoStyleSelect = (style) => {
         setSelectedVideoStyle(style);
@@ -97,7 +95,7 @@ const RecordingButton = () => {
     const addToMessage = async (videoPlayerId) => {
         if (isLinkedin) {
             addMessage(
-                `https://skoop.hubs.vidyard.com/watch/${videoPlayerId}`
+                `https://skoop.hubs.vidyard.com/watch/${videoPlayerId}?`
                 // ?email=${JSON.parse(localStorage.getItem('skoopUsername'))}&duration=60
             );
         } else {
@@ -113,9 +111,6 @@ const RecordingButton = () => {
         window.scrollTo(0, document.body.scrollHeight);
     };
 
-    const toggleIcon = () => {
-        setIsPlaying((prevIsPlaying) => !prevIsPlaying);
-    };
 
     const preview = () => {
         if (prev != '') {
@@ -145,33 +140,12 @@ const RecordingButton = () => {
         return () => clearInterval(intervalId);
     }, [countdown, countTimer]);
 
-    useEffect(() => {
-        if (capturing) {
-            setIconsVisible(true);
-        }
-    }, [capturing]);
 
     //useable functions
 
-    const handleDeleteVideo = async () => {
-        const isDeleted = await deleteVideo(videoId);
-        if (isDeleted) {
-            setIconsVisible(false);
-        }
-    };
 
-    const handleDownload = React.useCallback(() => {
-        if (bloburl) {
-            const a = document.createElement('a');
-            document.body.appendChild(a);
-            a.style = 'display: none';
-            a.href = bloburl;
-            a.target = '_blank';
-            a.download = 'Skoop video.webm';
-            a.click();
-            window.URL.revokeObjectURL(bloburl);
-        }
-    }, [bloburl]);
+
+
     function sendMessageToBackgroundScript(request, callback) {
         chrome.runtime.sendMessage(request, (response) => {
             if (callback && response) {
@@ -188,7 +162,6 @@ const RecordingButton = () => {
             const blob = await response.blob();
             url = URL.createObjectURL(blob);
             setBlobUrl(url);
-            // setPrev(url);
             return blob;
         } catch (error) {
             console.error('Error fetching blob:', error);
@@ -255,13 +228,11 @@ const RecordingButton = () => {
                 id: loadingObj,
             });
             setIsUploading(false);
-            setLatestVideoId(response.facade_player_uuid)
-            setVideoPlayerId(response.facade_player_uuid);
+            setLatestVideo(response)
             addToMessage(response.facade_player_uuid);
             setVideoId(response.id);
             setGlobalRefresh(true);
             setCapturing(false);
-            setUploadedVideoName(response.name);
         } catch (err) {
             toast.dismiss();
             toast.error('could not upload');
@@ -273,43 +244,8 @@ const RecordingButton = () => {
         setVideoTitle(videoTitle);
     }, [capturing]);
 
-    //rename modal
 
-    const handleRenameClick = () => {
-        setNewVideoTitle(uploadedVideoName);
-        setShowRenameModal(true);
-    };
-
-    // Function to close the rename modal
-    const handleCloseRenameModal = () => {
-        setShowRenameModal(false);
-    };
-
-    const handleRenameSave = async () => {
-        try {
-            const response = await fetch(API_ENDPOINTS.renameVideo + `/${videoId}`, {
-                method: 'PATCH',
-                headers: {
-                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                    'Content-type': 'application/json; charset=UTF-8',
-                },
-                body: JSON.stringify({
-                    newTitle: newVideoTitle,
-                }),
-            });
-
-            if (response.ok) {
-                setVideoTitle(newVideoTitle);
-                setUploadedVideoName(newVideoTitle);
-                handleCloseRenameModal();
-                toast.success('Video renamed successfully');
-            } else {
-                toast.error('Failed to rename video.');
-            }
-        } catch (error) {
-            toast.error('Failed to rename video.');
-        }
-    };
+ 
 
     return (
         <>
@@ -387,11 +323,10 @@ const RecordingButton = () => {
                         </div>
                         <div class="col-auto">
                             <VoiceVisualization
-                                setIconsVisible={setIconsVisible}
                                 setBlobUrl={setBlobUrl}
                                 setIsUploading={setIsUploading}
                                 setCapturing={setCapturing}
-                                setVideoPlayerId={setVideoPlayerId}
+                                setVideoPlayerId={setLatestVideo}
                                 setVideoId={setVideoId}
                                 addToMessage={addToMessage}
                             />
@@ -399,109 +334,7 @@ const RecordingButton = () => {
                     </div>
                 </div>
 
-                <div class="container">
-                    <div class="row justify-content-center">
-                        {!capturing && !isUploading && bloburl && iconsVisible && (
-                            <div class="col-auto">
-                                {uploadedVideoName !== '' && (
-                                    <div className="d-flex align-items-center">
-                                        <h7 className="text-truncate uploadedvideotitle">
-                                            {uploadedVideoName}
-                                        </h7>
-                                        <button
-                                            className="btn btn-link ml-2"
-                                            onClick={handleRenameClick}
-                                        >
-                                            <FaEdit />
-                                        </button>
-                                    </div>
-                                )}
-                                <button
-                                    data-mdb-toggle="tooltip"
-                                    data-mdb-placement="bottom"
-                                    title="copy the video link"
-                                    className="videoOption"
-                                    onClick={() => {
-                                        handleCopyToClipboard(
-                                            `https://skoop.hubs.vidyard.com/watch/${videoPlayerId}`
-                                        );
-                                    }}
-                                >
-                                    <IoLink id="mail_icons" />
-                                </button>
 
-                                <button
-                                    data-mdb-toggle="tooltip"
-                                    data-mdb-placement="bottom"
-                                    title={
-                                        isPlaying
-                                            ? 'Close the Preview video'
-                                            : 'Play the recorded video'
-                                    }
-                                    className="videoOption"
-                                    onClick={preview}
-                                >
-                                    {isPlaying ? (
-                                        <FaTimesCircle id="mail_icons" />
-                                    ) : (
-                                        <FaRegCirclePlay id="mail_icons" />
-                                    )}
-                                </button>
-
-                                <button
-                                    data-mdb-toggle="tooltip"
-                                    data-mdb-placement="bottom"
-                                    title="Download the recorded video"
-                                    className="videoOption"
-                                    onClick={handleDownload}
-                                >
-                                    <FaDownload id="mail_icons" />
-                                </button>
-
-                                <button
-                                    data-mdb-toggle="tooltip"
-                                    data-mdb-placement="bottom"
-                                    title="Delete the video"
-                                    className="delete"
-                                    onClick={handleDeleteVideo}
-                                >
-                                    <MdDeleteForever id="mail_icons" />
-                                </button>
-
-                                {videoPlayerId !== '' && (
-                                    <>
-                                        {/* <button
-                                                className="videoOption"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="bottom"
-                                                title="Export to text area"
-                                                onClick={handleInsertion}
-                                            >
-                                                <MdOutlineSendTimeExtension id="mail_icons" />
-                                            </button> */}
-
-                                        <button
-                                            className="videoOption"
-                                            onClick={() => {
-                                                setIconsVisible(false);
-                                            }}
-                                        >
-                                            <AiOutlineClose id="mail_icons" />
-                                        </button>
-                                    </>
-                                )}
-                            </div>
-                        )}
-                        {showRenameModal && (
-                            <RenameVideoPopup
-                                newTitle={newVideoTitle}
-                                onClose={handleCloseRenameModal}
-                                onSave={handleRenameSave}
-                                onTitleChange={(e) => setNewVideoTitle(e.target.value)}
-                            />
-                        )}
-                    </div>
-                </div>
 
                 {prev !== '' && <PreviewModal prev={prev} preview={preview} setPrev={setPrev} />}
                 

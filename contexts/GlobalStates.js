@@ -12,7 +12,7 @@ export const GlobalStatesProvider = ({ children }) => {
   const [focusedElementId,setFocusedElementId]=useState(null);
   const [expand, setExpand] = useState(false);
   const [selectedChatWindows, setSelectedChatWindows] = useState([]);
-  const [latestVideoId,setLatestVideoId]=useState()
+  const [latestVideo,setLatestVideo]=useState()
   const [latestBlob,setLatestBlob]=useState()
 useEffect(()=>{},[globalRefresh])
   
@@ -24,7 +24,7 @@ useEffect(()=>{},[globalRefresh])
       setLatestVideoUrl,latestVideoUrl,
       isProfilePage,setIsProfilePage,
       scraperPage,setScraperPage,
-      latestVideoId,setLatestVideoId,
+      latestVideo,setLatestVideo,
       focusedElementId,setFocusedElementId,expand, setExpand,latestBlob,setLatestBlob
     }}>
       {children}

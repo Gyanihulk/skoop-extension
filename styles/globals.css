@@ -1370,3 +1370,38 @@ fill: #2A2B39;
 .form-check-input{
   transform: scale(1.5); 
 }
+
+.video-preview-iframe{
+  border-radius: 10px !important;
+  width: 100%;
+  height: 100%;
+  max-height: 146px;
+}
+
+
+.preview-button-bottom-text{
+  font-size: 6px;
+  margin-top: 2px;
+  font-family: "Montserrat", sans-serif ;
+}
+#preview-video-button{
+  background-color: rgba(255, 255, 255, 0.8);
+  position: absolute !important ;
+  top: 6.9rem;
+  height:40px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+#preview-video-button svg{
+width: 8px !important;
+height:8px !important;
+}
+.modal-dialog-centered{
+  justify-content: center;
+}
+#video-Preview{
+  width: 325px !important;
+  position: absolute;
+  top: 17rem;
+  transform: translateX(13%)
+}

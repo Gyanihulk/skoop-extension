@@ -18,7 +18,7 @@ const API_ENDPOINTS = {
     videoDirectories: `${backendUrl}/videoDirectories`, // GET
     linkData: `${backendUrl}/linkdata?`, // GET
     addLinkData: `${backendUrl}/addlinkdata`, // POST
-    vidyardUpload: `https://skoop.sumits.in/vidyardUpload`, // POST
+    vidyardUpload: `${backendUrl}/vidyardUpload`, // POST
     signIn: `${backendUrl}/login`, // POST
     tokenStatus: `${backendUrl}/tokenStatus`, // GET
     signUp: `${backendUrl}/signup`, // POST
