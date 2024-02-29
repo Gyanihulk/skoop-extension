@@ -1,4 +1,5 @@
-
+import { useContext } from "react";
+import toast from "react-hot-toast";
 export const replaceInvalidCharacters=(inputString)=>{
     // Define a regular expression to match invalid, reserved, and whitespace characters
     const invalidCharsRegex = /[^\w-]/g; // Matches non-alphanumeric and non-hyphen characters
@@ -50,17 +51,17 @@ export const insertIntoLinkedInMessageWindow=async (html,selectedChatWindows)=>{
     }catch(err){
       console.log("error during insertion to chat",err);
     }
-    
+    return
 }
 
-export const insertHtmlAtPositionInMail=(textInput,elementId) => {
-    
+export const insertHtmlAtPositionInMail= (textInput, elementId) => {
+  return new Promise((resolve, reject) => {
+
     const executeInsertion=(text,Id)=>{
         var element = document.getElementById(Id)
         
         if(element==null){
-        console.log("gmail compose mail window not found returning")
-        return 
+          return false
         }
         text=text.replace(/\n/g, '\n')
         const lines = text.split('\n')
@@ -101,30 +102,38 @@ export const insertHtmlAtPositionInMail=(textInput,elementId) => {
             range.setEndPoint("StartToStart", originalRange);
             range.select();
         }
+   return true
     }
 
+    
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const targetTab=tabs[0];
-        console.log("the tab is targeted id ",targetTab.id);
-        console.log("the selected tab",targetTab)
-        if (targetTab && targetTab.status === 'complete') {
-          console.log("the tab exists")
-          try{
-            chrome.scripting.executeScript({
-              target : {tabId : targetTab.id},
-              func: executeInsertion,
-              args: [textInput,elementId]
-            });
-          }catch(err){
-            console.log("some error occured in executing script")
-          }
+      const targetTab = tabs[0];
+      if (targetTab && targetTab.status === 'complete') {
+        try {
+          chrome.scripting.executeScript({
+            target: { tabId: targetTab.id },
+            func: executeInsertion,
+            args: [textInput, elementId]
+          }, (injectionResults) => {
+            if (!injectionResults[0]?.result) {
+              toast.error("Cursor not on the mail window");
+              reject(new Error("Cursor not on the mail window"));
+            } else {
+              toast.success("Message added to cursor location.");
+              resolve(injectionResults[0]?.result);
+            }
+          });
+        } catch (err) {
+          console.log("some error occurred in executing script");
+          reject(err);
         }
-        else{
-          console.log("the target tab is not accessible");
-        }
+      } else {
+        console.log("the target tab is not accessible");
+        reject(new Error("The target tab is not accessible"));
+      }
     });
-}
-
+  });
+};
 export function getCurrentDateTimeString() {
     const now = new Date();
   

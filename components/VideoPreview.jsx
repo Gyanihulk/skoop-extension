@@ -6,12 +6,14 @@ import GlobalStatesContext from '../contexts/GlobalStates';
 import { FaEdit } from 'react-icons/fa';
 import MediaUtilsContext from '../contexts/MediaUtilsContext';
 import { handleCopyToClipboard } from '../utils';
+import RenameVideoPopup from './Library/RenameVideoPopup';
 
 export const VideoPreview = () => {
     const [thumbnailImage, setThumbnailImage] = useState(
         'https://static-00.iconduck.com/assets.00/user-avatar-happy-icon-1023x1024-bve9uom6.png'
     );
-
+    const [showRenamePopup, setShowRenamePopup] = useState(false);
+    const [newTitle, setNewTitle] = useState();
     const { latestVideo, latestBlob } = useContext(GlobalStatesContext);
     const {  deleteVideo } = useContext(MediaUtilsContext);
     useEffect(() => {
@@ -49,10 +51,10 @@ export const VideoPreview = () => {
                     console.log(jsonResponse);
                     setThumbnailImage(jsonResponse?.thumbnailUrl);
                     
-                    toast.success('thumbnail Image Updated');
+                    toast.success('Thumbnail Image Updated');
                 } else throw new Error('Error in the database');
             } catch (err) {
-                toast.error('thumbnail Image Not Updated, try Again');
+                toast.error('Thumbnail Image Not Updated, Try Again');
             }
         }
     };
@@ -72,7 +74,7 @@ export const VideoPreview = () => {
                         'Content-type': 'application/json; charset=UTF-8',
                     },
                     body: JSON.stringify({
-                        newTitle: 'newVideoTitle',
+                        newTitle: newTitle,
                     }),
                 }
             );
@@ -86,7 +88,14 @@ export const VideoPreview = () => {
             toast.error('Failed to rename video.');
         }
     };
-
+    const handleDeleteClick = async () => {
+        try {
+          await deleteVideo(latestVideo.id);
+          toast.success('Video deleted successfully');
+        } catch (error) {
+          toast.error('Failed to delete video');
+        }
+      };
     const handleDownload = React.useCallback(() => {
         if (latestBlob) {
             const urlToDownload = (latestBlob instanceof Blob) ? window.URL.createObjectURL(latestBlob) : latestBlob;
@@ -120,15 +129,10 @@ export const VideoPreview = () => {
             handleDownload()
         }
         if(eventKey=='Update Thumbnail'){document.getElementById('file-upload').click()}
+        // if(eventKey=="Delete"){handleDeleteClick()}
+        // if(eventKey=="Rename"){setShowRenamePopup(!showRenamePopup)}
     };
-const handleFileInputChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        // Handle the file upload process
-        console.log('Selected file:', file.name);
-        // ... your file handling code ...
-    }
-};
+
 
 const renderNavButtonItem = (eventKey, icon, tooltipText) => (
     <li key={eventKey} className="rounded-2">
@@ -171,6 +175,14 @@ const renderNavButtonItem = (eventKey, icon, tooltipText) => (
                         frameborder="2"
                         ></iframe> */}
                         <img className='video-preview-iframe' src={thumbnailImage}/>
+                        {showRenamePopup && (
+          <RenameVideoPopup
+            newTitle={newTitle}
+            onClose={()=>{setShowRenamePopup(!showRenamePopup)}}
+            onSave={handleRenameSave}
+            onTitleChange={(e) => setNewTitle(e.target.value)}
+          />
+        )}
                     <ul className="nav-button" id="preview-video-button">
                         {renderNavButtonItem(
                             'Copy Link',

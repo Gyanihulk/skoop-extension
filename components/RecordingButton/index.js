@@ -92,20 +92,19 @@ const RecordingButton = () => {
         toggleVideoSettings();
     };
 
-    const addToMessage = async (videoPlayerId) => {
+    const addToMessage = async (videoPlayerId,thumbnailLink="") => {
         if (isLinkedin) {
             addMessage(
                 `https://skoop.hubs.vidyard.com/watch/${videoPlayerId}?`
                 // ?email=${JSON.parse(localStorage.getItem('skoopUsername'))}&duration=60
             );
         } else {
-            const thumbnail_link = await getThumbnail(videoId);
-            var ret = '';
-            if (thumbnail_link != undefined && thumbnail_link != null) {
-                ret = `<img src='${thumbnail_link}' class="inline-block-width"/><br>`;
-            }
+        
+           
+               let ret = `<a href=https://skoop.hubs.vidyard.com/watch/${videoPlayerId}><img src='${thumbnailLink}' class="inline-block-width"/><br></a>`;
+           
             addMessage(
-                ret + `<a href=https://skoop.hubs.vidyard.com/watch/${videoPlayerId}>Play</a>`
+                ret 
             );
         }
         window.scrollTo(0, document.body.scrollHeight);
@@ -229,7 +228,7 @@ const RecordingButton = () => {
             });
             setIsUploading(false);
             setLatestVideo(response)
-            addToMessage(response.facade_player_uuid);
+            addToMessage(response.facade_player_uuid,response?.urlForThumbnail);
             setVideoId(response.id);
             setGlobalRefresh(true);
             setCapturing(false);
@@ -341,7 +340,7 @@ const RecordingButton = () => {
             </div>
             <div className="modal" style={{ display: videoSettingsOpen ? 'block' : 'none' }}>
                 <div className="modal-overlay modal-dialog-centered" role="document">
-                    <div className="modal-content mx-4">
+                    <div className="modal-content mx-4 justify-content-center align-items-center">
                         <div className="modal-header">
                             Video settings
                             <button
@@ -353,7 +352,7 @@ const RecordingButton = () => {
                                 <IoMdClose />
                             </button>
                         </div>
-                        <div className="modal-body d-flex flex-row align-items-center ">
+                        <div className="modal-body d-flex flex-row align-items-center justify-content-center">
                             <div className='text-center'>
                                 <div
                                     className={` mx-3 p-2 border-video-selector ${

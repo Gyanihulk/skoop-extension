@@ -2,15 +2,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 
 /* Montserrat */
-/* @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap"); */
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
 /* Poppins */
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
-
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 
 /* variables */
 :root {
@@ -65,6 +62,7 @@
   border-bottom: 0.5px solid #eee3fc;
 }
 
+.form-group p,
 .card-title {
   font-weight: 500;
   font-size: 12px;
@@ -118,7 +116,7 @@
   }
 }
 .status_bar {
-  color: #0A66C2;
+  color: #0a66c2;
 }
 
 #skoop_record_button {
@@ -128,9 +126,9 @@
   width: 80px; /* Assuming the button is 100x100 pixels */
   height: 80px;
   background-color: white; /* The blue background color from your design tool */
-  color:#2D68C4;
+  color: #2d68c4;
   border-radius: 50%; /* This will make it a circle */
-  border: 3px solid #2D68C4;
+  border: 3px solid #2d68c4;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adjust for your desired shadow */
   cursor: pointer;
   outline: none; /* Removes the outline on focus for a cleaner look */
@@ -142,14 +140,13 @@
   fill: white;
 }
 
-#skoop_record_button:hover  {
-  background-color: #2D68C4; 
-
+#skoop_record_button:hover {
+  background-color: #2d68c4;
 }
-.record-button-bottom-text{
+.record-button-bottom-text {
   font-size: smaller;
   margin-top: 2px;
-  font-family: "Montserrat", sans-serif ;
+  font-family: "Montserrat", sans-serif;
 }
 #floatingTextarea {
   height: 149px !important;
@@ -173,8 +170,6 @@
   margin: 0;
   border: none;
 }
-
-
 
 /* Chatwindow links preview*/
 .linkpreviewcard {
@@ -664,8 +659,8 @@
   background-color: rgba(0, 0, 0, 0.2);
 }
 
-.modal-header{
-  font-family: 'Montserrat', sans-serif;
+.modal-header {
+  font-family: "Montserrat", sans-serif;
   font-size: 16px;
 }
 
@@ -742,8 +737,17 @@ input[type="time"]:focus::-webkit-calendar-picker-indicator {
 }
 
 input[type="time"]::-webkit-calendar-picker-indicator {
-  font-size: 20px;
-  color: rgba(88, 88, 116, 1);
+  bottom: 0;
+  color: transparent;
+  cursor: pointer;
+  height: auto;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  display: block;
 }
 
 input[type="time"]#preferredStartTime.filled:before {
@@ -755,11 +759,18 @@ input[type="time"]#preferredStartTime.filled:before {
   top: 25%;
 }
 
+.clock-icon {
+  position: absolute;
+  top: 8%;
+  right: 16px;
+  z-index: 33;
+}
+
 input[type="time"]#preferredStartTime.filled,
 input[type="time"]#preferredEndTime.filled,
 input[type="time"]#breakStartTime.filled,
 input[type="time"]#breakEndTime.filled {
-  padding: 1.7px 12px;
+  padding: 7.7px 12px;
 }
 input[type="time"]#preferredStartTime.filled:focus,
 input[type="time"]#preferredEndTime.filled:focus,
@@ -805,6 +816,13 @@ input[type="time"]#breakEndTime.filled:focus:before,
 input[type="time"]#preferredEndTime.filled:focus:before {
   width: 0;
   content: "";
+}
+
+#user-preference-collapse #time-zone-dropdown {
+  color: #2a2b39;
+  border-color: #a9aaabcc;
+  padding: 8px 12px;
+  border-radius: 5px;
 }
 
 .card-btn {
@@ -889,7 +907,7 @@ input.form-control {
   flex-grow: 0;
 }
 input[type="time"].form-control {
-  padding: 1.7px 12px;
+  padding: 7.7px 12px;
 }
 input[type="time"].form-control:focus {
   padding: 7.7px 12px;
@@ -922,6 +940,18 @@ select.form-select {
 
 .card-header-custom {
   padding: 8px 16px;
+  border-top-right-radius: 12px 12px;
+  border-top-left-radius: 12px 12px;
+}
+
+.time-zone-main {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: #fff;
+  z-index: 999;
 }
 
 .toggle-collapse svg {
@@ -1264,107 +1294,107 @@ select.form-select {
 .cursor-pointer {
   cursor: pointer;
 }
-#chatWindowsList{
+#chatWindowsList {
   padding: 1vh;
 }
-#chatWindowsList label{
+#chatWindowsList label {
   font-size: small;
   padding-left: 1vh;
-  }
+}
 
+.nav-btn {
+  font-family: "Montserrat", sans-serif;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}
+.nav-button {
+  font-family: "Montserrat", sans-serif;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  padding-left: 0;
+  transition: all 0.3s ease;
+}
+ul.nav-button li {
+  display: grid;
+  place-items: center;
+  min-width: calc(25% - 1.5rem);
+  cursor: pointer;
+}
+ul.nav-button li svg {
+  width: 20px;
+  height: 20px;
+}
+ul.nav-button li svg path {
+  width: 20px;
+  height: 20px;
+}
+.bg-active {
+  background-color: #2d68c4;
+}
 
-  .nav-btn{
-    font-family: "Montserrat", sans-serif ;
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 1.5rem;
-  
-  }
-  .nav-button{
-    font-family: "Montserrat", sans-serif ;
-    width:100%;
-    display: flex;
-    justify-content: space-between;
-    list-style: none;
-    padding-left:0;
-    transition: all 0.3s ease;
-  }
-  ul.nav-button li{
-    display: grid;
-    place-items: center;
-    min-width:calc(25% - 1.5rem);
-    cursor: pointer;
-  
-  }
-  ul.nav-button li svg{
-    width: 20px;
-    height: 20px;
-  }
-   ul.nav-button li svg path{
-    width: 20px;
-    height: 20px;
-  }
-  .bg-active{
-    background-color: #2d68c4;
-  }
-  
-  .margin-bottom-8{
-    margin-bottom: 8rem;
-  }
-  .light-secondary{
-    background: #a9aaab;
-    color:#fff;
-  }
+.margin-bottom-8 {
+  margin-bottom: 8rem;
+}
+.light-secondary {
+  background: #a9aaab;
+  color: #fff;
+}
 
-  .svg-icon {
-    width: 20px;
-    height: 20px;
+.svg-icon {
+  width: 20px;
+  height: 20px;
 }
 
 /* Define classes for the SVG's path */
-.svg-icon.default-path path:nth-child(1){
-    fill: #2A2B39;
+.svg-icon.default-path path:nth-child(1) {
+  fill: #2a2b39;
 }
 
-.svg-icon.active-path path:nth-child(1){
-  fill:#fff;
+.svg-icon.active-path path:nth-child(1) {
+  fill: #fff;
 }
 
-.svg-icon.default-path path:nth-child(2){
-  fill:#fff;
+.svg-icon.default-path path:nth-child(2) {
+  fill: #fff;
 }
 
-.svg-icon.active-path path:nth-child(2){
-fill: #2A2B39;
+.svg-icon.active-path path:nth-child(2) {
+  fill: #2a2b39;
 }
-.chatgpt-container{
-  border:4px solid #EAEAEA;
-  border-radius:10px;
-  padding:1rem;
-  background-color: #FBF7FF;
-  font-family: "Montserrat", sans-serif ;
+.chatgpt-container {
+  border: 4px solid #eaeaea;
+  border-radius: 10px;
+  padding: 1rem;
+  background-color: #fbf7ff;
+  font-family: "Montserrat", sans-serif;
 }
 
-.chatgpt-container .heading{
-  font-size: 16px; 
-  line-height:1;
+.chatgpt-container .heading {
+  font-size: 16px;
+  line-height: 1;
 }
-.generate-response{
-  background-color: #A9AAAB !important;
+.generate-response {
+  background-color: #a9aaab !important;
   font-size: 14px !important;
   border-radius: 10px !important;
 }
 
-#chatWindowsList{font-family: "Plus Jakarta Sans", sans-serif; font-size: 10px;}
-.form-check-label{
-  white-space: nowrap;       /* Prevents the text from wrapping to the next line */
-  overflow: hidden;          /* Hides the overflow of text */
-  text-overflow: ellipsis;   /* Adds an ellipsis to signify that there is more text */
-  display: block;            /* Optional: Ensures the label is a block-level element */
-  max-width: 150px;   
+#chatWindowsList {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 10px;
+}
+.form-check-label {
+  white-space: nowrap; /* Prevents the text from wrapping to the next line */
+  overflow: hidden; /* Hides the overflow of text */
+  text-overflow: ellipsis; /* Adds an ellipsis to signify that there is more text */
+  display: block; /* Optional: Ensures the label is a block-level element */
+  max-width: 150px;
 }
 
 .form-check-input{
@@ -1403,5 +1433,9 @@ height:8px !important;
   width: 325px !important;
   position: absolute;
   top: 17rem;
-  transform: translateX(13%)
+  transform: translateX(-50%);
+  left:50%;
+}
+.form-check-input {
+  transform: scale(1.5);
 }

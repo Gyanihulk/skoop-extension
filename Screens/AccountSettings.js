@@ -1,14 +1,17 @@
-import React, { useState, useEffect, useContext} from "react";
-import {FaAngleDown, FaArrowLeft } from "react-icons/fa";
+import React, { useState, useEffect, useContext } from "react";
+import { FaAngleDown, FaArrowLeft } from "react-icons/fa";
 import API_ENDPOINTS from "../components/apiConfig";
 import UserPreferencesForm from "../components/UserPreferencesForm";
 import { toast } from "react-hot-toast";
 import AuthContext from "../contexts/AuthContext";
+import ScreenContext from "../contexts/ScreenContext";
+
 const AccountProfile = ({ userData }) => {
   // State for the profile image URL
   const [profileImage, setProfileImage] = useState(
     "https://static-00.iconduck.com/assets.00/user-avatar-happy-icon-1023x1024-bve9uom6.png"
   );
+  const { navigateToPage } = useContext(ScreenContext);
   useEffect(() => {
     if (userData.image_path) {
       setProfileImage(
@@ -66,7 +69,7 @@ const AccountProfile = ({ userData }) => {
     <div className="lighter-pink border-bottom-light-pink p-3">
       <div className="card-body">
         <div className="d-flex flex-column">
-          <div class="back-button d-flex align-items-center p-0-5" onClick={() => window.history.back()}>
+          <div class="back-button d-flex align-items-center p-0-5" onClick={() => navigateToPage("Home")}>
             <div className="d-flex align-items-center">
               <FaArrowLeft size={16} />
             </div>
@@ -105,18 +108,84 @@ const SettingsPassword = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [toggleInfo, setToggleInfo] = useState(false);
+  const [showOldPasswordTooltip, setShowOldPasswordTooltip] = useState(false);
+  const [showPasswordTooltip, setShowPasswordTooltip] = useState(false);
+  const [showConfirmPasswordTooltip, setShowConfirmPasswordTooltip] =
+    useState(false);
 
-  const handleChange = (event) => {
-    setValues((prevState) => ({
-      ...prevState,
-      [event.target.name]: event.target.value,
-    }));
+    function validatePassword(password) {
+      const uppercaseRegex = /[A-Z]/;
+      const lowercaseRegex = /[a-z]/;
+      const specialCharRegex = /[!@#$%^&*]/;
+      const numericRegex = /[0-9]/;
+      
+      const isUppercase = uppercaseRegex.test(password);
+      const isLowercase = lowercaseRegex.test(password);
+      const isSpecialChar = specialCharRegex.test(password);
+      const isNumeric = numericRegex.test(password);
+      const isLengthValid = password.length >= 8 && password.length <= 16;
+  
+      return isUppercase && isLowercase && isSpecialChar && isNumeric && isLengthValid;
+  }
+
+  const PasswordToolTip = () => {
+    return (
+      <div id="password-tooltip">
+        <h5>Password Instructions</h5>
+        <ul>
+          <li>At least 1 uppercase character (A-Z)</li>
+          <li>At least 1 lowercase character (a-z)</li>
+          <li>At least 1 special character (e.g., @#$%!^&*)</li>
+          <li>At least 1 numeric character (i.e., 0-9)</li>
+          <li>Password length must be 8-16 characters long</li>
+        </ul>
+      </div>
+    );
   };
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    if (name === "oldPassword") {
+      setValues((prevState) => ({
+        ...prevState,
+        [event.target.name]: event.target.value,
+      }));
+      setShowOldPasswordTooltip(!validatePassword(value))
+    }
+    if (name === "password") {
+      setValues((prevState) => ({
+        ...prevState,
+        [event.target.name]: event.target.value,
+      }));
+      setShowPasswordTooltip(!validatePassword(value))
+    }
+    if (name === "confirm") {
+      setValues((prevState) => ({
+        ...prevState,
+        [event.target.name]: event.target.value,
+      }));
+      setShowConfirmPasswordTooltip(!validatePassword(value))
+    }
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
+  };
+
+  const handleFocus = (event) => {
+    const { name } = event.target;
+    if (name === "oldPassword") {
+      setShowOldPasswordTooltip(true);
+    }
+    if (name === "password") {
+      setShowPasswordTooltip(true);
+    }
+    if (name === "confirm") {
+      setShowConfirmPasswordTooltip(true);
+    }
+  };
+
+  const handleBlur = () => {
+    setShowOldPasswordTooltip(false);
+    setShowPasswordTooltip(false);
+    setShowConfirmPasswordTooltip(false);
   };
 
   const handleSubmit = async (event) => {
@@ -125,46 +194,50 @@ const SettingsPassword = () => {
       toast.error("New password doesnt match.");
       return;
     }
-    try {
-      const res = await fetch(API_ENDPOINTS.changePassword, {
-        method: "PATCH",
-        body: JSON.stringify({
-          oldPassword: values.oldPassword,
-          newPassword: values.password,
-        }),
-        headers: {
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem("accessToken")
-          )}`,
-          "Content-type": "application/json; charset=UTF-8",
-        },
-      });
-      if (res.ok) {
-        toast.success("Password Changed");
-        setValues({
-          password: "",
-          confirm: "",
-          oldPassword: "",
+      try {
+        const res = await fetch(API_ENDPOINTS.changePassword, {
+          method: "PATCH",
+          body: JSON.stringify({
+            oldPassword: values.oldPassword,
+            newPassword: values.password,
+          }),
+          headers: {
+            authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("accessToken")
+            )}`,
+            "Content-type": "application/json; charset=UTF-8",
+          },
         });
-      } else throw "error in the database";
-    } catch (err) {
-      toast.error("Password Not Updated, try Again");
-    }
+        if (res.ok) {
+          toast.success("Password Changed");
+          setValues({
+            password: "",
+            confirm: "",
+            oldPassword: "",
+          });
+        } else throw "error in the database";
+      } catch (err) {
+        toast.error("Password Not Updated, try Again");
+      }
   };
 
   return (
-    <div className="card border-radius-12 overflow-hidden">
-      <div className="light-pink card-header-custom">
+    <div
+      className={`card border-radius-12 ${
+        !toggleInfo ? "overflow-hidden" : ""
+      } `}
+    >
+      <div
+        className="light-pink card-header-custom toggle-collapse"
+        onClick={() => setToggleInfo(!toggleInfo)}
+        data-toggle="collapse"
+        data-target="#change-password-collapse"
+        aria-expanded="false"
+        aria-controls="change-password-collapse"
+      >
         <div className="d-flex justify-content-between align-items-center">
           <h6 className="mb-0 card-title">Change Password</h6>
-          <div
-            onClick={() => setToggleInfo(!toggleInfo)}
-            className="toggle-collapse"
-            data-toggle="collapse"
-            data-target="#change-password-collapse"
-            aria-expanded="false"
-            aria-controls="change-password-collapse"
-          >
+          <div>
             <FaAngleDown
               style={toggleInfo ? { transform: "rotate(180deg)" } : ""}
             />
@@ -176,48 +249,70 @@ const SettingsPassword = () => {
           <div className="card-body p-0">
             <div className="px--1 py-4-2 mt-3">
               <div className="row">
-                <div className="col-sm-6 mb-3">
+                <div className="col-sm-6 mb-3 password-with-tooltip">
+                   <div className="position-relative password-with-tooltip">
+                   <div className="form-group">
                   <input
                     type={showPassword ? "text" : "password"}
                     className="form-control"
                     id="oldPassword"
                     name="oldPassword"
                     onChange={handleChange}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
                     value={values.oldPassword}
                     placeholder="Current Password"
                     required
                   />
+                  </div>
+                  {showOldPasswordTooltip && <PasswordToolTip />}
+                   </div>
                 </div>
+
                 <div className="col-sm-6 mb-3">
+                   <div className="position-relative password-with-tooltip">
+                   <div className="form-group">
                   <input
                     type={showPassword ? "text" : "password"}
                     className="form-control"
                     id="password"
                     name="password"
                     onChange={handleChange}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
                     value={values.password}
                     placeholder="New Password"
                     required
                   />
+                  </div>
+                  {showPasswordTooltip && <PasswordToolTip />}
+                   </div>
                 </div>
               </div>
               <div className="row">
                 <div className="col-sm-6">
+                  <div className="position-relative password-with-tooltip">
+                  <div className="form-group">
                   <input
                     type={showPassword ? "text" : "password"}
                     className="form-control"
                     id="confirm"
                     name="confirm"
                     onChange={handleChange}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
                     value={values.confirm}
                     placeholder="Confirm Password"
                     required
                   />
+                  </div>
+                  {showConfirmPasswordTooltip && <PasswordToolTip />}
+                  </div>
                 </div>
               </div>
               <div className="mt-4 d-flex justify-content-end">
                 <button type="submit" className="card-btn">
-                  Update Password
+                  Update
                 </button>
               </div>
             </div>
@@ -277,16 +372,16 @@ const CalendarUrlForm = () => {
 
   return (
     <div className="card border-radius-12 overflow-hidden">
-      <div className="light-pink card-header-custom d-flex justify-content-between align-items-center">
+      <div
+        className="light-pink card-header-custom d-flex justify-content-between align-items-center toggle-collapse"
+        onClick={() => setToggleInfo(!toggleInfo)}
+        data-toggle="collapse"
+        data-target="#appointment-collapse"
+        aria-expanded="false"
+        aria-controls="appointment-collapse"
+      >
         <h6 className="mb-0 card-title">Appointment booking link</h6>
-        <div
-          onClick={() => setToggleInfo(!toggleInfo)}
-          className="toggle-collapse"
-          data-toggle="collapse"
-          data-target="#appointment-collapse"
-          aria-expanded="false"
-          aria-controls="appointment-collapse"
-        >
+        <div>
           <FaAngleDown
             style={toggleInfo ? { transform: "rotate(180deg)" } : ""}
           />

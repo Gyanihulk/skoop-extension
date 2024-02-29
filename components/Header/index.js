@@ -116,9 +116,7 @@ export default function Header() {
                 <div class="navbar-brand d-flex flex-row">
                     <div className="container">
                         <div class="ps-4">
-                            
-                                {(activePage === 'ContactPage' ||
-                                    activePage === 'AccountSettings') && (
+                                {(activePage === 'ContactPage') && (
                                     <BsArrowLeftCircle
                                         className="icon-style-normal"
                                         onClick={() => {
@@ -126,10 +124,6 @@ export default function Header() {
                                         }}
                                     />
                                 )}
-                               
-                         
-                            
-                            
                         </div>
                     </div>
                     <div className="d-flex flex-column justify-content-end header-text">

@@ -167,7 +167,6 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
           )}
           {showRenamePopup && (
           <RenameVideoPopup
-            videoTitle={video.video_title}
             newTitle={newTitle}
             onClose={handleCloseRenamePopup}
             onSave={handleRenameSave}

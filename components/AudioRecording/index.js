@@ -22,7 +22,7 @@ const VoiceVisualization = ({setBlobUrl,setIsUploading,setCapturing,addToMessage
     const continuousCanvasRef = useRef(null);
 
 
-    const { globalRefresh, setGlobalRefresh, isLinkedin, selectedChatWindows } =
+    const { globalRefresh, setGlobalRefresh, setLatestVideo, setLatestBlob } =
         useContext(GlobalStatesContext);
     const { getThumbnail } = useContext(MediaUtilsContext);
 
@@ -60,6 +60,7 @@ const VoiceVisualization = ({setBlobUrl,setIsUploading,setCapturing,addToMessage
       }, [isRecording, mediaRecorder]);
 
 
+
     const handleShare = async (audioTitle, directoryName) => {
         try {
             setIsUploading(true)
@@ -67,7 +68,9 @@ const VoiceVisualization = ({setBlobUrl,setIsUploading,setCapturing,addToMessage
             audioTitle = replaceInvalidCharacters(audioTitle + `_${Date.now()}`);
             const blobres = await fetch(visualizationUrl);
             const blob = await blobres.blob();
+            setLatestBlob(blob)
             const audioUrl = URL.createObjectURL(blob);
+
             setBlobUrl(audioUrl)
 
             const formData = new FormData();
@@ -97,7 +100,7 @@ const VoiceVisualization = ({setBlobUrl,setIsUploading,setCapturing,addToMessage
                 id: loadingObj,
             })
             setIsUploading(false)
-        
+            setLatestVideo(response)
             setVideoPlayerId(response.facade_player_uuid);
             setVideoId(response.id);
             addToMessage(response.facade_player_uuid);

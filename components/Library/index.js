@@ -178,7 +178,7 @@ const Library = (props) => {
      
         const facade_player_uuid = link?.substring(link.lastIndexOf("/") + 1);
         const url =`https://skoop.hubs.vidyard.com/watch/${facade_player_uuid}`;
-        console.log(facade_player_uuid)
+        
         if(!isLinkedin){
             if(getThumbnail){
                 console.log("get thumbnail is defined");
@@ -189,9 +189,11 @@ const Library = (props) => {
             console.log("the thumbnail link provided");
             var ret
             if(thumbnail_link!=undefined && thumbnail_link!=null){
-                ret=`<img src='${thumbnail_link}' className="inline-block-width"/><br>`
+                ret=`<a href='${url}'>><img src='${thumbnail_link}' className="inline-block-width"/><br></a`
+            }else{
+
+              ret+=`<a href='${url}'>video link</a>`
             }
-            ret+=`<a href='${url}'>video link</a>`
             props.appendToBody(ret)
         }
         else{

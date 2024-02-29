@@ -1,9 +1,14 @@
-import React, { Component, useEffect, useState } from "react";
-import { FaAngleDown } from "react-icons/fa";
+import React, { Component, useEffect, useState, useRef } from "react";
+import { FaAngleDown, FaRegClock } from "react-icons/fa";
 import API_ENDPOINTS from "../apiConfig";
 import { toast } from "react-hot-toast";
 import { timezones } from "../../lib/timezones";
 import { isStartTimeBeforeEndTime } from "../../lib/helpers";
+import { MdExpandMore } from "react-icons/md";
+import { RxCross2 } from "react-icons/rx";
+import { IoSearchOutline } from "react-icons/io5";
+import { IoCheckmark } from "react-icons/io5";
+import ValidationError from "../../components/Auth/ValidationError";
 
 const UserPreferencesForm = ({
   heading,
@@ -20,12 +25,43 @@ const UserPreferencesForm = ({
     breakEndTime: "",
   });
   const [toggleInfo, setToggleInfo] = useState(false);
+  const [isTimezoneEmpty, setIsTimezoneEmpty] = useState(false);
+  const [isTimezoneScreen, setIsTimezoneScreen] = useState(false);
+  const [selectedTimezone, setSelectedTimezone] = useState("");
+  const [filteredTimezones, setFilteredTimezones] = useState(timezones);
+  const inputRef = useRef();
 
   useEffect(() => {
     const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     values.timeZone = detectedTimezone;
+    setSelectedTimezone(detectedTimezone);
   }, []);
+
+  const handleFocus = () => {
+    // Programmatically click on the input to trigger the time picker
+    inputRef.current.click();
+  };
+
+  const handleToggleTimezoneScreen = () => {
+    setIsTimezoneScreen(!isTimezoneScreen);
+  };
+
+  const handleSelectTimezone = (timezone) => {
+    setSelectedTimezone(timezone);
+    setIsTimezoneEmpty(false);
+    setFilteredTimezones(timezones);
+    handleToggleTimezoneScreen();
+  };
+
+  const handleSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    const filtered = timezones.filter((timezone) =>
+      timezone.toLowerCase().includes(query)
+    );
+    setFilteredTimezones(filtered);
+  };
+
   const handleChange = (event) => {
     setValues((prevState) => ({
       ...prevState,
@@ -51,7 +87,7 @@ const UserPreferencesForm = ({
             preferred_end_time: values.preferredEndTime,
             break_start_time: values.breakStartTime,
             break_end_time: values.breakEndTime,
-            time_zone: values.timeZone,
+            time_zone: selectedTimezone,
             additional_details: values.additionalDetails,
           }),
           headers: {
@@ -78,130 +114,205 @@ const UserPreferencesForm = ({
     }
   };
   return (
-    <div className="card border-radius-12 overflow-hidden outline">
-      <div className="light-pink card-header-custom">
-        <div className="d-flex justify-content-between align-items-center">
-          <h6 className="mb-0 card-title">
-            {heading ? heading : "User Preferences"}
-          </h6>
+    <>
+      {!isTimezoneScreen ? (
+        <div className="card border-radius-12 overflow-hidden outline">
           <div
-            onClick={!collapse ? () => setToggleInfo(!toggleInfo) : undefined}
-            className="toggle-collapse"
+            className="light-pink card-header-custom toggle-collapse"
+            onClick={() => setToggleInfo(!toggleInfo)}
             data-toggle="collapse"
-            data-target="#user-preference-collapse"
-            aria-expanded={collapse ? collapse : "false"}
+            data-target={!collapse ? "#user-preference-collapse" : ""}
+            aria-expanded={collapse ? collapse : "true"}
             aria-controls="user-preference-collapse"
           >
-            <FaAngleDown
-              style={toggleInfo ? { transform: "rotate(180deg)" } : ""}
-            />
-          </div>
-        </div>
-      </div>
-      <div
-        className={`collapse ${collapse ? "show" : ""}`}
-        id="user-preference-collapse"
-      >
-        <form onSubmit={handleSubmit}>
-          <div className="card-body p-0">
-            <div className="py-4-2 px--1 mt-3">
-              <div className="mb-3">
-                <input
-                  type="time"
-                  className={`form-control ${
-                    !values.preferredStartTime ? "filled" : ""
-                  }`}
-                  id="preferredStartTime"
-                  name="preferredStartTime"
-                  value={values.preferredStartTime}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <input
-                  type="time"
-                  className={`form-control ${
-                    !values.breakStartTime ? "filled" : ""
-                  }`}
-                  id="breakStartTime"
-                  name="breakStartTime"
-                  value={values.breakStartTime}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <input
-                  type="time"
-                  className={`form-control ${
-                    !values.breakEndTime ? "filled" : ""
-                  }`}
-                  id="breakEndTime"
-                  name="breakEndTime"
-                  value={values.breakEndTime}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <input
-                  type="time"
-                  className={`form-control ${
-                    !values.preferredEndTime ? "filled" : ""
-                  }`}
-                  id="preferredEndTime"
-                  name="preferredEndTime"
-                  placeholder="Preferred End Time *"
-                  value={values.preferredEndTime}
-                  onChange={handleChange}
-                  required
-                />
-                <span class="clock-img">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-              </div>
-              <div className="mb-3">
-                <select
-                  className="form-select"
-                  id="timezone"
-                  name="timeZone"
-                  placeholder="Time Zone*"
-                  value={values.timeZone}
-                  onChange={handleChange}
-                >
-                  <option value="" disabled>
-                    Select Timezone
-                  </option>
-                  {timezones.map((option, index) => (
-                    <option key={index} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="mb-3">
-                <textarea
-                  className="form-control"
-                  id="additionalDetails"
-                  name="additionalDetails"
-                  placeholder="Additional Info"
-                  value={values.additionalInfo}
-                  onChange={handleChange}
-                  rows="3"
-                ></textarea>
-              </div>
-              <div className="mb-3">{children}</div>
-              <div className="mt-4 d-flex justify-content-end">
-                <button type="submit" className="card-btn btn-text">
-                  Save Preferences
-                </button>
-              </div>
+            <div className="d-flex justify-content-between align-items-center">
+              <h6 className="mb-0 card-title">
+                {heading ? heading : "User Preferences"}
+              </h6>
+              {!collapse && (
+                <div>
+                  <FaAngleDown
+                    style={toggleInfo ? { transform: "rotate(180deg)" } : ""}
+                  />
+                </div>
+              )}
             </div>
           </div>
-        </form>
-      </div>
-    </div>
+          <div
+            className={`collapse ${collapse ? "show" : ""}`}
+            id="user-preference-collapse"
+          >
+            <form onSubmit={handleSubmit}>
+              <div className="card-body p-0">
+                <div className="py-4-2 px--1 mt-3">
+                  <div className="mb-3">
+                    <div className="position-relative">
+                      <input
+                        type="time"
+                        className={`form-control ${
+                          !values.preferredStartTime ? "filled" : ""
+                        }`}
+                        id="preferredStartTime"
+                        name="preferredStartTime"
+                        value={values.preferredStartTime}
+                        onChange={handleChange}
+                        required
+                      />
+                      <div className="clock-icon">
+                        <FaRegClock size={20} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mb-3">
+                    <div className="position-relative">
+                      <input
+                        type="time"
+                        className={`form-control ${
+                          !values.breakStartTime ? "filled" : ""
+                        }`}
+                        id="breakStartTime"
+                        name="breakStartTime"
+                        placeholder="Break Start Time *"
+                        value={values.breakStartTime}
+                        onChange={handleChange}
+                        required
+                      />
+                      <div className="clock-icon">
+                        <FaRegClock size={20} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mb-3">
+                    <div className="position-relative">
+                      <input
+                        type="time"
+                        className={`form-control ${
+                          !values.breakEndTime ? "filled" : ""
+                        }`}
+                        id="breakEndTime"
+                        name="breakEndTime"
+                        value={values.breakEndTime}
+                        onChange={handleChange}
+                        required
+                      />
+                      <div className="clock-icon">
+                        <FaRegClock size={20} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mb-3">
+                    <div className="position-relative">
+                      <input
+                        type="time"
+                        className={`form-control ${
+                          !values.preferredEndTime ? "filled" : ""
+                        }`}
+                        id="preferredEndTime"
+                        name="preferredEndTime"
+                        placeholder="Preferred End Time *"
+                        value={values.preferredEndTime}
+                        onChange={handleChange}
+                        required
+                      />
+                      <div className="clock-icon">
+                        <FaRegClock size={20} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mb-3">
+                    <div
+                      className="position-relative"
+                      onClick={handleToggleTimezoneScreen}
+                    >
+                      <input
+                        className="form-control cursor-pointer"
+                        id="time-zone-dropdown"
+                        type="text"
+                        name="timezone"
+                        placeholder="Select time zone"
+                        value={selectedTimezone}
+                        readOnly
+                      />
+                      <button
+                        className="btn position-absolute end-0 top-50 translate-middle-y border-0"
+                        type="button"
+                      >
+                        <MdExpandMore size={30} />
+                      </button>
+                    </div>
+                    {isTimezoneEmpty && (
+                      <ValidationError title="Please select timezone" />
+                    )}
+                  </div>
+                  <div className="mb-3">
+                    <textarea
+                      className="form-control"
+                      id="additionalDetails"
+                      name="additionalDetails"
+                      placeholder="Additional Info"
+                      value={values.additionalInfo}
+                      onChange={handleChange}
+                      rows="3"
+                    ></textarea>
+                  </div>
+                  <div className="mb-3">{children}</div>
+                  <div className="mt-4 d-flex justify-content-end">
+                    <button type="submit" className="card-btn btn-text">
+                      Update
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : (
+        <div className=" py-3 px-2 time-zone-main">
+          <div className="timezone-head d-flex justify-content-between">
+            <h2>Select time zone</h2>
+            <RxCross2
+              className="cursor-pointer"
+              size={28}
+              color="#2C2D2E"
+              onClick={handleToggleTimezoneScreen}
+            />
+          </div>
+          <div className="position-relative custom-password-input-box">
+            <input
+              type="text"
+              className="form-control mt-3"
+              id="timezone-search-input-box"
+              placeholder="Search"
+              onChange={handleSearch}
+            />
+            <button
+              className="btn position-absolute ps-3 top-50 translate-middle-y border-0"
+              type="button"
+            >
+              <IoSearchOutline />
+            </button>
+          </div>
+
+          <div className="mt-4" id="timezone-list-container">
+            {filteredTimezones.map((timezone, index) => (
+              <div>
+                <div
+                  onClick={() => handleSelectTimezone(timezone)}
+                  className={`px-2 timezone-item cursor-pointer`}
+                  id={`${
+                    selectedTimezone === timezone ? "selected-timezone" : ""
+                  }`}
+                  key={index}
+                >
+                  <div>{timezone}</div>
+                  {selectedTimezone === timezone && <IoCheckmark size={16} />}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

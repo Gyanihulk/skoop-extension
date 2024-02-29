@@ -19,7 +19,7 @@ import API_ENDPOINTS from '../apiConfig.js';
 const MessageComposer = () => {
     const [displayComp, setDisplayComp] = useState('DefaultCard');
 
-    const { isLinkedin, selectedChatWindows, focusedElementId, isProfilePage, expand } =
+    const { isLinkedin, selectedChatWindows, focusedElementId, isProfilePage, expand ,setLatestBlob,setLatestVideo} =
         useContext(GlobalStatesContext);
     const { message, addMessage, setMessage } = useContext(MessageContext);
     const { getCalendarUrl } = useContext(AuthContext);
@@ -43,6 +43,8 @@ const MessageComposer = () => {
 
     const handleIconClick = (eventKey) => {
         console.log(eventKey, displayComp, displayComp == eventKey);
+        setLatestBlob()
+        setLatestVideo()
         if (eventKey === 'Calender Link') {
             addMeetSchedulingLink();
             return;
@@ -150,7 +152,10 @@ const MessageComposer = () => {
             }, 500);
             toast.success('Message Sent Successfully!!');
         } else {
-            insertHtmlAtPositionInMail(message, focusedElementId);
+            const gmailInsertion = await insertHtmlAtPositionInMail(message, focusedElementId);
+            if(gmailInsertion){
+                setMessage()
+            }
         }
         if (selectedChatWindows?.length !== 0) {
             setMessage();

@@ -15,6 +15,7 @@ export const MediaUtilsProvider = ({ children }) => {
                     'Content-Type': 'application/json'
                 }
             });
+            console.log(response)
             response=await response.json();
             return response.url;
         }catch(err){

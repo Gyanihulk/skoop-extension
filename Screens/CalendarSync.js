@@ -58,7 +58,6 @@ const CalendarSync = () => {
               </div>
             </div>
             <div
-              // onClick={() => calendarSync('microsoft')}
               class="d-flex align-items-center ms-3"
             >
               <div class="form-check d-flex align-items-center">

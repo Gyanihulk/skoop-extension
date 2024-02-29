@@ -216,6 +216,25 @@ function createButton() {
     //     console.error("Account button parent element not found.");
     // }
 
+//     if(url=="mail.google.com"){ 
+//         const headers1 = document.getElementsByTagName('header');
+//         if (headers1.length > 0) {
+//             const headerElement = headers1[0]; 
+//             const secondChild = headerElement.children[1].children[2].children[0];
+//             headerElement.children[1].children[2].children[0].children[1].style.display="flex";
+//             secondChild.style.display="flex";
+//             secondChild.style.top="-6px";
+//             secondChild.insertBefore(buttonContainer,headerElement.children[1].children[2].children[0].children[1])
+//             // secondChild.appendChild(buttonContainer);
+         
+//         } else {
+//             console.log('No header element found');
+//         }
+// }else{
+//     buttonContainer.style.position = 'fixed';
+//     buttonContainer.style.top = '15px';
+//     buttonContainer.style.right = '43px';
+// }
     document.body.appendChild(buttonContainer);
 }
 function collectClasses() {
