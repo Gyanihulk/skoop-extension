@@ -22,9 +22,9 @@ const VoiceVisualization = ({setBlobUrl,setIsUploading,setCapturing,addToMessage
     const continuousCanvasRef = useRef(null);
 
 
-    const { globalRefresh, setGlobalRefresh, setLatestVideo, setLatestBlob } =
+    const {setGlobalRefresh, setLatestVideo, setLatestBlob } =
         useContext(GlobalStatesContext);
-    const { getThumbnail } = useContext(MediaUtilsContext);
+
 
     useEffect(() => {
         let intervalId;
@@ -90,7 +90,7 @@ const VoiceVisualization = ({setBlobUrl,setIsUploading,setCapturing,addToMessage
             customHeaders.append('title1', title1);
        
             const loadingObj = toast.loading('Uploading Voice Memo...');
-            var response = await fetch(API_ENDPOINTS.vidyardUpload, {
+            var response = await fetch(API_ENDPOINTS.vidyardUploadAudio, {
                 method: 'POST',
                 headers: customHeaders,
                 body: formData,
@@ -144,14 +144,7 @@ const VoiceVisualization = ({setBlobUrl,setIsUploading,setCapturing,addToMessage
         setTime(0);
     };
 
-    const downloadAudio = () => {
-        const a = document.createElement('a');
-        a.href = visualizationUrl;
-        a.download = 'voice_visualization.wav';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    };
+  
 
     const sharingDetails = (audioTitle, directoryName) => {
         setIsTakingInput(false);
@@ -169,11 +162,6 @@ const VoiceVisualization = ({setBlobUrl,setIsUploading,setCapturing,addToMessage
         );
     }
 
-    const closeModal = () => {
-        setShowModal(false);
-        stopRecording();
-
-      };
 
       const stopRecordingAndCloseModal = () => {
         stopRecording();

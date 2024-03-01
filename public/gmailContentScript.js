@@ -499,6 +499,7 @@ function createWebcamContainer(title, height, width) {
     stopButton.innerHTML = svgHTML;
     // Create the pause button
     var pauseButton = document.createElement('button');
+    pauseButton.id = 'video-pause-button';
     pauseButton.style.backgroundColor = 'white';
     pauseButton.style.border = 'none';
     pauseButton.style.borderRadius = '50%';
@@ -507,7 +508,6 @@ function createWebcamContainer(title, height, width) {
         console.log('Pause button clicked');
         // Add your pause button functionality here
     };
-    pauseButton.disabled = true;
     pauseButton.style.width = '40px';
     pauseButton.style.height = '40px';
     pauseButton.style.marginLeft = '8px';
@@ -634,6 +634,44 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                         mediaRecorder.stop();
                         isRecording = false;
                     }
+                    function restartStream() {
+                        recordedChunks = [];
+                        skoopVideoContainer.showCountdown();
+
+                        isRestarting = true;
+                        stopStream();
+                        setTimeout(() => {
+                            startRecording();
+                            isRestarting = false;
+                        }, 3000);
+                        setTimeout(() => {
+                            if (isRecording) {
+                                stopStream();
+                            }
+                        }, 93000);
+                    }
+                    function togglePauseResumeMediaRecorder() {
+                        // Check if the mediaRecorder is defined and has a state
+                        console.log("pause button pressed")
+                        if (mediaRecorder && mediaRecorder.state) {
+                            // If the mediaRecorder is recording, pause it
+                            if (mediaRecorder.state === 'recording') {
+                                mediaRecorder.pause();
+                                console.log('Media recording paused');
+                            }
+                            // If the mediaRecorder is paused, resume it
+                            else if (mediaRecorder.state === 'paused') {
+                                mediaRecorder.resume();
+                                console.log('Media recording resumed');
+                            }
+                            else {
+                                console.log('MediaRecorder is in an unexpected state:', mediaRecorder.state);
+                            }
+                        } else {
+                            console.log('MediaRecorder is not initialized or does not exist');
+                        }
+                    }
+
                     setTimeout(() => {
                         startRecording();
                     }, 3000);
@@ -651,21 +689,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                         stopButton.addEventListener('click', stopStream);
                     }
 
-                    function restartStream() {
-                        recordedChunks = [];
-                        skoopVideoContainer.showCountdown();
-
-                        isRestarting = true;
-                        stopStream();
-                        setTimeout(() => {
-                            startRecording();
-                            isRestarting = false;
-                        }, 3000);
-                        setTimeout(() => {
-                            if (isRecording) {
-                                stopStream();
-                            }
-                        }, 93000);
+                 const pauseButton = document.getElementById('video-pause-button');
+                    if (pauseButton) {
+                        pauseButton.addEventListener('click', togglePauseResumeMediaRecorder);
                     }
 
                     const restartButton = document.getElementById('video-restart-button');

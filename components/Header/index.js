@@ -108,7 +108,7 @@ export default function Header() {
 
     const openCalendarWindow = () => {
         document.body.style.overflow = 'auto';
-        window.open(`${API_ENDPOINTS.skoopCalendarUrl}/index.php/user/login`, '_blank');
+        window.open(API_ENDPOINTS.skoopCalendarUrl, '_blank');
     };
     return (
         <>
