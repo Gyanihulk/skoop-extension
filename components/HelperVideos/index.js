@@ -11,7 +11,7 @@ const CarouselComponent = () => {
   };
 
   return (
-    <div className="container mt-2" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+    <div className="container mt-2" style={{ maxHeight: '400px', overflowY: 'auto' ,zIndex:1000}}>
       <div className="accordion" id="accordionExample">
         
         <div className="card mb-2 mt-2">

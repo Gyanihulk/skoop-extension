@@ -1,24 +1,44 @@
-import React, { useContext } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import ScreenContext from '../contexts/ScreenContext';
+import React, { useContext } from "react";
+import ScreenContext from "../contexts/ScreenContext";
+import CustomButton from "../components/Auth/button/CustomButton";
 
 const Welcome = () => {
-    const { navigateToPage } = useContext(ScreenContext);
+  const { navigateToPage } = useContext(ScreenContext);
 
-    return (
-        <div className="welcome-main">
-            <div className='welcome-logo'>
-                <img src="/screens/logo.png" alt="Skoop" />
+
+  const handleGetStarted = () => {
+    navigateToPage("SignInIntro");
+    localStorage.setItem("welcomePageShown", true);
+  };
+
+  return (
+    <div className="welcome-main">
+      <div className="welcome-image-container">
+        <img src="/screens/welcome.png" alt="Welcome" />
+      </div>
+
+      <div className="logo-image-container">
+        <div className="logo-content">
+          <img src="/screens/logo.png" alt="Skoop" />
+          <h3 className="welcome-title">Skoop</h3>
+
+          <div className="welcome-content">
+            <p className="welcome-desc">
+              Increase your client engagement to gain more revenue
+            </p>
+            <div className="w-100 get-started-btn">
+              <CustomButton child="Get started" onClick={handleGetStarted} />
+
             </div>
-            <div className='welcom-content'>
-                <h3>Welcome to</h3>
-                <h1>Skoop<br />Application</h1>
-                <button className='get-start-btn w-100' onClick={() => { navigateToPage('SignInIntro'); localStorage.setItem('welcomePageShown', true) }}>
-                    Get started
-                </button>
-            </div>
+          </div>
         </div>
-    );
+
+        <div className="app-version">
+          <p>Version 1.0</p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Welcome;

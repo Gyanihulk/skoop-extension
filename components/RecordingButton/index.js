@@ -325,7 +325,6 @@ const RecordingButton = () => {
                                 setBlobUrl={setBlobUrl}
                                 setIsUploading={setIsUploading}
                                 setCapturing={setCapturing}
-                                setVideoPlayerId={setLatestVideo}
                                 setVideoId={setVideoId}
                                 addToMessage={addToMessage}
                             />

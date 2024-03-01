@@ -1,0 +1,171 @@
+.welcome-main {
+  height: 100vh;
+  background: linear-gradient(to bottom, #2d68c4, #1a3b6e);
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes animateWelcomeContainer {
+  from {
+    visibility: hidden;
+    opacity: 0;
+    top: 46%;
+    width: 8rem;
+  }
+  to {
+    visibility: visible;
+    opacity: 1;
+    top: 30%;
+    width: 18rem;
+  }
+}
+
+.welcome-image-container {
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  top: 40%;
+  left: 50%;
+  width: 8rem;
+  padding: 2rem;
+  transform: translate(-50%, -20%);
+  display: flex;
+  justify-content: center;
+  animation: animateWelcomeContainer 2s ease-out forwards;
+  animation-delay: 3s;
+}
+
+.welcome-image-container img {
+  width: 100% !important;
+}
+
+.logo-image-container {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 100vh;
+}
+
+.logo-content {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 13rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100vw;
+  padding: 1.5rem;
+}
+
+@keyframes animateLogoImage {
+  from {
+    height: 100%;
+    margin-top: -10rem;
+  }
+  to {
+    margin-top: 0rem;
+    height: 75%;
+  }
+}
+
+.logo-content img {
+  margin-top: -10rem;
+  height: 100%;
+  animation: animateLogoImage 2s ease-out forwards;
+  animation-delay: 1500ms;
+}
+
+@keyframes animateLogoTitle {
+  from {
+    font-size: 32px;
+  }
+  to {
+    font-size: 28px;
+  }
+}
+
+.logo-content h3 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 36px;
+  font-weight: 500;
+  color: white;
+  margin-top: -0.5rem;
+  animation: animateLogoTitle 2s ease-out forwards;
+  animation-delay: 1500ms;
+}
+
+@keyframes animateDescription {
+  from {
+    opacity: 0;
+    visibility: hidden;
+    margin-top: 3rem;
+  }
+  to {
+    visibility: visible;
+    opacity: 1;
+    margin-top: 0;
+  }
+}
+
+.welcome-content p {
+  font-family: "Montserrat", sans-serif;
+  text-align: center;
+  font-weight: 500;
+  font-size: 16px;
+  color: white;
+  margin-top: 3rem;
+  padding: 0.5rem 2rem 0;
+  visibility: hidden;
+  opacity: 0;
+  animation: animateDescription 1s ease-out forwards;
+  animation-delay: 2s;
+}
+
+@keyframes animationGetStartBtn {
+  from {
+    visibility: hidden;
+    opacity: 0;
+    margin-top: 15rem;
+  }
+  to {
+    visibility: visible;
+    opacity: 1;
+    margin-top: 2rem;
+  }
+}
+
+.welcome-content .get-started-btn {
+  visibility: hidden;
+  opacity: 0;
+  margin-top: 15rem;
+  animation: animationGetStartBtn 2s ease-out forwards;
+  animation-delay: 4s;
+}
+
+@keyframes animateVersion {
+  from {
+    bottom: 10rem;
+  }
+  to {
+    bottom: 5rem;
+  }
+}
+
+.app-version {
+  width: 100px;
+  left: -3rem;
+  position: absolute;
+  bottom: 10rem;
+  animation: animateVersion 2s ease-out forwards;
+  animation-delay: 1500ms;
+}
+
+.app-version p {
+  color: white;
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+}

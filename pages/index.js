@@ -15,13 +15,14 @@ import Header from "../components/Header";
 import SignInWith from "../Screens/SignInWith";
 
 export default function Home() {
-  const { verifyToken, isAutheticated, newUser, setNewUser } =
+  const { verifyToken, isAutheticated, newUser,  } =
     useContext(AuthContext);
   const { activePage, navigateToPage } = useContext(ScreenContext);
   useEffect(() => {
     (async () => {
       const res = await verifyToken();
       const showWelcomePage = localStorage.getItem("welcomePageShown");
+      console.log(newUser)
       if (isAutheticated && newUser) {
         navigateToPage("CalendarSync");
       } else if (isAutheticated) {

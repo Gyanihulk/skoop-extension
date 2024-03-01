@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }) => {
           timezone,
         }),
       });
-      console.log(response.status, typeof response.status);
+ 
       if (Number(response.status) === 200) {
         let result = await response.json();
         setisAutheticated(true);

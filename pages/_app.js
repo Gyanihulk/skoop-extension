@@ -2,6 +2,7 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import "../styles/globals.css";
 import "../styles/auth.css";
+import "../styles/welcome.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { GlobalStatesProvider } from "../contexts/GlobalStates";
 import ScreenContext, { ScreenProvider } from "../contexts/ScreenContext";

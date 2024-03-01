@@ -360,8 +360,27 @@ function createWebcamContainer(title, height, width) {
     };
 
     container.addEventListener('mousedown', dragStart);
-    let seconds = 0;
+    let pausedSeconds = 0;
+    let totalDuration = 90; // total duration in seconds
     let timerInterval = null;
+    
+
+    
+    container.pauseTimer = () => {
+        if (timerInterval !== null) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            pausedSeconds = seconds;
+        }
+    };
+    
+    container.resumeFromPause = () => {
+        if (timerInterval === null) {
+            timerInterval = setInterval(updateTimer, 1000);
+            seconds = pausedSeconds;
+        }
+    };
+    
     const updateTimer = () => {
         seconds++;
         const minutes = Math.floor((seconds % 3600) / 60);
@@ -370,17 +389,17 @@ function createWebcamContainer(title, height, width) {
             2,
             '0'
         )}`;
-
-        const totalDuration = 90; // total duration in seconds
-        const widthPercent = (seconds / totalDuration) * 100;
+    
+        const elapsedSeconds = seconds - pausedSeconds;
+        const widthPercent = (elapsedSeconds / totalDuration) * 100;
         loaderBar.style.width = `${widthPercent}%`;
-
+    
         // Change color based on time elapsed
-        if (seconds <= 45) {
+        if (elapsedSeconds <= 45) {
             loaderBar.style.backgroundColor = 'green';
-        } else if (seconds <= 60) {
+        } else if (elapsedSeconds <= 60) {
             loaderBar.style.backgroundColor = 'yellow';
-        } else if (seconds <= totalDuration) {
+        } else if (elapsedSeconds <= totalDuration) {
             loaderBar.style.backgroundColor = 'red';
         }
     };
@@ -399,12 +418,14 @@ function createWebcamContainer(title, height, width) {
             timerInterval = null; // Clear interval reference after stopping
         }
         timerDisplay.innerText = '00:00';
+        pausedSeconds=0;
     };
 
     container.resetTimer = () => {
         seconds = 0;
         loaderBar.style.width = '0px';
         loaderBar.style.backgroundColor = 'green';
+        pausedSeconds=0;
     };
 
     container.showCountdown = () => {
@@ -501,9 +522,12 @@ function createWebcamContainer(title, height, width) {
     var pauseButton = document.createElement('button');
     pauseButton.id = 'video-pause-button';
     pauseButton.style.backgroundColor = 'white';
+    pauseButton.style.display = 'flex';
+    pauseButton.style.alignItems = 'center';
+    pauseButton.style.justifyContent = 'center';
     pauseButton.style.border = 'none';
     pauseButton.style.borderRadius = '50%';
-    // pauseButton.style.cursor = 'pointer';
+    pauseButton.style.cursor = 'pointer';
     pauseButton.onclick = function () {
         console.log('Pause button clicked');
         // Add your pause button functionality here
@@ -512,8 +536,9 @@ function createWebcamContainer(title, height, width) {
     pauseButton.style.height = '40px';
     pauseButton.style.marginLeft = '8px';
     var svg = document.createElementNS(svgNS, 'svg');
+    svg.id="playing"
     svg.setAttribute('width', '10');
-    svg.setAttribute('height', '20');
+    svg.setAttribute('height', '15');
     svg.setAttribute('viewBox', '0 0 10 12');
     svg.setAttribute('fill', 'none');
     svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
@@ -535,7 +560,22 @@ function createWebcamContainer(title, height, width) {
     svg.appendChild(rect1);
     svg.appendChild(rect2);
     pauseButton.appendChild(svg);
-    // Append the SVG to the body or another container element
+
+
+    var playSVG = document.createElementNS(svgNS, 'svg');
+    playSVG.id="paused";
+    playSVG.style.display="none";
+    playSVG.setAttribute('width', '10');
+    playSVG.setAttribute('height', '20');
+    playSVG.setAttribute('viewBox', '0 0 10 12');
+    playSVG.setAttribute('fill', 'none');
+    playSVG.setAttribute('xmlns', svgNS);
+
+    var playPath = document.createElementNS(svgNS, 'path');
+    playPath.setAttribute('d', 'M0 0L10 6L0 12Z'); // Triangle pointing right
+    playPath.setAttribute('fill', '#E31A1A');
+    playSVG.appendChild(playPath);
+    pauseButton.appendChild(playSVG);
 
     controlBar.appendChild(restartButton);
     controlBar.appendChild(stopButton);
@@ -650,19 +690,27 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                             }
                         }, 93000);
                     }
+                    const playingIcon = document.getElementById('playing');
+                    const pausedIcon = document.getElementById('paused');
                     function togglePauseResumeMediaRecorder() {
                         // Check if the mediaRecorder is defined and has a state
-                        console.log("pause button pressed")
+                       
                         if (mediaRecorder && mediaRecorder.state) {
                             // If the mediaRecorder is recording, pause it
                             if (mediaRecorder.state === 'recording') {
                                 mediaRecorder.pause();
                                 console.log('Media recording paused');
+                                skoopVideoContainer.pauseTimer();
+                                playingIcon.style.display="none"
+                                pausedIcon.style.display="block"
                             }
                             // If the mediaRecorder is paused, resume it
                             else if (mediaRecorder.state === 'paused') {
                                 mediaRecorder.resume();
                                 console.log('Media recording resumed');
+                                skoopVideoContainer.resumeFromPause();
+                                pausedIcon.style.display="none"
+                                playingIcon.style.display="block"
                             }
                             else {
                                 console.log('MediaRecorder is in an unexpected state:', mediaRecorder.state);

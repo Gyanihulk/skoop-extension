@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
-import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
+import React, { useContext } from "react";
 import AuthContext from "../contexts/AuthContext";
 import ScreenContext from "../contexts/ScreenContext";
+import CustomButton from "../components/Auth/button/CustomButton";
 
 function SignInWith() {
   const { handleSocialLogin } = useContext(AuthContext);
@@ -10,50 +10,30 @@ function SignInWith() {
   return (
     <div className="signin-background-image container-fluid h-100 px-4 d-flex flex-column justify-content-end">
       <div className="pb-5">
-        <div>
+        <div className="signin-with-contente">
           <h3 className="text-white">Hi, Welcome Back!</h3>
           <p className="text-white">
             It's time to get more clients and connect again with old connections
           </p>
         </div>
-        <div className="mb-4">
-          <button
-            type="button"
-            className="btn btn-primary btn-lg btn-block w-100 button-size mt-4 mb-3"
-            style={{
-              backgroundColor: "#2d68c4",
-              fontSize: "16px",
-              fontWeight: "600",
-            }}
-            onClick={() => handleSocialLogin(2)}
-          >
-            Login with Google
-          </button>
-
-          <button
-            type="button"
-            className="btn btn-primary btn-lg btn-block w-100 button-size mb-4"
-            style={{
-              backgroundColor: "#2d68c4",
-              fontSize: "16px",
-              fontWeight: "600",
-            }}
-            onClick={() => handleSocialLogin(1)}
-          >
-            Login with LinkedIn
-          </button>
+        <div className="mb-5 pb-3">
+          <div className="mt-3 w-100">
+            <CustomButton
+              child="Login with LinkedIn"
+              onClick={() => handleSocialLogin(1)}
+            />
+          </div>
+          <div className="mt-3 w-100">
+            <CustomButton
+              child="Login with Google"
+              onClick={() => handleSocialLogin(2)}
+            />
+          </div>
         </div>
         <button
           type="button"
-          className="btn btn-lg btn-block w-100 mt-3 mb-2"
-          style={{
-            color: "white",
-            border: "2px solid white",
-            borderRadius: "8px",
-            fontSize: "16px",
-            fontWeight: "600",
-            background: "transparent",
-          }}
+          id="sign-in-with-email"
+          className="btn w-100 mt-3 mb-2 login-with-email-btn"
           onClick={() => navigateToPage("SignIn")}
         >
           Login with email{" "}

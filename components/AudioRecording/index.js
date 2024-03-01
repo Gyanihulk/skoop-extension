@@ -11,7 +11,7 @@ import toast from 'react-hot-toast';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
 import { continuousVisualizer } from 'sound-visualizer';
 
-const VoiceVisualization = ({setBlobUrl,setIsUploading,setCapturing,addToMessage,setVideoPlayerId,setVideoId}) => {
+const VoiceVisualization = ({setIsUploading,addToMessage}) => {
     const [mediaRecorder, setMediaRecorder] = useState(null);
     const [visualizationUrl, setVisualizationUrl] = useState('');
     const [isRecording, setIsRecording] = useState(false);
@@ -69,9 +69,6 @@ const VoiceVisualization = ({setBlobUrl,setIsUploading,setCapturing,addToMessage
             const blobres = await fetch(visualizationUrl);
             const blob = await blobres.blob();
             setLatestBlob(blob)
-            const audioUrl = URL.createObjectURL(blob);
-
-            setBlobUrl(audioUrl)
 
             const formData = new FormData();
             let file = new File([blob], 'recording');
@@ -96,15 +93,14 @@ const VoiceVisualization = ({setBlobUrl,setIsUploading,setCapturing,addToMessage
                 body: formData,
             });
             response = await response.json();
+            console.log(response,"from audio");
             toast.success('Voice Memo uploaded,encoding in progress', {
                 id: loadingObj,
             })
             setIsUploading(false)
-            setLatestVideo(response)
-            setVideoPlayerId(response.facade_player_uuid);
-            setVideoId(response.id);
             addToMessage(response.facade_player_uuid);
             setGlobalRefresh(true);
+            setLatestVideo(response)
         } catch (err) {
             toast.dismiss();
             toast.error('could not upload');
