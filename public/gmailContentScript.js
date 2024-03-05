@@ -284,7 +284,6 @@ function createWebcamContainer(title, height, width) {
     container.style.width = width;
     container.style.borderRadius = '10px';
     container.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)';
-    container.style.backgroundColor = '#fff';
     var overlay = document.createElement('div');
 
     // Style the overlay
@@ -296,6 +295,7 @@ function createWebcamContainer(title, height, width) {
     overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Black color with opacity
     overlay.style.zIndex = '10';
     overlay.style.display = 'none';
+    overlay.style.borderRadius = '6px';
     container.showOverlay = () => {
         overlay.style.display = 'block';
     };
@@ -652,12 +652,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     video.autoplay = true;
                     video.muted = true;
                     video.style.height = request.height + 'px';
-                    video.style.width = request.width + 'px';
+                    video.style.width = request.width  + 'px';
                     video.style.zIndex = '9998';
-                    video.style.borderRadius = '10px';
+                    video.style.borderTopLeftRadius = '10px';
+                    video.style.borderTopRightRadius = '10px';
                     video.className = 'skoop-video-recorder';
                     skoopVideoContainer.style.height = request.height + 98 + 'px';
-                    skoopVideoContainer.style.width = request.width + 2 + 'px';
+                    skoopVideoContainer.style.width = request.width + 'px';
                     skoopVideoContainer.appendChild(video);
                     skoopVideoContainer.style;
 
@@ -750,6 +751,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 })
                 .catch((err) => {
                     console.error(`[Creating web cam in website]: ${err}`);
+                    sendResponse({ error: err });
+                    if (err.message.includes("in use") || err.message.includes("hardware error") || err.name === "NotAllowedError") {
+                        alert('Could not access your camera. It appears to be in use by another application. Please close the other application and try again.');
+                      }
                 });
         } else {
             console.log('getUserMedia not supported');

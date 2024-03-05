@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AiFillRobot } from 'react-icons/ai';
 import { HiMiniGif } from 'react-icons/hi2';
-import { GrSchedulePlay } from 'react-icons/gr';
-import { MdVideoLibrary } from 'react-icons/md';
-import { FaListAlt } from 'react-icons/fa';
+import EmojiPicker from 'emoji-picker-react';
 import ChatGpt from '../Chatgpt/index.js';
 import GiphyWindow from '../Gif/index.js';
 import Library from '../Library/index.js';
@@ -293,6 +291,7 @@ const MessageComposer = () => {
                         <MessageWindow />
                     </div>
                     {displayComp === 'Giphy' && <GiphyWindow appendToBody={handleInsertion} />}
+                    {displayComp === 'Emoji' && <EmojiPicker />}
                     <nav className="navbar pe-3" id="messageFooter">
                         <div class="navbar-brand d-flex flex-row ps-2">
                             <ul className="nav">
@@ -300,6 +299,11 @@ const MessageComposer = () => {
                                     'Giphy',
                                     <HiMiniGif />,
                                     'Send your favorite GIFs to Mail'
+                                )}
+                                {renderNavItem(
+                                    'Emoji',
+                                    <EmojiPicker />,
+                                    'Send your favorite emoji to Mail'
                                 )}
                             </ul>
                         </div>

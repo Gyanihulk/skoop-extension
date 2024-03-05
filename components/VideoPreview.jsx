@@ -86,6 +86,7 @@ export const VideoPreview = () => {
 
             if (response.ok) {
                 toast.success('Video renamed successfully');
+                setShowRenamePopup(!showRenamePopup);
             } else {
                 toast.error('Failed to rename video.');
             }

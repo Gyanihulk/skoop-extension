@@ -647,6 +647,13 @@ eastasianwidth@^0.2.0:
   resolved "https://registry.npmjs.org/eastasianwidth/-/eastasianwidth-0.2.0.tgz"
   integrity sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==
 
+emoji-picker-react@^4.8.0:
+  version "4.8.0"
+  resolved "https://registry.yarnpkg.com/emoji-picker-react/-/emoji-picker-react-4.8.0.tgz#1c0a888cacd2be8f93cf9620c4fe3d8306a822c1"
+  integrity sha512-gKv+NOM2FjNAokXqlhhmDJMLp1hBTx4X+OoYrPAK1qpTVBseoeybtqPBR1NXixTow7Vbxv1WOuI3SSTiEB089A==
+  dependencies:
+    flairup "0.0.38"
+
 emoji-regex@^8.0.0:
   version "8.0.0"
   resolved "https://registry.npmjs.org/emoji-regex/-/emoji-regex-8.0.0.tgz"
@@ -690,6 +697,11 @@ find-root@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/find-root/-/find-root-1.1.0.tgz"
   integrity sha512-NKfW6bec6GfKc0SGx1e07QZY9PE99u0Bft/0rzSD5k3sO/vwkVUpDUKVm5Gpp5Ue3YfShPFTX2070tDs5kB9Ng==
+
+flairup@0.0.38:
+  version "0.0.38"
+  resolved "https://registry.yarnpkg.com/flairup/-/flairup-0.0.38.tgz#62216990a8317a1b07d1d816033624c5b2130f31"
+  integrity sha512-W9QA5TM7eYNlGoBYwfVn/o6v4yWBCxfq4+EJ5w774oFeyWvVWnYq6Dgt4CJltjG9y/lPwbOqz3jSSr8K66ToGg==
 
 follow-redirects@^1.15.0:
   version "1.15.3"

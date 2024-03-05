@@ -197,7 +197,7 @@ const VoiceVisualization = ({setIsUploading,addToMessage}) => {
 
             )}
           </button>
-          <span className='record-button-bottom-text'> Record audio</span>
+          <span className='record-button-bottom-text'> Record Audio</span>
           </div>
           <div>
             <div className="modal" style={{ display: showModal ? 'block' : 'none' }}>

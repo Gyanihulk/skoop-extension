@@ -21,7 +21,7 @@ import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import toast from 'react-hot-toast';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
 import VoiceVisualization from '../AudioRecording/index.js';
-import PreviewModal from '../PreviewModal/PreviewModal.jsx';
+
 import { IoLink } from 'react-icons/io5';
 import MessageContext from '../../contexts/MessageContext.js';
 import RenameVideoPopup from '../Library/RenameVideoPopup.js';
@@ -51,7 +51,7 @@ const RecordingButton = () => {
 
 
 
-    const { setGlobalRefresh, isLinkedin,setLatestVideo, setLatestBlob } =
+    const { setGlobalRefresh, isLinkedin,setLatestVideo, latestVideo,setLatestBlob } =
         useContext(GlobalStatesContext);
     const { getThumbnail } = useContext(MediaUtilsContext);
     const { addMessage } = useContext(MessageContext);
@@ -101,7 +101,7 @@ const RecordingButton = () => {
         } else {
         
            
-               let ret = `<a href=https://skoop.hubs.vidyard.com/watch/${videoPlayerId}><img src='${thumbnailLink}' class="inline-block-width"/><br></a>`;
+               let ret = `<a href=https://skoop.hubs.vidyard.com/watch/${videoPlayerId}><img src='${thumbnailLink}' class="inline-block-width"/><br>${latestVideo.name}</a>`;
            
             addMessage(
                 ret 
@@ -168,6 +168,10 @@ const RecordingButton = () => {
     }
 
     function handleVideoBlob(response) {
+        if(response.error){
+            setIsUploading(false);
+            setCapturing(false);
+        }
         if (response.videoBlob) {
             
             getBlobFromUrl(response.url).then((blob) => {
@@ -331,10 +335,6 @@ const RecordingButton = () => {
                         </div>
                     </div>
                 </div>
-
-
-
-                {prev !== '' && <PreviewModal prev={prev} preview={preview} setPrev={setPrev} />}
                 
             </div>
             <div className="modal" style={{ display: videoSettingsOpen ? 'block' : 'none' }}>
