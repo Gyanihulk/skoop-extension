@@ -5,6 +5,7 @@ import UserPreferencesForm from "../components/UserPreferencesForm";
 import { toast } from "react-hot-toast";
 import AuthContext from "../contexts/AuthContext";
 import ScreenContext from "../contexts/ScreenContext";
+import BackButton from "../components/BackButton";
 
 const AccountProfile = ({ userData }) => {
   // State for the profile image URL
@@ -66,36 +67,37 @@ const AccountProfile = ({ userData }) => {
   };
 
   return (
-    <div className="lighter-pink border-bottom-light-pink p-3">
-      <div className="card-body">
-        <div className="d-flex flex-column">
-          <div class="back-button d-flex align-items-center p-0-5" onClick={() => navigateToPage("Home")}>
-            <div className="d-flex align-items-center">
-              <FaArrowLeft size={16} />
-            </div>
-            <h4 className="profile-name mb-0 pb-0 ms-1">Back</h4>
-          </div>
-          <div className="d-flex align-items-end gap-3">
-            <img
-              src={profileImage}
-              className="rounded-circle rounded-circle-custom"
-              onClick={triggerFileInput}
-              alt="Profile"
-            />
-            <input
-              type="file"
-              id="fileInput"
-              style={{ display: "none" }}
-              onChange={handleFileChange}
-            />
-            <div>
-              <h4 className="profile-name">{userData.full_name}</h4>
-              <h6 className="profile-text-sm">{userData.email}</h6>
+    <div className="lighter-pink">
+      <div className="mb-4 pt-3">
+        <BackButton navigateTo="Home" />
+      </div>
+      <div className=" border-bottom-light-pink p-3">
+        <div className="card-body">
+          <div className="d-flex flex-column">
+            <div className="d-flex align-items-end gap-3">
+              <img
+                src={profileImage}
+                className="rounded-circle rounded-circle-custom"
+                onClick={triggerFileInput}
+                alt="Profile"
+              />
+              <input
+                type="file"
+                id="fileInput"
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
+              <div>
+                <h4 className="profile-name">{userData.full_name}</h4>
+                <h6 className="profile-text-sm">{userData.email}</h6>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
     </div>
+
   );
 };
 
@@ -113,19 +115,19 @@ const SettingsPassword = () => {
   const [showConfirmPasswordTooltip, setShowConfirmPasswordTooltip] =
     useState(false);
 
-    function validatePassword(password) {
-      const uppercaseRegex = /[A-Z]/;
-      const lowercaseRegex = /[a-z]/;
-      const specialCharRegex = /[!@#$%^&*]/;
-      const numericRegex = /[0-9]/;
-      
-      const isUppercase = uppercaseRegex.test(password);
-      const isLowercase = lowercaseRegex.test(password);
-      const isSpecialChar = specialCharRegex.test(password);
-      const isNumeric = numericRegex.test(password);
-      const isLengthValid = password.length >= 8 && password.length <= 16;
-  
-      return isUppercase && isLowercase && isSpecialChar && isNumeric && isLengthValid;
+  function validatePassword(password) {
+    const uppercaseRegex = /[A-Z]/;
+    const lowercaseRegex = /[a-z]/;
+    const specialCharRegex = /[!@#$%^&*]/;
+    const numericRegex = /[0-9]/;
+
+    const isUppercase = uppercaseRegex.test(password);
+    const isLowercase = lowercaseRegex.test(password);
+    const isSpecialChar = specialCharRegex.test(password);
+    const isNumeric = numericRegex.test(password);
+    const isLengthValid = password.length >= 8 && password.length <= 16;
+
+    return isUppercase && isLowercase && isSpecialChar && isNumeric && isLengthValid;
   }
 
   const PasswordToolTip = () => {
@@ -194,38 +196,37 @@ const SettingsPassword = () => {
       toast.error("New password doesnt match.");
       return;
     }
-      try {
-        const res = await fetch(API_ENDPOINTS.changePassword, {
-          method: "PATCH",
-          body: JSON.stringify({
-            oldPassword: values.oldPassword,
-            newPassword: values.password,
-          }),
-          headers: {
-            authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("accessToken")
-            )}`,
-            "Content-type": "application/json; charset=UTF-8",
-          },
+    try {
+      const res = await fetch(API_ENDPOINTS.changePassword, {
+        method: "PATCH",
+        body: JSON.stringify({
+          oldPassword: values.oldPassword,
+          newPassword: values.password,
+        }),
+        headers: {
+          authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("accessToken")
+          )}`,
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      });
+      if (res.ok) {
+        toast.success("Password Changed");
+        setValues({
+          password: "",
+          confirm: "",
+          oldPassword: "",
         });
-        if (res.ok) {
-          toast.success("Password Changed");
-          setValues({
-            password: "",
-            confirm: "",
-            oldPassword: "",
-          });
-        } else throw "error in the database";
-      } catch (err) {
-        toast.error("Password Not Updated, try Again");
-      }
+      } else throw "error in the database";
+    } catch (err) {
+      toast.error("Password Not Updated, try Again");
+    }
   };
 
   return (
     <div
-      className={`card border-radius-12 ${
-        !toggleInfo ? "overflow-hidden" : ""
-      } `}
+      className={`card border-radius-12 ${!toggleInfo ? "overflow-hidden" : ""
+        } `}
     >
       <div
         className="light-pink card-header-custom toggle-collapse"
@@ -250,63 +251,63 @@ const SettingsPassword = () => {
             <div className="px--1 py-4-2 mt-3">
               <div className="row">
                 <div className="col-sm-6 mb-3 password-with-tooltip">
-                   <div className="position-relative password-with-tooltip">
-                   <div className="form-group">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    className="form-control"
-                    id="oldPassword"
-                    name="oldPassword"
-                    onChange={handleChange}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                    value={values.oldPassword}
-                    placeholder="Current Password"
-                    required
-                  />
+                  <div className="position-relative password-with-tooltip">
+                    <div className="form-group">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        className="form-control"
+                        id="oldPassword"
+                        name="oldPassword"
+                        onChange={handleChange}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        value={values.oldPassword}
+                        placeholder="Current Password"
+                        required
+                      />
+                    </div>
+                    {showOldPasswordTooltip && <PasswordToolTip />}
                   </div>
-                  {showOldPasswordTooltip && <PasswordToolTip />}
-                   </div>
                 </div>
 
                 <div className="col-sm-6 mb-3">
-                   <div className="position-relative password-with-tooltip">
-                   <div className="form-group">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    className="form-control"
-                    id="password"
-                    name="password"
-                    onChange={handleChange}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                    value={values.password}
-                    placeholder="New Password"
-                    required
-                  />
+                  <div className="position-relative password-with-tooltip">
+                    <div className="form-group">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        className="form-control"
+                        id="password"
+                        name="password"
+                        onChange={handleChange}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        value={values.password}
+                        placeholder="New Password"
+                        required
+                      />
+                    </div>
+                    {showPasswordTooltip && <PasswordToolTip />}
                   </div>
-                  {showPasswordTooltip && <PasswordToolTip />}
-                   </div>
                 </div>
               </div>
               <div className="row">
                 <div className="col-sm-6">
                   <div className="position-relative password-with-tooltip">
-                  <div className="form-group">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    className="form-control"
-                    id="confirm"
-                    name="confirm"
-                    onChange={handleChange}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                    value={values.confirm}
-                    placeholder="Confirm Password"
-                    required
-                  />
-                  </div>
-                  {showConfirmPasswordTooltip && <PasswordToolTip />}
+                    <div className="form-group">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        className="form-control"
+                        id="confirm"
+                        name="confirm"
+                        onChange={handleChange}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        value={values.confirm}
+                        placeholder="Confirm Password"
+                        required
+                      />
+                    </div>
+                    {showConfirmPasswordTooltip && <PasswordToolTip />}
                   </div>
                 </div>
               </div>

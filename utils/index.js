@@ -75,6 +75,11 @@ export const insertHtmlAtPositionInMail= (textInput, elementId) => {
             if (sel.getRangeAt && sel.rangeCount) {
                 range = sel.getRangeAt(0);
                 range.deleteContents();
+
+                if(element.tagName.toUpperCase() === 'INPUT'){
+                  element.value = html;
+                  return true;
+                }
     
                 var el = document.createElement("div");
                 el.innerHTML = html;

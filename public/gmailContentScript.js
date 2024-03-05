@@ -766,6 +766,127 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true;
     }
 
+    if(request.action === 'startPlayingVideo'){
+
+        let existingContainer = document.getElementById('skoop-helper-video-element');
+        let existingOverlay = document.getElementById('skoop-helper-video-overlay');
+        if (existingContainer) {
+            // Toggle visibility if container exists
+            existingContainer.remove();
+            existingOverlay.remove();
+        }
+
+        // create the container
+        let container = document.createElement('div');
+        container.id = 'skoop-helper-video-element';
+        container.style.position = 'absolute';
+        container.style.top = '0';
+        container.style.left = '0';
+        container.style.width = '100%';
+        container.style.height = '100vh';
+        container.style.display = 'grid';
+        container.style.placeItems = 'center';
+        container.style.zIndex = '999999';
+
+        // create-overlay for container
+        let overlay = document.createElement('div');
+        overlay.id = 'skoop-helper-video-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(42, 43, 57, 0.244)';
+        overlay.style.zIndex = '99999';
+
+
+        // create the modal
+        let modal = document.createElement('div');
+        modal.id = 'skoop-helper-video-modal';
+        modal.style.position = "relative";
+        modal.style.display = "flex";
+        modal.style.justifyContent = "center";
+        modal.style.alignItems = "center";
+
+        // create modal box
+        let modalBox = document.createElement('div');
+        modalBox.id = 'skoop-helper-video-modal-box';
+        modalBox.style.position = "fixed";
+        modalBox.style.top = '50%';
+        modalBox.style.left = '50%';
+        modalBox.style.transform = 'translate(-50%, -50%)';
+        modalBox.style.width = request.width + 'px';
+        modalBox.style.height = '100%';
+        modalBox.style.display = "flex";
+        modalBox.style.justifyContent = "center";
+        modalBox.style.alignItems = "center";
+        modalBox.style.flexDirection = "column";
+        modalBox.style.borderRadius = "8px";
+
+        // button container
+        let buttonContainer = document.createElement('div');
+        buttonContainer.id = 'skoop-helper-video-button-container';
+        buttonContainer.style.position = "absolute";
+        buttonContainer.style.top = '0';
+        buttonContainer.style.right = '0';
+        buttonContainer.style.display = "flex";
+        buttonContainer.style.justifyContent = "end";
+        buttonContainer.style.width = "100%";
+        buttonContainer.style.zIndex = "999999";
+
+        // button
+        let button = document.createElement('button');
+        button.id = 'skoop-helper-video-close-button';
+        button.textContent = 'Close';
+        button.innerHTML = `<svg stroke="currentColor" fill="#ffffff" stroke-width="0" viewBox="0 0 512 512" class="text-light" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M405 136.798L375.202 107 256 226.202 136.798 107 107 136.798 226.202 256 107 375.202 136.798 405 256 285.798 375.202 405 405 375.202 285.798 256z"></path></svg>`;
+        button.style.backgroundColor = 'transparent';
+        button.style.border = 'none';
+        button.style.cursor = 'pointer';
+        button.style.outline = 'none';
+        button.style.marginRight = '10px';
+        button.style.paddingTop = '5px';
+
+        button.addEventListener('click', () => {
+            container.remove();
+            overlay.remove();
+        })
+
+        // modal content
+        let modalContent = document.createElement('div');
+        modalContent.id = 'skoop-helper-video-modal-content';
+        modalContent.style.position = 'relative';
+        modalContent.style.width = request.width + 'px';
+        modalContent.style.height = request.height + 'px';
+        modalContent.style.borderRadius = "8px";
+        modalContent.style.overflow = "hidden";
+
+        // close the video when clicked outside of the video
+        document.addEventListener('click', function(event) {
+            if (!modalContent.contains(event.target)) {
+                container.remove();
+                overlay.remove();
+            }
+        });
+        
+        // create the iframe
+        let iframe = document.createElement('iframe');
+        iframe.id = 'skoop-helper-video-iframe';
+        iframe.src = request.src;
+        iframe.style.border = 'none';
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.position = 'relative';
+
+        modalContent.appendChild(iframe);
+        buttonContainer.appendChild(button);
+        modalContent.appendChild(buttonContainer);
+        modalBox.appendChild(modalContent);
+        modal.appendChild(modalBox);
+        container.appendChild(modal);
+        document.body.appendChild(overlay);
+        document.body.appendChild(container);
+    }
+
     return true;
 });
 

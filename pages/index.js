@@ -12,6 +12,7 @@ import AuthContext from "../contexts/AuthContext";
 import CalendarSync from "../Screens/CalendarSync";
 import Welcome from "../Screens/Welcome";
 import Header from "../components/Header";
+import HelperVideos from "../Screens/HelperVideos";
 import SignInWith from "../Screens/SignInWith";
 
 export default function Home() {
@@ -51,6 +52,7 @@ export default function Home() {
       {activePage === "Home" && <Homepage />}
       {activePage === "SignIn" && <SignIn />}
       {activePage === "SignUp" && <SignUp />}
+      {activePage === "HelperVideos" && <HelperVideos />}
       {activePage === "AccountSettings" && <AccountSettings />}
       {activePage == "ContactPage" && <ContactPage />}
       {activePage == "ProfileScraper" && <ProfileScraper />}

@@ -6,16 +6,15 @@ import { FaRegCalendarCheck } from 'react-icons/fa';
 import ScreenContext from '../../contexts/ScreenContext';
 import API_ENDPOINTS from '../apiConfig';
 import AuthContext from '../../contexts/AuthContext.js';
-import CarouselComponent from '../HelperVideos/index.js';
 import { MdContactSupport } from 'react-icons/md';
 import MessageContext from '../../contexts/MessageContext.js';
+import { AiFillQuestionCircle } from "react-icons/ai";
 
 export default function Header() {
     const { isAutheticated, setisAutheticated } = useContext(AuthContext);
     const { navigateToPage, activePage } = useContext(ScreenContext);
     const { setScraperPage, scraperPage, isProfilePage, expand, setExpand} = useContext(GlobalStatesContext);
     
-    const [isCarouselOpen, setIsCarouselOpen] = useState(false);
     const { message, setMessage } = useContext(MessageContext);
     const [profileOpen, setProfileOpen] = useState(false);
 
@@ -33,10 +32,6 @@ export default function Header() {
             document.body.style.overflow = 'auto';
         };
     }, [profileOpen]);
-
-    const toggleCarousel = () => {
-        setIsCarouselOpen(!isCarouselOpen);
-    };
 
     const toggleProfileDropdown = () => {
         setProfileOpen(!profileOpen);
@@ -154,9 +149,11 @@ export default function Header() {
                                 data-mdb-toggle="tooltip"
                                 data-mdb-placement="bottom"
                                 title="Helper Videos"
-                                onClick={toggleCarousel}
+                                onClick={() => {
+                                            navigateToPage('HelperVideos');
+                                        }}
                             >
-                                <MdContactSupport className="icon-style-normal" />
+                                <img src="/icons/Helpervideo.png" alt="Helper Videos" className="icon-style-normal" />
                             </button>
                             {/* Calendar Link */}
                             <button
@@ -285,11 +282,6 @@ export default function Header() {
                     </button>
                 </div>
             </nav>
-            {isCarouselOpen && (
-                <div>
-                    <CarouselComponent />
-                </div>
-            )}
         </>
     );
 }
