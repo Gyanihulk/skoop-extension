@@ -1,11 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
 import GlobalStatesContext from '../../contexts/GlobalStates';
-
+import Scrape from '../Scraper';
 
 const ChatWindowSelection = () => {
     const [initialItems, setInitialItems] = useState([]);
-    const { selectedChatWindows, setSelectedChatWindows, isLinkedin, focusedElementId } =
-        useContext(GlobalStatesContext);
+    const [profilePageName, setProfilePageName] = useState();
+    const {
+        selectedChatWindows,
+        setSelectedChatWindows,
+        isLinkedin,
+        focusedElementId,
+        isProfilePage,
+    } = useContext(GlobalStatesContext);
     const [localRefresh, setLocalRefresh] = useState(0);
     const [resetInitialItems, setResetInitialItems] = useState(0);
 
@@ -59,7 +65,21 @@ const ChatWindowSelection = () => {
                             .then((response) => {
                                 if (!chrome.runtime.lastError) {
                                     var combinedArray = response[0].result;
-
+                                    if (isProfilePage) {
+                                        combinedArray.push({
+                                            index: combinedArray.length,
+                                            name: profilePageName,
+                                            dataset: { type: 'profileCheckbox' },
+                                        })
+                                        // (async () => {
+                                        //     let scrapedInfo = await Scrape('ProfilePage');
+                                        //     scrapedInfo = scrapedInfo.map((item) => {
+                                        //         return item.replace(/[^\x00-\x7F]/g, '');
+                                        //     });
+                                        //     setProfilePageName(scrapedInfo[0]);
+                                        //     console.log(scrapedInfo, 'from chat window selection ');
+                                        // })();
+                                    }
                                     setInitialItems(combinedArray);
                                     const filteredArray = combinedArray.filter((item) =>
                                         selectedChatWindows.some(
@@ -84,8 +104,21 @@ const ChatWindowSelection = () => {
         } catch (err) {
             console.log('some error occured while setting up initial array');
         }
-    }, [resetInitialItems]);
-
+    }, [resetInitialItems, isProfilePage]);
+    useEffect(() => {
+        try {
+            (async () => {
+                let scrapedInfo = await Scrape('ProfilePage');
+                scrapedInfo = scrapedInfo.map((item) => {
+                    return item.replace(/[^\x00-\x7F]/g, '');
+                });
+                setProfilePageName(scrapedInfo[0]);
+                console.log(scrapedInfo, 'from chat window selection ');
+            })();
+        } catch (err) {
+            console.log('some error occured while setting up initial array');
+        }
+    }, [isProfilePage]);
     const messageHandler = (message) => {
         if (message.action === 'elementAdded') {
             setResetInitialItems(Math.random());
@@ -104,8 +137,8 @@ const ChatWindowSelection = () => {
     }, []);
 
     const handleCheckboxChange = (event) => {
-        const { value, checked } = event.target;
-
+        const { value, checked, dataset } = event.target;
+        console.log(dataset, initialItems);
         if (checked) {
             const selectedItem = initialItems.find((item) => item.name === value);
             const newChatWindows = selectedChatWindows;
@@ -118,7 +151,13 @@ const ChatWindowSelection = () => {
 
         setLocalRefresh(!localRefresh);
     };
-
+    if (initialItems.length > 0) {
+        const newItems = initialItems.filter(
+            (item, index, self) => index === self.findIndex((t) => t.name === item.name)
+        );
+        console.log(newItems)
+        // setInitialItems(newItems)
+    }
     return (
         <div id="chatWindowsList" className="container selection-container bg-white">
             {isLinkedin && (
@@ -145,7 +184,6 @@ const ChatWindowSelection = () => {
                                 </div>
                             </div>
                         ))}
-                        
                     </div>
                 </>
             )}

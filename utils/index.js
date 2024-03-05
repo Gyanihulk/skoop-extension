@@ -55,6 +55,7 @@ export const insertIntoLinkedInMessageWindow=async (html,selectedChatWindows)=>{
 }
 
 export const insertHtmlAtPositionInMail= (textInput, elementId) => {
+  console.log(elementId);
   return new Promise((resolve, reject) => {
 
     const executeInsertion=(text,Id)=>{
