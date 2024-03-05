@@ -7,12 +7,11 @@ import { sendMessageToBackgroundScript } from "../lib/sendMessageToBackground";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAutheticated, setisAutheticated] = useState();
-  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const { navigateToPage } = useContext(ScreenContext);
   const [newUser, setNewUser] = useState(false);
-
+  const [loadingAuthState, setLoadingAuthState] = useState(true);
   const validatePassword = (password) => {
     if (!password) {
       return false;
@@ -52,7 +51,7 @@ export const AuthProvider = ({ children }) => {
           action: "storeToken",
           token: resjson.accessToken,
         });
-        setisAutheticated(true);
+        setIsAuthenticated(true);
         navigateToPage("Home");
       } else {
         toast.error("incorrect username or password", { id: toastId });
@@ -81,7 +80,7 @@ export const AuthProvider = ({ children }) => {
  
       if (Number(response.status) === 200) {
         let result = await response.json();
-        setisAutheticated(true);
+        setIsAuthenticated(true);
         localStorage.setItem("accessToken", JSON.stringify(result.accessToken));
         localStorage.setItem(
           "skoopUsername",
@@ -273,7 +272,7 @@ export const AuthProvider = ({ children }) => {
         });
         toast.success("Sign up was complete", { id: toastId });
         setNewUser(true);
-        setisAutheticated(true);
+        setIsAuthenticated(true);
         navigateToPage("CalendarSync");
       } else toast.error("Email already exists ", { id: toastId });
     } catch (err) {
@@ -291,12 +290,13 @@ export const AuthProvider = ({ children }) => {
           )}`,
         },
       });
-
+console.log(res,"test")
       if (res.ok) {
-        setisAutheticated(true);
+        setIsAuthenticated(true);
       } else {
-        setisAutheticated(false);
+        setIsAuthenticated(false);
       }
+      setLoadingAuthState(false);
       return res;
     } catch (err) {
       return { ok: false };
@@ -373,9 +373,8 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        isAutheticated,
-        setisAutheticated,
-        user,
+        isAuthenticated,
+        setIsAuthenticated,
         handleSkoopLogin,
         handleSocialLogin,
         handleRegister,
@@ -388,6 +387,7 @@ export const AuthProvider = ({ children }) => {
         setNewUser,
         calendarSync,
         getCalendarUrl,
+        loadingAuthState
       }}
     >
       {children}

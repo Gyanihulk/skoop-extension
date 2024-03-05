@@ -62,23 +62,24 @@ const ChatWindowSelection = () => {
                                 target: { tabId: targetTab.id },
                                 func: setUpInitialArray,
                             })
-                            .then((response) => {
+                            .then(async (response) => {
                                 if (!chrome.runtime.lastError) {
                                     var combinedArray = response[0].result;
                                     if (isProfilePage) {
-                                        combinedArray.push({
-                                            index: combinedArray.length,
-                                            name: profilePageName,
-                                            dataset: { type: 'profileCheckbox' },
-                                        })
-                                        // (async () => {
-                                        //     let scrapedInfo = await Scrape('ProfilePage');
-                                        //     scrapedInfo = scrapedInfo.map((item) => {
-                                        //         return item.replace(/[^\x00-\x7F]/g, '');
-                                        //     });
-                                        //     setProfilePageName(scrapedInfo[0]);
-                                        //     console.log(scrapedInfo, 'from chat window selection ');
-                                        // })();
+                                        let scrapedInfo = await Scrape('ProfilePage');
+                                        scrapedInfo = scrapedInfo.map((item) => {
+                                            return item.replace(/[^\x00-\x7F]/g, '');
+                                        });
+                                        console.log(scrapedInfo)
+                                        if(scrapedInfo[0]!==''){
+                                            combinedArray.push({
+                                                index: combinedArray.length,
+                                                name: scrapedInfo[0],
+                                                dataset: { type: 'profileCheckbox' },
+                                            });
+                                            console.log(combinedArray, 'from chrome');
+                                        }
+                                        
                                     }
                                     setInitialItems(combinedArray);
                                     const filteredArray = combinedArray.filter((item) =>
@@ -105,20 +106,6 @@ const ChatWindowSelection = () => {
             console.log('some error occured while setting up initial array');
         }
     }, [resetInitialItems, isProfilePage]);
-    useEffect(() => {
-        try {
-            (async () => {
-                let scrapedInfo = await Scrape('ProfilePage');
-                scrapedInfo = scrapedInfo.map((item) => {
-                    return item.replace(/[^\x00-\x7F]/g, '');
-                });
-                setProfilePageName(scrapedInfo[0]);
-                console.log(scrapedInfo, 'from chat window selection ');
-            })();
-        } catch (err) {
-            console.log('some error occured while setting up initial array');
-        }
-    }, [isProfilePage]);
     const messageHandler = (message) => {
         if (message.action === 'elementAdded') {
             setResetInitialItems(Math.random());
@@ -151,13 +138,7 @@ const ChatWindowSelection = () => {
 
         setLocalRefresh(!localRefresh);
     };
-    if (initialItems.length > 0) {
-        const newItems = initialItems.filter(
-            (item, index, self) => index === self.findIndex((t) => t.name === item.name)
-        );
-        console.log(newItems)
-        // setInitialItems(newItems)
-    }
+    const uniqueNamesSet = new Set();
     return (
         <div id="chatWindowsList" className="container selection-container bg-white">
             {isLinkedin && (
@@ -168,22 +149,29 @@ const ChatWindowSelection = () => {
                         <div className="fw-bold fs-6">Please open any chat window.</div>
                     )}
                     <div className="row">
-                        {initialItems?.map((item, index) => (
-                            <div key={index} className="col-4">
-                                <div className="d-flex flex-row">
-                                    <input
-                                        type="checkbox"
-                                        className="form-check-input"
-                                        value={item.name}
-                                        checked={selectedChatWindows.some(
-                                            (checkedItem) => checkedItem.name === item.name
-                                        )}
-                                        onChange={handleCheckboxChange}
-                                    />
-                                    <label className="form-check-label">{item.name}</label>
-                                </div>
-                            </div>
-                        ))}
+                        {initialItems?.map((item, index) => {
+                            if (!uniqueNamesSet.has(item.name)) {
+                                uniqueNamesSet.add(item.name);
+                                return (
+                                    <div key={index} className="col-4">
+                                        <div className="d-flex flex-row">
+                                            <input
+                                                type="checkbox"
+                                                className="form-check-input"
+                                                value={item.name}
+                                                checked={selectedChatWindows.some(
+                                                    (checkedItem) => checkedItem.name === item.name
+                                                )}
+                                                onChange={handleCheckboxChange}
+                                            />
+                                            <label className="form-check-label">{item.name}</label>
+                                        </div>
+                                    </div>
+                                );
+                            } else {
+                                return null;
+                            }
+                        })}
                     </div>
                 </>
             )}

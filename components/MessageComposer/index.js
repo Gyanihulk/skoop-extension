@@ -104,39 +104,47 @@ const MessageComposer = () => {
     function hasDatasetProperty(item) {
         return item.hasOwnProperty('dataset');
       }
-      const handleOpenMessageWindow = () => {
-        const clickMessageButton = () => {
-            const btns = Array.from(document.querySelectorAll('div>div>div>button'));
-            var selectedButton;
-            btns.forEach((btn) => {
-                const ariaLabel = btn.ariaLabel;
-                if (ariaLabel != null && ariaLabel.includes('Message')) {
-                    selectedButton = btn;
-                }
-            });
-            selectedButton.click();
-        };
 
+const handleOpenMessageWindow = () => {
+    const clickMessageButton = () => {
+        const btns = Array.from(document.querySelectorAll('div>div>div>button'));
+        let selectedButton = btns.find((btn) => btn.ariaLabel && btn.ariaLabel.includes('Message'));
+        if (selectedButton) {
+            selectedButton.click();
+        } else {
+            throw new Error('Message button not found.');
+        }
+    };
+
+    return new Promise((resolve, reject) => {
         try {
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 const targetTab = tabs[0];
                 if (targetTab) {
-                    try {
-                        chrome.scripting.executeScript({
-                            target: { tabId: targetTab.id },
-                            func: clickMessageButton,
-                        });
-                    } catch (err) {
-                        console.log('some error occured in executing script', err);
-                    }
+                    chrome.scripting.executeScript({
+                        target: { tabId: targetTab.id },
+                        func: clickMessageButton,
+                    }, (injectionResults) => {
+                        // Handle the possibility of an error
+                        if (chrome.runtime.lastError) {
+                            console.error('Error executing script:', chrome.runtime.lastError);
+                            reject('Failed to execute script on tab');
+                        } else {
+                            resolve('Message button clicked successfully');
+                        }
+                    });
                 } else {
                     console.log('the target tab is not accessible');
+                    reject('Target tab is not accessible');
                 }
             });
         } catch (err) {
-            console.log('some error occured while setting up initial array');
+            console.error('some error occurred while trying to open message window', err);
+            reject('Unexpected error occurred');
         }
-    };
+    });
+};
+
     const handleInsertionToWebsite = async () => {
         if (message === null || message === undefined) {
             toast.error('Please add message!!');
@@ -149,7 +157,9 @@ const MessageComposer = () => {
             }
             for (const item of selectedChatWindows) {
                 if (hasDatasetProperty(item)) {
-                    handleOpenMessageWindow();
+                    try{ const openChatWindow=await handleOpenMessageWindow();
+                        console.log(openChatWindow)}catch(err){console.log(err)}
+                   
                 }
               }
             await insertIntoLinkedInMessageWindow(`<p>${message}</p>`, selectedChatWindows);

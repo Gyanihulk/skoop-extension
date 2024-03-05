@@ -55,7 +55,7 @@ const Scrape = async(commandType) => {
       return [email,website,twitter,phoneNumber,linkedinUrl];
     }
 
-    const functionToExecute = commandType=='ContactInfoOverlay'?executeScrapingFromContactInfoOverlay:executeScrapingFromProfilePage;
+    const functionToExecute = commandType=='ContactInfoOverlay'? executeScrapingFromContactInfoOverlay:executeScrapingFromProfilePage;
     const res=await new Promise((resolve,reject)=>{
         chrome.tabs.query({ active: true, currentWindow: true },async (tabs) => {
             const targetTab=tabs[0];

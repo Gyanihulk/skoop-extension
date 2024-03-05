@@ -11,7 +11,7 @@ import MessageContext from '../../contexts/MessageContext.js';
 import { AiFillQuestionCircle } from "react-icons/ai";
 
 export default function Header() {
-    const { isAutheticated, setisAutheticated } = useContext(AuthContext);
+    const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
     const { navigateToPage, activePage } = useContext(ScreenContext);
     const { setScraperPage, scraperPage, isProfilePage, expand, setExpand} = useContext(GlobalStatesContext);
     
@@ -39,7 +39,7 @@ export default function Header() {
 
     const handleLogOut = () => {
         localStorage.setItem('accessToken', JSON.stringify('none'));
-        setisAutheticated(false);
+        setIsAuthenticated(false);
         setMessage();
         navigateToPage('SignInIntro');
     };
@@ -127,7 +127,7 @@ export default function Header() {
                 </div>
 
                 <div className="d-flex ml-auto align-items-right">
-                    {isAutheticated && (
+                    {isAuthenticated && (
                         <>
                             {isProfilePage && (
                                 <button
@@ -168,7 +168,7 @@ export default function Header() {
 
                             {/* Profile Dropdown */}
                             <div
-                                className={`nav-item dropdown custom ${profileOpen ? 'show' : ''}`}
+                                className={`nav-item dropdown custom`}
                             >
                                 <button
                                     className="btn btn-link header-icon dropstart"
