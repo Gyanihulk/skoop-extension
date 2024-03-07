@@ -33,8 +33,8 @@ export default function Home() {
                 navigateToPage('SignInIntro');
             }
         })();
-    }, [isAuthenticated, newUser,activePage]);
-    // let activePage='Home'
+    }, [isAuthenticated, newUser]);
+        // let activePage='Home'
     return (
         <>
             {![

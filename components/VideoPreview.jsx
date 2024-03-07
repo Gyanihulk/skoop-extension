@@ -3,27 +3,26 @@ import API_ENDPOINTS from './apiConfig';
 import toast from 'react-hot-toast';
 import GlobalStatesContext from '../contexts/GlobalStates';
 
-import { FaEdit } from 'react-icons/fa';
+import { PiDotsThreeCircleVerticalDuotone } from 'react-icons/pi';
 import MediaUtilsContext from '../contexts/MediaUtilsContext';
 import { handleCopyToClipboard } from '../utils';
 import RenameVideoPopup from './Library/RenameVideoPopup';
 
 export const VideoPreview = () => {
-    const [thumbnailImage, setThumbnailImage] = useState(
-        '/images/videoProcessing.png'
-    );
+    const [thumbnailImage, setThumbnailImage] = useState('/images/videoProcessing.png');
     const [showRenamePopup, setShowRenamePopup] = useState(false);
+    showVideoOptionsDialog;
+    const [showVideoOptionsDialog, setShowVideoOptionsDialog] = useState(false);
     const [newTitle, setNewTitle] = useState();
-    const { latestVideo, latestBlob ,setLatestVideo} = useContext(GlobalStatesContext);
+    const { latestVideo, latestBlob, setLatestVideo } = useContext(GlobalStatesContext);
     const { deleteVideo } = useContext(MediaUtilsContext);
     useEffect(() => {
         console.log(latestVideo, thumbnailImage, 'from video preview ');
 
-        if(latestVideo?.urlForThumbnail){
-
+        if (latestVideo?.urlForThumbnail) {
             setThumbnailImage(latestVideo?.urlForThumbnail);
         }
-    }, [latestVideo,showRenamePopup,thumbnailImage]);
+    }, [latestVideo, showRenamePopup, thumbnailImage]);
     useEffect(() => {
         console.log(latestBlob, 'from video preview ');
     }, [latestBlob, thumbnailImage]);
@@ -67,22 +66,18 @@ export const VideoPreview = () => {
         }
     };
 
-
     const handleRenameSave = async () => {
         try {
-            const response = await fetch(
-                API_ENDPOINTS.renameVideo + `/${latestVideo?.id}`,
-                {
-                    method: 'PATCH',
-                    headers: {
-                        authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                        'Content-type': 'application/json; charset=UTF-8',
-                    },
-                    body: JSON.stringify({
-                        newTitle: newTitle,
-                    }),
-                }
-            );
+            const response = await fetch(API_ENDPOINTS.renameVideo + `/${latestVideo?.id}`, {
+                method: 'PATCH',
+                headers: {
+                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+                body: JSON.stringify({
+                    newTitle: newTitle,
+                }),
+            });
 
             if (response.ok) {
                 toast.success('Video renamed successfully');
@@ -123,9 +118,9 @@ export const VideoPreview = () => {
             }
         }
     }, [latestBlob]);
-    if (!latestBlob && !latestVideo) {
-        return;
-    }
+    // if (!latestBlob && !latestVideo) {
+    //     return;
+    // }
     const handleIconClick = (eventKey) => {
         console.log(eventKey);
         if (eventKey == 'Copy Link') {
@@ -175,10 +170,10 @@ export const VideoPreview = () => {
             </a>
         </li>
     );
-
+    useEffect(() => {}, [showVideoOptionsDialog]);
     return (
         <>
-        {showRenamePopup && (
+            {showRenamePopup && (
                 <RenameVideoPopup
                     newTitle={newTitle}
                     onClose={() => {
@@ -188,18 +183,7 @@ export const VideoPreview = () => {
                     onTitleChange={(e) => setNewTitle(e.target.value)}
                 />
             )}
-
-        <div className="container" id="video-Preview">
-            
-            <div className="card d-flex flex-row align-items-center video-preview-iframe">
-                {/* <iframe 
-                        src={`https://play.vidyard.com/${latestVideo?.facade_player_uuid}.html?`}
-                        className='video-preview-iframe'
-                        frameborder="2"
-                        ></iframe> */}
-                <img className="video-preview-iframe" src={thumbnailImage} />
-
-                <ul className="nav-button" id="preview-video-button">
+            {/* <ul className="nav-button" id="preview-video-button">
                     {renderNavButtonItem(
                         'Copy Link',
                         <svg
@@ -262,9 +246,30 @@ export const VideoPreview = () => {
                         </svg>,
                         'Delete video forever.'
                     )}
-                </ul>
+                </ul> */}
+            
+            <div className="container" id="video-Preview">
+                <div className="card d-flex flex-row align-items-center">
+                    <img
+                        className="video-preview-iframe-img"
+                        src={thumbnailImage}
+                        alt="Video Thumbnail"
+                    />
+                    <div id="video-preview-option">
+               
+                    <PiDotsThreeCircleVerticalDuotone size={30} onClick={() => setShowVideoOptionsDialog(!showVideoOptionsDialog)} color='black'/>
+               
+                <div className={`ddstyle dropdown-menu ${showVideoOptionsDialog ? 'show' : ''}`}>
+                {["Rename Title","Update Thumbnail","Copy Link","Download","Delete"].map((key,index)=>(<button onClick={()=>handleIconClick(key)} className="dropdown-item">{key}</button>))}
+                    {/* <button className="dropdown-item">Rename Title</button>
+                    <button className="dropdown-item">Update Thumbnail</button>
+                    <button className="dropdown-item">Copy Link</button>
+                    <button className="dropdown-item">Download</button>
+                    <button className="dropdown-item">Delete</button> */}
+                </div>
+            </div>st
+                </div>
             </div>
-        </div>
         </>
     );
 };

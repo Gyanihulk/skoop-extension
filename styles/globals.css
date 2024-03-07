@@ -1360,19 +1360,19 @@ ul.nav-button li svg path {
 }
 #video-Preview {
   position: absolute;
-  top: 17rem;
+  top: 17.5rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex; /* Use flexbox to center the image if smaller than the max dimensions */
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
 }
-/* #video-preview-option{
+#video-preview-option{
   position: absolute;
-  top: 17.5rem;
-  left: 50%;
-  transform: translateX(45%);
-} */
+  top: 5px;
+  right: 2%;
+z-index: 1000;
+}
 .preview-button-bottom-text {
   font-size: 6px;
   margin-top: 2px;
