@@ -267,7 +267,7 @@ export const VideoPreview = () => {
                     <button className="dropdown-item">Download</button>
                     <button className="dropdown-item">Delete</button> */}
                 </div>
-            </div>st
+            </div>
                 </div>
             </div>
         </>
