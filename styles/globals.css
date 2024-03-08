@@ -1494,17 +1494,38 @@ z-index: 1000;
   z-index: 999;
 }
 
-
-
 img.icon-style-normal{
   object-fit: center;
 }
 
 .save-icon{
-  width: 32px;
-  height: 18px;
+  width: 27px;
+  height: 16px;
   border-radius: 3px;
   background-color: white;
-  padding: 3px;
+  color: #2d68c4;
   margin-inline: 6px;
+  font-size: 12px;
+  padding-left: 2px;
+  margin-top: 4px;
+  padding-top: 2px;
+  font-weight: 700;
+}
+#booking-switch{
+  position: absolute;
+  bottom: 5px;
+  left: 5%;
+z-index: 1000;
+font-size: smaller;
+
+}
+#preview-video-name{
+  position: fixed;
+  top:-22px;
+}
+
+
+.form-switch {
+  padding-left: 3.5em !important;
+  padding-right: 3.5em !important;
 }

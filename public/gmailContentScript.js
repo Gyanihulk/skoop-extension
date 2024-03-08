@@ -25,6 +25,7 @@ function injectIframe() {
     iframe.style.border = 'none';
     iframe.style.width = '100%';
     iframe.style.height = '100%'; // Height when expanded
+    iframe.style.borderRadius="10px";
 
     const dragButton = document.createElement('div');
     dragButton.id = 'skoop-drag-button';

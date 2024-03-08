@@ -4,8 +4,7 @@ import { handleCopyToClipboard } from '../../utils';
 import { IoMdClose } from 'react-icons/io';
 import { toast } from 'react-hot-toast';
 import { GrFormEdit } from 'react-icons/gr';
-import { RiDeleteBin3Fill } from 'react-icons/ri';
-import { RiPencilFill } from 'react-icons/ri';
+
 function PreLoadedMessage(props) {
     const [selectedOption, setSelectedOption] = useState('Select Response');
     const [selectedDescription, setSelectedDescription] = useState('');

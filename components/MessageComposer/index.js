@@ -14,6 +14,7 @@ import AuthContext from '../../contexts/AuthContext.js';
 import ChatWindowSelection from '../ChatWindowSelection/index.js';
 import toast from 'react-hot-toast';
 import API_ENDPOINTS from '../apiConfig.js';
+import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
 const MessageComposer = () => {
     const [displayComp, setDisplayComp] = useState('DefaultCard');
 
@@ -29,6 +30,8 @@ const MessageComposer = () => {
     } = useContext(GlobalStatesContext);
     const { message, addMessage, setMessage } = useContext(MessageContext);
     const { getCalendarUrl } = useContext(AuthContext);
+    const {uploadVideo}=useContext(MediaUtilsContext)
+    const { addToMessage } = useContext(MessageContext);
     const handleInsertion = (text) => {
         const newText = text + ' \n ';
         addMessage(newText);
@@ -58,6 +61,9 @@ const MessageComposer = () => {
         if (eventKey === 'Calender Link') {
             addMeetSchedulingLink();
             return;
+        }
+        if(eventKey==="Upload Video"){
+            document.getElementById('video-upload').click();
         }
         if (displayComp == eventKey) {
             setDisplayComp('DefaultCard');
@@ -227,7 +233,7 @@ const MessageComposer = () => {
     const renderNavButtonItem = (eventKey, icon, tooltipText) => (
         <li
             key={eventKey}
-            className={`rounded-2 p-3 ${displayComp === eventKey ? 'bg-active active' : ''}`}
+            className={`${displayComp === eventKey ? 'bg-active active' : ''}`}
         >
             <a
                 className={`text-decoration-none ${
@@ -249,9 +255,65 @@ const MessageComposer = () => {
             </a>
         </li>
     );
+    function dataURLtoBlob(dataurl) {
+        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], {type:mime});
+    }
+    const uploadVideoHandler = async (event) => {
+        const file = event.target.files[0];
+    
+        if (file) {
+            const videoTitle = "MyVideoTitle";
+            const directoryName = "New";
+    
+            // Create a URL for the uploaded video file
+            const videoUrl = URL.createObjectURL(file);
+            const videoElement = document.createElement('video');
+    
+            // Set the video source to the created URL
+            videoElement.src = videoUrl;
+    
+            // Load the video metadata to ensure dimensions are available
+            videoElement.addEventListener('loadedmetadata', async function() {
+                // Now you have access to video dimensions
+                const width = videoElement.videoWidth;
+                const height = videoElement.videoHeight;
+    
+                console.log(`Video Dimensions: ${width}x${height}`);
+    
+                // Proceed with your upload function, now including dimensions
+                try {
+                    const response = await uploadVideo(file, videoTitle, directoryName, height, width);
+                    setLatestVideo(response);
+                    addToMessage(response.facade_player_uuid, response?.urlForThumbnail);
+                } catch (error) {
+                    console.error("Upload Error:", error);
+                }
+    
+                // Cleanup: Revoke the object URL to free up resources
+                URL.revokeObjectURL(videoUrl);
+            });
+    
+            // Load the video to trigger 'loadedmetadata'
+            videoElement.load();
+        }
+    };
+    
+    
     return (
         <>
-            <nav className="nav-btn" id="content-button">
+        <input
+                    id="video-upload"
+                    type="file"
+                    style={{ display: 'none' }}
+                    onChange={uploadVideoHandler}
+                    accept="video/*"
+                /> 
+            <nav className="nav-btn" >
                 <div class="container">
                     <ul className="nav-button">
                         {renderNavButtonItem(
@@ -384,18 +446,23 @@ const MessageComposer = () => {
                                     </svg>,
                                     'Send your favorite emoji to Mail'
                                 )}
+                                {renderNavItem(
+                                    'Upload Video',
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8 12L3 7L4.4 5.55L7 8.15V0H9V8.15L11.6 5.55L13 7L8 12ZM2 16C1.45 16 0.979167 15.8042 0.5875 15.4125C0.195833 15.0208 0 14.55 0 14V11H2V14H14V11H16V14C16 14.55 15.8042 15.0208 15.4125 15.4125C15.0208 15.8042 14.55 16 14 16H2Z" fill="white"/>
+                                    </svg>,
+                                    'Upload video from your device'
+                                )}
 
                                 {message && (
-                                    <li onClick={() => saveMessageAsTemplate()}>
-                                        <a className="align-items-center justify-content-center">
-                                            <button
-                                                type="button"
-                                                className="btn save-icon d-flex  "
-                                                title="Save the custom message as Template"
+                                    <li className="d-flex flex-column align-items-center justify-content-center" onClick={() => saveMessageAsTemplate()}>
+                                        
+                                            <div
+                                                className="save-icon"
                                             >
                                                 Add
-                                            </button>
-                                        </a>
+                                            </div>
+                                        
                                     </li>
                                 )}
                             </ul>

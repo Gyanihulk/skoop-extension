@@ -45,6 +45,7 @@ const API_ENDPOINTS = {
     getCalendarUrl:`${backendUrl}/getcalendarurl`, //GET
     updateCalendarUrl:`${backendUrl}/update-calendar-url`,// POST,
     updateThumbnailImage:`${backendUrl}/updateThumbnail`, // POST,
+    updateVideoInfo:`${backendUrl}/updatevideoinfobyvideoid/`, // PUT,
 };
 
 // with POST or PATCH apis body is sent in JSON 

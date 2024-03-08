@@ -36,7 +36,6 @@ const RecordingButton = () => {
     const [capturing, setCapturing] = useState(false);
     const [prev, setPrev] = useState('');
     const [time, setTime] = useState(0);
-    const [videoId, setVideoId] = useState('');
     const [countdown, setCountdown] = useState(false);
     const [countTimer, setCountTimer] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
@@ -47,14 +46,12 @@ const RecordingButton = () => {
     const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
     const [selectedVideoStyle, setSelectedVideoStyle] = useState('Vertical Mode');
 
-    const [videoTitle, setVideoTitle] = useState('');
 
 
-
-    const { setGlobalRefresh, isLinkedin,setLatestVideo, latestVideo,setLatestBlob } =
+    const { setGlobalRefresh, setLatestVideo, latestVideo,setLatestBlob } =
         useContext(GlobalStatesContext);
-    const { getThumbnail } = useContext(MediaUtilsContext);
-    const { addMessage } = useContext(MessageContext);
+    const { uploadVideo } = useContext(MediaUtilsContext);
+    const { addToMessage } = useContext(MessageContext);
     const handleVideoStyleSelect = (style) => {
         setSelectedVideoStyle(style);
         if (style === 'Square') {
@@ -92,23 +89,6 @@ const RecordingButton = () => {
         toggleVideoSettings();
     };
 
-    const addToMessage = async (videoPlayerId,thumbnailLink="") => {
-        if (isLinkedin) {
-            addMessage(
-                `https://skoop.hubs.vidyard.com/watch/${videoPlayerId}?`
-                // ?email=${JSON.parse(localStorage.getItem('skoopUsername'))}&duration=60
-            );
-        } else {
-        
-           
-               let ret = `<a href=https://skoop.hubs.vidyard.com/watch/${videoPlayerId}><img src='${thumbnailLink}' class="inline-block-width"/><br>${latestVideo.name}</a>`;
-           
-            addMessage(
-                ret 
-            );
-        }
-        window.scrollTo(0, document.body.scrollHeight);
-    };
 
 
     const preview = () => {
@@ -174,9 +154,15 @@ const RecordingButton = () => {
         }
         if (response.videoBlob) {
             
-            getBlobFromUrl(response.url).then((blob) => {
+            getBlobFromUrl(response.url).then(async (blob) => {
                 setLatestBlob(blob)
-                uploadVideo(blob, getCurrentDateTimeString(), 'New');
+                            setIsUploading(true);
+                const response=await uploadVideo(blob, getCurrentDateTimeString(), 'New',height,width);
+                setIsUploading(false);
+                setLatestVideo(response)
+                addToMessage(response.facade_player_uuid,response?.urlForThumbnail);
+                setGlobalRefresh(true);
+                setCapturing(false);
             });
         }
     }
@@ -200,55 +186,8 @@ const RecordingButton = () => {
         setCapturing(true);
     };
 
-    const uploadVideo = async (file, videoTitle, directoryName) => {
-        try {
-            videoTitle = replaceInvalidCharacters(videoTitle + `_${Date.now()}`);
-            setVideoTitle(videoTitle);
-            const formData = new FormData();
-            formData.append('data', file, `${videoTitle}.mp4`);
-            formData.append('height', parseInt(height));
-            formData.append('width', parseInt(width));
-            const customHeaders = new Headers();
-            customHeaders.append('title', videoTitle);
-            customHeaders.append('directory_name', directoryName);
-            customHeaders.append('type', 'mp4');
-            customHeaders.append(
-                'authorization',
-                `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`
-            );
-            customHeaders.append('title1', videoTitle);
-            setIsUploading(true);
-            const loadingObj = toast.loading('Uploading Video...');
-            var response = await fetch(API_ENDPOINTS.vidyardUpload, {
-                method: 'POST',
-                headers: customHeaders,
-                body: formData,
-            });
-            response = await response.json();
-            console.log(response.facade_player_uuid)
-           
-            toast.success('Video link Added to Custom Message', {
-                id: loadingObj,
-            });
-            setIsUploading(false);
-            setLatestVideo(response)
-            addToMessage(response.facade_player_uuid,response?.urlForThumbnail);
-            setVideoId(response.id);
-            setGlobalRefresh(true);
-            setCapturing(false);
-        } catch (err) {
-            toast.dismiss();
-            toast.error('could not upload');
-        }
-        window.scrollTo(0, document.body.scrollHeight);
-    };
-
-    useEffect(() => {
-        setVideoTitle(videoTitle);
-    }, [capturing]);
 
 
- 
 
     return (
         <>
@@ -329,7 +268,6 @@ const RecordingButton = () => {
                                 setBlobUrl={setBlobUrl}
                                 setIsUploading={setIsUploading}
                                 setCapturing={setCapturing}
-                                setVideoId={setVideoId}
                                 addToMessage={addToMessage}
                             />
                         </div>

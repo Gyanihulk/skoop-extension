@@ -2,30 +2,37 @@ import React, { useContext, useEffect, useState } from 'react';
 import API_ENDPOINTS from './apiConfig';
 import toast from 'react-hot-toast';
 import GlobalStatesContext from '../contexts/GlobalStates';
-
+import Form from 'react-bootstrap/Form';
 import { PiDotsThreeCircleVerticalDuotone } from 'react-icons/pi';
 import MediaUtilsContext from '../contexts/MediaUtilsContext';
 import { handleCopyToClipboard } from '../utils';
 import RenameVideoPopup from './Library/RenameVideoPopup';
 import { sendMessageToBackgroundScript } from '../lib/sendMessageToBackground';
-
+import { FaPencilAlt } from "react-icons/fa";
 export const VideoPreview = () => {
     const [thumbnailImage, setThumbnailImage] = useState('/images/videoProcessing.png');
     const [showRenamePopup, setShowRenamePopup] = useState(false);
     const [showVideoOptionsDialog, setShowVideoOptionsDialog] = useState(false);
     const [newTitle, setNewTitle] = useState();
-    const { latestVideo, latestBlob, setLatestVideo,setLatestBlob } = useContext(GlobalStatesContext);
-    const { deleteVideo } = useContext(MediaUtilsContext);
+    const [showBookingLink, setShowBookingLink] = useState(true);
+    const { latestVideo, latestBlob, setLatestVideo, setLatestBlob } =
+        useContext(GlobalStatesContext);
+    const { deleteVideo, updateBookingLinkOfVideo } = useContext(MediaUtilsContext);
     useEffect(() => {
         console.log(latestVideo, thumbnailImage, 'from video preview ');
 
         if (latestVideo?.urlForThumbnail) {
             setThumbnailImage(latestVideo?.urlForThumbnail);
+            setNewTitle(latestVideo?.name);
+            setShowBookingLink(true);
         }
     }, [latestVideo]);
     useEffect(() => {
         console.log(latestBlob, 'from video preview ');
-    }, [latestBlob, thumbnailImage,, showRenamePopup,showVideoOptionsDialog]);
+    }, [latestBlob, thumbnailImage, , showRenamePopup, showVideoOptionsDialog]);
+    useEffect(() => {
+        console.log(latestBlob, 'from video preview ');
+    }, [latestBlob, thumbnailImage, , showRenamePopup, showVideoOptionsDialog]);
     const UpdateThumbnail = async (event) => {
         const file = event.target.files[0];
 
@@ -66,18 +73,18 @@ export const VideoPreview = () => {
     };
     const openPopUp = (src, event) => {
         if (event) {
-          event.stopPropagation();
+            event.stopPropagation();
         }
         const height = 322;
         const width = 574;
-    
+
         sendMessageToBackgroundScript({
-          action: "startPlayingVideo",
-          height,
-          width,
-          src,
+            action: 'startPlayingVideo',
+            height,
+            width,
+            src,
         });
-      };
+    };
 
     const handleRenameSave = async () => {
         try {
@@ -131,7 +138,7 @@ export const VideoPreview = () => {
             }
         }
     }, [latestBlob]);
-    
+
     const handleIconClick = (eventKey) => {
         console.log(eventKey);
         if (eventKey == 'Copy Link') {
@@ -147,20 +154,22 @@ export const VideoPreview = () => {
         }
         if (eventKey == 'Delete') {
             handleDeleteClick();
-            setLatestVideo()
+            setLatestVideo();
         }
         if (eventKey == 'Rename Title') {
             setShowRenamePopup(!showRenamePopup);
         }
-        setShowVideoOptionsDialog(!showVideoOptionsDialog)
+        setShowVideoOptionsDialog(false);
     };
 
-    
-   
-
     if (!latestBlob && !latestVideo) {
-        return<></>;
+        return <></>;
     }
+    const handleSwitchChange = async (e) => {
+        console.log(e.target.checked);
+        setShowBookingLink(e.target.checked);
+        await updateBookingLinkOfVideo(latestVideo.facade_player_uuid, e.target.checked);
+    };
     return (
         <>
             {showRenamePopup && (
@@ -174,13 +183,14 @@ export const VideoPreview = () => {
                 />
             )}
             <input
-                    id="file-upload"
-                    type="file"
-                    style={{ display: 'none' }}
-                    onChange={UpdateThumbnail}
-                    accept="image/*"
-                />            
+                id="file-upload"
+                type="file"
+                style={{ display: 'none' }}
+                onChange={UpdateThumbnail}
+                accept="image/*"
+            />
             <div className="container" id="video-Preview">
+                <span id="preview-video-name">{newTitle} <FaPencilAlt onClick={() => handleIconClick('Rename Title')} /></span>
                 <div className="card d-flex flex-row align-items-center">
                     <img
                         className="video-preview-iframe-img"
@@ -188,20 +198,48 @@ export const VideoPreview = () => {
                         alt="Video Thumbnail"
                         onClick={(e) => {
                             openPopUp(
-                              `https://play.vidyard.com/${latestVideo?.facade_player_uuid}.html?`,
-                              e
+                                `https://play.vidyard.com/${latestVideo?.facade_player_uuid}.html?`,
+                                e
                             );
-                          }}
+                        }}
                     />
+                    <Form id="booking-switch">
+                        <Form.Check
+                            type="switch"
+                            checked={showBookingLink}
+                            label="Booking Link"
+                            onChange={handleSwitchChange}
+                            className="small-switch "
+                        />
+                    </Form>
                     <div id="video-preview-option">
-               
-                    <PiDotsThreeCircleVerticalDuotone size={30} onClick={() => setShowVideoOptionsDialog(!showVideoOptionsDialog)} color='black'/>
-               
-                <div className={`ddstyle dropdown-menu ${showVideoOptionsDialog ? 'show' : ''}`}>
-                {["Rename Title","Update Thumbnail","Copy Link","Download","Delete"].map((key,index)=>(<button onClick={()=>handleIconClick(key)} className="dropdown-item">{key}</button>))}
-                   
-                </div>
-            </div>
+                        <PiDotsThreeCircleVerticalDuotone
+                            size={30}
+                            onClick={() => setShowVideoOptionsDialog(true)}
+                            color="black"
+                        />
+
+                        <div
+                            className={`ddstyle dropdown-menu ${
+                                showVideoOptionsDialog ? 'show' : ''
+                            }`}
+                        >
+                            {[
+                                'Rename Title',
+                                'Update Thumbnail',
+                                'Copy Link',
+                                'Download',
+                                'Delete',
+                            ].map((key, index) => (
+                                <button
+                                    onClick={() => handleIconClick(key)}
+                                    className="dropdown-item"
+                                >
+                                    {key}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
         </>
