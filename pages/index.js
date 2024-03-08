@@ -34,7 +34,8 @@ export default function Home() {
             }
         })();
     }, [isAuthenticated, newUser]);
-        // let activePage='Home'
+    // let isAuthenticated=true;
+    //     let activePage='Home'
     return (
         <>
             {![

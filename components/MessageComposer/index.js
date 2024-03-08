@@ -5,7 +5,7 @@ import EmojiPicker from 'emoji-picker-react';
 import ChatGpt from '../Chatgpt/index.js';
 import GiphyWindow from '../Gif/index.js';
 import Library from '../Library/index.js';
-import AI from '../Pre-Determined-Msg/index.js';
+import PreLoadedMessage from '../Pre-Determined-Msg/index.js';
 import { insertHtmlAtPositionInMail, insertIntoLinkedInMessageWindow } from '../../utils/index.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import MessageWindow from '../MessageWindow.jsx';
@@ -17,8 +17,16 @@ import API_ENDPOINTS from '../apiConfig.js';
 const MessageComposer = () => {
     const [displayComp, setDisplayComp] = useState('DefaultCard');
 
-    const { isLinkedin, selectedChatWindows, focusedElementId, isProfilePage, expand ,setLatestBlob,setLatestVideo} =
-        useContext(GlobalStatesContext);
+    const {
+        isLinkedin,
+        selectedChatWindows,
+        focusedElementId,
+        isProfilePage,
+        expand,
+        setLatestBlob,
+        setLatestVideo,
+        latestBlob,
+    } = useContext(GlobalStatesContext);
     const { message, addMessage, setMessage } = useContext(MessageContext);
     const { getCalendarUrl } = useContext(AuthContext);
     const handleInsertion = (text) => {
@@ -27,7 +35,11 @@ const MessageComposer = () => {
         window.scrollTo(0, document.body.scrollHeight);
     };
 
-    useEffect(() => {}, [message]);
+    useEffect(() => {
+        if (latestBlob) {
+            setDisplayComp('DefaultCard');
+        }
+    }, [message, latestBlob]);
     const addMeetSchedulingLink = async () => {
         const url = await getCalendarUrl();
         if (isLinkedin) {
@@ -41,8 +53,8 @@ const MessageComposer = () => {
 
     const handleIconClick = (eventKey) => {
         console.log(eventKey, displayComp, displayComp == eventKey);
-        setLatestBlob()
-        setLatestVideo()
+        setLatestBlob();
+        setLatestVideo();
         if (eventKey === 'Calender Link') {
             addMeetSchedulingLink();
             return;
@@ -103,47 +115,54 @@ const MessageComposer = () => {
     };
     function hasDatasetProperty(item) {
         return item.hasOwnProperty('dataset');
-      }
+    }
 
-const handleOpenMessageWindow = () => {
-    const clickMessageButton = () => {
-        const btns = Array.from(document.querySelectorAll('div>div>div>button'));
-        let selectedButton = btns.find((btn) => btn.ariaLabel && btn.ariaLabel.includes('Message'));
-        if (selectedButton) {
-            selectedButton.click();
-        } else {
-            throw new Error('Message button not found.');
-        }
+    const handleOpenMessageWindow = () => {
+        const clickMessageButton = () => {
+            const btns = Array.from(document.querySelectorAll('div>div>div>button'));
+            let selectedButton = btns.find(
+                (btn) => btn.ariaLabel && btn.ariaLabel.includes('Message')
+            );
+            if (selectedButton) {
+                selectedButton.click();
+            } else {
+                throw new Error('Message button not found.');
+            }
+        };
+
+        return new Promise((resolve, reject) => {
+            try {
+                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                    const targetTab = tabs[0];
+                    if (targetTab) {
+                        chrome.scripting.executeScript(
+                            {
+                                target: { tabId: targetTab.id },
+                                func: clickMessageButton,
+                            },
+                            (injectionResults) => {
+                                if (chrome.runtime.lastError) {
+                                    console.error(
+                                        'Error executing script:',
+                                        chrome.runtime.lastError
+                                    );
+                                    reject('Failed to execute script on tab');
+                                } else {
+                                    resolve('Message button clicked successfully');
+                                }
+                            }
+                        );
+                    } else {
+                        console.log('the target tab is not accessible');
+                        reject('Target tab is not accessible');
+                    }
+                });
+            } catch (err) {
+                console.error('some error occurred while trying to open message window', err);
+                reject('Unexpected error occurred');
+            }
+        });
     };
-
-    return new Promise((resolve, reject) => {
-        try {
-            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                const targetTab = tabs[0];
-                if (targetTab) {
-                    chrome.scripting.executeScript({
-                        target: { tabId: targetTab.id },
-                        func: clickMessageButton,
-                    }, (injectionResults) => {
-                        // Handle the possibility of an error
-                        if (chrome.runtime.lastError) {
-                            console.error('Error executing script:', chrome.runtime.lastError);
-                            reject('Failed to execute script on tab');
-                        } else {
-                            resolve('Message button clicked successfully');
-                        }
-                    });
-                } else {
-                    console.log('the target tab is not accessible');
-                    reject('Target tab is not accessible');
-                }
-            });
-        } catch (err) {
-            console.error('some error occurred while trying to open message window', err);
-            reject('Unexpected error occurred');
-        }
-    });
-};
 
     const handleInsertionToWebsite = async () => {
         if (message === null || message === undefined) {
@@ -157,11 +176,14 @@ const handleOpenMessageWindow = () => {
             }
             for (const item of selectedChatWindows) {
                 if (hasDatasetProperty(item)) {
-                    try{ const openChatWindow=await handleOpenMessageWindow();
-                        console.log(openChatWindow)}catch(err){console.log(err)}
-                   
+                    try {
+                        const openChatWindow = await handleOpenMessageWindow();
+                        console.log(openChatWindow);
+                    } catch (err) {
+                        console.log(err);
+                    }
                 }
-              }
+            }
             await insertIntoLinkedInMessageWindow(`<p>${message}</p>`, selectedChatWindows);
             setTimeout(() => {
                 handleSend();
@@ -169,8 +191,8 @@ const handleOpenMessageWindow = () => {
             toast.success('Message Sent Successfully!!');
         } else {
             const gmailInsertion = await insertHtmlAtPositionInMail(message, focusedElementId);
-            if(gmailInsertion){
-                setMessage()
+            if (gmailInsertion) {
+                setMessage();
             }
         }
         if (selectedChatWindows?.length !== 0) {
@@ -203,7 +225,10 @@ const handleOpenMessageWindow = () => {
         }
     };
     const renderNavButtonItem = (eventKey, icon, tooltipText) => (
-        <li key={eventKey} className={`rounded-2 p-3 ${displayComp === eventKey ? 'bg-active active' : ''}`}>
+        <li
+            key={eventKey}
+            className={`rounded-2 p-3 ${displayComp === eventKey ? 'bg-active active' : ''}`}
+        >
             <a
                 className={`text-decoration-none ${
                     displayComp === eventKey ? 'text-white' : 'text-black'
@@ -214,9 +239,11 @@ const handleOpenMessageWindow = () => {
                 title={tooltipText}
             >
                 <div className="d-flex flex-column align-items-center justify-content-center">
-                {React.cloneElement(icon, {
-                    className: `svg-icon ${displayComp === eventKey ? 'active-path' : 'default-path'}`
-                })}
+                    {React.cloneElement(icon, {
+                        className: `svg-icon ${
+                            displayComp === eventKey ? 'active-path' : 'default-path'
+                        }`,
+                    })}
                     <span className="record-button-bottom-text">{eventKey}</span>
                 </div>
             </a>
@@ -229,10 +256,20 @@ const handleOpenMessageWindow = () => {
                     <ul className="nav-button">
                         {renderNavButtonItem(
                             'Message',
-                            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.3 0.5H1.7C1.04 0.5 0.506 1.04 0.506 1.7L0.5 12.5L2.9 10.1H11.3C11.96 10.1 12.5 9.56 12.5 8.9V1.7C12.5 1.04 11.96 0.5 11.3 0.5ZM9.5 7.7H3.5C3.17 7.7 2.9 7.43 2.9 7.1C2.9 6.77 3.17 6.5 3.5 6.5H9.5C9.83 6.5 10.1 6.77 10.1 7.1C10.1 7.43 9.83 7.7 9.5 7.7ZM9.5 5.90007H3.5C3.17 5.90007 2.9 5.63007 2.9 5.30007C2.9 4.97007 3.17 4.70007 3.5 4.70007H9.5C9.83 4.70007 10.1 4.97007 10.1 5.30007C10.1 5.63007 9.83 5.90007 9.5 5.90007ZM9.5 4.10015H3.5C3.17 4.10015 2.9 3.83015 2.9 3.50015C2.9 3.17015 3.17 2.90015 3.5 2.90015H9.5C9.83 2.90015 10.1 3.17015 10.1 3.50015C10.1 3.83015 9.83 4.10015 9.5 4.10015Z" fill="#2A2B39"/>
-                            </svg>
-                            ,
+                            <svg
+                                width="13"
+                                height="13"
+                                viewBox="0 0 13 13"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    clip-rule="evenodd"
+                                    d="M11.3 0.5H1.7C1.04 0.5 0.506 1.04 0.506 1.7L0.5 12.5L2.9 10.1H11.3C11.96 10.1 12.5 9.56 12.5 8.9V1.7C12.5 1.04 11.96 0.5 11.3 0.5ZM9.5 7.7H3.5C3.17 7.7 2.9 7.43 2.9 7.1C2.9 6.77 3.17 6.5 3.5 6.5H9.5C9.83 6.5 10.1 6.77 10.1 7.1C10.1 7.43 9.83 7.7 9.5 7.7ZM9.5 5.90007H3.5C3.17 5.90007 2.9 5.63007 2.9 5.30007C2.9 4.97007 3.17 4.70007 3.5 4.70007H9.5C9.83 4.70007 10.1 4.97007 10.1 5.30007C10.1 5.63007 9.83 5.90007 9.5 5.90007ZM9.5 4.10015H3.5C3.17 4.10015 2.9 3.83015 2.9 3.50015C2.9 3.17015 3.17 2.90015 3.5 2.90015H9.5C9.83 2.90015 10.1 3.17015 10.1 3.50015C10.1 3.83015 9.83 4.10015 9.5 4.10015Z"
+                                    fill="#2A2B39"
+                                />
+                            </svg>,
                             'Send predetermined custom message responses.'
                         )}
                         {renderNavButtonItem(
@@ -270,24 +307,48 @@ const handleOpenMessageWindow = () => {
 
                         {renderNavButtonItem(
                             'Videos',
-                            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M0.766504 2.9C0.436504 2.9 0.166504 3.17 0.166504 3.5V11.3C0.166504 11.96 0.706504 12.5 1.3665 12.5H9.1665C9.4965 12.5 9.7665 12.23 9.7665 11.9C9.7665 11.57 9.4965 11.3 9.1665 11.3H1.9665C1.6365 11.3 1.3665 11.03 1.3665 10.7V3.5C1.3665 3.17 1.0965 2.9 0.766504 2.9ZM10.9665 0.5H3.7665C3.1065 0.5 2.5665 1.04 2.5665 1.7V8.9C2.5665 9.56 3.1065 10.1 3.7665 10.1H10.9665C11.6265 10.1 12.1665 9.56 12.1665 8.9V1.7C12.1665 1.04 11.6265 0.5 10.9665 0.5ZM6.1665 8V2.6L9.4485 5.06C9.6105 5.18 9.6105 5.42 9.4485 5.54L6.1665 8Z" fill="#2A2B39"/>
-</svg>,
+                            <svg
+                                width="13"
+                                height="13"
+                                viewBox="0 0 13 13"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    clip-rule="evenodd"
+                                    d="M0.766504 2.9C0.436504 2.9 0.166504 3.17 0.166504 3.5V11.3C0.166504 11.96 0.706504 12.5 1.3665 12.5H9.1665C9.4965 12.5 9.7665 12.23 9.7665 11.9C9.7665 11.57 9.4965 11.3 9.1665 11.3H1.9665C1.6365 11.3 1.3665 11.03 1.3665 10.7V3.5C1.3665 3.17 1.0965 2.9 0.766504 2.9ZM10.9665 0.5H3.7665C3.1065 0.5 2.5665 1.04 2.5665 1.7V8.9C2.5665 9.56 3.1065 10.1 3.7665 10.1H10.9665C11.6265 10.1 12.1665 9.56 12.1665 8.9V1.7C12.1665 1.04 11.6265 0.5 10.9665 0.5ZM6.1665 8V2.6L9.4485 5.06C9.6105 5.18 9.6105 5.42 9.4485 5.54L6.1665 8Z"
+                                    fill="#2A2B39"
+                                />
+                            </svg>,
                             'Send any recorded video or audio file'
                         )}
                         {renderNavButtonItem(
                             'Calender Link',
-                            <svg width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M11.3 2.0999H10.7V1.4999C10.7 1.1699 10.43 0.899902 10.1 0.899902C9.77 0.899902 9.5 1.1699 9.5 1.4999V2.0999H3.5V1.4999C3.5 1.1699 3.23 0.899902 2.9 0.899902C2.57 0.899902 2.3 1.1699 2.3 1.4999V2.0999H1.7C1.04 2.0999 0.5 2.6399 0.5 3.2999V12.8999C0.5 13.5599 1.04 14.0999 1.7 14.0999H11.3C11.96 14.0999 12.5 13.5599 12.5 12.8999V3.2999C12.5 2.6399 11.96 2.0999 11.3 2.0999ZM10.7 12.9002H2.30002C1.97002 12.9002 1.70002 12.6302 1.70002 12.3002V5.10024H11.3V12.3002C11.3 12.6302 11.03 12.9002 10.7 12.9002Z" fill="#2A2B39"/>
-</svg>,
+                            <svg
+                                width="13"
+                                height="15"
+                                viewBox="0 0 13 15"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    clip-rule="evenodd"
+                                    d="M11.3 2.0999H10.7V1.4999C10.7 1.1699 10.43 0.899902 10.1 0.899902C9.77 0.899902 9.5 1.1699 9.5 1.4999V2.0999H3.5V1.4999C3.5 1.1699 3.23 0.899902 2.9 0.899902C2.57 0.899902 2.3 1.1699 2.3 1.4999V2.0999H1.7C1.04 2.0999 0.5 2.6399 0.5 3.2999V12.8999C0.5 13.5599 1.04 14.0999 1.7 14.0999H11.3C11.96 14.0999 12.5 13.5599 12.5 12.8999V3.2999C12.5 2.6399 11.96 2.0999 11.3 2.0999ZM10.7 12.9002H2.30002C1.97002 12.9002 1.70002 12.6302 1.70002 12.3002V5.10024H11.3V12.3002C11.3 12.6302 11.03 12.9002 10.7 12.9002Z"
+                                    fill="#2A2B39"
+                                />
+                            </svg>,
                             'Send link to schedule virtual appointment.'
                         )}
                     </ul>
                 </div>
             </nav>
             <div className="container bg-white">
-                {displayComp === 'Message' && <AI appendToBody={handleInsertion} />}
-                {displayComp === 'ChatGpt' && <ChatGpt appendToBody={handleInsertion} close={setDisplayComp}/>}
+                {displayComp === 'Message' && <PreLoadedMessage appendToBody={handleInsertion} />}
+                {displayComp === 'ChatGpt' && (
+                    <ChatGpt appendToBody={handleInsertion} close={setDisplayComp} />
+                )}
                 {displayComp === 'Videos' && <Library appendToBody={handleInsertion} />}
             </div>
             {!expand && (
@@ -306,26 +367,43 @@ const handleOpenMessageWindow = () => {
                                     <HiMiniGif />,
                                     'Send your favorite GIFs to Mail'
                                 )}
+
                                 {renderNavItem(
                                     'Emoji',
-                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M11.625 8.25C11.9375 8.25 12.2031 8.14063 12.4219 7.92188C12.6406 7.70312 12.75 7.4375 12.75 7.125C12.75 6.8125 12.6406 6.54688 12.4219 6.32812C12.2031 6.10937 11.9375 6 11.625 6C11.3125 6 11.0469 6.10937 10.8281 6.32812C10.6094 6.54688 10.5 6.8125 10.5 7.125C10.5 7.4375 10.6094 7.70312 10.8281 7.92188C11.0469 8.14063 11.3125 8.25 11.625 8.25ZM6.375 8.25C6.6875 8.25 6.95312 8.14063 7.17188 7.92188C7.39063 7.70312 7.5 7.4375 7.5 7.125C7.5 6.8125 7.39063 6.54688 7.17188 6.32812C6.95312 6.10937 6.6875 6 6.375 6C6.0625 6 5.79688 6.10937 5.57812 6.32812C5.35937 6.54688 5.25 6.8125 5.25 7.125C5.25 7.4375 5.35937 7.70312 5.57812 7.92188C5.79688 8.14063 6.0625 8.25 6.375 8.25ZM9 13.125C9.85 13.125 10.6219 12.8844 11.3156 12.4031C12.0094 11.9219 12.5125 11.2875 12.825 10.5H5.175C5.4875 11.2875 5.99062 11.9219 6.68437 12.4031C7.37812 12.8844 8.15 13.125 9 13.125ZM9 16.5C7.9625 16.5 6.9875 16.3031 6.075 15.9094C5.1625 15.5156 4.36875 14.9813 3.69375 14.3063C3.01875 13.6313 2.48438 12.8375 2.09063 11.925C1.69687 11.0125 1.5 10.0375 1.5 9C1.5 7.9625 1.69687 6.9875 2.09063 6.075C2.48438 5.1625 3.01875 4.36875 3.69375 3.69375C4.36875 3.01875 5.1625 2.48438 6.075 2.09063C6.9875 1.69687 7.9625 1.5 9 1.5C10.0375 1.5 11.0125 1.69687 11.925 2.09063C12.8375 2.48438 13.6313 3.01875 14.3063 3.69375C14.9813 4.36875 15.5156 5.1625 15.9094 6.075C16.3031 6.9875 16.5 7.9625 16.5 9C16.5 10.0375 16.3031 11.0125 15.9094 11.925C15.5156 12.8375 14.9813 13.6313 14.3063 14.3063C13.6313 14.9813 12.8375 15.5156 11.925 15.9094C11.0125 16.3031 10.0375 16.5 9 16.5ZM9 15C10.675 15 12.0938 14.4188 13.2563 13.2563C14.4188 12.0938 15 10.675 15 9C15 7.325 14.4188 5.90625 13.2563 4.74375C12.0938 3.58125 10.675 3 9 3C7.325 3 5.90625 3.58125 4.74375 4.74375C3.58125 5.90625 3 7.325 3 9C3 10.675 3.58125 12.0938 4.74375 13.2563C5.90625 14.4188 7.325 15 9 15Z" fill="white"/>
+                                    <svg
+                                        width="18"
+                                        height="18"
+                                        viewBox="0 0 18 18"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M11.625 8.25C11.9375 8.25 12.2031 8.14063 12.4219 7.92188C12.6406 7.70312 12.75 7.4375 12.75 7.125C12.75 6.8125 12.6406 6.54688 12.4219 6.32812C12.2031 6.10937 11.9375 6 11.625 6C11.3125 6 11.0469 6.10937 10.8281 6.32812C10.6094 6.54688 10.5 6.8125 10.5 7.125C10.5 7.4375 10.6094 7.70312 10.8281 7.92188C11.0469 8.14063 11.3125 8.25 11.625 8.25ZM6.375 8.25C6.6875 8.25 6.95312 8.14063 7.17188 7.92188C7.39063 7.70312 7.5 7.4375 7.5 7.125C7.5 6.8125 7.39063 6.54688 7.17188 6.32812C6.95312 6.10937 6.6875 6 6.375 6C6.0625 6 5.79688 6.10937 5.57812 6.32812C5.35937 6.54688 5.25 6.8125 5.25 7.125C5.25 7.4375 5.35937 7.70312 5.57812 7.92188C5.79688 8.14063 6.0625 8.25 6.375 8.25ZM9 13.125C9.85 13.125 10.6219 12.8844 11.3156 12.4031C12.0094 11.9219 12.5125 11.2875 12.825 10.5H5.175C5.4875 11.2875 5.99062 11.9219 6.68437 12.4031C7.37812 12.8844 8.15 13.125 9 13.125ZM9 16.5C7.9625 16.5 6.9875 16.3031 6.075 15.9094C5.1625 15.5156 4.36875 14.9813 3.69375 14.3063C3.01875 13.6313 2.48438 12.8375 2.09063 11.925C1.69687 11.0125 1.5 10.0375 1.5 9C1.5 7.9625 1.69687 6.9875 2.09063 6.075C2.48438 5.1625 3.01875 4.36875 3.69375 3.69375C4.36875 3.01875 5.1625 2.48438 6.075 2.09063C6.9875 1.69687 7.9625 1.5 9 1.5C10.0375 1.5 11.0125 1.69687 11.925 2.09063C12.8375 2.48438 13.6313 3.01875 14.3063 3.69375C14.9813 4.36875 15.5156 5.1625 15.9094 6.075C16.3031 6.9875 16.5 7.9625 16.5 9C16.5 10.0375 16.3031 11.0125 15.9094 11.925C15.5156 12.8375 14.9813 13.6313 14.3063 14.3063C13.6313 14.9813 12.8375 15.5156 11.925 15.9094C11.0125 16.3031 10.0375 16.5 9 16.5ZM9 15C10.675 15 12.0938 14.4188 13.2563 13.2563C14.4188 12.0938 15 10.675 15 9C15 7.325 14.4188 5.90625 13.2563 4.74375C12.0938 3.58125 10.675 3 9 3C7.325 3 5.90625 3.58125 4.74375 4.74375C3.58125 5.90625 3 7.325 3 9C3 10.675 3.58125 12.0938 4.74375 13.2563C5.90625 14.4188 7.325 15 9 15Z"
+                                            fill="white"
+                                        />
                                     </svg>,
                                     'Send your favorite emoji to Mail'
+                                )}
+
+                                {message && (
+                                    <li onClick={() => saveMessageAsTemplate()}>
+                                        <a className="align-items-center justify-content-center">
+                                            <button
+                                                type="button"
+                                                className="btn save-icon d-flex  "
+                                                title="Save the custom message as Template"
+                                            >
+                                                Add
+                                            </button>
+                                        </a>
+                                    </li>
                                 )}
                             </ul>
                         </div>
                         <div className="d-flex flex-row  align-items-right ">
-                            {message && (
-                                <button
-                                    type="button"
-                                    className="btn send-button  d-flex  align-items-center justify-content-center"
-                                    onClick={() => saveMessageAsTemplate()}
-                                    title="Save the custom message as Template"
-                                >
-                                    Save
-                                </button>
-                            )}
+                            {/* {message && (
+                                
+                            )} */}
 
                             <button
                                 className="btn send-button d-flex  align-items-center justify-content-center"

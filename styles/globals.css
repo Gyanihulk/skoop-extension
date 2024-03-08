@@ -1149,6 +1149,7 @@ select.form-select {
 
 .header-icon {
   padding: 5px !important;
+  margin-inline: 6px;
 }
 .header-text {
   font-family: "Lato", sans-serif;
@@ -1493,26 +1494,17 @@ z-index: 1000;
   z-index: 999;
 }
 
-.modal-overlay .modal-box {
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding: 0px 14px;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  border-radius: 8px;
-}
+
 
 img.icon-style-normal{
   object-fit: center;
 }
 
-.modal-overlay .modal-content {
-  width: 100%;
-  height: 196px;
-  border-radius: 8px;
+.save-icon{
+  width: 32px;
+  height: 18px;
+  border-radius: 3px;
+  background-color: white;
+  padding: 3px;
+  margin-inline: 6px;
 }
