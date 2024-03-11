@@ -14,18 +14,23 @@ import Welcome from '../Screens/Welcome';
 import Header from '../components/Header';
 import HelperVideos from '../Screens/HelperVideos';
 import SignInWith from '../Screens/SignInWith';
-
+import SubscriptionScreen from '../Screens/SubscriptionScreen';
 export default function Home() {
-    const { verifyToken, isAuthenticated, newUser, loadingAuthState } = useContext(AuthContext);
+    const { verifyToken, isAuthenticated, newUser, isPro } = useContext(AuthContext);
     const { activePage, navigateToPage } = useContext(ScreenContext);
+
     useEffect(() => {
         (async () => {
             const res = await verifyToken();
             const showWelcomePage = localStorage.getItem('welcomePageShown');
             console.log(newUser);
-            if (isAuthenticated && newUser) {
+            if (isAuthenticated && newUser && !isPro) {
+                navigateToPage('Subscription');
+            } else if (isAuthenticated && newUser && isPro) {
                 navigateToPage('CalendarSync');
-            } else if (isAuthenticated) {
+            } else if (isAuthenticated && !isPro) {
+                navigateToPage('Subscription');
+            } else if (isAuthenticated && isPro) {
                 navigateToPage('Home');
             } else if (!showWelcomePage) {
                 navigateToPage('Welcome');
@@ -33,9 +38,13 @@ export default function Home() {
                 navigateToPage('SignInIntro');
             }
         })();
-    }, [isAuthenticated, newUser]);
+    }, [isAuthenticated, newUser,isPro]);
     // let isAuthenticated=true;
-    //     let activePage='Home'
+    //     let activePage='Subscription'
+    //     let isPro=false
+    //   Log when data is being loaded
+
+    console.log(activePage);
     return (
         <>
             {![
@@ -46,11 +55,11 @@ export default function Home() {
                 ' ',
                 'CalendarSync',
                 'ForgotPassword',
+                'Subscription',
             ].includes(activePage) && <Header />}
-            {isAuthenticated ? (
+            {activePage === ' ' && <LoadingScreen />}
+            {isAuthenticated & isPro ? (
                 <>
-                    {' '}
-                    {activePage === ' ' && <LoadingScreen />}
                     {activePage === 'Home' && <Homepage />}
                     {activePage === 'HelperVideos' && <HelperVideos />}
                     {activePage === 'AccountSettings' && <AccountSettings />}
@@ -59,9 +68,10 @@ export default function Home() {
                     {activePage == 'ForgotPassword' && <ForgotPassword />}
                     {activePage == 'CalendarSync' && <CalendarSync />}
                 </>
+            ) : isAuthenticated ? (
+                <>{activePage === 'Subscription' && <SubscriptionScreen />}</>
             ) : (
                 <>
-                    {activePage === ' ' && <LoadingScreen />}
                     {activePage === 'SignIn' && <SignIn />}
                     {activePage === 'SignUp' && <SignUp />}
                     {activePage == 'ForgotPassword' && <ForgotPassword />}

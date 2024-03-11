@@ -41,7 +41,6 @@ const ForgotPassword = () => {
     event.preventDefault();
 
     if (email !== "") {
-      console.log(`email: ${email}`);
       const isOTPSendToMail = await getOtpForPasswordReset(email);
       if (isOTPSendToMail) {
         setIsOTPSent(true);

@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import AuthContext from "../contexts/AuthContext";
 import ScreenContext from "../contexts/ScreenContext";
 import BackButton from "../components/BackButton";
+import { GrPowerReset } from "react-icons/gr";
 
 const AccountProfile = ({ userData }) => {
   // State for the profile image URL
@@ -324,21 +325,43 @@ const SettingsPassword = () => {
   );
 };
 
-const CalendarUrlForm = () => {
+const CalendarUrlForm = ({userProfileData}) => {
   const [calendarUrl, setCalendarUrl] = useState("");
   const [toggleInfo, setToggleInfo] = useState(false);
-  const { getCalendarUrl } = useContext(AuthContext);
+  const [preferences, setPreferences] = useState([]);
+  const [showResetButton, setshowResetButton] = useState(false);
+  const {getCalendarUrl, getUserPreferences } = useContext(AuthContext);
+
+  const checkForDefaultUrl = async (url) => {
+    if(userProfileData && userProfileData.email && url){
+      const userEmail = userProfileData.email.split("@");
+      const defaultUrl = `https://skoopcrm.sumits.in/booking?email=${encodeURIComponent(userEmail[0])}%40${encodeURIComponent(userEmail[1])}`;
+      if (!url.startsWith(defaultUrl)) {
+        setshowResetButton(true);
+      } else {
+        setshowResetButton(false);
+      }
+    }
+    else{
+      console.log("userdata not found");
+    }
+  }
+
+   const getData = async () => {
+    const preference =  await getUserPreferences();
+    setPreferences(preference);
+    const url = await getCalendarUrl();
+    setCalendarUrl(url);
+    checkForDefaultUrl(url);
+   }
 
   useEffect(() => {
-    (async () => {
-      try {
-        const url = await getCalendarUrl();
-        setCalendarUrl(url);
-      } catch (error) {
-        toast.error("Failed to retrieve calendar URL.");
-      }
-    })();
-  }, []);
+    getData();
+      
+  }, [userProfileData]);
+
+
+
 
   const handleChange = (event) => {
     setCalendarUrl(event.target.value);
@@ -361,6 +384,9 @@ const CalendarUrlForm = () => {
       const data = await res.text();
       if (res.ok) {
         toast.success("Calendar link updated successfully");
+        const url = await getCalendarUrl();
+        setCalendarUrl(url);
+        checkForDefaultUrl(url);
       } else {
         throw new Error(data.message || "Error saving calendar URL");
       }
@@ -370,6 +396,35 @@ const CalendarUrlForm = () => {
       );
     }
   };
+
+  const resetAppointmentLink = async () => {
+    try {
+      const res = await fetch(API_ENDPOINTS.resetBookingUrl, {
+        // Replace with your API endpoint
+        method: "get",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+          Authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("accessToken")
+          )}`,
+        },
+      });
+
+      const url = await res.text();
+      if (res.ok) {
+        toast.success("Calendar link reset successfully");
+        setCalendarUrl(url);
+        checkForDefaultUrl(url);
+      } else {
+        throw new Error(data.message || "Error reseting calendar URL");
+      }
+      
+    } catch(err){
+      toast.error(
+        err.message || "Failed to reset calendar url. Please try again."
+      );
+    }
+  }
 
   return (
     <div className="card border-radius-12 overflow-hidden">
@@ -393,12 +448,17 @@ const CalendarUrlForm = () => {
           <div className="card-body p-0">
             <div className="py-4-2 px--1">
               <div>
+                <div className="d-flex justify-content-between align-items-center">
                 <label
                   htmlFor="calendarUrl"
                   className="form-label profile-text"
                 >
                   Your Appointment Booking Link
                 </label>
+                  {showResetButton && (
+                     <GrPowerReset className="ms-1" onClick={resetAppointmentLink} />
+                  )}
+                </div>
                 <input
                   type="text"
                   className="form-control mt-3"
@@ -410,7 +470,8 @@ const CalendarUrlForm = () => {
                   required
                 />
               </div>
-              <div className="mt-4 d-flex justify-content-end">
+              <div className={`mt-4 d-flex ${preferences?.length == 0 ? 'justify-content-between' : 'justify-content-end'}`}>
+              {preferences?.length == 0 &&(<span className="badge badge-pill badge-info d-flex align-items-center ">Userpreferences is not set</span>)}
                 <button type="submit" className="card-btn">
                   Save
                 </button>
@@ -464,12 +525,13 @@ function AccountSettings(props) {
   return (
     <>
       <div id="account-settings">
+        <div className="pb-2">
         <div>
           <AccountProfile userData={profileData} />
         </div>
         <div className="my-4-2 mx--1">
           <div>
-            <CalendarUrlForm />
+            {profileData && (<CalendarUrlForm userProfileData={profileData} />)}
           </div>
           <div className="mt-3">
             <SettingsPassword />
@@ -478,8 +540,7 @@ function AccountSettings(props) {
           <div className="mt-3">
             <UserPreferencesForm />
           </div>
-          <div className="d-flex justify-content-center align-items-center flex-grow-1"></div>
-          <div className="mt-2"></div>
+        </div>
         </div>
       </div>
     </>

@@ -1,4 +1,4 @@
-const backendUrl="https://skoop.sumits.in"; //https://skoop.sumits.in http://localhost:4000
+const backendUrl="http://localhost:4000"; //https://skoop.sumits.in http://localhost:4000
 
 
 const API_ENDPOINTS = {
@@ -46,7 +46,11 @@ const API_ENDPOINTS = {
     updateCalendarUrl:`${backendUrl}/update-calendar-url`,// POST,
     updateThumbnailImage:`${backendUrl}/updateThumbnail`, // POST,
     updateVideoInfo:`${backendUrl}/updatevideoinfobyvideoid/`, // PUT,
+    resetBookingUrl:`${backendUrl}/resetBookingUrl`, // GET
+    getUserPreferences:`${backendUrl}/user-appointment-preferences`, // GET
+    createSubscription:`${backendUrl}/subscription`,// POST
 };
+
 
 // with POST or PATCH apis body is sent in JSON 
 // Authorization is handled using bearer token

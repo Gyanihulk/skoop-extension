@@ -25,6 +25,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@fingerprintjs/fingerprintjs-pro-react": "^2.6.2",
     "@popperjs/core": "^2.11.8",
     "axios": "^1.6.2",
     "bootstrap": "^5.3.2",

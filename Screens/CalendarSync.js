@@ -6,7 +6,7 @@ import { FaMicrosoft } from "react-icons/fa";
 import UserPreferencesForm from "../components/UserPreferencesForm";
 
 const CalendarSync = () => {
-  const { calendarSync } = useContext(AuthContext);
+  const { calendarSync ,setNewUser} = useContext(AuthContext);
   const { navigateToPage } = useContext(ScreenContext);
 
   const [google, setGoogle] = useState(false);
@@ -82,7 +82,7 @@ const CalendarSync = () => {
         </UserPreferencesForm>
 
         <div
-          onClick={() => navigateToPage("Home")}
+          onClick={() => {navigateToPage("Home");setNewUser(false)}}
           class="btn btn-link mt-4 card-title"
         >
           Continue without Skoop Appointment booking System

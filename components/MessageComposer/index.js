@@ -17,6 +17,7 @@ import API_ENDPOINTS from '../apiConfig.js';
 import MediaUtilsContext from '../../contexts/MediaUtilsContext.js';
 const MessageComposer = () => {
     const [displayComp, setDisplayComp] = useState('DefaultCard');
+    const [activateCalenderLink, setActivateCalenderLink] = useState(false);
 
     const {
         isLinkedin,
@@ -29,7 +30,7 @@ const MessageComposer = () => {
         latestBlob,
     } = useContext(GlobalStatesContext);
     const { message, addMessage, setMessage } = useContext(MessageContext);
-    const { getCalendarUrl } = useContext(AuthContext);
+    const { getCalendarUrl,getUserPreferences } = useContext(AuthContext);
     const {uploadVideo}=useContext(MediaUtilsContext)
     const { addToMessage } = useContext(MessageContext);
     const handleInsertion = (text) => {
@@ -54,13 +55,27 @@ const MessageComposer = () => {
         }
     };
 
-    const handleIconClick = (eventKey) => {
+    const checkForUserPreferences = async () => {
+        const userPreferences = await getUserPreferences();
+        if(userPreferences && userPreferences.length > 0){
+            return true;
+        }
+        toast.error('User preference is not set');
+        return false
+    }
+
+    const handleIconClick = async (eventKey) => {
         console.log(eventKey, displayComp, displayComp == eventKey);
         setLatestBlob();
         setLatestVideo();
         if (eventKey === 'Calender Link') {
-            addMeetSchedulingLink();
-            return;
+            if(await checkForUserPreferences()){
+                addMeetSchedulingLink();
+                return;
+            }
+        }
+        if(eventKey==="Upload Video"){
+            document.getElementById('video-upload').click();
         }
         if(eventKey==="Upload Video"){
             document.getElementById('video-upload').click();

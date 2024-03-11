@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState, useRef } from "react";
+import React, { Component, useEffect, useContext, useState, useRef } from "react";
 import { FaAngleDown, FaRegClock } from "react-icons/fa";
 import API_ENDPOINTS from "../apiConfig";
 import { toast } from "react-hot-toast";
@@ -8,6 +8,7 @@ import { MdExpandMore } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import { IoSearchOutline } from "react-icons/io5";
 import { IoCheckmark } from "react-icons/io5";
+import AuthContext from "../../contexts/AuthContext";
 import ValidationError from "../../components/Auth/ValidationError";
 
 const UserPreferencesForm = ({
@@ -24,18 +25,42 @@ const UserPreferencesForm = ({
     breakStartTime: "",
     breakEndTime: "",
   });
+  const [isPreference, setIsPreference] = useState(false);
   const [toggleInfo, setToggleInfo] = useState(false);
   const [isTimezoneEmpty, setIsTimezoneEmpty] = useState(false);
   const [isTimezoneScreen, setIsTimezoneScreen] = useState(false);
   const [selectedTimezone, setSelectedTimezone] = useState("");
   const [filteredTimezones, setFilteredTimezones] = useState(timezones);
+  const { getUserPreferences } = useContext(AuthContext);
   const inputRef = useRef();
+
+  const fetchUserPreferences = async () => {
+    try{
+      const preferences = await getUserPreferences();
+      if(preferences && preferences.length > 0){
+        setIsPreference(true);
+        console.log("preferences inside fetch", preferences);
+        setValues({
+          preferredStartTime: preferences[0].preferred_start_time,
+          preferredEndTime: preferences[0].preferred_end_time,
+          breakStartTime: preferences[0].break_start_time,
+          breakEndTime: preferences[0].break_end_time,
+          additionalDetails: preferences[0].additional_details,
+        })
+        setSelectedTimezone(preferences[0].time_zone);
+      }
+
+    }catch(err){
+      console.log(err?.message);
+    }
+  }
 
   useEffect(() => {
     const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     values.timeZone = detectedTimezone;
     setSelectedTimezone(detectedTimezone);
+    fetchUserPreferences();
   }, []);
 
   const handleFocus = () => {
@@ -45,6 +70,7 @@ const UserPreferencesForm = ({
 
   const handleToggleTimezoneScreen = () => {
     setIsTimezoneScreen(!isTimezoneScreen);
+    // collapse = true;
   };
 
   const handleSelectTimezone = (timezone) => {
@@ -52,6 +78,7 @@ const UserPreferencesForm = ({
     setIsTimezoneEmpty(false);
     setFilteredTimezones(timezones);
     handleToggleTimezoneScreen();
+    // collapse = false;
   };
 
   const handleSearch = (event) => {
@@ -80,32 +107,58 @@ const UserPreferencesForm = ({
       isStartTimeBeforeEndTime(values.preferredStartTime, values.breakStartTime)
     ) {
       try {
-        const res = await fetch(API_ENDPOINTS.userPreferences, {
-          method: "POST",
-          body: JSON.stringify({
-            preferred_start_time: values.preferredStartTime,
-            preferred_end_time: values.preferredEndTime,
-            break_start_time: values.breakStartTime,
-            break_end_time: values.breakEndTime,
-            time_zone: selectedTimezone,
-            additional_details: values.additionalDetails,
-          }),
-          headers: {
-            "Content-type": "application/json; charset=UTF-8",
-            authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("accessToken")
-            )}`,
-          },
+        const payload = JSON.stringify({
+          preferred_start_time: values.preferredStartTime,
+          preferred_end_time: values.preferredEndTime,
+          break_start_time: values.breakStartTime,
+          break_end_time: values.breakEndTime,
+          time_zone: selectedTimezone,
+          additional_details: values.additionalDetails,
         });
-        const data = await res.json();
-        if (res.ok) {
-          toast.success("Preferences saved successfully");
-          handleFormSubmitted();
-        } else {
-          throw new Error(data.message || "Error saving preferences");
+        if(!isPreference){
+          const res = await fetch(API_ENDPOINTS.userPreferences, {
+            method: "POST",
+            body: payload,
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+              authorization: `Bearer ${JSON.parse(
+                localStorage.getItem("accessToken")
+              )}`,
+            },
+          });
+          const data = await res.json();
+          if (res.ok) {
+            toast.success("Preferences saved successfully");
+            handleFormSubmitted();
+            fetchUserPreferences();
+          } else {
+            console.log(data);
+            throw new Error(data.message || "Error saving preferences");
+          }
+        }
+        else{
+          const res = await fetch(API_ENDPOINTS.userPreferences, {
+            method: "PUT",
+            body: payload,
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+              authorization: `Bearer ${JSON.parse(
+                localStorage.getItem("accessToken")
+              )}`,
+            },
+          });
+          const data = await res.json();
+          if (res.ok) {
+            toast.success("Preferences saved successfully");
+            fetchUserPreferences();
+          } else {
+            console.log(data);
+            throw new Error(data.message || "Error saving preferences");
+          }
         }
       } catch (err) {
-        toast.error(err.message || "Preferences not saved. Please try again.");
+        console.log(err);
+        toast.error("Preferences not saved. Please try again.");
       }
     } else {
       toast.error(
@@ -115,7 +168,6 @@ const UserPreferencesForm = ({
   };
   return (
     <>
-      {!isTimezoneScreen ? (
         <div className="card border-radius-12 overflow-hidden outline">
           <div
             className="light-pink card-header-custom toggle-collapse"
@@ -250,7 +302,7 @@ const UserPreferencesForm = ({
                       id="additionalDetails"
                       name="additionalDetails"
                       placeholder="Additional Info"
-                      value={values.additionalInfo}
+                      value={values.additionalDetails}
                       onChange={handleChange}
                       rows="3"
                     ></textarea>
@@ -258,7 +310,7 @@ const UserPreferencesForm = ({
                   <div className="mb-3">{children}</div>
                   <div className="mt-4 d-flex justify-content-end">
                     <button type="submit" className="card-btn btn-text">
-                      Update
+                      {!isPreference? "Save" : "Update"}
                     </button>
                   </div>
                 </div>
@@ -266,7 +318,7 @@ const UserPreferencesForm = ({
             </form>
           </div>
         </div>
-      ) : (
+      {isTimezoneScreen &&(
         <div className=" py-3 px-2 time-zone-main">
           <div className="timezone-head d-flex justify-content-between">
             <h2>Select time zone</h2>
