@@ -174,7 +174,8 @@ const RecordingButton = () => {
         if (capturing) {
             return;
         }
-
+        setLatestVideo(null)
+        setLatestBlob(null)
         sendMessageToBackgroundScript(
             {
                 action: 'startRecording',

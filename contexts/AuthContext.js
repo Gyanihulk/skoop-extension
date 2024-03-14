@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
     const { navigateToPage } = useContext(ScreenContext);
     const [newUser, setNewUser] = useState(false);
     const [loadingAuthState, setLoadingAuthState] = useState(true);
+    const [version, setVersion] = useState('');
     const validatePassword = (password) => {
         if (!password) {
             return false;
@@ -21,7 +22,6 @@ export const AuthProvider = ({ children }) => {
         const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+,\-.;:'"<>=?/\|[\]{}~])(.{8,})$/;
         return passwordRegex.test(password);
     };
-
     const handleSkoopLogin = async (username, password) => {
         const toastId = toast.loading('Signing In...');
         try {
@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }) => {
                     username: username,
                     password: password,
                     rememberMe: rememberMe,
+                    version:version
                 }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
@@ -68,6 +69,7 @@ export const AuthProvider = ({ children }) => {
                 body: JSON.stringify({
                     code: authCode,
                     timezone,
+                    version:version
                 }),
             });
 
@@ -239,6 +241,7 @@ export const AuthProvider = ({ children }) => {
                     email: email,
                     password: password,
                     timezone: timezone,
+                    version:version
                 }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
@@ -264,7 +267,8 @@ export const AuthProvider = ({ children }) => {
     };
     const verifyToken = async () => {
         try {
-            const res = await fetch(API_ENDPOINTS.tokenStatus, {
+          console.log(version);
+            const res = await fetch(API_ENDPOINTS.tokenStatus+"/"+version, {
                 method: 'GET',
                 headers: {
                     authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
@@ -377,7 +381,7 @@ export const AuthProvider = ({ children }) => {
         const toastId = toast.loading('Processing Subscription...');
 
         try {
-            let response = await fetch(API_ENDPOINTS.createSubscription, {
+            let res = await fetch(API_ENDPOINTS.createSubscription, {
                 method: 'POST',
                 body: JSON.stringify(subscriptionData),
                 headers: {
@@ -385,8 +389,9 @@ export const AuthProvider = ({ children }) => {
                     authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
                 },
             });
-            response =await response.json()
-            if (response.ok) {
+            let response =await res.json()
+            console.log(res)
+            if (res.ok) {
                 setIsPro(true)
                 toast.success('Subscription Created Successfully', { id: toastId });
             }else{
@@ -398,10 +403,18 @@ export const AuthProvider = ({ children }) => {
             toast.error('Something went wrong, please try again');
         }
     };
-
+    const handleLogOut = () => {
+      localStorage.setItem('accessToken', JSON.stringify('none'));
+      setIsAuthenticated(false);
+      setIsPro(false);
+      setNewUser(false);
+      setMessage();
+      navigateToPage('SignInIntro');
+  };
     return (
         <AuthContext.Provider
             value={{
+              handleLogOut,
                 isAuthenticated,
                 setIsAuthenticated,
                 handleSkoopLogin,
@@ -419,7 +432,8 @@ export const AuthProvider = ({ children }) => {
                 getUserPreferences,
                 loadingAuthState,
                 isPro,
-                createSubscription
+                createSubscription,
+                setVersion
             }}
         >
             {children}

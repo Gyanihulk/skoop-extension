@@ -471,7 +471,7 @@ const CalendarUrlForm = ({userProfileData}) => {
                 />
               </div>
               <div className={`mt-4 d-flex ${preferences?.length == 0 ? 'justify-content-between' : 'justify-content-end'}`}>
-              {preferences?.length == 0 &&(<span className="badge badge-pill badge-info d-flex align-items-center ">Userpreferences is not set</span>)}
+              {preferences?.length == 0 &&(<span className="badge badge-info d-flex align-items-center text-danger">Userpreferences is not set</span>)}
                 <button type="submit" className="card-btn">
                   Save
                 </button>

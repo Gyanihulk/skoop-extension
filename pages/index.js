@@ -15,10 +15,42 @@ import Header from '../components/Header';
 import HelperVideos from '../Screens/HelperVideos';
 import SignInWith from '../Screens/SignInWith';
 import SubscriptionScreen from '../Screens/SubscriptionScreen';
+import { useVisitorData } from '@fingerprintjs/fingerprintjs-pro-react';
+import FingerprintIframe from '../components/FingerPrint';
 export default function Home() {
-    const { verifyToken, isAuthenticated, newUser, isPro } = useContext(AuthContext);
+    const { verifyToken, isAuthenticated, newUser, isPro ,setVersion} = useContext(AuthContext);
     const { activePage, navigateToPage } = useContext(ScreenContext);
+    const {isLoading, error, data, getData} = useVisitorData(
+        {extendedResult: true},
+        {immediate: true}
+      );
+    
+      // Using useEffect to call getData on component mount
+      useEffect(() => {
+        // console.log("Component mounted. Calling getData...");
 
+        if (chrome && chrome.runtime && chrome.runtime.getManifest) {
+            // Get the manifest using the getManifest() method
+            const manifest = chrome.runtime.getManifest();
+            // Set the version from the manifest file
+            console.log(manifest)
+            setVersion(manifest.version);
+          }
+        // getData({ignoreCache: true});
+        // if (isLoading) {
+        //     console.log("Loading visitor data...");
+        //   }
+        
+        //   // Log any error that occurs during data fetching
+        //   if (error) {
+        //     console.error("Error fetching visitor data:", error.message);
+        //   }
+        
+        //   // Log the data once it is loaded
+        //   if (data) {
+        //     console.log("Visitor data loaded:", data);
+        //   }
+      }, []);
     useEffect(() => {
         (async () => {
             const res = await verifyToken();
@@ -47,6 +79,7 @@ export default function Home() {
     console.log(activePage);
     return (
         <>
+         <FingerprintIframe />
             {![
                 'Welcome',
                 'SignInIntro',

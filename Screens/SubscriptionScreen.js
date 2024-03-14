@@ -1,14 +1,26 @@
-import React, { useContext } from 'react';
-import { Card, Button, ListGroup } from 'react-bootstrap';
+import React, { useContext, useState } from 'react';
 import AuthContext from '../contexts/AuthContext';
 const SubscriptionScreen = () => {
     const { createSubscription } = useContext(AuthContext);
+    const [subscriptionType, setSubscriptionType] = useState('monthly');
+    const handleSubscriptionChange = (type) => {
+        setSubscriptionType(type);
+    };
+
+    const handleCreateSubscription = () => {
+        const today = new Date();
+        const startDate = today.toISOString().split('T')[0]; 
+        createSubscription({
+            start_date: startDate,
+            plan_type: subscriptionType,
+        });
+    };
     return (
         <div className="subscription-container">
             <div className="subscription-header">
                 {/* <button type="button" className="close" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button> */}
+                           <span aria-hidden="true">&times;</span>
+                    </button> */}
                 <h1>Start your 3-day free trial.</h1>
                 <span>Unlock all the premium benfits now.</span>
                 <ul className="feature-list">
@@ -29,7 +41,14 @@ const SubscriptionScreen = () => {
 
             <div className="subscription-options">
                 <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
-                    <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" />
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        value=""
+                        id="circleCheckbox"
+                        checked={subscriptionType === 'monthly'}
+                        onChange={() => handleSubscriptionChange('monthly')}
+                    />
                     <div className="ps-4 pt-2">
                         <h5>Monthly</h5>
                         <p>First 3 days free, then $45/month</p>
@@ -42,6 +61,8 @@ const SubscriptionScreen = () => {
                             type="checkbox"
                             value=""
                             id="circleCheckbox"
+                            checked={subscriptionType === 'yearly'}
+                            onChange={() => handleSubscriptionChange('yearly')}
                         />
                     </div>
 
@@ -58,7 +79,11 @@ const SubscriptionScreen = () => {
             </div>
 
             <div className="subscription-button d-grid gap-2">
-                <button className="btn btn-primary btn-trial" type="button" onClick={()=>createSubscription({subscription_start: "2024-01-01",subscription_type:"Monthly"})}>
+                <button
+                    className="btn btn-primary btn-trial"
+                    type="button"
+                    onClick={handleCreateSubscription}
+                >
                     START 3-DAY FREE TRIAL
                 </button>
                 <span classNameName="px-2">

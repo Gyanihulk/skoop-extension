@@ -30,8 +30,8 @@ const MessageComposer = () => {
         latestBlob,
     } = useContext(GlobalStatesContext);
     const { message, addMessage, setMessage } = useContext(MessageContext);
-    const { getCalendarUrl,getUserPreferences } = useContext(AuthContext);
-    const {uploadVideo}=useContext(MediaUtilsContext)
+    const { getCalendarUrl, getUserPreferences } = useContext(AuthContext);
+    const { uploadVideo } = useContext(MediaUtilsContext);
     const { addToMessage } = useContext(MessageContext);
     const handleInsertion = (text) => {
         const newText = text + ' \n ';
@@ -57,27 +57,27 @@ const MessageComposer = () => {
 
     const checkForUserPreferences = async () => {
         const userPreferences = await getUserPreferences();
-        if(userPreferences && userPreferences.length > 0){
+        if (userPreferences && userPreferences.length > 0) {
             return true;
         }
         toast.error('User preference is not set');
-        return false
-    }
+        return false;
+    };
 
     const handleIconClick = async (eventKey) => {
         console.log(eventKey, displayComp, displayComp == eventKey);
         setLatestBlob();
         setLatestVideo();
         if (eventKey === 'Calender Link') {
-            if(await checkForUserPreferences()){
+            if (await checkForUserPreferences()) {
                 addMeetSchedulingLink();
                 return;
             }
         }
-        if(eventKey==="Upload Video"){
+        if (eventKey === 'Upload Video') {
             document.getElementById('video-upload').click();
         }
-        if(eventKey==="Upload Video"){
+        if (eventKey === 'Upload Video') {
             document.getElementById('video-upload').click();
         }
         if (displayComp == eventKey) {
@@ -248,7 +248,7 @@ const MessageComposer = () => {
     const renderNavButtonItem = (eventKey, icon, tooltipText) => (
         <li
             key={eventKey}
-            className={`${displayComp === eventKey ? 'bg-active active' : ''}`}
+            className={`rounded-1 p-1 ${displayComp === eventKey ? 'bg-active active ' : ''}`}
         >
             <a
                 className={`text-decoration-none ${
@@ -271,64 +271,72 @@ const MessageComposer = () => {
         </li>
     );
     function dataURLtoBlob(dataurl) {
-        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-        while(n--){
+        var arr = dataurl.split(','),
+            mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]),
+            n = bstr.length,
+            u8arr = new Uint8Array(n);
+        while (n--) {
             u8arr[n] = bstr.charCodeAt(n);
         }
-        return new Blob([u8arr], {type:mime});
+        return new Blob([u8arr], { type: mime });
     }
     const uploadVideoHandler = async (event) => {
         const file = event.target.files[0];
-    
+
         if (file) {
-            const videoTitle = "MyVideoTitle";
-            const directoryName = "New";
-    
+            const videoTitle = 'MyVideoTitle';
+            const directoryName = 'New';
+
             // Create a URL for the uploaded video file
             const videoUrl = URL.createObjectURL(file);
             const videoElement = document.createElement('video');
-    
+
             // Set the video source to the created URL
             videoElement.src = videoUrl;
-    
+
             // Load the video metadata to ensure dimensions are available
-            videoElement.addEventListener('loadedmetadata', async function() {
+            videoElement.addEventListener('loadedmetadata', async function () {
                 // Now you have access to video dimensions
                 const width = videoElement.videoWidth;
                 const height = videoElement.videoHeight;
-    
+
                 console.log(`Video Dimensions: ${width}x${height}`);
-    
+
                 // Proceed with your upload function, now including dimensions
                 try {
-                    const response = await uploadVideo(file, videoTitle, directoryName, height, width);
+                    const response = await uploadVideo(
+                        file,
+                        videoTitle,
+                        directoryName,
+                        height,
+                        width
+                    );
                     setLatestVideo(response);
                     addToMessage(response.facade_player_uuid, response?.urlForThumbnail);
                 } catch (error) {
-                    console.error("Upload Error:", error);
+                    console.error('Upload Error:', error);
                 }
-    
+
                 // Cleanup: Revoke the object URL to free up resources
                 URL.revokeObjectURL(videoUrl);
             });
-    
+
             // Load the video to trigger 'loadedmetadata'
             videoElement.load();
         }
     };
-    
-    
+
     return (
         <>
-        <input
-                    id="video-upload"
-                    type="file"
-                    style={{ display: 'none' }}
-                    onChange={uploadVideoHandler}
-                    accept="video/*"
-                /> 
-            <nav className="nav-btn" >
+            <input
+                id="video-upload"
+                type="file"
+                style={{ display: 'none' }}
+                onChange={uploadVideoHandler}
+                accept="video/*"
+            />
+            <nav className="nav-btn">
                 <div class="container">
                     <ul className="nav-button">
                         {renderNavButtonItem(
@@ -445,7 +453,7 @@ const MessageComposer = () => {
                                     'Send your favorite GIFs to Mail'
                                 )}
 
-                                {renderNavItem(
+                                {/* {renderNavItem(
                                     'Emoji',
                                     <svg
                                         width="18"
@@ -460,24 +468,29 @@ const MessageComposer = () => {
                                         />
                                     </svg>,
                                     'Send your favorite emoji to Mail'
-                                )}
+                                )} */}
                                 {renderNavItem(
                                     'Upload Video',
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M8 12L3 7L4.4 5.55L7 8.15V0H9V8.15L11.6 5.55L13 7L8 12ZM2 16C1.45 16 0.979167 15.8042 0.5875 15.4125C0.195833 15.0208 0 14.55 0 14V11H2V14H14V11H16V14C16 14.55 15.8042 15.0208 15.4125 15.4125C15.0208 15.8042 14.55 16 14 16H2Z" fill="white"/>
+                                    <svg
+                                        width="18"
+                                        height="18"
+                                        viewBox="0 0 24 24"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <g>
+                                            <path fill="none" d="M0 0H24V24H0z" />
+                                            <path fill="white" d="M16 4c.552 0 1 .448 1 1v4.2l5.213-3.65c.226-.158.538-.103.697.124.058.084.09.184.09.286v12.08c0 .276-.224.5-.5.5-.103 0-.203-.032-.287-.09L17 14.8V19c0 .552-.448 1-1 1H2c-.552 0-1-.448-1-1V5c0-.552.448-1 1-1h14zm-1 2H3v12h12V6zM9 8l4 4h-3v4H8v-4H5l4-4zm12 .841l-4 2.8v.718l4 2.8V8.84z" />
+                                        </g>
                                     </svg>,
                                     'Upload video from your device'
                                 )}
 
                                 {message && (
-                                    <li className="d-flex flex-column align-items-center justify-content-center" onClick={() => saveMessageAsTemplate()}>
-                                        
-                                            <div
-                                                className="save-icon"
-                                            >
-                                                Add
-                                            </div>
-                                        
+                                    <li
+                                        className="d-flex flex-column align-items-center justify-content-center"
+                                        onClick={() => saveMessageAsTemplate()}
+                                    >
+                                        <div className="save-icon">Add</div>
                                     </li>
                                 )}
                             </ul>

@@ -56,29 +56,7 @@ const Homepage = (props) => {
             setFocusedElementId(message.elementId);
         }
     };
-    // const {isLoading, error, data, getData} = useVisitorData(
-    //     {extendedResult: true},
-    //     {immediate: true}
-    //   );
-    
-    //   // Using useEffect to call getData on component mount
-    //   useEffect(() => {
-    //     console.log("Component mounted. Calling getData...");
-    //     getData({ignoreCache: true});
-    //     if (isLoading) {
-    //         console.log("Loading visitor data...");
-    //       }
-        
-    //       // Log any error that occurs during data fetching
-    //       if (error) {
-    //         console.error("Error fetching visitor data:", error.message);
-    //       }
-        
-    //       // Log the data once it is loaded
-    //       if (data) {
-    //         console.log("Visitor data loaded:", data);
-    //       }
-    //   }, []);
+  
 
     useEffect(() => {
         if(chrome.runtime.onMessage){

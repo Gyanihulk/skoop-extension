@@ -25,11 +25,10 @@ export const VideoPreview = () => {
             setThumbnailImage(latestVideo?.urlForThumbnail);
             setNewTitle(latestVideo?.name);
             setShowBookingLink(true);
+        }else{
+            setThumbnailImage('/images/videoProcessing.png')
         }
     }, [latestVideo]);
-    useEffect(() => {
-        console.log(latestBlob, 'from video preview ');
-    }, [latestBlob, thumbnailImage, , showRenamePopup, showVideoOptionsDialog]);
     useEffect(() => {
         console.log(latestBlob, 'from video preview ');
     }, [latestBlob, thumbnailImage, , showRenamePopup, showVideoOptionsDialog]);
@@ -75,8 +74,8 @@ export const VideoPreview = () => {
         if (event) {
             event.stopPropagation();
         }
-        const height = 322;
-        const width = 574;
+        const height = 322 * 1.5;
+        const width = 574 * 1.5;
 
         sendMessageToBackgroundScript({
             action: 'startPlayingVideo',
@@ -203,15 +202,18 @@ export const VideoPreview = () => {
                             );
                         }}
                     />
-                    <Form id="booking-switch">
+                    <div id="booking-switch" className="d-flex align-items-center">
+
+                    <Form className='align-items-center'>
                         <Form.Check
                             type="switch"
                             checked={showBookingLink}
                             label="Booking Link"
                             onChange={handleSwitchChange}
                             className="small-switch "
-                        />
+                            />
                     </Form>
+                            </div>
                     <div id="video-preview-option">
                         <PiDotsThreeCircleVerticalDuotone
                             size={30}

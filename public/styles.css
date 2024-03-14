@@ -12,13 +12,13 @@
   position: fixed;
   top: 12px;
   right: 0;
-  width: 12vw;
+  width: 12.2vw;
   height: 90vh;
   z-index: 10000;
   display: block;
-border-radius: 6px;
+  border-radius: 6px;
   background-clip: padding-box;
-  min-width: 415px;
+  min-width: 355px;
 }
 
 .skoop-drag-button {

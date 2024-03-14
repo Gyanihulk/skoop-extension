@@ -11,11 +11,11 @@ import MessageContext from '../../contexts/MessageContext.js';
 import { AiFillQuestionCircle } from "react-icons/ai";
 
 export default function Header() {
-    const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
+    const { isAuthenticated, handleLogOut } = useContext(AuthContext);
     const { navigateToPage, activePage } = useContext(ScreenContext);
     const { setScraperPage, scraperPage, isProfilePage, expand, setExpand} = useContext(GlobalStatesContext);
     
-    const { message, setMessage } = useContext(MessageContext);
+
     const [profileOpen, setProfileOpen] = useState(false);
 
     useEffect(() => {
@@ -37,12 +37,7 @@ export default function Header() {
         setProfileOpen(!profileOpen);
     };
 
-    const handleLogOut = () => {
-        localStorage.setItem('accessToken', JSON.stringify('none'));
-        setIsAuthenticated(false);
-        setMessage();
-        navigateToPage('SignInIntro');
-    };
+   
     const executeClose = () => {
         const container = document.getElementById('skoop-extension-container');
         container.style.display = 'none';

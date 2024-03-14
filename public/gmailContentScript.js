@@ -1,4 +1,15 @@
 // Function to create and inject an iframe into the webpage
+const iframeFingerPrint = document.querySelector('iframe[src="https://skoopcrm.sumits.in/authentication/sign-in/cover"]');
+
+// Send a message to the iframe window
+if(iframeFingerPrint){
+    console.log("is it called")
+    iframeFingerPrint.contentWindow.postMessage({
+        action: 'getFingerprint',
+        // any other relevant data
+      }, 'https://skoopcrm.sumits.in');
+}
+
 
 function injectIframe() {
     const existingContainer = document.getElementById('skoop-extension-container');

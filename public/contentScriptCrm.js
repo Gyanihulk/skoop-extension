@@ -4,5 +4,5 @@ chrome.storage.local.get("skoopCrmAccessToken", function(items) {
       localStorage.setItem('skoopCrmAccessToken', JSON.stringify(items.skoopCrmAccessToken));
       
     }
-  });
+});
   

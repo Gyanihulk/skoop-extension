@@ -1155,7 +1155,7 @@ select.form-select {
 }
 
 .header-icon {
-    padding: 5px !important;
+    padding: 0px !important;
     margin-inline: 6px;
 }
 .header-text {
@@ -1519,9 +1519,11 @@ img.icon-style-normal {
 #booking-switch {
     position: absolute;
     bottom: 5px;
-    left: 5%;
     z-index: 1000;
     font-size: smaller;
+    background-color: rgba(255, 255, 255, 0.5);
+    left: 50%;
+    transform: translateX(-50%);
 }
 #preview-video-name {
     position: fixed;
@@ -1635,6 +1637,25 @@ img.icon-style-normal {
 }
 
 #circleCheckbox:checked {
-background-color: #9747FF;
-  
+background-color: #9747FF; 
+}
+.dropdown-menu{
+  width:100%;
+}
+.dropdown-item-hover:hover {
+  background-color: #2D68C4 !important; 
+}
+.dropdown-item-hover{
+  display:flex !important;
+  justify-content:space-between;
+  align-items:center;
+}
+#gpt-dropdown{
+  width:288px !important;
+  background-color:white;
+  color: rgba(42, 43, 57, 0.8);
+  text-align:start;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }

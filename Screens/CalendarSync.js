@@ -8,7 +8,7 @@ import UserPreferencesForm from "../components/UserPreferencesForm";
 const CalendarSync = () => {
   const { calendarSync ,setNewUser} = useContext(AuthContext);
   const { navigateToPage } = useContext(ScreenContext);
-
+  
   const [google, setGoogle] = useState(false);
   const [microsoft, setMicrosoft] = useState(false);
 

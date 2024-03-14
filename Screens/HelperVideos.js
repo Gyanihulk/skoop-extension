@@ -65,8 +65,8 @@ const HelperVideos = () => {
     if (event) {
       event.stopPropagation();
     }
-    const height = 322;
-    const width = 574;
+    const height = 322*2;
+    const width = 574*2;
 
     sendMessageToBackgroundScript({
       action: "startPlayingVideo",
