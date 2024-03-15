@@ -39,7 +39,6 @@ const UserPreferencesForm = ({
       const preferences = await getUserPreferences();
       if(preferences && preferences.length > 0){
         setIsPreference(true);
-        console.log("preferences inside fetch", preferences);
         setValues({
           preferredStartTime: preferences[0].preferred_start_time,
           preferredEndTime: preferences[0].preferred_end_time,

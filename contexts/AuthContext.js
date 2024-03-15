@@ -14,6 +14,9 @@ export const AuthProvider = ({ children }) => {
     const [newUser, setNewUser] = useState(false);
     const [loadingAuthState, setLoadingAuthState] = useState(true);
     const [version, setVersion] = useState('');
+    const [ipAddress, setIpAddress] = useState('');
+    const [operatingSystem, setOperatingSystem] = useState('');
+    const [fingerPrint, setFingerPrint] = useState();
     const validatePassword = (password) => {
         if (!password) {
             return false;
@@ -31,7 +34,7 @@ export const AuthProvider = ({ children }) => {
                     username: username,
                     password: password,
                     rememberMe: rememberMe,
-                    version:version
+                    version: version,
                 }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
@@ -69,7 +72,7 @@ export const AuthProvider = ({ children }) => {
                 body: JSON.stringify({
                     code: authCode,
                     timezone,
-                    version:version
+                    version: version,
                 }),
             });
 
@@ -241,7 +244,7 @@ export const AuthProvider = ({ children }) => {
                     email: email,
                     password: password,
                     timezone: timezone,
-                    version:version
+                    version: version,
                 }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
@@ -267,8 +270,8 @@ export const AuthProvider = ({ children }) => {
     };
     const verifyToken = async () => {
         try {
-          console.log(version);
-            const res = await fetch(API_ENDPOINTS.tokenStatus+"/"+version, {
+            console.log(version);
+            const res = await fetch(API_ENDPOINTS.tokenStatus + '/' + version, {
                 method: 'GET',
                 headers: {
                     authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
@@ -276,11 +279,11 @@ export const AuthProvider = ({ children }) => {
             });
             console.log(res, 'test');
             if (res.ok) {
-              const response=await res.json();
-              console.log(response,"token test")
-              if(response?.isPro){
-                setIsPro(response.isPro)
-              }
+                const response = await res.json();
+                console.log(response, 'token test');
+                if (response?.isPro) {
+                    setIsPro(response.isPro);
+                }
                 setIsAuthenticated(true);
             } else {
                 setIsAuthenticated(false);
@@ -378,7 +381,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const createSubscription = async (subscriptionData) => {
-        const toastId = toast.loading('Processing Subscription...');
+        // const toastId = toast.loading('Processing Subscription...');
 
         try {
             let res = await fetch(API_ENDPOINTS.createSubscription, {
@@ -389,32 +392,79 @@ export const AuthProvider = ({ children }) => {
                     authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
                 },
             });
-            let response =await res.json()
-            console.log(res)
+            let response = await res.json();
+            console.log(res);
             if (res.ok) {
-                setIsPro(true)
+                return response
+                setIsPro(true);
                 toast.success('Subscription Created Successfully', { id: toastId });
-            }else{
-              toast.error('Your trial subscription is already finished', { id: toastId });
+            } else {
+                toast.error('Your trial subscription is already finished', { id: toastId });
             }
-
         } catch (err) {
             toast.dismiss(toastId);
             toast.error('Something went wrong, please try again');
         }
     };
+    const createUserDevice = async (deviceData) => {
+    
+        try {
+            let res = await fetch(API_ENDPOINTS.createUserDevice, {
+                method: 'POST',
+                body: JSON.stringify(deviceData),
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                },
+            });
+            let response = await res.json();   
+            console.log(response,"test")
+        } catch (err) {
+            console.error('API call failed:', err);
+        }
+    };
+
+    const getUserDevices = async () => {
+        const toastId = toast.loading('Fetching devices...');
+    
+        try {
+            let res = await fetch(API_ENDPOINTS.getUserDevices, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                },
+            });
+            let response = await res.json();
+            
+            if (res.ok) {
+                toast.success('Devices fetched successfully', { id: toastId });
+                return response; // This is the list of devices
+            } else {
+                toast.error(response.message || 'Error fetching devices', { id: toastId });
+                return null; // Return null or appropriate value on error
+            }
+        } catch (err) {
+            toast.dismiss(toastId);
+            toast.error('Something went wrong, please try again');
+            console.error('API call failed:', err);
+            return null; // Return null or appropriate value on error
+        }
+    };
+    
+    
     const handleLogOut = () => {
-      localStorage.setItem('accessToken', JSON.stringify('none'));
-      setIsAuthenticated(false);
-      setIsPro(false);
-      setNewUser(false);
-      setMessage();
-      navigateToPage('SignInIntro');
-  };
+        localStorage.setItem('accessToken', JSON.stringify('none'));
+        setIsAuthenticated(false);
+        setIsPro(false);
+        setNewUser(false);
+        navigateToPage('SignInIntro');
+    };
+    
     return (
         <AuthContext.Provider
             value={{
-              handleLogOut,
+                handleLogOut,
                 isAuthenticated,
                 setIsAuthenticated,
                 handleSkoopLogin,
@@ -433,7 +483,12 @@ export const AuthProvider = ({ children }) => {
                 loadingAuthState,
                 isPro,
                 createSubscription,
-                setVersion
+                setVersion,
+                setIpAddress,
+                setOperatingSystem,
+                setFingerPrint,
+                createUserDevice,
+                getUserDevices
             }}
         >
             {children}

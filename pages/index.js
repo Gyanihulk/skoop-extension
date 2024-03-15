@@ -18,7 +18,7 @@ import SubscriptionScreen from '../Screens/SubscriptionScreen';
 import { useVisitorData } from '@fingerprintjs/fingerprintjs-pro-react';
 import FingerprintIframe from '../components/FingerPrint';
 export default function Home() {
-    const { verifyToken, isAuthenticated, newUser, isPro ,setVersion} = useContext(AuthContext);
+    const { verifyToken, isAuthenticated, newUser, isPro ,setVersion,createUserDevice,ipAddress,operatingSystem,fingerPrint} = useContext(AuthContext);
     const { activePage, navigateToPage } = useContext(ScreenContext);
     const {isLoading, error, data, getData} = useVisitorData(
         {extendedResult: true},
@@ -36,21 +36,9 @@ export default function Home() {
             console.log(manifest)
             setVersion(manifest.version);
           }
-        // getData({ignoreCache: true});
-        // if (isLoading) {
-        //     console.log("Loading visitor data...");
-        //   }
         
-        //   // Log any error that occurs during data fetching
-        //   if (error) {
-        //     console.error("Error fetching visitor data:", error.message);
-        //   }
-        
-        //   // Log the data once it is loaded
-        //   if (data) {
-        //     console.log("Visitor data loaded:", data);
-        //   }
       }, []);
+     
     useEffect(() => {
         (async () => {
             const res = await verifyToken();
@@ -76,10 +64,10 @@ export default function Home() {
     //     let isPro=false
     //   Log when data is being loaded
 
-    console.log(activePage);
+    
     return (
         <>
-         <FingerprintIframe />
+         
             {![
                 'Welcome',
                 'SignInIntro',
@@ -93,6 +81,7 @@ export default function Home() {
             {activePage === ' ' && <LoadingScreen />}
             {isAuthenticated & isPro ? (
                 <>
+                <FingerprintIframe />
                     {activePage === 'Home' && <Homepage />}
                     {activePage === 'HelperVideos' && <HelperVideos />}
                     {activePage === 'AccountSettings' && <AccountSettings />}
