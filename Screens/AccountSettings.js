@@ -96,9 +96,7 @@ const AccountProfile = ({ userData }) => {
           </div>
         </div>
       </div>
-
     </div>
-
   );
 };
 
@@ -128,7 +126,9 @@ const SettingsPassword = () => {
     const isNumeric = numericRegex.test(password);
     const isLengthValid = password.length >= 8 && password.length <= 16;
 
-    return isUppercase && isLowercase && isSpecialChar && isNumeric && isLengthValid;
+    return (
+      isUppercase && isLowercase && isSpecialChar && isNumeric && isLengthValid
+    );
   }
 
   const PasswordToolTip = () => {
@@ -153,23 +153,22 @@ const SettingsPassword = () => {
         ...prevState,
         [event.target.name]: event.target.value,
       }));
-      setShowOldPasswordTooltip(!validatePassword(value))
+      setShowOldPasswordTooltip(!validatePassword(value));
     }
     if (name === "password") {
       setValues((prevState) => ({
         ...prevState,
         [event.target.name]: event.target.value,
       }));
-      setShowPasswordTooltip(!validatePassword(value))
+      setShowPasswordTooltip(!validatePassword(value));
     }
     if (name === "confirm") {
       setValues((prevState) => ({
         ...prevState,
         [event.target.name]: event.target.value,
       }));
-      setShowConfirmPasswordTooltip(!validatePassword(value))
+      setShowConfirmPasswordTooltip(!validatePassword(value));
     }
-
   };
 
   const handleFocus = (event) => {
@@ -226,8 +225,9 @@ const SettingsPassword = () => {
 
   return (
     <div
-      className={`card border-radius-12 ${!toggleInfo ? "overflow-hidden" : ""
-        } `}
+      className={`card border-radius-12 ${
+        !toggleInfo ? "overflow-hidden" : ""
+      } `}
     >
       <div
         className="light-pink card-header-custom toggle-collapse"

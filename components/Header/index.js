@@ -6,9 +6,6 @@ import { FaRegCalendarCheck } from 'react-icons/fa';
 import ScreenContext from '../../contexts/ScreenContext';
 import API_ENDPOINTS from '../apiConfig';
 import AuthContext from '../../contexts/AuthContext.js';
-import { MdContactSupport } from 'react-icons/md';
-import MessageContext from '../../contexts/MessageContext.js';
-import { AiFillQuestionCircle } from "react-icons/ai";
 
 export default function Header() {
     const { isAuthenticated, handleLogOut } = useContext(AuthContext);
@@ -104,21 +101,10 @@ export default function Header() {
         <>
             <nav className="navbar pe-3" id="Header">
                 <div class="navbar-brand d-flex flex-row">
-                    <div className="container">
-                        <div class="ps-4">
-                                {(activePage === 'ContactPage') && (
-                                    <BsArrowLeftCircle
-                                        className="icon-style-normal"
-                                        onClick={() => {
-                                            navigateToPage('Home');
-                                        }}
-                                    />
-                                )}
-                        </div>
-                    </div>
-                    <div className="d-flex flex-column justify-content-end header-text">
+                    
+                    <div className="header-text">
                                     Skoop App
-                            </div>
+                    </div>
                 </div>
 
                 <div className="d-flex ml-auto align-items-right">
@@ -199,6 +185,15 @@ export default function Header() {
                                         }}
                                     >
                                         Account Settings
+                                    </button>
+                                    <button
+                                        className="dropdown-item"
+                                        onClick={() => {
+                                            navigateToPage('DevicesList');
+                                            toggleProfileDropdown();
+                                        }}
+                                    >
+                                        My Devices
                                     </button>
                                     <button
                                         className="dropdown-item"

@@ -394,11 +394,12 @@ console.log("handle edit")
                                 </button>
                             </div>
                             <div className="modal-body">
-                                <label className="mb-2 mt-2 text-center">Prompt Title</label>
+                                
                                 <input
                                     type="text"
                                     required
                                     className="form-control"
+                                    placeholder='Enter prompt Title'
                                     value={newPrompt.heading}
                                     onChange={(e) =>
                                         handleChange({
@@ -408,11 +409,12 @@ console.log("handle edit")
                                 />
                                 {titleError && <div className="invalid-feedback">{titleError}</div>}
 
-                                <label className="mb-2 mt-2 text-center">Description</label>
+                                
                                 <textarea
                                     rows="3"
                                     className="form-control"
                                     value={newPrompt.description}
+                                    placeholder='Enter description'
                                     onChange={(e) =>
                                         handleChange({
                                             target: { name: 'description', value: e.target.value },

@@ -74,7 +74,11 @@
 .border-bottom-light-pink {
     border-bottom: 0.5px solid #eee3fc;
 }
-
+.border-top-light-pink {
+    border-top: 0.5px solid #eee3fc;
+    margin-left: 25px;
+    margin-right: 25px;
+}
 .form-group p,
 .card-title {
     font-weight: 500;
@@ -1160,11 +1164,13 @@ select.form-select {
 }
 .header-text {
     font-family: 'Lato', sans-serif;
-    font-size: 16px;
+    font-size: 22px;
     color: #ffffff;
     font-weight: 500;
     text-align: justify;
     padding: 0%;
+
+    padding-left: 50px;
 }
 
 .btn-outline-warning {
@@ -1658,4 +1664,10 @@ background-color: #9747FF;
   display:flex;
   justify-content:space-between;
   align-items:center;
+}
+
+.device-card{
+    background-color: var(--lighter-pink) !important;
+    border-radius: 10px !important;
+    border:none !important;
 }

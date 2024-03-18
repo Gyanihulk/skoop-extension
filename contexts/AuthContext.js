@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
     const { navigateToPage } = useContext(ScreenContext);
     const [newUser, setNewUser] = useState(false);
     const [loadingAuthState, setLoadingAuthState] = useState(true);
-    const [version, setVersion] = useState('');
+    const [version, setVersion] = useState('0.0.18');
     const [ipAddress, setIpAddress] = useState('');
     const [operatingSystem, setOperatingSystem] = useState('');
     const [fingerPrint, setFingerPrint] = useState();
@@ -280,7 +280,6 @@ export const AuthProvider = ({ children }) => {
             console.log(res, 'test');
             if (res.ok) {
                 const response = await res.json();
-                console.log(response, 'token test');
                 if (response?.isPro) {
                     setIsPro(response.isPro);
                 }
@@ -381,8 +380,8 @@ export const AuthProvider = ({ children }) => {
     };
 
     const createSubscription = async (subscriptionData) => {
-        // const toastId = toast.loading('Processing Subscription...');
-
+        const toastId = toast.loading('Processing Subscription...');
+        navigateToPage(' ')
         try {
             let res = await fetch(API_ENDPOINTS.createSubscription, {
                 method: 'POST',
@@ -393,21 +392,39 @@ export const AuthProvider = ({ children }) => {
                 },
             });
             let response = await res.json();
-            console.log(res);
+
             if (res.ok) {
-                return response
-                setIsPro(true);
+                chrome.identity.launchWebAuthFlow(
+                    { url: response.url, interactive: true },
+                    function (redirectUrl) {
+                        if (chrome.runtime.lastError || !redirectUrl) {
+                            // Handle errors or user cancellation here
+                            console.error(
+                                chrome.runtime.lastError
+                                    ? chrome.runtime.lastError.message
+                                    : 'No redirect URL'
+                            );
+                            return;
+                        }
+                        const sessionId = new URL(redirectUrl).searchParams.get('session_id');
+                        if(sessionId){
+                            setIsPro(true)
+                        }
+        
+                    }
+                );
+                navigateToPage('Home')
                 toast.success('Subscription Created Successfully', { id: toastId });
+                return response;
             } else {
                 toast.error('Your trial subscription is already finished', { id: toastId });
             }
         } catch (err) {
-            toast.dismiss(toastId);
+            // toast.dismiss(toastId);
             toast.error('Something went wrong, please try again');
         }
     };
     const createUserDevice = async (deviceData) => {
-    
         try {
             let res = await fetch(API_ENDPOINTS.createUserDevice, {
                 method: 'POST',
@@ -417,8 +434,8 @@ export const AuthProvider = ({ children }) => {
                     authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
                 },
             });
-            let response = await res.json();   
-            console.log(response,"test")
+            let response = await res.json();
+            console.log(response, 'test');
         } catch (err) {
             console.error('API call failed:', err);
         }
@@ -426,7 +443,7 @@ export const AuthProvider = ({ children }) => {
 
     const getUserDevices = async () => {
         const toastId = toast.loading('Fetching devices...');
-    
+
         try {
             let res = await fetch(API_ENDPOINTS.getUserDevices, {
                 method: 'GET',
@@ -436,7 +453,7 @@ export const AuthProvider = ({ children }) => {
                 },
             });
             let response = await res.json();
-            
+
             if (res.ok) {
                 toast.success('Devices fetched successfully', { id: toastId });
                 return response; // This is the list of devices
@@ -451,8 +468,7 @@ export const AuthProvider = ({ children }) => {
             return null; // Return null or appropriate value on error
         }
     };
-    
-    
+
     const handleLogOut = () => {
         localStorage.setItem('accessToken', JSON.stringify('none'));
         setIsAuthenticated(false);
@@ -460,7 +476,7 @@ export const AuthProvider = ({ children }) => {
         setNewUser(false);
         navigateToPage('SignInIntro');
     };
-    
+
     return (
         <AuthContext.Provider
             value={{
@@ -488,7 +504,7 @@ export const AuthProvider = ({ children }) => {
                 setOperatingSystem,
                 setFingerPrint,
                 createUserDevice,
-                getUserDevices
+                getUserDevices,
             }}
         >
             {children}

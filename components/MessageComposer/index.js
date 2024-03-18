@@ -479,26 +479,44 @@ const MessageComposer = () => {
                                     >
                                         <g>
                                             <path fill="none" d="M0 0H24V24H0z" />
-                                            <path fill="white" d="M16 4c.552 0 1 .448 1 1v4.2l5.213-3.65c.226-.158.538-.103.697.124.058.084.09.184.09.286v12.08c0 .276-.224.5-.5.5-.103 0-.203-.032-.287-.09L17 14.8V19c0 .552-.448 1-1 1H2c-.552 0-1-.448-1-1V5c0-.552.448-1 1-1h14zm-1 2H3v12h12V6zM9 8l4 4h-3v4H8v-4H5l4-4zm12 .841l-4 2.8v.718l4 2.8V8.84z" />
+                                            <path
+                                                fill="white"
+                                                d="M16 4c.552 0 1 .448 1 1v4.2l5.213-3.65c.226-.158.538-.103.697.124.058.084.09.184.09.286v12.08c0 .276-.224.5-.5.5-.103 0-.203-.032-.287-.09L17 14.8V19c0 .552-.448 1-1 1H2c-.552 0-1-.448-1-1V5c0-.552.448-1 1-1h14zm-1 2H3v12h12V6zM9 8l4 4h-3v4H8v-4H5l4-4zm12 .841l-4 2.8v.718l4 2.8V8.84z"
+                                            />
                                         </g>
                                     </svg>,
                                     'Upload video from your device'
                                 )}
 
                                 {message && (
-                                    <li
-                                        className="d-flex flex-column align-items-center justify-content-center"
-                                        onClick={() => saveMessageAsTemplate()}
-                                    >
-                                        <div className="save-icon">Add</div>
+                                    <li onClick={() => saveMessageAsTemplate()}>
+                                        <a
+                                            className={'px-1 text-white'}
+                                            data-bs-toggle="tooltip"
+                                            data-bs-placement="bottom"
+                                            title="Save the customized message as template."
+                                        >
+                                            <svg
+                                                width="18"
+                                                height="18"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    d="M6 8H0V6H6V0H8V6H14V8H8V14H6V8Z"
+                                                    fill="white"
+                                                />
+                                            </svg>
+                                           
+                                        </a>
                                     </li>
                                 )}
+                             
                             </ul>
                         </div>
                         <div className="d-flex flex-row  align-items-right ">
-                            {/* {message && (
-                                
-                            )} */}
+                         
 
                             <button
                                 className="btn send-button d-flex  align-items-center justify-content-center"

@@ -14,7 +14,6 @@ const MessageWindow = () => {
         };
 
         adjustHeight();
-        console.log(message)
     }, [message]); 
 
     const handleTextChange = (event) => {

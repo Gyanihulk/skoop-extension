@@ -1,197 +1,252 @@
 import React, { useState, useEffect } from 'react';
 import API_ENDPOINTS from '../apiConfig';
-import { handleCopyToClipboard } from '../../utils';
+import toast from 'react-hot-toast';
 import { IoMdClose } from 'react-icons/io';
-import { toast } from 'react-hot-toast';
-import { GrFormEdit } from 'react-icons/gr';
-
-function PreLoadedMessage(props) {
-    const [selectedOption, setSelectedOption] = useState('Select Response');
-    const [selectedDescription, setSelectedDescription] = useState('');
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+const ChatGpt = ({ appendToBody, close }) => {
+    const [cgpt, setCgpt] = useState('');
+    const [prompt, setPrompt] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [loadingTime, setLoadingTime] = useState(0);
+    const [waitingMessage, setWaitingMessage] = useState('');
+    const [selectedOption, setSelectedOption] = useState('');
     const [messageOptions, setMessageOptions] = useState([]);
-    const [newResponse, setNewResponse] = useState({ heading: '', description: '' });
     const [showModal, setShowModal] = useState(false);
-    const [isEdit, setIsEdit] = useState(false);
-    const [editingResponse, setEditingResponse] = useState(null);
+    const [newPrompt, setNewPrompt] = useState({ heading: '', description: '' });
+    const [isEditing, setIsEditing] = useState(false);
+    const [editingPrompt, setEditingPrompt] = useState(null);
+    const [titleError, setTitleError] = useState('');
+    const [descriptionError, setDescriptionError] = useState('');
+    const [responseGenerated, setResponseGenerated] = useState(false);
 
     const handleDropdownChange = (event) => {
-        const value = event.target.value;
-        if (value === 'AddEditResponses') {
-            setSelectedOption('Select Response');
+        const value = event;
+        console.log(event,"dropdown selection")
+        if (value === 'AddPrompt') {
             setShowModal(true);
-            setIsEdit(false);
-            setEditingResponse(null);
+            setSelectedOption('Select Prompt');
+            setIsEditing(false);
+            setEditingPrompt(null);
         } else {
+            // setShowModal(false);
             setSelectedOption(value);
-            const selectedMessage = messageOptions.find((option) => option.heading === value);
-            if (selectedMessage) {
-                setSelectedDescription(selectedMessage.description || '');
-                props.appendToBody(selectedMessage.description);
+            const selectedPrompt = messageOptions.find(
+                (option) => option.id === parseInt(value, 10)
+            );
+
+            if (selectedPrompt) {
+                appendToBody(` ${selectedPrompt.description}`)
             } else {
-                setSelectedDescription('');
+                console.error('Selected prompt not found');
             }
         }
     };
 
-    const handleEditIconClick = (option) => {
-        if (option && option.heading && option.description && option.id) {
-            setEditingResponse(option);
-            setNewResponse({ heading: option.heading, description: option.description });
-            setIsEdit(true);
-            setShowModal(true);
-        } else {
-            console.error('Invalid option data for edit:', option);
-        }
-    };
-    const handleDeleteIconClick = (selectedOption) => {
-        const selectedMessage = messageOptions.find((option) => option.heading === selectedOption);
+    const handleChange = (event) => {
+        const { name, value } = event.target;
 
-        if (selectedMessage) {
-            handleDeleteResponse(selectedMessage.id);
-        } else {
-            console.error('Selected option not found:', selectedOption);
-        }
-    };
-
-    const handleNewResponseChange = (field, value) => {
-        setNewResponse((prev) => ({ ...prev, [field]: value }));
-    };
-
-    const handleSaveResponse = async () => {
-        try {
-            if (!newResponse.heading.trim() || !newResponse.description.trim()) {
-                toast.error('Heading or Description cannot be blank.');
-                return;
-            }
-
-            let response;
-
-            if (isEdit && editingResponse) {
-                response = await fetch(API_ENDPOINTS.replaceCrmPreloaded, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                    },
-                    body: JSON.stringify({
-                        heading: newResponse.heading,
-                        description: newResponse.description,
-                        id: editingResponse.id,
-                    }),
-                });
-            } else {
-                response = await fetch(API_ENDPOINTS.skoopCrmAddPreloadedResponses, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                    },
-                    body: JSON.stringify({
-                        heading: newResponse.heading,
-                        description: newResponse.description,
-                    }),
-                });
-            }
-
-            if (response.ok) {
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                    const responseData = await response.json();
-                }
-
-                if (isEdit && editingResponse) {
-                    setMessageOptions((prevOptions) =>
-                        prevOptions.map((option) =>
-                            option.id === editingResponse.id ? newResponse : option
-                        )
-                    );
-                } else {
-                    setMessageOptions((prevOptions) => [...prevOptions, newResponse]);
-                }
-
-                setNewResponse({ heading: '', description: '' });
-                setShowModal(false);
-                setIsEdit(false);
-                setEditingResponse(null);
-
-                toast.success('Response saved successfully!');
-            } else {
-                toast.error('Failed to save response. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error:', error);
+        if (name === 'cgpt') {
+            setCgpt(value);
+        } else if (name === 'prompt') {
+            setPrompt(value);
+        } else if (name === 'title') {
+            setNewPrompt({ ...newPrompt, heading: value });
+            setTitleError(value ? '' : 'Title is required');
+        } else if (name === 'description') {
+            setNewPrompt({ ...newPrompt, description: value });
+            setDescriptionError(value ? '' : 'Description is required');
         }
     };
 
     useEffect(() => {
-        fetch(API_ENDPOINTS.CrmPreloadedResponses, {
-            method: 'GET',
-            headers: {
-                authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                'Content-type': 'application/json; charset=UTF-8',
-            },
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                setMessageOptions(data);
-            })
-            .catch((error) => console.error('Error:', error));
-    }, [showModal]);
+        const intervalId = setInterval(() => {
+            setLoadingTime((prevLoadingTime) => prevLoadingTime + 1);
+        }, 1000);
+
+        if (loadingTime > 5) {
+            setWaitingMessage('Generating a suitable response, please wait');
+        }
+        if (loadingTime > 15) {
+            setWaitingMessage('Bigger text takes more time, please wait');
+        }
+
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, [loading, loadingTime]);
 
     useEffect(() => {
-        if (editingResponse !== null) {
-            setNewResponse({
-                heading: editingResponse.heading,
-                description: editingResponse.description,
-            });
-            setShowModal(true);
-        } else {
-            setNewResponse({ heading: '', description: '' });
-            setShowModal(false);
+        const responseText = prompt;
+        const lineCount = (responseText.match(/\n/g) || []).length + 1;
+        const lineHeight = 16; // same as font size of textarea
+        const newHeight = lineHeight * lineCount;
+
+        const responseArea = document.getElementById('skoop_cgpt_response');
+        if (responseArea !== null) {
+            responseArea.style.height = `${newHeight}px`;
         }
-    }, [editingResponse, isEdit]);
+        setNewPrompt(prompt);
+    }, [prompt]);
 
-    const handleDeleteResponse = async (id) => {
+    const sendPrompt = async (event) => {
+        event.preventDefault();
         try {
-            if (!id && id !== 0) {
-                toast.error('Failed to delete. Please try again.');
-                return;
-            }
+            setLoading(true);
+            console.log(cgpt);
 
-            const response = await fetch(`${API_ENDPOINTS.deleteCrmPreloaded}/${id}`, {
-                method: 'DELETE',
+            const choices = await fetch(API_ENDPOINTS.cgpt + new URLSearchParams({ input: cgpt }), {
+                method: 'GET',
                 headers: {
-                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
                 },
             });
 
-            if (response.ok) {
-                setMessageOptions((prevOptions) =>
-                    prevOptions.filter((option) => option.id !== id)
-                );
-
-                // Reset the form and state
-                setNewResponse({ heading: '', description: '' });
-                setShowModal(false);
-                setIsEdit(false);
-                setEditingResponse(null);
-
-                toast.success('Response deleted successfully!');
-            } else {
-                toast.error('Failed to delete response. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error:', error);
+            const response = await choices.json();
+            console.log(response);
+            setLoading(false);
+            setWaitingMessage('');
+            setPrompt(response.choices[0].message.content);
+            appendToBody(response.choices[0].message.content);
+            setResponseGenerated(true);
+            console.log();
+        } catch (err) {
+            toast.error('could not get chatGpt response');
         }
     };
-    const [isEditing, setIsEditing] = useState(false);
+
+    const fetchPrompts = async () => {
+        try {
+            const response = await fetch(API_ENDPOINTS.CrmPreloadedResponses, {
+                method: 'GET',
+                headers: {
+                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+            });
+            const data = await response.json();
+            setMessageOptions(data);
+        } catch (error) {
+            toast.error('Error fetching prompts');
+        }
+    };
+
+    useEffect(() => {
+        fetchPrompts();
+    }, []);
+
+    const addNewPrompt = async () => {
+        try {
+            if (newPrompt.heading && newPrompt.description) {
+                await fetch(API_ENDPOINTS.skoopCrmAddPreloadedResponses, {
+                    method: 'POST',
+                    headers: {
+                        authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify({
+                        heading: newPrompt.heading,
+                        description: newPrompt.description,
+                    }),
+                });
+                setShowModal(false);
+                setNewPrompt({ heading: '', description: '' });
+                fetchPrompts();
+                toast.success('New Prompt added successfully!');
+            } else {
+                // Set validation errors if the fields are empty
+                setTitleError(newPrompt.heading ? '' : 'Title is required');
+                setDescriptionError(newPrompt.description ? '' : 'Description is required');
+                toast.error('Please fill in all required fields.');
+            }
+        } catch (error) {
+            toast.error('Error adding prompt');
+        }
+    };
+
+    const deletePrompt = async (id) => {
+        try {
+            const response = await fetch(`${API_ENDPOINTS.deleteCrmPreloaded}/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                    'Content-type': 'application/json; charset=UTF-8',
+                },
+            });
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw new Error(`Failed to delete prompt. Server response: ${errorMessage}`);
+            }
+
+            fetchPrompts();
+            toast.success('Prompt deleted successfully!');
+        } catch (error) {
+            toast.error('Error deleting prompt');
+        }
+    };
+
+    const updatePrompt = async () => {
+        try {
+            if (isEditing && editingPrompt && newPrompt.heading && newPrompt.description) {
+                await fetch(`${API_ENDPOINTS.replaceCrmPreloaded}`, {
+                    method: 'PUT',
+                    headers: {
+                        authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify({
+                        heading: newPrompt.heading,
+                        description: newPrompt.description,
+                        id: editingPrompt.id,
+                    }),
+                });
+
+                setShowModal(false);
+                setNewPrompt({ heading: '', description: '' });
+                setIsEditing(false);
+                fetchPrompts();
+                toast.success('Prompt updated successfully!');
+                setSelectedOption('Select Prompt');
+            } else {
+                // Set validation errors if the fields are empty or editingPrompt is not available
+                setTitleError(newPrompt.heading ? '' : 'Title is required');
+                setDescriptionError(newPrompt.description ? '' : 'Description is required');
+                toast.error(
+                    'Please fill in all required fields and ensure you are editing a valid prompt.'
+                );
+            }
+        } catch (error) {
+            toast.error('Error updating prompt');
+        }
+    };
+
+    const handleEditOption = (id) => {
+        console.log(id);
+        const selectedPrompt = messageOptions.find((option) => option.id === parseInt(id, 10));
+console.log("handle edit")
+        if (selectedPrompt) {
+            setEditingPrompt(selectedPrompt);
+            setNewPrompt({
+                heading: selectedPrompt.heading,
+                description: selectedPrompt.description,
+            });
+            setShowModal(true);
+            setIsEditing(true);
+        } else {
+            console.error('Selected prompt not found');
+        }
+    };
+
+    //integration to template
 
     return (
-        <>
+        <div>
             <div className="chatgpt-container">
                 <div className="d-flex flex-row">
                     <div className="col">
-                        <div className="heading">Select saved messages to send instantly</div>
+                        <div className="heading">Select saved methods to send instantly.</div>
                     </div>
                     <div className="justify-content-end" onClick={() => close('DefaultCard')}>
                         <svg
@@ -210,81 +265,93 @@ function PreLoadedMessage(props) {
                 <div className="form-group mt-3">
                     <div className="row">
                         <div className="mb-2">
-                            <select
-                                id="homeDropdown"
+                            {/* <select
                                 className="form-select"
                                 value={selectedOption}
                                 onChange={handleDropdownChange}
                                 size="lg"
-                                placeholder="Select message"
+                                placeholder="Select Saved Response"
                             >
-                                <option value="AddEditResponses">Add New Message</option>
-                                <option value="Select Response" disabled hidden>
-                                Select Message 
-                            </option>
+                                <option value="Select Prompt">Select prompt</option>
+                                <option value="AddEditPrompt">Add New Prompt</option>
                                 {messageOptions.map((option) => (
-                                    <option key={option.id} value={option.heading}>
+                                    <option key={option.id} value={option.id}>
                                         {option.heading}
                                     </option>
                                 ))}
-                            </select>
+                            </select> */}
+                            <DropdownButton
+                                as={ButtonGroup}
+                                size="sm"
+                                title="Select Message"
+                                id="gpt-dropdown"
+                                value={selectedOption}
+                                onSelect={handleDropdownChange}
+                            >
+                                <Dropdown.Item eventKey="AddPrompt">
+                                    <svg
+                                        width="12"
+                                        height="13"
+                                        viewBox="0 0 12 13"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="me-1"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            clip-rule="evenodd"
+                                            d="M11.1429 7.35714H6.85714V11.6429C6.85714 12.1143 6.47143 12.5 6 12.5C5.52857 12.5 5.14286 12.1143 5.14286 11.6429V7.35714H0.857143C0.385714 7.35714 0 6.97143 0 6.5C0 6.02857 0.385714 5.64286 0.857143 5.64286H5.14286V1.35714C5.14286 0.885714 5.52857 0.5 6 0.5C6.47143 0.5 6.85714 0.885714 6.85714 1.35714V5.64286H11.1429C11.6143 5.64286 12 6.02857 12 6.5C12 6.97143 11.6143 7.35714 11.1429 7.35714Z"
+                                            fill="#2A2B39"
+                                        />
+                                    </svg>
+                                    Add New Message
+                                </Dropdown.Item>
+                                <Dropdown.Divider />
+                                {messageOptions.map((option) => (
+                                    <Dropdown.Item
+                                        key={option.id}
+                                        eventKey={option.id}
+                                        className="dropdown-item-hover"
+                                    >
+                                        {option.heading.slice(0, 15)}...
+                                        <div>
+                                            <svg
+                                                width="20"
+                                                height="20"
+                                                viewBox="0 0 20 20"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                onClick={()=>handleEditOption(option.id)}
+                                            >
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    clip-rule="evenodd"
+                                                    d="M4 13.6417V15.6683C4 15.855 4.14667 16.0017 4.33333 16.0017H6.36C6.44667 16.0017 6.53333 15.9683 6.59333 15.9017L13.8733 8.62832L11.3733 6.12832L4.1 13.4017C4.03333 13.4683 4 13.5483 4 13.6417ZM15.8067 6.69499C16.0667 6.43499 16.0667 6.01499 15.8067 5.75499L14.2467 4.19499C14.1221 4.07016 13.953 4 13.7767 4C13.6003 4 13.4312 4.07016 13.3067 4.19499L12.0867 5.41499L14.5867 7.91499L15.8067 6.69499V6.69499Z"
+                                                    fill="white"
+                                                />
+                                            </svg>
+                                            <svg
+                                                width="20"
+                                                height="20"
+                                                viewBox="0 0 20 20"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                onClick={()=>deletePrompt(option.id)}
+                                            >
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    clip-rule="evenodd"
+                                                    d="M5.99967 14.6667C5.99967 15.4 6.59967 16 7.33301 16H12.6663C13.3997 16 13.9997 15.4 13.9997 14.6667V8C13.9997 7.26667 13.3997 6.66667 12.6663 6.66667H7.33301C6.59967 6.66667 5.99967 7.26667 5.99967 8V14.6667ZM13.9997 4.66667H12.333L11.8597 4.19333C11.7397 4.07333 11.5663 4 11.393 4H8.60634C8.43301 4 8.25967 4.07333 8.13967 4.19333L7.66634 4.66667H5.99967C5.63301 4.66667 5.33301 4.96667 5.33301 5.33333C5.33301 5.7 5.63301 6 5.99967 6H13.9997C14.3663 6 14.6663 5.7 14.6663 5.33333C14.6663 4.96667 14.3663 4.66667 13.9997 4.66667Z"
+                                                    fill="white"
+                                                />
+                                            </svg>
+                                        </div>
+                                    </Dropdown.Item>
+                                ))}
+                            </DropdownButton>
                         </div>
+                        
                     </div>
-                </div>
-            </div>
-            {/* <div className="form-group mx-auto bg-white">
-                <div className="d-flex justify-content-between align-items-center">
-                    <div class="form-floating w-100">
-                        <select
-                            className="form-select w-100"
-                            id="floatingSelect"
-                            value={selectedOption}
-                            onChange={handleDropdownChange}
-                            size="sm"
-                        >
-                            <option value="AddEditResponses" className="bold-text">
-                                Add New Message Template
-                            </option>
-                            <option value="Select Response" disabled hidden>
-                                Select Message Template
-                            </option>
-                            {messageOptions.map((option) => (
-                                <option key={option.heading} value={option.heading}>
-                                    {option.heading}
-                                    <span></span>
-                                </option>
-                            ))}
-                        </select>
-                        <label for="floatingSelect">Select saved Template </label>
-                    </div>
-                    {selectedOption !== 'AddEditResponses' && (
-                        <div className="d-flex justify-content-end">
-                            <div className="btn-group" role="group" aria-label="Button Group">
-                                <button
-                                    type="button"
-                                    title="Edit Template"
-                                    className="btn btn-sm custom-close-button"
-                                    onClick={() =>
-                                        handleEditIconClick(
-                                            messageOptions.find(
-                                                (option) => option.heading === selectedOption
-                                            )
-                                        )
-                                    }
-                                >
-                                    <GrFormEdit />
-                                </button>
-                                <button
-                                    type="button"
-                                    title="Delete Template"
-                                    className="btn btn-sm custom-close-button"
-                                    onClick={() => handleDeleteIconClick(selectedOption)}
-                                >
-                                    <RiDeleteBin3Fill />
-                                </button>
-                            </div>
-                        </div>
-                    )}
                 </div>
                 <div
                     className="modal"
@@ -292,11 +359,12 @@ function PreLoadedMessage(props) {
                     role="dialog"
                     style={{ display: showModal ? 'block' : 'none' }}
                 >
-                    <div className="modal-overlay modal-dialog-centered" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
+                    <div className="modal-overlay  modal-dialog-centered" role="document">
+                        <div className="modal-content mx-2">
+                            <div className="modal-header d-flex flex-row justify-content-between">
                                 <h5 className="modal-title">
-                                    {isEdit ? 'Edit' : 'Add'} Message Template
+                                    {' '}
+                                    {isEditing ? 'Edit Message template' : 'Add Message template'}
                                 </h5>
                                 <button
                                     type="button"
@@ -308,47 +376,59 @@ function PreLoadedMessage(props) {
                                 </button>
                             </div>
                             <div className="modal-body">
-                                <label className="mb-2 mt-2 text-center ">Title*</label>
+                                
                                 <input
                                     type="text"
                                     required
                                     className="form-control"
-                                    value={newResponse.heading}
+                                    value={newPrompt.heading}
+                                    placeholder='Enter Title'
                                     onChange={(e) =>
-                                        handleNewResponseChange('heading', e.target.value)
+                                        handleChange({
+                                            target: { name: 'title', value: e.target.value },
+                                        })
                                     }
                                 />
+                                {titleError && <div className="invalid-feedback">{titleError}</div>}
 
-                                <label className="mb-2 mt-2 text-center">Description*</label>
                                 <textarea
+                                    rows="3"
                                     className="form-control"
-                                    required
-                                    aria-multiline="auto"
-                                    value={newResponse.description}
+                                    value={newPrompt.description}
+                                    placeholder='Enter description'
                                     onChange={(e) =>
-                                        handleNewResponseChange('description', e.target.value)
+                                        handleChange({
+                                            target: { name: 'description', value: e.target.value },
+                                        })
                                     }
-                                    onInput={(e) => {
-                                        e.target.style.height = 'auto';
-                                        e.target.style.height = `${e.target.scrollHeight}px`;
-                                    }}
                                 />
+                                {descriptionError && (
+                                    <div className="invalid-feedback">{descriptionError}</div>
+                                )}
                             </div>
                             <div className="modal-footer">
                                 <button
                                     type="button"
                                     className="btn btn-primary"
-                                    onClick={handleSaveResponse}
+                                    onClick={() => {
+                                        if (newPrompt.heading) {
+                                            if (isEditing) {
+                                                updatePrompt();
+                                            } else {
+                                                addNewPrompt();
+                                            }
+                                        }
+                                    }}
                                 >
-                                    Save
+                                    {isEditing ? 'Update' : 'Save'}
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div> */}
-        </>
+            </div>
+        </div>
     );
-}
+};
 
-export default PreLoadedMessage;
+export default ChatGpt;

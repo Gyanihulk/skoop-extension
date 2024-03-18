@@ -49,7 +49,8 @@ const API_ENDPOINTS = {
     resetBookingUrl:`${backendUrl}/resetBookingUrl`, // GET
     getUserPreferences:`${backendUrl}/user-appointment-preferences`, // GET
     createSubscription:`${backendUrl}/subscription`,// POST
-    createUserDevice:`${backendUrl}/userdevices`,
+    createUserDevice:`${backendUrl}/userdevices`, //POST
+    getUserDevices:`${backendUrl}/userdevices/user` //GET
 };
 
 

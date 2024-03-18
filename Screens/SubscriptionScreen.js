@@ -15,19 +15,19 @@ const SubscriptionScreen = () => {
             start_date: startDate,
             plan_type: subscriptionType,
         });
-        console.log(session.url)
         setSessionUrl(session.url);
+        
     };
     return (
         <div className="subscription-container">
             <div className="subscription-header">
-            {sessionUrl && (
+            {/* {sessionUrl && (
                 <iframe 
                     src={sessionUrl} 
                     style={{width: '100%', height: '600px', border: 'none'}} 
                     title="Subscription Session"
                 ></iframe>
-            )}
+            )} */}
                 {/* <button type="button" className="close" aria-label="Close">
                            <span aria-hidden="true">&times;</span>
                     </button> */}

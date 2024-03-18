@@ -361,7 +361,7 @@ function createWebcamContainer(title, height, width) {
 
     container.addEventListener('mousedown', dragStart);
     let pausedSeconds = 0;
-    let totalDuration = 90; // total duration in seconds
+    let totalDuration = 120; // total duration in seconds
     let timerInterval = null;
     
 
@@ -729,7 +729,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                         if (isRecording) {
                             stopStream();
                         }
-                    }, 93000);
+                    }, 123000);
 
                     skoopVideoContainer.style.display = 'block';
 

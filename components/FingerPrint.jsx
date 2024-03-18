@@ -41,7 +41,7 @@ const FingerprintIframe = () => {
 
         const handleFingerprintResult =async (event) => {
           const ip =await getIpAddress()
-          console.log(ip)
+      
             if (event.origin === 'https://skoopcrm.sumits.in') {
                 if (event.data) {
                   const ipInfo=
