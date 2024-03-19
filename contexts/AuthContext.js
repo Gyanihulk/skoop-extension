@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
     const [ipAddress, setIpAddress] = useState('');
     const [operatingSystem, setOperatingSystem] = useState('');
     const [fingerPrint, setFingerPrint] = useState();
+    const [userDevices,setUserDevices]=useState();
     const validatePassword = (password) => {
         if (!password) {
             return false;
@@ -435,37 +436,53 @@ export const AuthProvider = ({ children }) => {
                 },
             });
             let response = await res.json();
-            console.log(response, 'test');
+            setUserDevices(response?.devices)
+            console.log(response, response?.devices,'test');
         } catch (err) {
             console.error('API call failed:', err);
         }
     };
-
-    const getUserDevices = async () => {
-        const toastId = toast.loading('Fetching devices...');
-
+    const getUserDevice = async (deviceData) => {
         try {
-            let res = await fetch(API_ENDPOINTS.getUserDevices, {
+            let res = await fetch(API_ENDPOINTS.createUserDevice, {
                 method: 'GET',
+                body: JSON.stringify(deviceData),
                 headers: {
                     'Content-Type': 'application/json; charset=UTF-8',
                     authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
                 },
             });
             let response = await res.json();
-
-            if (res.ok) {
-                toast.success('Devices fetched successfully', { id: toastId });
-                return response; // This is the list of devices
-            } else {
-                toast.error(response.message || 'Error fetching devices', { id: toastId });
-                return null; // Return null or appropriate value on error
-            }
+            console.log(response)
+            setUserDevices(response?.devices)
+            return response
         } catch (err) {
-            toast.dismiss(toastId);
-            toast.error('Something went wrong, please try again');
             console.error('API call failed:', err);
-            return null; // Return null or appropriate value on error
+        }
+    };
+    const deleteUserDevice = async (id,deviceId) => {
+        console.log(deviceId,fingerPrint.data.visitorId)
+        try {
+            let res = await fetch(API_ENDPOINTS.createUserDevice+"/"+id, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                },
+            });
+            let response = await res.json();
+            if (res.ok) {
+                setUserDevices(response?.devices)
+                if(deviceId==fingerPrint.data.visitorId){
+                    handleLogOut()
+                }
+            } else {
+                console.error('Failed to delete device:', response.message);
+            }
+            console.log(userDevices)
+  
+        } catch (err) {
+            console.error('API call failed:', err);
         }
     };
 
@@ -504,7 +521,7 @@ export const AuthProvider = ({ children }) => {
                 setOperatingSystem,
                 setFingerPrint,
                 createUserDevice,
-                getUserDevices,
+                userDevices,setUserDevices,deleteUserDevice,getUserDevice
             }}
         >
             {children}

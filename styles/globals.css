@@ -14,7 +14,7 @@
     /* colors */
     --light-pink: #eee3fc;
     --lighter-pink: #fbf7ff;
-
+    --main-color: #2d68c4;
     /* measures */
 }
 
@@ -143,9 +143,9 @@
     width: 80px; /* Assuming the button is 100x100 pixels */
     height: 80px;
     background-color: white; /* The blue background color from your design tool */
-    color: #2d68c4;
+    color: var(--main-color);
     border-radius: 50%; /* This will make it a circle */
-    border: 3px solid #2d68c4;
+    border: 3px solid var(--main-color);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adjust for your desired shadow */
     cursor: pointer;
     outline: none; /* Removes the outline on focus for a cleaner look */
@@ -158,7 +158,7 @@
 }
 
 #skoop_record_button:hover {
-    background-color: #2d68c4;
+    background-color: var(--main-color);
 }
 .record-button-bottom-text {
     font-size: smaller;
@@ -849,7 +849,7 @@ input[type='time']#preferredEndTime.filled:focus:before {
     align-items: center;
     padding: 8px 24px;
     gap: 10px;
-    background: #2d68c4;
+    background: var(--main-color);
     border-radius: 8px;
     border: none;
     outline: none;
@@ -973,7 +973,7 @@ select.form-select {
 
 .badge.badge-pill {
     padding: 5px 10px;
-    background-color: #2d68c4;
+    background-color: var(--main-color);
     color: #fff;
     font-size: 12px;
 }
@@ -1029,7 +1029,7 @@ select.form-select {
 
 .email-button {
     background-color: white;
-    color: #2d68c4;
+    color: var(--main-color);
     border: none;
     font-size: 16px;
 }
@@ -1077,7 +1077,7 @@ select.form-select {
 }
 
 .get-started {
-    background-color: #2d68c4;
+    background-color: var(--main-color);
 }
 
 .full-page {
@@ -1148,7 +1148,7 @@ select.form-select {
 
 #Header,
 #messageFooter {
-    background-color: #2d68c4;
+    background-color: var(--main-color);
 }
 
 #messageFooter {
@@ -1160,7 +1160,7 @@ select.form-select {
 
 .header-icon {
     padding: 0px !important;
-    margin-inline: 6px;
+    margin-inline: 3px;
 }
 .header-text {
     font-family: 'Lato', sans-serif;
@@ -1208,9 +1208,9 @@ select.form-select {
     max-height: 300px;
     overflow-y: auto; /* Make content scrollable if it exceeds max height */
 }
-.card {
+/* .card {
     min-width: 165px !important;
-}
+} */
 .bg-selected-videoMode {
     background-color: rgba(45, 104, 196, 0.15) !important;
 }
@@ -1297,7 +1297,7 @@ ul.nav-button li svg path {
     height: 20px;
 }
 .bg-active {
-    background-color: #2d68c4;
+    background-color: var(--main-color);
 }
 
 .margin-bottom-8 {
@@ -1514,7 +1514,7 @@ img.icon-style-normal {
     height: 16px;
     border-radius: 3px;
     background-color: white;
-    color: #2d68c4;
+    color: var(--main-color);
     margin-inline: 6px;
     font-size: 12px;
     padding-left: 2px;
@@ -1549,8 +1549,8 @@ img.icon-style-normal {
     background: white;
     position: relative;
 }
-.subscription-options{
-  margin-top: 35px;
+.subscription-options {
+    margin-top: 35px;
 }
 .subscription-header {
     padding-left: 20px;
@@ -1594,10 +1594,11 @@ img.icon-style-normal {
 }
 .subscription-footer a {
     margin: 0 30px;
-    color: #000  ;text-decoration: none;
+    color: #000;
+    text-decoration: none;
 }
 .btn-trial {
-    background-color: #2D68C4 !important;
+    background-color: var(--main-color) !important;
     color: white;
 }
 .subscription-header > h1 {
@@ -1607,67 +1608,130 @@ img.icon-style-normal {
     font-size: medium;
     color: rgba(42, 43, 57, 0.5);
 }
-.subscription-button{
-  margin-top: 45px;
-  text-align: center;
+.subscription-button {
+    margin-top: 45px;
+    text-align: center;
 }
 
-
 #circleCheckbox {
-  width: 16px;
-  height: 16px;
-  background-color: #fff;
-  border-radius: 50%;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  cursor: pointer;
-  position: relative;
+    width: 16px;
+    height: 16px;
+    background-color: #fff;
+    border-radius: 50%;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    position: relative;
 }
 
 #circleCheckbox:checked::after {
-  content: '✓';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.7);
-  color: #fff;
-  font-size: 18px;
-  background-color: #9747FF;
-  border-radius: 50%;
-  width: 16px;
-  height: 16px;
-  line-height: 16px;
-  text-align: center;
-
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.7);
+    color: #fff;
+    font-size: 18px;
+    background-color: #9747ff;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    text-align: center;
 }
 
 #circleCheckbox:checked {
-background-color: #9747FF; 
+    background-color: #9747ff;
 }
-.dropdown-menu{
-  width:100%;
+.dropdown-menu {
+    width: 100%;
 }
 .dropdown-item-hover:hover {
-  background-color: #2D68C4 !important; 
+    background-color: var(--main-color) !important;
 }
-.dropdown-item-hover{
-  display:flex !important;
-  justify-content:space-between;
-  align-items:center;
+.dropdown-item-hover {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
 }
-#gpt-dropdown{
-  width:288px !important;
-  background-color:white;
-  color: rgba(42, 43, 57, 0.8);
-  text-align:start;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+#gpt-dropdown {
+    width: 288px !important;
+    background-color: white;
+    color: rgba(42, 43, 57, 0.8);
+    text-align: start;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.device-card{
+.device-card {
     background-color: var(--lighter-pink) !important;
     border-radius: 10px !important;
-    border:none !important;
+    border: none !important;
 }
+.custom-video-nav-item {
+    padding: 5px !important;
+    background-color: var(--main-color);
+    margin: 5px;
+    border-radius: 5px;
+    height: 36px;
+    color: white;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.custom-video-nav-item.active {
+    background-color: white;
+    color: var(--main-color);
+    
+}
+
+.custom-video-nav {
+    border-radius: 5px;
+    background-color: var(--main-color);
+    width: 100%;
+    margin-left:5px;
+    margin-right:5px;
+}
+.video-card-footer{
+    background-color: rgba(255, 255, 255, 0.8) !important;
+    display: flex;
+    justify-content: center;
+    height: 1.75rem;
+}
+.video-card-footer-button{
+    padding: 1px 5.25px 1px 5.25px !important;
+    border-right: 2px solid #A9AAAB !important;
+    margin-bottom: 8px;
+}
+.video-card-footer-button:last-child {
+
+    border-right: none !important;
+}
+
+.video-card{
+    width: 100%;
+    border: none !important;
+    border-radius: 5px !important;
+}
+.video-card > iframe{
+ 
+    border-radius: 5px !important;
+}
+.custom-video-row{
+    padding: 0 !important;
+}
+
+.pagination-button{
+    border-radius: 5px;
+    background-color: var(--main-color);
+    color: white;
+}
+
+.pagination-button.active{
+    background-color: white;
+    color: var(--main-color);
+}
+.pagination-nav{ padding: 0 !important; height: 1.5rem;}

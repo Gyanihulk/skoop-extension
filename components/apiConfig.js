@@ -1,4 +1,4 @@
-const backendUrl="http://localhost:4000"; //https://skoop.sumits.in http://localhost:4000
+const backendUrl="https://skoop.sumits.in"; //https://skoop.sumits.in http://localhost:4000
 
 
 const API_ENDPOINTS = {
@@ -50,7 +50,7 @@ const API_ENDPOINTS = {
     getUserPreferences:`${backendUrl}/user-appointment-preferences`, // GET
     createSubscription:`${backendUrl}/subscription`,// POST
     createUserDevice:`${backendUrl}/userdevices`, //POST
-    getUserDevices:`${backendUrl}/userdevices/user` //GET
+    getUserDevices:`${backendUrl}/userdevices` //GET
 };
 
 

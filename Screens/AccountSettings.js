@@ -5,8 +5,9 @@ import UserPreferencesForm from "../components/UserPreferencesForm";
 import { toast } from "react-hot-toast";
 import AuthContext from "../contexts/AuthContext";
 import ScreenContext from "../contexts/ScreenContext";
-import BackButton from "../components/BackButton";
+
 import { GrPowerReset } from "react-icons/gr";
+import BackButton from "../components/BackButton";
 
 const AccountProfile = ({ userData }) => {
   // State for the profile image URL

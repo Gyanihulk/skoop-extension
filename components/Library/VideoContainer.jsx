@@ -3,8 +3,8 @@ import API_ENDPOINTS from '../apiConfig';
 import VideoCard from './VideoCard';
 import Pagination from './Pagination';
 
-const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFavourite, currentPage, totalPages, handlePageChange }) => {
-
+const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFavourite, currentPage,  handlePageChange }) => {
+const [totalPages,setTotalPages]=useState()
   const [videos, setVideos] = useState([]);
 
   const fetchVideos = async () => {
@@ -20,6 +20,8 @@ const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFa
         }
       );
       const data = await response.json();
+      console.log(data,"from video container")
+      setTotalPages(data.totalPages)
       data.links = data.links.map(item => ({
         ...item,
         link: `https://play.vidyard.com/${item.link}`
@@ -33,12 +35,16 @@ const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFa
   useEffect(() => {
     fetchVideos();
   }, [folderName, currentPage]);
-
+console.log(videos)
   return (
-    <div className="container max-height-500">
+    <div className="container">
+      <div className="d-flex justify-content-center my-1">
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+        </div>
       <div className="row">
         {videos && videos.length > 0 ? (
           videos.map((item) => (
+            
             <VideoCard
               key={item.id}
               video={item}
@@ -48,6 +54,7 @@ const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFa
               toggleFavourite={toggleFavourite}
               fetchVideos={fetchVideos}
             />
+     
           ))
         ) : folderName !== 'favorites' ? (
           <div className="col-12 text-center">
@@ -55,11 +62,9 @@ const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFa
           </div>
         ) : null}
       </div>
-      <div className="row">
-        <div className="col-12 d-flex justify-content-center mt-3">
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
-        </div>
-      </div>
+     
+        
+     
     </div>
   );
 };

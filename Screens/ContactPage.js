@@ -1,6 +1,7 @@
 import React from 'react';
 
 import ContactInfoCard from '../components/ContactInfo/index.js';
+import BackButton from '../components/BackButton/index.js';
 
 const ContactPage = () => {
     return (

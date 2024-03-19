@@ -1,50 +1,42 @@
 // Tabs.js
 import React from 'react';
-import { LuPlus } from "react-icons/lu";
+import { LuPlus } from 'react-icons/lu';
 import VideoContainer from './VideoContainer';
 
 const Tabs = ({ activeTab, handleTabChange, handleNewTab, folders }) => (
-  <div className="container">
     <div className="row">
-      <div className="col-12">
-        <div className="d-flex overflow-auto">
-          <ul className="nav nav-tabs mr-2 flex-nowrap">
-            {/* Existing tabs */}
-            <li className="nav-item">
-              <a
-                className={`nav-link ${activeTab === 'favorites' ? 'active' : ''}`}
-                onClick={() => handleTabChange('favorites')}
-                href="#"
-              >
-                Favorites
-              </a>
-            </li>
-        
+        <div className="d-flex overflow-auto custom-video-nav">
+            <ul className="nav nav-tabs flex-nowrap ">
+                {/* Existing tabs */}
 
-            {/* Dynamically generated tabs from folders */}
-            {folders.map((folder) => (
-              <li key={folder.directory_name} className="nav-item">
-                <a
-                  className={`nav-link ${activeTab === folder.directory_name ? 'active' : ''}`}
-                  onClick={() => handleTabChange(folder.directory_name)}
-                  href="#"
+                <li
+                    className={`custom-video-nav-item ${activeTab === 'favorites' ? 'active' : ''}`}
+                    onClick={() => handleTabChange('favorites')}
                 >
-                  {folder.directory_name}
-                </a>
-              </li>
-            ))}
+                    Favorites
+                </li>
 
-            {/* New tab (folder) button */}
-            <li className="nav-item">
-              <button className="btn btn-md" onClick={handleNewTab}>
-                <LuPlus/>
-              </button>
-            </li>
-          </ul>
+                {/* Dynamically generated tabs from folders */}
+                {folders.map((folder) => (
+                    <li
+                        className={`custom-video-nav-item ${
+                            activeTab === folder.directory_name ? 'active' : ''
+                        }`}
+                        onClick={() => handleTabChange(folder.directory_name)}
+                    >
+                        {folder.directory_name}
+                    </li>
+                ))}
+
+                {/* New tab (folder) button */}
+                <li className="custom-video-nav-item">
+                    
+                        <LuPlus onClick={handleNewTab}/>
+                    
+                </li>
+            </ul>
         </div>
-      </div>
     </div>
-  </div>
 );
 
 export default Tabs;
