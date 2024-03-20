@@ -5,7 +5,7 @@ import { IoMdClose } from 'react-icons/io';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-const ChatGpt = ({ appendToBody, close }) => {
+const SavedMessages = ({ appendToBody, close }) => {
     const [cgpt, setCgpt] = useState('');
     const [prompt, setPrompt] = useState('');
     const [loading, setLoading] = useState(false);
@@ -90,31 +90,6 @@ const ChatGpt = ({ appendToBody, close }) => {
         setNewPrompt(prompt);
     }, [prompt]);
 
-    const sendPrompt = async (event) => {
-        event.preventDefault();
-        try {
-            setLoading(true);
-            console.log(cgpt);
-
-            const choices = await fetch(API_ENDPOINTS.cgpt + new URLSearchParams({ input: cgpt }), {
-                method: 'GET',
-                headers: {
-                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                },
-            });
-
-            const response = await choices.json();
-            console.log(response);
-            setLoading(false);
-            setWaitingMessage('');
-            setPrompt(response.choices[0].message.content);
-            appendToBody(response.choices[0].message.content);
-            setResponseGenerated(true);
-            console.log();
-        } catch (err) {
-            toast.error('could not get chatGpt response');
-        }
-    };
 
     const fetchPrompts = async () => {
         try {
@@ -321,7 +296,10 @@ console.log("handle edit")
                                                 viewBox="0 0 20 20"
                                                 fill="none"
                                                 xmlns="http://www.w3.org/2000/svg"
-                                                onClick={()=>handleEditOption(option.id)}
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); 
+                                                    handleEditOption(option.id);
+                                                }}
                                             >
                                                 <path
                                                     fill-rule="evenodd"
@@ -336,7 +314,10 @@ console.log("handle edit")
                                                 viewBox="0 0 20 20"
                                                 fill="none"
                                                 xmlns="http://www.w3.org/2000/svg"
-                                                onClick={()=>deletePrompt(option.id)}
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); 
+                                                    deletePrompt(option.id);
+                                                }}
                                             >
                                                 <path
                                                     fill-rule="evenodd"
@@ -393,7 +374,7 @@ console.log("handle edit")
 
                                 <textarea
                                     rows="3"
-                                    className="form-control"
+                                    className="form-control mt-2"
                                     value={newPrompt.description}
                                     placeholder='Enter description'
                                     onChange={(e) =>
@@ -431,4 +412,4 @@ console.log("handle edit")
     );
 };
 
-export default ChatGpt;
+export default SavedMessages;

@@ -6,6 +6,7 @@ import { FaRegCalendarCheck } from 'react-icons/fa';
 import ScreenContext from '../../contexts/ScreenContext';
 import API_ENDPOINTS from '../apiConfig';
 import AuthContext from '../../contexts/AuthContext.js';
+import MessageContext from '../../contexts/MessageContext.js';
 
 export default function Header() {
     const { isAuthenticated, handleLogOut } = useContext(AuthContext);
@@ -34,7 +35,7 @@ export default function Header() {
         setProfileOpen(!profileOpen);
     };
 
-   
+    const {  setMessage } = useContext(MessageContext);
     const executeClose = () => {
         const container = document.getElementById('skoop-extension-container');
         container.style.display = 'none';
@@ -198,8 +199,10 @@ export default function Header() {
                                     <button
                                         className="dropdown-item"
                                         onClick={() => {
+                                            setMessage();
                                             handleLogOut();
                                             toggleProfileDropdown();
+
                                         }}
                                     >
                                         Logout

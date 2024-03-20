@@ -321,7 +321,10 @@ console.log("handle edit")
                                                 viewBox="0 0 20 20"
                                                 fill="none"
                                                 xmlns="http://www.w3.org/2000/svg"
-                                                onClick={()=>handleEditOption(option.id)}
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); 
+                                                    handleEditOption(option.id);
+                                                }}
                                             >
                                                 <path
                                                     fill-rule="evenodd"
@@ -336,7 +339,10 @@ console.log("handle edit")
                                                 viewBox="0 0 20 20"
                                                 fill="none"
                                                 xmlns="http://www.w3.org/2000/svg"
-                                                onClick={()=>deletePrompt(option.id)}
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); 
+                                                    deletePrompt(option.id);
+                                                }}
                                             >
                                                 <path
                                                     fill-rule="evenodd"
@@ -346,7 +352,7 @@ console.log("handle edit")
                                                 />
                                             </svg>
                                         </div>
-                                    </Dropdown.Item>
+                                    </Dropdown.Item> 
                                 ))}
                             </DropdownButton>
                         </div>
@@ -412,7 +418,7 @@ console.log("handle edit")
                                 
                                 <textarea
                                     rows="3"
-                                    className="form-control"
+                                    className="form-control mt-2"
                                     value={newPrompt.description}
                                     placeholder='Enter description'
                                     onChange={(e) =>

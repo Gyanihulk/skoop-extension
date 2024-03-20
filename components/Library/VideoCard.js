@@ -79,6 +79,7 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
     };
 
     const handlePreviewClick = () => {
+        console.log("preview clicked")
         setShowPreviewPopup(true);
     };
 
@@ -97,8 +98,11 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
                         src={video.link}
                         allow="autoplay; fullscreen; picture-in-picture"
                         className="no-border"
-                        onClick={handlePreviewClick}
+                       
                     />
+                    <div className="overlay position-absolute bottom-0 start-0 w-100 h-100 "  onClick={handlePreviewClick}>
+
+                    </div>
                     <div className="overlay position-absolute bottom-0 start-0 w-100 video-card-footer">
                         <div className="d-flex flex-wrap ">
                             <button

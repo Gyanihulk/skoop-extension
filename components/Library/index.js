@@ -305,7 +305,7 @@ const Library = (props) => {
                                 <IoMdClose />
                             </button>
                         </div>
-                        <div className="modal-body d-flex flex-column">
+                        <div className="modal-body d-flex flex-row">
                             <NewFolderInput
                                 closePopup={async () => {
                                     setOpenNewFolder(false);

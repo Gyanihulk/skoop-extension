@@ -1692,7 +1692,7 @@ img.icon-style-normal {
     border-radius: 5px;
     background-color: var(--main-color);
     width: 100%;
-    margin-left:5px;
+    margin-left:15px;
     margin-right:5px;
 }
 .video-card-footer{
@@ -1735,3 +1735,4 @@ img.icon-style-normal {
     color: var(--main-color);
 }
 .pagination-nav{ padding: 0 !important; height: 1.5rem;}
+

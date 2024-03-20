@@ -3,7 +3,7 @@ const backendUrl="https://skoop.sumits.in"; //https://skoop.sumits.in http://loc
 
 const API_ENDPOINTS = {
     backendUrl,
-    skoopCalendarUrl: "https://skoopcrm.sumits.in/authentication/sign-in/cover",
+    skoopCalendarUrl: "https://skoopcrm.sumits.in",
     changePassword: `${backendUrl}/changePassword`, // PATCH
     profileDetails: `${backendUrl}/userDetails`, // GET
     updateUserDetails: `${backendUrl}/updateUserDetails`, // PATCH

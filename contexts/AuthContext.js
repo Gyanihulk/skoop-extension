@@ -437,6 +437,7 @@ export const AuthProvider = ({ children }) => {
             });
             let response = await res.json();
             setUserDevices(response?.devices)
+            if{}
             console.log(response, response?.devices,'test');
         } catch (err) {
             console.error('API call failed:', err);

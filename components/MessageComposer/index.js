@@ -5,7 +5,7 @@ import EmojiPicker from 'emoji-picker-react';
 import ChatGpt from '../Chatgpt/index.js';
 import GiphyWindow from '../Gif/index.js';
 import Library from '../Library/index.js';
-import PreLoadedMessage from '../Pre-Determined-Msg/index.js';
+import MessageTemplate from '../TemplateMessage/index.js';
 import { insertHtmlAtPositionInMail, insertIntoLinkedInMessageWindow } from '../../utils/index.js';
 import GlobalStatesContext from '../../contexts/GlobalStates.js';
 import MessageWindow from '../MessageWindow.jsx';
@@ -57,11 +57,17 @@ const MessageComposer = () => {
 
     const checkForUserPreferences = async () => {
         const userPreferences = await getUserPreferences();
-        if (userPreferences && userPreferences.length > 0) {
+        const url = await getCalendarUrl();
+        if (url.startsWith(API_ENDPOINTS.skoopCalendarUrl)) {
+            if (userPreferences && userPreferences.length > 0) {
+                return true;
+            } else {
+                toast.error('User preference is not set');
+                return false;
+            }
+        } else {
             return true;
         }
-        toast.error('User preference is not set');
-        return false;
     };
 
     const handleIconClick = async (eventKey) => {
@@ -430,7 +436,7 @@ const MessageComposer = () => {
                 </div>
             </nav>
             <div className="container bg-white">
-                {displayComp === 'Message' && <PreLoadedMessage appendToBody={handleInsertion} />}
+                {displayComp === 'Message' && <MessageTemplate appendToBody={handleInsertion} />}
                 {displayComp === 'ChatGpt' && (
                     <ChatGpt appendToBody={handleInsertion} close={setDisplayComp} />
                 )}
@@ -453,7 +459,7 @@ const MessageComposer = () => {
                                     'Send your favorite GIFs to Mail'
                                 )}
 
-                                {/* {renderNavItem(
+                                {renderNavItem(
                                     'Emoji',
                                     <svg
                                         width="18"
@@ -467,8 +473,8 @@ const MessageComposer = () => {
                                             fill="white"
                                         />
                                     </svg>,
-                                    'Send your favorite emoji to Mail'
-                                )} */}
+                                    'Add emotions'
+                                )}
                                 {renderNavItem(
                                     'Upload Video',
                                     <svg
@@ -488,18 +494,20 @@ const MessageComposer = () => {
                                     'Upload video from your device'
                                 )}
 
+                               
                                 {message && (
                                     <li onClick={() => saveMessageAsTemplate()}>
                                         <a
-                                            className={'px-1 text-white'}
+                                            className={'px-1text-white'}
                                             data-bs-toggle="tooltip"
                                             data-bs-placement="bottom"
                                             title="Save the customized message as template."
                                         >
                                             <svg
+                                            className='mt-1 mx-2'
                                                 width="18"
                                                 height="18"
-                                                viewBox="0 0 24 24"
+                                                viewBox="0 0 18 18"
                                                 fill="none"
                                                 xmlns="http://www.w3.org/2000/svg"
                                             >
@@ -508,16 +516,15 @@ const MessageComposer = () => {
                                                     fill="white"
                                                 />
                                             </svg>
-                                           
+                                            <span className="d-none d-sm-inline">
+                                                Save custome message
+                                            </span>
                                         </a>
                                     </li>
                                 )}
-                             
                             </ul>
                         </div>
                         <div className="d-flex flex-row  align-items-right ">
-                         
-
                             <button
                                 className="btn send-button d-flex  align-items-center justify-content-center"
                                 type="button"
