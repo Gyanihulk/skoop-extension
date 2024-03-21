@@ -83,9 +83,6 @@ const MessageComposer = () => {
         if (eventKey === 'Upload Video') {
             document.getElementById('video-upload').click();
         }
-        if (eventKey === 'Upload Video') {
-            document.getElementById('video-upload').click();
-        }
         if (displayComp == eventKey) {
             setDisplayComp('DefaultCard');
         } else {

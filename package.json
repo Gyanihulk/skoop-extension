@@ -41,12 +41,14 @@
     "popper.js": "^1.16.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.1",
+    "react-bootstrap-time-picker": "^2.0.1",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^4.12.0",
     "react-router-dom": "^6.20.1",
     "react-sound-visualizer": "^1.1.1",
     "react-webcam": "^7.2.0",
-    "sound-visualizer": "^1.2.0"
+    "sound-visualizer": "^1.2.0",
+    "time-number": "^1.1.0"
   }
 }
