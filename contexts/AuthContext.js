@@ -437,8 +437,11 @@ export const AuthProvider = ({ children }) => {
             });
             let response = await res.json();
             setUserDevices(response?.devices)
-            if{}
-            console.log(response, response?.devices,'test');
+            if(res.status==403){
+                toast.error(response.error)
+                handleLogOut()
+            }
+            console.log(res,response, response?.devices,'test');
         } catch (err) {
             console.error('API call failed:', err);
         }

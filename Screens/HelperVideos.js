@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import ScreenContext from "../contexts/ScreenContext";
 import BackButton from "../components/BackButton";
 
-const MiddleSection = ({ title, detail, openModal }) => {
+const MiddleSection = ({  detail, openModal }) => {
   const addModules = detail.map(({ imgSrc, videoSrc, alt, text }, index) => {
     return (
       <div className="title-video-parent" key={index}>
@@ -26,7 +26,6 @@ const MiddleSection = ({ title, detail, openModal }) => {
 
   return (
     <section className="video-header mt-2">
-      <h4 class="title">{title}</h4>
       <div className="d-flex align-items-center justify-content-between p-0 m-0 mt-2">
         {detail && addModules}
       </div>
@@ -84,13 +83,13 @@ const HelperVideos = () => {
 
   const detail = [
     {
-      videoSrc: "https://play.vidyard.com/2ZvdQMJWiHaN6GHDMwG6wG.html?",
+      videoSrc: "https://play.vidyard.com/2ZvdQMJWiHaN6GHDMwG6wG",
       imgSrc: "/screens/Record_video.png",
       alt: "This image is related to a video which says about how to record & send video",
       text: "How to send Video",
     },
     {
-      videoSrc: "https://play.vidyard.com/JXjqZR2ACN5aoZNJxWkZJJ.html?",
+      videoSrc: "https://play.vidyard.com/JXjqZR2ACN5aoZNJxWkZJJ",
       imgSrc: "/screens/Record_audio.png",
       alt: "This image is related to a video which says about how to send audio",
       text: "How to send Audio",
@@ -99,25 +98,25 @@ const HelperVideos = () => {
 
   const info = [
     {
-      videoSrc: "https://play.vidyard.com/2ZvdQMJWiHaN6GHDMwG6wG.html?",
+      videoSrc: "https://play.vidyard.com/2ZvdQMJWiHaN6GHDMwG6wG",
       imgSrc: "/screens/Record_video.png",
       alt: "This image is related to a video which says about how to record & send video",
       text: "How to send Video",
     },
     {
-      videoSrc: "https://play.vidyard.com/JXjqZR2ACN5aoZNJxWkZJJ.html?",
+      videoSrc: "https://play.vidyard.com/JXjqZR2ACN5aoZNJxWkZJJ",
       imgSrc: "/screens/Record_audio.png",
       alt: "This image is related to a video which says about how to send audio",
       text: "How to send Audio",
     },
     {
-      videoSrc: "https://play.vidyard.com/nfAw1a2scendwz7VfuydyE.html?",
+      videoSrc: "https://play.vidyard.com/nfAw1a2scendwz7VfuydyE",
       imgSrc: "/screens/Record_chatgpt_prompts.png",
       alt: "This image is related to a video which says about how to send Chatgpt prompts",
-      text: "How to add Chatgpt prompts",
+      text: "How to add Chatgpt",
     },
     {
-      videoSrc: "https://play.vidyard.com/bZYGwE5EsWUMzMjf9zNJpa.html?",
+      videoSrc: "https://play.vidyard.com/bZYGwE5EsWUMzMjf9zNJpa",
       imgSrc: "/screens/Record_gif.png",
       alt: "This image is related to a video which says about how to send GIF",
       text: "How to send GIF",
@@ -146,7 +145,7 @@ const HelperVideos = () => {
                   alt="This image is related to a video which says about how to record & send video"
                   onClick={(e) => {
                     openPopUp(
-                      "https://play.vidyard.com/2ZvdQMJWiHaN6GHDMwG6wG.html?",
+                      "https://play.vidyard.com/2ZvdQMJWiHaN6GHDMwG6wG",
                       e
                     );
                   }}
@@ -155,26 +154,24 @@ const HelperVideos = () => {
                   className="para-md mt-1 text-wrap text-center cursor-pointer"
                   onClick={(e) => {
                     openPopUp(
-                      "https://play.vidyard.com/2ZvdQMJWiHaN6GHDMwG6wG.html?",
+                      "https://play.vidyard.com/2ZvdQMJWiHaN6GHDMwG6wG",
                       e
                     );
                   }}
                 >
-                  How to send Video
+                
                 </p>
               </div>
             </section>
 
             {detail && (
               <MiddleSection
-                title="How to Videos"
                 detail={detail}
                 openModal={openPopUp}
               />
             )}
 
             <section className=" my-2 overflow-auto">
-              <h4 class="title">Tutorial Videos</h4>
 
               {info && videomodules}
             </section>

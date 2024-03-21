@@ -332,7 +332,9 @@ const MessageComposer = () => {
             videoElement.load();
         }
     };
-
+    const onEmojiClick = (event) => {
+        addMessage('' + event.emoji)
+      };
     return (
         <>
             <input
@@ -449,7 +451,7 @@ const MessageComposer = () => {
                         <MessageWindow />
                     </div>
                     {displayComp === 'Giphy' && <GiphyWindow appendToBody={handleInsertion} />}
-                    {displayComp === 'Emoji' && <EmojiPicker />}
+                    {displayComp === 'Emoji' && <EmojiPicker  onEmojiClick={onEmojiClick} />}
                     <nav className="navbar pe-3" id="messageFooter">
                         <div class="navbar-brand d-flex flex-row ps-2">
                             <ul className="nav">

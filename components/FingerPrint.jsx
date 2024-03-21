@@ -5,6 +5,7 @@ const FingerprintIframe = () => {
     const { setIpAddress, setOperatingSystem, setFingerPrint, createUserDevice } =
         useContext(AuthContext);
     useEffect(() => {
+        let deviceAdded = false;
         const getIpAddress = async () => {
             try {
                 const response = await fetch('https://api.ipify.org?format=json');
@@ -40,17 +41,21 @@ const FingerprintIframe = () => {
         };
 
         const handleFingerprintResult =async (event) => {
+            if (deviceAdded) {
+                return; // Exit early if the device has already been added
+            }
           const ip =await getIpAddress()
       
             if (event.origin === 'https://skoopcrm.sumits.in') {
                 if (event.data) {
-                  const ipInfo=
+                  
                     createUserDevice({
                         device_id: event.data.data.visitorId,
                         ip_address: ip,
                         operating_system: getUserOS(),
-                        data_dump: JSON.stringify(event.data), // any additional data as a JSON string
+                        data_dump: JSON.stringify(event.data), 
                     });
+                    deviceAdded = true;
                 }
                 setFingerPrint(event.data);
             }

@@ -1440,14 +1440,17 @@ ul.nav-button li svg path {
 }
 .title-video {
     height: 78px;
+    margin: 5px;
 }
 .title-video-parent-sm {
     width: 80px;
     height: auto;
+    margin: 5px;
 }
 .title-video-sm {
-    width: 80px;
-    height: 44.51px;
+    width: 120px;
+    height: 80px;
+
 }
 
 .para-md {
@@ -1472,11 +1475,7 @@ ul.nav-button li svg path {
     text-align: center;
     letter-spacing: 0.03em;
     color: #2a2b39;
-    flex: none;
-    order: 1;
-    flex-grow: 0;
     padding: 0;
-    margin: 0;
 }
 
 .title {
@@ -1649,6 +1648,7 @@ img.icon-style-normal {
 }
 .dropdown-item-hover:hover {
     background-color: var(--main-color) !important;
+    color: white !important;
 }
 .dropdown-item-hover {
     display: flex !important;

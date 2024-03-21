@@ -9,8 +9,7 @@ import MoveVideoPopup from './MoveVideoPopup';
 import RenameVideoPopup from './RenameVideoPopup';
 import API_ENDPOINTS from '../apiConfig';
 import VideoPreviewPopup from './VideoPreviewPopup';
-import { FaPlayCircle } from 'react-icons/fa';
-
+import { sendMessageToBackgroundScript } from '../../lib/sendMessageToBackground';
 const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, fetchVideos }) => {
     const [showMovePopup, setShowMovePopup] = useState(false);
     const [showRenamePopup, setShowRenamePopup] = useState(false);
@@ -77,15 +76,23 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
             toast.error('Failed to toggle favorite status');
         }
     };
+    const openPopUp = (src, event) => {
+        if (event) {
+            event.stopPropagation();
+        }
+        const height = 322 * 1.5;
+        const width = 574 * 1.5;
 
-    const handlePreviewClick = () => {
-        console.log("preview clicked")
-        setShowPreviewPopup(true);
+        sendMessageToBackgroundScript({
+            action: 'startPlayingVideo',
+            height,
+            width,
+            src,
+        });
     };
 
-    const handleClosePreviewPopup = () => {
-        setShowPreviewPopup(false);
-    };
+
+
 
     return (
         <div className="col-6 my-1" key={video.id}>
@@ -100,7 +107,7 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
                         className="no-border"
                        
                     />
-                    <div className="overlay position-absolute bottom-0 start-0 w-100 h-100 "  onClick={handlePreviewClick}>
+                    <div className="overlay position-absolute bottom-0 start-0 w-100 h-100 "  onClick={(e)=>openPopUp(video.link,e)}>
 
                     </div>
                     <div className="overlay position-absolute bottom-0 start-0 w-100 video-card-footer">
