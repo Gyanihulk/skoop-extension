@@ -282,7 +282,7 @@ export const AuthProvider = ({ children }) => {
             if (res.ok) {
                 const response = await res.json();
                 if (response?.isPro) {
-                    setIsPro(response.isPro);
+                    // setIsPro(response.isPro);
                 }
                 setIsAuthenticated(true);
             } else {

@@ -121,10 +121,7 @@ const RecordingButton = () => {
 
 
     //useable functions
-
-
-
-
+    
     function sendMessageToBackgroundScript(request, callback) {
         chrome.runtime.sendMessage(request, (response) => {
             if (callback && response) {

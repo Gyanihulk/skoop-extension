@@ -1,27 +1,34 @@
 import React, { useContext, useState } from 'react';
 import AuthContext from '../contexts/AuthContext';
+import { FaCheckCircle } from 'react-icons/fa';
 const SubscriptionScreen = () => {
     const { createSubscription } = useContext(AuthContext);
     const [subscriptionType, setSubscriptionType] = useState('monthly');
-    const [sessionUrl, setSessionUrl] = useState(''); 
+    const [sessionUrl, setSessionUrl] = useState('');
     const handleSubscriptionChange = (type) => {
         setSubscriptionType(type);
     };
-    
-    const handleCreateSubscription =async  () => {
+
+    const handleCreateSubscription = async () => {
         const today = new Date();
-        const startDate = today.toISOString().split('T')[0]; 
-        const session =await createSubscription({
+        const startDate = today.toISOString().split('T')[0];
+        const session = await createSubscription({
             start_date: startDate,
             plan_type: subscriptionType,
         });
         setSessionUrl(session.url);
-        
+    };
+    const [couponCode, setCouponCode] = useState('');
+
+    // A function to handle changes to the input field
+    const handleInputChange = (event) => {
+        // Update the 'couponCode' state with the input's current value
+        setCouponCode(event.target.value);
     };
     return (
         <div className="subscription-container">
             <div className="subscription-header">
-            {/* {sessionUrl && (
+                {/* {sessionUrl && (
                 <iframe 
                     src={sessionUrl} 
                     style={{width: '100%', height: '600px', border: 'none'}} 
@@ -88,6 +95,23 @@ const SubscriptionScreen = () => {
                 </div>
             </div>
 
+            <div className="d-flex flex-column">
+                <div class="input-group mb-3">
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Recipient's username"
+                        aria-label="Recipient's username"
+                        aria-describedby="basic-addon2"
+                        value={couponCode} // Set the input value to the 'couponCode' state
+                        onChange={handleInputChange}
+                    />
+                    <span class="input-group-text" id="basic-addon2">
+                        <FaCheckCircle />
+                        Check
+                    </span>
+                </div>
+            </div>
             <div className="subscription-button d-grid gap-2">
                 <button
                     className="btn btn-primary btn-trial"
