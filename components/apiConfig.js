@@ -50,7 +50,8 @@ const API_ENDPOINTS = {
     getUserPreferences:`${backendUrl}/user-appointment-preferences`, // GET
     createSubscription:`${backendUrl}/subscription`,// POST
     createUserDevice:`${backendUrl}/userdevices`, //POST
-    getUserDevices:`${backendUrl}/userdevices` //GET
+    getUserDevices:`${backendUrl}/userdevices` ,//GET
+    validateCoupon:`${backendUrl}/validate-coupon` //GET
 };
 
 

@@ -5,7 +5,6 @@ import CustomButton from "../components/Auth/button/CustomButton";
 const Welcome = () => {
   const { navigateToPage } = useContext(ScreenContext);
 
-
   const handleGetStarted = () => {
     navigateToPage("SignInIntro");
     localStorage.setItem("welcomePageShown", true);
@@ -28,7 +27,6 @@ const Welcome = () => {
             </p>
             <div className="w-100 get-started-btn">
               <CustomButton child="Get started" onClick={handleGetStarted} />
-
             </div>
           </div>
         </div>

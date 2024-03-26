@@ -6,7 +6,7 @@ const MessageContext = createContext();
 
 export const MessageProvider = ({ children }) => {
     const [message, setMessage] = useState();
-const {isLinkedin}=useContext(GlobalStatesContext)
+const {isLinkedin,latestVideo}=useContext(GlobalStatesContext)
     const addMessage = (text) => {
        setMessage(prevMessage => (prevMessage==null?"":prevMessage) + text +" ");
     };
@@ -17,7 +17,7 @@ const {isLinkedin}=useContext(GlobalStatesContext)
               `https://skoop.hubs.vidyard.com/watch/${videoPlayerId}?`
           );
       } else {
-             let ret = `<a href=https://skoop.hubs.vidyard.com/watch/${videoPlayerId}><img src='${thumbnailLink}' class="inline-block-width"/><br>${latestVideo.name}</a>`;
+             let ret = `<a href=https://skoop.hubs.vidyard.com/watch/${videoPlayerId}><img src='${thumbnailLink}' class="inline-block-width"/><br>Watch Video - ${latestVideo?.name}</a>`;
           addMessage(
               ret 
           );

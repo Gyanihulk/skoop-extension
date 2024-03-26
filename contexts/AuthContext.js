@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
     const [ipAddress, setIpAddress] = useState('');
     const [operatingSystem, setOperatingSystem] = useState('');
     const [fingerPrint, setFingerPrint] = useState();
-    const [userDevices,setUserDevices]=useState();
+    const [userDevices, setUserDevices] = useState();
     const validatePassword = (password) => {
         if (!password) {
             return false;
@@ -282,7 +282,7 @@ export const AuthProvider = ({ children }) => {
             if (res.ok) {
                 const response = await res.json();
                 if (response?.isPro) {
-                    // setIsPro(response.isPro);
+                    setIsPro(response.isPro);
                 }
                 setIsAuthenticated(true);
             } else {
@@ -382,7 +382,7 @@ export const AuthProvider = ({ children }) => {
 
     const createSubscription = async (subscriptionData) => {
         const toastId = toast.loading('Processing Subscription...');
-        navigateToPage(' ')
+        navigateToPage(' ');
         try {
             let res = await fetch(API_ENDPOINTS.createSubscription, {
                 method: 'POST',
@@ -408,20 +408,19 @@ export const AuthProvider = ({ children }) => {
                             return;
                         }
                         const sessionId = new URL(redirectUrl).searchParams.get('session_id');
-                        if(sessionId){
-                            setIsPro(true)
+                        if (sessionId) {
+                            setIsPro(true);
                         }
-        
                     }
                 );
-                navigateToPage('Home')
+                navigateToPage('Home');
                 toast.success('Subscription Created Successfully', { id: toastId });
                 return response;
             } else {
                 toast.error('Your trial subscription is already finished', { id: toastId });
             }
         } catch (err) {
-            // toast.dismiss(toastId);
+            
             toast.error('Something went wrong, please try again');
         }
     };
@@ -436,12 +435,12 @@ export const AuthProvider = ({ children }) => {
                 },
             });
             let response = await res.json();
-            setUserDevices(response?.devices)
-            if(res.status==403){
-                toast.error(response.error)
-                handleLogOut()
+            setUserDevices(response?.devices);
+            if (res.status == 403) {
+                toast.error(response.error);
+                handleLogOut();
             }
-            console.log(res,response, response?.devices,'test');
+            console.log(res, response, response?.devices, 'test');
         } catch (err) {
             console.error('API call failed:', err);
         }
@@ -457,17 +456,17 @@ export const AuthProvider = ({ children }) => {
                 },
             });
             let response = await res.json();
-            console.log(response)
-            setUserDevices(response?.devices)
-            return response
+            console.log(response);
+            setUserDevices(response?.devices);
+            return response;
         } catch (err) {
             console.error('API call failed:', err);
         }
     };
-    const deleteUserDevice = async (id,deviceId) => {
-        console.log(deviceId,fingerPrint.data.visitorId)
+    const deleteUserDevice = async (id, deviceId) => {
+        console.log(deviceId, fingerPrint.data.visitorId);
         try {
-            let res = await fetch(API_ENDPOINTS.createUserDevice+"/"+id, {
+            let res = await fetch(API_ENDPOINTS.createUserDevice + '/' + id, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json; charset=UTF-8',
@@ -476,20 +475,32 @@ export const AuthProvider = ({ children }) => {
             });
             let response = await res.json();
             if (res.ok) {
-                setUserDevices(response?.devices)
-                if(deviceId==fingerPrint.data.visitorId){
-                    handleLogOut()
+                setUserDevices(response?.devices);
+                if (deviceId == fingerPrint.data.visitorId) {
+                    handleLogOut();
                 }
             } else {
                 console.error('Failed to delete device:', response.message);
             }
-            console.log(userDevices)
-  
+            console.log(userDevices);
         } catch (err) {
             console.error('API call failed:', err);
         }
     };
+    const verifyCoupon = async (coupon) => {
+        try {
+            const res = await fetch(API_ENDPOINTS.validateCoupon + '/' + coupon, {
+                method: 'GET',
+            });
+            if (!res.ok) {
+                toast.err('Coupon not valid');
+            }
 
+            return res;
+        } catch (err) {
+            return { ok: false };
+        }
+    };
     const handleLogOut = () => {
         localStorage.setItem('accessToken', JSON.stringify('none'));
         setIsAuthenticated(false);
@@ -525,7 +536,11 @@ export const AuthProvider = ({ children }) => {
                 setOperatingSystem,
                 setFingerPrint,
                 createUserDevice,
-                userDevices,setUserDevices,deleteUserDevice,getUserDevice
+                userDevices,
+                setUserDevices,
+                deleteUserDevice,
+                getUserDevice,
+                verifyCoupon,
             }}
         >
             {children}

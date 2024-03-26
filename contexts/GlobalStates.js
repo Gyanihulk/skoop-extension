@@ -14,6 +14,7 @@ export const GlobalStatesProvider = ({ children }) => {
   const [selectedChatWindows, setSelectedChatWindows] = useState([]);
   const [latestVideo,setLatestVideo]=useState()
   const [latestBlob,setLatestBlob]=useState()
+  const [newTitle, setNewTitle] = useState();
 useEffect(()=>{},[globalRefresh])
   
 
@@ -25,7 +26,7 @@ useEffect(()=>{},[globalRefresh])
       isProfilePage,setIsProfilePage,
       scraperPage,setScraperPage,
       latestVideo,setLatestVideo,
-      focusedElementId,setFocusedElementId,expand, setExpand,latestBlob,setLatestBlob
+      focusedElementId,setFocusedElementId,expand, setExpand,latestBlob,setLatestBlob,newTitle, setNewTitle
     }}>
       {children}
     </GlobalStatesContext.Provider>

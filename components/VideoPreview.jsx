@@ -13,9 +13,9 @@ export const VideoPreview = () => {
     const [thumbnailImage, setThumbnailImage] = useState('/images/videoProcessing.png');
     const [showRenamePopup, setShowRenamePopup] = useState(false);
     const [showVideoOptionsDialog, setShowVideoOptionsDialog] = useState(false);
-    const [newTitle, setNewTitle] = useState();
+    
     const [showBookingLink, setShowBookingLink] = useState(true);
-    const { latestVideo, latestBlob, setLatestVideo, setLatestBlob } =
+    const { latestVideo, latestBlob, setLatestVideo, setLatestBlob ,newTitle, setNewTitle} =
         useContext(GlobalStatesContext);
     const { deleteVideo, updateBookingLinkOfVideo } = useContext(MediaUtilsContext);
     useEffect(() => {
@@ -30,7 +30,7 @@ export const VideoPreview = () => {
         }
     }, [latestVideo]);
     useEffect(() => {
-        console.log(latestBlob, 'from video preview ');
+        console.log(latestVideo, 'from video preview ');
     }, [latestBlob, thumbnailImage, , showRenamePopup, showVideoOptionsDialog]);
     const UpdateThumbnail = async (event) => {
         const file = event.target.files[0];

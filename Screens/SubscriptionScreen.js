@@ -1,26 +1,49 @@
 import React, { useContext, useState } from 'react';
 import AuthContext from '../contexts/AuthContext';
 import { FaCheckCircle } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 const SubscriptionScreen = () => {
-    const { createSubscription } = useContext(AuthContext);
+    const { createSubscription, verifyCoupon } = useContext(AuthContext);
     const [subscriptionType, setSubscriptionType] = useState('monthly');
     const [sessionUrl, setSessionUrl] = useState('');
     const handleSubscriptionChange = (type) => {
         setSubscriptionType(type);
     };
 
+    const [couponCode, setCouponCode] = useState('');
+    const [couponValid, setCouponValid] = useState(false);
+    const [couponInfo, setCouponInfo] = useState();
     const handleCreateSubscription = async () => {
         const today = new Date();
         const startDate = today.toISOString().split('T')[0];
-        const session = await createSubscription({
+        let subsData = {
             start_date: startDate,
             plan_type: subscriptionType,
-        });
+        };
+        console.log(couponCode >= 3, couponValid);
+        if (couponCode.length >= 3 && couponValid) {
+            subsData.coupon = couponCode;
+        }
+        console.log(subsData);
+        const session = await createSubscription(subsData);
         setSessionUrl(session.url);
     };
-    const [couponCode, setCouponCode] = useState('');
-
     // A function to handle changes to the input field
+    const handleCouponValidation = async () => {
+        if (couponCode.length <= 1) {
+            toast.error('Please Enter Valid coupon Code');
+            return;
+        }
+        const couponValidation = await verifyCoupon(couponCode);
+        if (couponValidation.ok) {
+            setCouponValid(true);
+            toast.success('Coupon Applied');
+            const response = await couponValidation.json();
+            if (response) {
+                setCouponInfo(response);
+            }
+        }
+    };
     const handleInputChange = (event) => {
         // Update the 'couponCode' state with the input's current value
         setCouponCode(event.target.value);
@@ -28,16 +51,6 @@ const SubscriptionScreen = () => {
     return (
         <div className="subscription-container">
             <div className="subscription-header">
-                {/* {sessionUrl && (
-                <iframe 
-                    src={sessionUrl} 
-                    style={{width: '100%', height: '600px', border: 'none'}} 
-                    title="Subscription Session"
-                ></iframe>
-            )} */}
-                {/* <button type="button" className="close" aria-label="Close">
-                           <span aria-hidden="true">&times;</span>
-                    </button> */}
                 <h1>Start your 3-day free trial.</h1>
                 <span>Unlock all the premium benfits now.</span>
                 <ul className="feature-list">
@@ -68,7 +81,16 @@ const SubscriptionScreen = () => {
                     />
                     <div className="ps-4 pt-2">
                         <h5>Monthly</h5>
-                        <p>First 3 days free, then $45/month</p>
+                        <p>First 3 days free, then ${
+                    couponInfo && subscriptionType === 'monthly'
+                        ? couponInfo?.discount?.percent_off
+                            ? ((47 * (100 - couponInfo?.discount?.percent_off)) / 100).toFixed(2)
+                            : couponInfo?.discount?.amount_off
+                            ? (47 - couponInfo?.discount?.amount_off).toFixed(2)
+                            : 47
+                        : 47
+                }/month</p>
+                
                     </div>
                 </div>
                 <div className="subscription-option d-flex flex-row align-items-center bg-yearly">
@@ -90,7 +112,15 @@ const SubscriptionScreen = () => {
                                 SAVE 20%{' '}
                             </span>
                         </h5>
-                        <p>First 3 days free, then $432/year</p>
+                        <p>First 3 days free, then ${
+                    couponInfo && subscriptionType === 'yearly'
+                        ? couponInfo?.discount?.percent_off
+                            ? ((451 * (100 - couponInfo?.discount?.percent_off)) / 100).toFixed(2)
+                            : couponInfo?.discount?.amount_off
+                            ? (451 - couponInfo?.discount?.amount_off).toFixed(2)
+                            : 451
+                        : 451
+                }/year</p>
                     </div>
                 </div>
             </div>
@@ -100,18 +130,25 @@ const SubscriptionScreen = () => {
                     <input
                         type="text"
                         class="form-control"
-                        placeholder="Recipient's username"
-                        aria-label="Recipient's username"
-                        aria-describedby="basic-addon2"
-                        value={couponCode} // Set the input value to the 'couponCode' state
+                        placeholder="Have Coupon!"
+                        aria-label="Have Coupon!"
+                        value={couponCode}
                         onChange={handleInputChange}
                     />
-                    <span class="input-group-text" id="basic-addon2">
-                        <FaCheckCircle />
-                        Check
+                    <span
+                        class="input-group-text"
+                        id="basic-addon2"
+                        onClick={handleCouponValidation}
+                    >
+                        <FaCheckCircle color={!couponValid ? 'red' : 'green'} />
+                        Apply
                     </span>
                 </div>
+                {couponInfo && <span className="badge rounded-pill bg-warning text-dark">
+                               Coupon Applied
+                            </span>}
             </div>
+           
             <div className="subscription-button d-grid gap-2">
                 <button
                     className="btn btn-primary btn-trial"
@@ -120,9 +157,7 @@ const SubscriptionScreen = () => {
                 >
                     START 3-DAY FREE TRIAL
                 </button>
-                <span classNameName="px-2">
-                    3 days free,then $45/month,Free trial only offered to first time subscribers
-                </span>
+                
             </div>
             <div className="subscription-footer">
                 <a href="#">Privacy policy</a> <a href="#">Terms of use</a>
