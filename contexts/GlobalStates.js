@@ -15,6 +15,7 @@ export const GlobalStatesProvider = ({ children }) => {
   const [latestVideo,setLatestVideo]=useState()
   const [latestBlob,setLatestBlob]=useState()
   const [newTitle, setNewTitle] = useState();
+  const [subscriptionType, setSubscriptionType] = useState('monthly');
 useEffect(()=>{},[globalRefresh])
   
 
@@ -26,7 +27,7 @@ useEffect(()=>{},[globalRefresh])
       isProfilePage,setIsProfilePage,
       scraperPage,setScraperPage,
       latestVideo,setLatestVideo,
-      focusedElementId,setFocusedElementId,expand, setExpand,latestBlob,setLatestBlob,newTitle, setNewTitle
+      focusedElementId,setFocusedElementId,expand, setExpand,latestBlob,setLatestBlob,newTitle, setNewTitle,subscriptionType, setSubscriptionType
     }}>
       {children}
     </GlobalStatesContext.Provider>

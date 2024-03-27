@@ -1760,30 +1760,15 @@ img.icon-style-normal {
 .confirmation-container {
   background-color: #fff;
   padding: 20px;
-  border: 2px dashed #6c757d;
   border-radius: 4px;
   margin-top: 50px;
+  font-family: "Montserrat";
+}
+.confirmation-container p {
+  font-size: 10px;
+  font-weight: 500;
 }
 .confirmation-title {
-  color: #004085;
-  background-color: #cce5ff;
-  border-color: #b8daff;
-  padding: 0.75rem 1.25rem;
-  margin-bottom: 1rem;
-  border: 1px solid transparent;
-  border-radius: 0.25rem;
-}
-.confirmation-button {
-  background-color: #007bff;
-  border-color: #007bff;
-  color: #fff;
-  padding: 10px 24px;
-  font-size: 18px;
-  line-height: 1.5;
-  border-radius: 4px;
-  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.5);
-}
-.confirmation-button:hover {
-  background-color: #0056b3;
-  border-color: #0056b3;
+  font-size: 20px;
+  font-weight: 800;
 }

@@ -2,9 +2,10 @@ import React, { useContext, useState } from 'react';
 import AuthContext from '../contexts/AuthContext';
 import { FaCheckCircle } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+import GlobalStatesContext from '../contexts/GlobalStates';
 const SubscriptionScreen = () => {
     const { createSubscription, verifyCoupon } = useContext(AuthContext);
-    const [subscriptionType, setSubscriptionType] = useState('monthly');
+    const { subscriptionType, setSubscriptionType} = useContext(GlobalStatesContext);
     const [sessionUrl, setSessionUrl] = useState('');
     const handleSubscriptionChange = (type) => {
         setSubscriptionType(type);
