@@ -51,7 +51,8 @@ const API_ENDPOINTS = {
     createSubscription:`${backendUrl}/subscription`,// POST
     createUserDevice:`${backendUrl}/userdevices`, //POST
     getUserDevices:`${backendUrl}/userdevices` ,//GET
-    validateCoupon:`${backendUrl}/validate-coupon` //GET
+    validateCoupon:`${backendUrl}/validate-coupon` ,//GET
+    getVideoInfo:`${backendUrl}/videoinfobyvideoid` ,//GET
 };
 
 

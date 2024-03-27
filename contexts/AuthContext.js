@@ -420,7 +420,6 @@ export const AuthProvider = ({ children }) => {
                 toast.error('Your trial subscription is already finished', { id: toastId });
             }
         } catch (err) {
-            
             toast.error('Something went wrong, please try again');
         }
     };
@@ -492,11 +491,26 @@ export const AuthProvider = ({ children }) => {
             const res = await fetch(API_ENDPOINTS.validateCoupon + '/' + coupon, {
                 method: 'GET',
             });
+            console.log(res,"rcoupon")
             if (!res.ok) {
-                toast.err('Coupon not valid');
+                toast.error('Coupon not valid');
             }
 
             return res;
+        } catch (err) {
+            toast.err("Coupon not valid.")
+            return { ok: false };
+        }
+    };
+    const getVideoInfo = async (videoId) => {
+        try {
+            const res = await fetch(API_ENDPOINTS.getVideoInfo + '/' + videoId, {
+                method: 'GET',
+            });
+            
+            if (res.ok) {
+                return res;
+            }
         } catch (err) {
             return { ok: false };
         }
@@ -541,6 +555,7 @@ export const AuthProvider = ({ children }) => {
                 deleteUserDevice,
                 getUserDevice,
                 verifyCoupon,
+                getVideoInfo,
             }}
         >
             {children}

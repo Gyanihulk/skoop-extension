@@ -38,10 +38,12 @@ const SubscriptionScreen = () => {
         if (couponValidation.ok) {
             setCouponValid(true);
             toast.success('Coupon Applied');
-            const response = await couponValidation.json();
-            if (response) {
-                setCouponInfo(response);
-            }
+        }else{
+            setCouponValid(false);
+        }
+        const response = await couponValidation.json();
+        if (response) {
+            setCouponInfo(response);
         }
     };
     const handleInputChange = (event) => {
@@ -69,7 +71,7 @@ const SubscriptionScreen = () => {
                 <line y1="0.5" x2="315" y2="0.5" stroke="black" stroke-opacity="0.2" />
             </svg>
 
-            <div className="subscription-options">
+            <div className="subscription-options align-items-center">
                 <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
                     <input
                         class="form-check-input"
@@ -81,16 +83,20 @@ const SubscriptionScreen = () => {
                     />
                     <div className="ps-4 pt-2">
                         <h5>Monthly</h5>
-                        <p>First 3 days free, then ${
-                    couponInfo && subscriptionType === 'monthly'
-                        ? couponInfo?.discount?.percent_off
-                            ? ((47 * (100 - couponInfo?.discount?.percent_off)) / 100).toFixed(2)
-                            : couponInfo?.discount?.amount_off
-                            ? (47 - couponInfo?.discount?.amount_off).toFixed(2)
-                            : 47
-                        : 47
-                }/month</p>
-                
+                        <p>
+                            First 3 days free, then $
+                            {couponInfo && subscriptionType === 'monthly'
+                                ? couponInfo?.discount?.percent_off
+                                    ? (
+                                          (47 * (100 - couponInfo?.discount?.percent_off)) /
+                                          100
+                                      ).toFixed(2)
+                                    : couponInfo?.discount?.amount_off
+                                    ? (47 - couponInfo?.discount?.amount_off).toFixed(2)
+                                    : 47
+                                : 47}
+                            /month
+                        </p>
                     </div>
                 </div>
                 <div className="subscription-option d-flex flex-row align-items-center bg-yearly">
@@ -112,17 +118,23 @@ const SubscriptionScreen = () => {
                                 SAVE 20%{' '}
                             </span>
                         </h5>
-                        <p>First 3 days free, then ${
-                    couponInfo && subscriptionType === 'yearly'
-                        ? couponInfo?.discount?.percent_off
-                            ? ((451 * (100 - couponInfo?.discount?.percent_off)) / 100).toFixed(2)
-                            : couponInfo?.discount?.amount_off
-                            ? (451 - couponInfo?.discount?.amount_off).toFixed(2)
-                            : 451
-                        : 451
-                }/year</p>
+                        <p>
+                            First 3 days free, then $
+                            {couponInfo && subscriptionType === 'yearly'
+                                ? couponInfo?.discount?.percent_off
+                                    ? (
+                                          (451 * (100 - couponInfo?.discount?.percent_off)) /
+                                          100
+                                      ).toFixed(2)
+                                    : couponInfo?.discount?.amount_off
+                                    ? (451 - couponInfo?.discount?.amount_off).toFixed(2)
+                                    : 451
+                                : 451}
+                            /year
+                        </p>
                     </div>
                 </div>
+                
             </div>
 
             <div className="d-flex flex-column">
@@ -144,11 +156,11 @@ const SubscriptionScreen = () => {
                         Apply
                     </span>
                 </div>
-                {couponInfo && <span className="badge rounded-pill bg-warning text-dark">
-                               Coupon Applied
-                            </span>}
+                {couponInfo && couponValid && (
+                    <span className="badge rounded-pill bg-warning text-dark">Coupon Applied.</span>
+                )}
             </div>
-           
+
             <div className="subscription-button d-grid gap-2">
                 <button
                     className="btn btn-primary btn-trial"
@@ -157,7 +169,6 @@ const SubscriptionScreen = () => {
                 >
                     START 3-DAY FREE TRIAL
                 </button>
-                
             </div>
             <div className="subscription-footer">
                 <a href="#">Privacy policy</a> <a href="#">Terms of use</a>

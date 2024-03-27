@@ -21,13 +21,13 @@ const CalendarSync = () => {
           collapse={true}
           showSkip={true}
         />
-        <div
+        {/* <div
           onClick={() => {navigateToPage("Home");setNewUser(false)}}
           class="btn btn-link mt-4 card-title"
         >
           Continue without Skoop Appointment booking System
           <p>You can add your calendar link for from account setting.</p>
-        </div>
+        </div> */}
       </div>
     </>
   );

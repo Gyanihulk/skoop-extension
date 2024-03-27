@@ -27,9 +27,9 @@ import MessageContext from "../../contexts/MessageContext.js";
 import RenameVideoPopup from "../Library/RenameVideoPopup.js";
 
 import { IoMdClose } from "react-icons/io";
-import Vertical from "../VideoScreenLayoutSVG/Vertical.jsx";
-import Horizontal from "../VideoScreenLayoutSVG/Horizontal.jsx";
-import Square from "../VideoScreenLayoutSVG/Square.jsx";
+import Vertical from "../SVG/Vertical.jsx";
+import Horizontal from "../SVG/Horizontal.jsx";
+import Square from "../SVG/Square.jsx";
 
 const videoResizeConstant = 40;
 const RecordingButton = () => {
@@ -157,7 +157,7 @@ const RecordingButton = () => {
         );
         setIsUploading(false);
         setLatestVideo(response);
-        addToMessage(response.facade_player_uuid, response?.urlForThumbnail);
+        addToMessage(response.facade_player_uuid, response?.urlForThumbnail,response?.name);
         setGlobalRefresh(true);
         setCapturing(false);
       });

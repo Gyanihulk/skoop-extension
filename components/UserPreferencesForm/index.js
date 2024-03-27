@@ -356,10 +356,10 @@ const UserPreferencesForm = ({
           </div>
                   </div>
                   <div className="mt-4 d-flex justify-content-end">
-                    {showSkip && <button   onClick={() => {navigateToPage("Home");setNewUser(false)}} className="card-btn btn-text">
+                    {showSkip && <button   onClick={() => {navigateToPage("Home");setNewUser(false)}} className="mx-2 card-btn btn-text">
                       Skip
                     </button>}
-                    <button type="submit" className="card-btn btn-text">
+                    <button type="submit" className="mx-2 card-btn btn-text">
                       {!isPreference? "Save" : "Update"}
                     </button>
                   </div>
