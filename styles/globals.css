@@ -1,16 +1,26 @@
+
 /* Lato */
+@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 
 /* Montserrat */
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
 /* Poppins */
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 
 /* variables */
 :root {
+  /* colors */
+  --light-pink: #eee3fc;
+  --lighter-pink: #fbf7ff;
+  --main-color: #2d68c4;
+  /* measures */
   /* colors */
   --light-pink: #eee3fc;
   --lighter-pink: #fbf7ff;
@@ -21,12 +31,16 @@
 /* background color */
 .light-pink {
   background-color: var(--light-pink);
+  background-color: var(--light-pink);
 }
 .lighter-pink {
+  background-color: var(--lighter-pink);
   background-color: var(--lighter-pink);
 }
 
 .py-4-5 {
+  padding-top: 2.2rem;
+  padding-bottom: 2.2rem;
   padding-top: 2.2rem;
   padding-bottom: 2.2rem;
 }
@@ -34,18 +48,25 @@
 .my-4-2 {
   margin-top: 32px;
   margin-bottom: 32px;
+  margin-top: 32px;
+  margin-bottom: 32px;
 }
 
 .py-4-2 {
+  padding-top: 32px;
+  padding-bottom: 32px;
   padding-top: 32px;
   padding-bottom: 32px;
 }
 
 .ml-0-4 {
   margin-left: 4px;
+  margin-left: 4px;
 }
 
 .px-4-2 {
+  padding-left: 32px;
+  padding-right: 32px;
   padding-left: 32px;
   padding-right: 32px;
 }
@@ -53,9 +74,13 @@
 .mx--1 {
   margin-right: 16px;
   margin-left: 16px;
+  margin-right: 16px;
+  margin-left: 16px;
 }
 
 .px--1 {
+  margin-right: 16px;
+  margin-left: 16px;
   margin-right: 16px;
   margin-left: 16px;
 }
@@ -67,18 +92,32 @@
   margin-top: 12px;
 }
 
+.navbar {
+  --bs-navbar-padding-y: 2px !important;
+}
+
+.navbar {
+  --bs-navbar-padding-y: 2px !important;
+}
+
 .border-radius-8 {
+  border-radius: 8px !important;
   border-radius: 8px !important;
 }
 
 .border-radius-12 {
   border-radius: 12px !important;
+  border-radius: 12px !important;
 }
 
 .border-bottom-light-pink {
   border-bottom: 0.5px solid #eee3fc;
+  border-bottom: 0.5px solid #eee3fc;
 }
 .border-top-light-pink {
+  border-top: 0.5px solid #eee3fc;
+  margin-left: 25px;
+  margin-right: 25px;
   border-top: 0.5px solid #eee3fc;
   margin-left: 25px;
   margin-right: 25px;
@@ -92,10 +131,24 @@
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 15px;
+  color: #2a2b39;
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
 }
 
 /* general css */
 .sbl-circ-ripple {
+  height: 56px;
+  width: 56px;
+  color: #00b48c;
+  border-radius: 50%;
+  position: relative;
+  display: inline-block;
+  margin-top: 30px;
   height: 56px;
   width: 56px;
   color: #00b48c;
@@ -144,19 +197,27 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 80px; /* Assuming the button is 100x100 pixels */
-  height: 80px;
-  background-color: white; /* The blue background color from your design tool */
+  width: 4rem;
+  height: 4rem;
+  background-color: white;
   color: var(--main-color);
-  border-radius: 50%; /* This will make it a circle */
+  border-radius: 50%;
   border: 3px solid var(--main-color);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adjust for your desired shadow */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  outline: none; /* Removes the outline on focus for a cleaner look */
-  font-size: 16px; /* Adjust as necessary */
-  text-decoration: none; /* In case it's an anchor tag */
-  transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transition for hover effects */
+  outline: none;
+  font-size: 16px;
+  text-decoration: none;
+  transition: background-color 0.3s, box-shadow 0.3s;
 }
+
+/* @media screen and (max-width: 768px) {
+  #skoop_record_button {
+    width: 6rem;
+    height: 6rem;
+  }
+} */
+
 #skoop_record_button:hover svg path {
   fill: white;
 }
@@ -164,13 +225,11 @@
 #skoop_record_button:hover {
   background-color: var(--main-color);
 }
+
 .record-button-bottom-text {
-  font-size: smaller;
+  font-size: 0.8rem;
   margin-top: 2px;
   font-family: "Montserrat", sans-serif;
-}
-#floatingTextarea {
-  height: 149px !important;
 }
 
 .centered-container {
@@ -920,12 +979,12 @@ input.form-control {
   box-sizing: border-box;
   padding: 7.7px 12px;
   gap: 2px;
-  border: 0.5px solid rgba(169, 170, 171, 0.8);
   border-radius: 4px;
   flex: none;
   order: 0;
   align-self: stretch;
   flex-grow: 0;
+  background-color: #a9aaab33;
 }
 input[type="time"].form-control {
   padding: 7.7px 12px;
@@ -1177,7 +1236,7 @@ select.form-control {
 }
 .header-text {
   font-family: "Lato", sans-serif;
-  font-size: 22px;
+  font-size: 18px;
   color: #ffffff;
   font-weight: 500;
   text-align: justify;
@@ -1198,18 +1257,19 @@ select.form-control {
 }
 
 .send-button {
-  border-radius: 20px !important; /* Adjust as needed for rounded corners */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* This adds the drop shadow */
-  position: relative; /* Needed to position the label correctly */
-  border: 2px #000000;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  position: relative;
+  border: 2px #000;
   background-color: #fff !important;
-  width: 80px;
-  height: 28px;
+  width: 4rem;
+  height: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Lato", sans-serif;
+  font-family: Lato, sans-serif;
   font-weight: 400;
+  font-size: 12px;
 }
 
 #footermessage {
@@ -1285,7 +1345,7 @@ select.form-control {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  margin-top: 1.5rem;
+  margin-top: 0.5rem;
 }
 .nav-button {
   font-family: "Montserrat", sans-serif;
@@ -1303,8 +1363,8 @@ ul.nav-button li {
   cursor: pointer;
 }
 ul.nav-button li svg {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
 }
 ul.nav-button li svg path {
   width: 20px;
@@ -1378,32 +1438,28 @@ ul.nav-button li svg path {
 }
 
 .video-preview-iframe-img {
-  width: 100%; /* Use 100% of the container's width */
-  max-width: 225px; /* Maximum width of the image */
-  max-height: 290px; /* Maximum height of the image */
-  object-fit: contain; /* Maintain aspect ratio without cropping */
-  border-radius: 3px; /* Optional: for rounded corners */
+  width: 100%;
+  max-height: 13rem;
+  object-fit: contain;
+  border-radius: 3px;
 }
+
 #video-Preview {
-  position: absolute;
-  top: 17.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex; /* Use flexbox to center the image if smaller than the max dimensions */
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
+  overflow-y: auto;
+  /* max-height: 10rem; */
 }
+
 #video-preview-option {
   position: absolute;
-  top: 5px;
-  right: 2%;
+  top: 2rem;
+  right: 8rem;
   z-index: 1000;
 }
 
 #video-preview-top-content {
   width: 100%;
   position: absolute;
-  top: 5px;
+  top: 0px;
   z-index: 1000;
   background-color: rgba(0, 0, 0, 0.6);
   color: white;
@@ -1545,22 +1601,20 @@ img.icon-style-normal {
   font-weight: 700;
 }
 #booking-switch {
-  position: absolute;
-  bottom: 5px;
-  font-size: smaller;
-  background-color: rgba(255, 255, 255, 0.5);
-  left: 50%;
-  transform: translateX(-50%);
+  /* position: absolute;
+  bottom: 5px; */
+  font-size: 12px;
+  /* left: 50%;
+  transform: translateX(-50%); */
 }
-/* #preview-video-name {
-  position: fixed;
-  top: -22px;
-} */
+#preview-video-name {
+  margin-right: 4px;
+}
 
-.form-switch {
+/* .form-switch {
   padding-left: 3.5em !important;
   padding-right: 3.5em !important;
-}
+} */
 .subscription-container {
   max-width: 400px;
   margin: auto;
@@ -1666,8 +1720,13 @@ img.icon-style-normal {
   background-color: #9747ff;
 }
 .dropdown-menu {
-  width: 100%;
+  min-width: 8rem !important;
 }
+
+.dropdown-item {
+  font-size: 12px;
+}
+
 .dropdown-item-hover:hover {
   background-color: var(--main-color) !important;
   color: white !important;
@@ -1771,4 +1830,57 @@ img.icon-style-normal {
 .confirmation-title {
   font-size: 20px;
   font-weight: 800;
+}
+
+.subscription-box {
+  background-color: #f5f5f5;
+  border-radius: 15px;
+  padding: 20px;
+  max-width: 400px;
+  margin: auto;
+}
+.subscription-header {
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  position: relative;
+}
+.subscription-header h3 {
+  font-weight: bold;
+  color: #6c757d;
+}
+.badge-active {
+  background-color: #28a745;
+  font-size: 0.8em;
+}
+.subscription-details {
+  background-color: #e9ecef;
+  padding: 20px;
+  border-radius: 15px;
+}
+.subscription-details p {
+  font-size: 0.9em;
+  color: #6c757d;
+}
+.subscription-details p strong {
+  color: #343a40;
+}
+.btn-outline-primary {
+  border-color: #6c757d;
+  color: #6c757d;
+}
+.btn-outline-primary:hover {
+  background-color: #6c757d;
+  color: white;
+}
+.btn-cancel {
+  background-color: #dc3545;
+  color: white;
+}
+.btn-cancel:hover {
+  background-color: #bd2130;
+}
+.subscription-actions {
+  margin-top: 20px;
 }

@@ -1,30 +1,13 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import API_ENDPOINTS from "../apiConfig.js";
-import { FaDownload } from "react-icons/fa6";
-import { FaTimesCircle } from "react-icons/fa";
-import { FaRegCirclePlay } from "react-icons/fa6";
-import {
-  MdDeleteForever,
-  MdOutlineVideoSettings,
-  MdOutlineSendTimeExtension,
-} from "react-icons/md";
-import { AiOutlineClose } from "react-icons/ai";
 
 import {
   getCurrentDateTimeString,
-  handleCopyToClipboard,
-  insertHtmlAtPositionInMail,
-  insertIntoLinkedInMessageWindow,
-  replaceInvalidCharacters,
 } from "../../utils/index.js";
 import GlobalStatesContext from "../../contexts/GlobalStates.js";
-import toast from "react-hot-toast";
 import MediaUtilsContext from "../../contexts/MediaUtilsContext.js";
 import VoiceVisualization from "../AudioRecording/index.js";
 
-import { IoLink } from "react-icons/io5";
 import MessageContext from "../../contexts/MessageContext.js";
-import RenameVideoPopup from "../Library/RenameVideoPopup.js";
 
 import { IoMdClose } from "react-icons/io";
 import Vertical from "../SVG/Vertical.jsx";
@@ -188,7 +171,7 @@ const RecordingButton = () => {
     <>
       <div className="pt-1">
         <div class="container">
-          <div class="row justify-content-between px-5">
+          <div class="row justify-content-center px-3">
             <div class="col-auto">
               <div className="d-flex flex-column align-items-center">
                 <div
@@ -204,7 +187,7 @@ const RecordingButton = () => {
                   <span class="icon">
                     {capturing ? (
                       <svg
-                        width="28"
+                        width="16"
                         height="28"
                         viewBox="0 0 28 28"
                         fill="none"
@@ -214,9 +197,9 @@ const RecordingButton = () => {
                       </svg>
                     ) : (
                       <svg
-                        width="41"
-                        height="40"
-                        viewBox="0 0 41 40"
+                        width="32"
+                        height="32"
+                        viewBox="0 0 40 40"
                         fill="currentcolor"
                         xmlns="http://www.w3.org/2000/svg"
                       >
