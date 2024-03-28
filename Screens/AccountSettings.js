@@ -469,75 +469,62 @@ const CalendarUrlForm = ({ userProfileData }) => {
     );
 };
 const UserSubscriptions = () => {
-  const [toggleInfo, setToggleInfo] = useState(false);
+    const [toggleInfo, setToggleInfo] = useState(false);
 
-  return (
-      <div className="card border-radius-12 overflow-hidden">
-          <div
-              className="light-pink card-header-custom d-flex justify-content-between align-items-center toggle-collapse"
-              onClick={() => setToggleInfo(!toggleInfo)}
-              data-toggle="collapse"
-              data-target="#subscription-collapse"
-              aria-expanded="false"
-              aria-controls="subscription-collapse"
-          >
-              <h6 className="mb-0 card-title">Subscription</h6>
-              <div>
-                  <FaAngleDown style={toggleInfo ? { transform: 'rotate(180deg)' } : ''} />
-              </div>
-          </div>
-          <div className="collapse" id="subscription-collapse">
-          {/* <div class="card device-card my-4 p-3 " >
-                            <div class="list-group">
-                                <div className="d-flex flew-row align-items-start">
-                                    {' '}
-                                    <div className="fs-6 fw-bold me-3">Browser:</div> 🌐 Chrome on {' '}
-                                   operating_system
-                                </div>
-                                <div className="d-flex flew-row align-items-start">
-                                    {' '}
-                                    <div className="fs-6 fw-bold me-3">Device:</div>{' '}
-                                    operating_system
-                                </div>
-                                <div className="d-flex flew-row align-items-start">
-                                    {' '}
-                                    <div className="fs-6 fw-bold me-3">Location:</div>{' '}
-                                    location
-                                </div>
-                                <div className="d-flex flew-row align-items-start">
-                                    <div className="fs-6 fw-bold me-3">IP address:</div>
-                                    device.ip_address
-                                </div>
-                                <button
-                                    class="mt-3 btn btn-primary fw-bold"
-                                    // onClick={() => deleteUserDevice(device.id, device.device_id)}
-                                >
-                                    Remove
-                                </button>
-                            </div>
-                        </div> */}
-
-<div class="container mt-5">
-  <div class="subscription-box">
-    <div class="subscription-header text-center">
-      <h3>Free Trial <span class="badge badge-active ml-2">Active</span></h3>
-    </div>
-    <div class="subscription-details">
-      <p><strong>Plan details</strong></p>
-      <p>Subscription ID <span class="text-secondary">#2345</span></p>
-      <p>Plan <span class="text-secondary">Free</span></p>
-      <p>Start date <span class="text-secondary">17 March 2024</span></p>
-      <p>Expiration date <span class="text-secondary">20 March 2024</span></p>
-      <div class="subscription-actions">
-        <a href="#" class="btn btn-outline-primary btn-block">View history</a>
-        <a href="#" class="btn btn-cancel btn-block mt-2">Cancel subscription</a>
-      </div>
-    </div>
-  </div>
-</div>
-          </div>
-      </div>
-  );
+    return (
+        <div className="card border-radius-12 overflow-hidden">
+            <div
+                className="light-pink card-header-custom d-flex justify-content-between align-items-center toggle-collapse"
+                onClick={() => setToggleInfo(!toggleInfo)}
+                data-toggle="collapse"
+                data-target="#subscription-collapse"
+                aria-expanded="false"
+                aria-controls="subscription-collapse"
+            >
+                <h6 className="mb-0 card-title">Subscription</h6>
+                <div>
+                    <FaAngleDown style={toggleInfo ? { transform: 'rotate(180deg)' } : ''} />
+                </div>
+            </div>
+            <div className="collapse" id="subscription-collapse">
+                <div class="container mt-2">
+                    <div class="subscription-card-header d-flex justify-content-between">
+                        <h3>Free Trial</h3> <span class="badge badge-active ml-2">Active</span>
+                    </div>
+                    <ul class="list-group" element-id="10425">
+                        <li
+                            class="list-group-item d-flex justify-content-between align-items-center"
+                            element-id="10424"
+                        >
+                            Plan details
+                            <span></span>
+                        </li>
+                        <li
+                            class="list-group-item d-flex justify-content-between align-items-center"
+                            element-id="10422"
+                        >
+                            Subscription ID
+                            <span>2</span>
+                        </li>
+                        <li
+                            class="list-group-item d-flex justify-content-between align-items-center"
+                            element-id="10420"
+                        >
+                            Plan
+                            <span>1</span>
+                        </li>
+                        <li
+                            class="list-group-item d-flex justify-content-between align-items-center"
+                            element-id="10420"
+                        >
+                            Expiration date
+                            <span>1</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    );
 };
 function AccountSettings(props) {
     const [profileData, setProfileData] = useState({});
@@ -582,11 +569,11 @@ function AccountSettings(props) {
                     <div>
                         <AccountProfile userData={profileData} />
                     </div>
-                    <div className="my-4-2 mx--1">
+                    <div className="my-4-2 mx-1">
                         <div>
                             {profileData && <UserSubscriptions userProfileData={profileData} />}
                         </div>
-                        <div>
+                        <div className="mt-3">
                             {profileData && <CalendarUrlForm userProfileData={profileData} />}
                         </div>
                         <div className="mt-3">

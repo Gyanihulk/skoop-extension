@@ -1,26 +1,17 @@
 
 /* Lato */
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 
 /* Montserrat */
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
 /* Poppins */
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 
 /* variables */
 :root {
-  /* colors */
-  --light-pink: #eee3fc;
-  --lighter-pink: #fbf7ff;
-  --main-color: #2d68c4;
-  /* measures */
   /* colors */
   --light-pink: #eee3fc;
   --lighter-pink: #fbf7ff;
@@ -31,16 +22,12 @@
 /* background color */
 .light-pink {
   background-color: var(--light-pink);
-  background-color: var(--light-pink);
 }
 .lighter-pink {
-  background-color: var(--lighter-pink);
   background-color: var(--lighter-pink);
 }
 
 .py-4-5 {
-  padding-top: 2.2rem;
-  padding-bottom: 2.2rem;
   padding-top: 2.2rem;
   padding-bottom: 2.2rem;
 }
@@ -48,25 +35,18 @@
 .my-4-2 {
   margin-top: 32px;
   margin-bottom: 32px;
-  margin-top: 32px;
-  margin-bottom: 32px;
 }
 
 .py-4-2 {
-  padding-top: 32px;
-  padding-bottom: 32px;
   padding-top: 32px;
   padding-bottom: 32px;
 }
 
 .ml-0-4 {
   margin-left: 4px;
-  margin-left: 4px;
 }
 
 .px-4-2 {
-  padding-left: 32px;
-  padding-right: 32px;
   padding-left: 32px;
   padding-right: 32px;
 }
@@ -74,13 +54,9 @@
 .mx--1 {
   margin-right: 16px;
   margin-left: 16px;
-  margin-right: 16px;
-  margin-left: 16px;
 }
 
 .px--1 {
-  margin-right: 16px;
-  margin-left: 16px;
   margin-right: 16px;
   margin-left: 16px;
 }
@@ -96,28 +72,18 @@
   --bs-navbar-padding-y: 2px !important;
 }
 
-.navbar {
-  --bs-navbar-padding-y: 2px !important;
-}
-
 .border-radius-8 {
-  border-radius: 8px !important;
   border-radius: 8px !important;
 }
 
 .border-radius-12 {
   border-radius: 12px !important;
-  border-radius: 12px !important;
 }
 
 .border-bottom-light-pink {
   border-bottom: 0.5px solid #eee3fc;
-  border-bottom: 0.5px solid #eee3fc;
 }
 .border-top-light-pink {
-  border-top: 0.5px solid #eee3fc;
-  margin-left: 25px;
-  margin-right: 25px;
   border-top: 0.5px solid #eee3fc;
   margin-left: 25px;
   margin-right: 25px;
@@ -131,24 +97,10 @@
   font-family: "Montserrat", sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 15px;
-  color: #2a2b39;
-  font-family: "Montserrat", sans-serif;
-  font-optical-sizing: auto;
-  font-style: normal;
 }
 
 /* general css */
 .sbl-circ-ripple {
-  height: 56px;
-  width: 56px;
-  color: #00b48c;
-  border-radius: 50%;
-  position: relative;
-  display: inline-block;
-  margin-top: 30px;
   height: 56px;
   width: 56px;
   color: #00b48c;
@@ -984,8 +936,13 @@ input.form-control {
   order: 0;
   align-self: stretch;
   flex-grow: 0;
-  background-color: #a9aaab33;
 }
+
+#floatingTextarea {
+  background-color: #a9aaab33;
+  resize: none;
+}
+
 input[type="time"].form-control {
   padding: 7.7px 12px;
 }
@@ -1676,12 +1633,15 @@ img.icon-style-normal {
   background-color: var(--main-color) !important;
   color: white;
 }
-.subscription-header > h1 {
-  font-size: 40px;
+.subscription-card-header > h1 {
+  font-size: 30px;
+  font-family: 'Montserrat';
 }
-.subscription-header > span {
+.subscription-card-header > span {
   font-size: medium;
-  color: rgba(42, 43, 57, 0.5);
+  color: #4CAF50;
+  border-radius: 30%;
+  background-color: #ECF8EB !important;
 }
 .subscription-button {
   text-align: center;
@@ -1719,7 +1679,34 @@ img.icon-style-normal {
   background-color: #9747ff;
 }
 .dropdown-menu {
-  min-width: 8rem !important;
+  width: 100%;
+}
+
+#video-preview-option div {
+  min-width: 8rem;
+}
+
+.dropdown-item {
+  font-size: 12px;
+}
+
+.dropdown-item-hover:hover {
+  background-color: var(--main-color) !important;
+  color: white !important;
+}
+.dropdown-item-hover {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+}
+#gpt-dropdown {
+  width: 288px !important;
+  background-color: white;
+  color: rgba(42, 43, 57, 0.8);
+  text-align: start;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .dropdown-item {
@@ -1748,6 +1735,7 @@ img.icon-style-normal {
   font-family: "Montserrat";
   font-weight: 700;
   font-size: 10px;
+  text-align: center;
 }
 .device-card {
   background-color: var(--lighter-pink) !important;
