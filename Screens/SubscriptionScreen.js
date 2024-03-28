@@ -3,6 +3,7 @@ import AuthContext from '../contexts/AuthContext';
 import { FaCheckCircle } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import GlobalStatesContext from '../contexts/GlobalStates';
+import { LockIcon } from '../components/SVG/LockIcon';
 const SubscriptionScreen = () => {
     const { createSubscription, verifyCoupon } = useContext(AuthContext);
     const { subscriptionType, setSubscriptionType} = useContext(GlobalStatesContext);
@@ -162,7 +163,7 @@ const SubscriptionScreen = () => {
                 )}
             </div>
 
-            <div className="subscription-button d-grid gap-2">
+            <div className="subscription-button d-grid gap-2 my-2">
                 <button
                     className="btn btn-primary btn-trial"
                     type="button"
@@ -171,6 +172,9 @@ const SubscriptionScreen = () => {
                     START 3-DAY FREE TRIAL
                 </button>
             </div>
+            <p className='small-bold-text'>Credit Card/Debit Card  information is required.</p>
+            {/* <br/> */}
+            <p className='small-bold-text'><LockIcon/>Guaranteed safe & secure checkout <img src="/images/stripe.png"/></p>
             <div className="subscription-footer">
                 <a href="#">Privacy policy</a> <a href="#">Terms of use</a>
             </div>

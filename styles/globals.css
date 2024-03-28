@@ -1684,7 +1684,6 @@ img.icon-style-normal {
   color: rgba(42, 43, 57, 0.5);
 }
 .subscription-button {
-  margin-top: 45px;
   text-align: center;
 }
 
@@ -1745,7 +1744,11 @@ img.icon-style-normal {
   justify-content: space-between;
   align-items: center;
 }
-
+.small-bold-text{
+  font-family: "Montserrat";
+  font-weight: 700;
+  font-size: 10px;
+}
 .device-card {
   background-color: var(--lighter-pink) !important;
   border-radius: 10px !important;
