@@ -522,7 +522,23 @@ export const AuthProvider = ({ children }) => {
         setNewUser(false);
         navigateToPage('SignInIntro');
     };
-
+    const getMySubscription = async (videoId) => {
+        try {
+            const res = await fetch(API_ENDPOINTS.mySubscriptions , {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                },
+            });
+            
+            if (res.ok) {
+                return res;
+            }
+        } catch (err) {
+            return { ok: false };
+        }
+    };
     return (
         <AuthContext.Provider
             value={{
@@ -556,6 +572,7 @@ export const AuthProvider = ({ children }) => {
                 getUserDevice,
                 verifyCoupon,
                 getVideoInfo,
+                getMySubscription
             }}
         >
             {children}

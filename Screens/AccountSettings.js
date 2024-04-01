@@ -470,7 +470,14 @@ const CalendarUrlForm = ({ userProfileData }) => {
 };
 const UserSubscriptions = () => {
     const [toggleInfo, setToggleInfo] = useState(false);
-
+    const { getMySubscription } = useContext(AuthContext);
+    async function setup() {
+        const subs = await getMySubscription();
+        console.log(subs,"from my subscription")
+    }
+    useEffect(() => {
+        setup();
+    }, []);
     return (
         <div className="card border-radius-12 overflow-hidden">
             <div
@@ -491,34 +498,25 @@ const UserSubscriptions = () => {
                     <div class="subscription-card-header d-flex justify-content-between">
                         <h3>Free Trial</h3> <span class="badge badge-active ml-2">Active</span>
                     </div>
-                    <ul class="list-group" element-id="10425">
-                        <li
-                            class="list-group-item d-flex justify-content-between align-items-center"
-                            element-id="10424"
-                        >
+                    <ul class="list-group">
+                        <li class="d-flex justify-content-between align-items-center">
                             Plan details
                             <span></span>
                         </li>
-                        <li
-                            class="list-group-item d-flex justify-content-between align-items-center"
-                            element-id="10422"
-                        >
+                        <li class="d-flex justify-content-between align-items-center">
                             Subscription ID
                             <span>2</span>
                         </li>
-                        <li
-                            class="list-group-item d-flex justify-content-between align-items-center"
-                            element-id="10420"
-                        >
+                        <li class="d-flex justify-content-between align-items-center">
                             Plan
                             <span>1</span>
                         </li>
-                        <li
-                            class="list-group-item d-flex justify-content-between align-items-center"
-                            element-id="10420"
-                        >
+                        <li class="d-flex justify-content-between align-items-center">
                             Expiration date
                             <span>1</span>
+                        </li>
+                        <li class="d-flex justify-content-between align-items-center">
+                            <a>Cancel Subscription</a>
                         </li>
                     </ul>
                 </div>

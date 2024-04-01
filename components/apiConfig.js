@@ -53,6 +53,7 @@ const API_ENDPOINTS = {
     getUserDevices:`${backendUrl}/userdevices` ,//GET
     validateCoupon:`${backendUrl}/validate-coupon` ,//GET
     getVideoInfo:`${backendUrl}/videoinfobyvideoid` ,//GET
+    mySubscriptions:`${backendUrl}/subscription`,// GET
 };
 
 
