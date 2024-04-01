@@ -1936,3 +1936,40 @@ img.icon-style-normal {
 .subscription-actions {
   margin-top: 20px;
 }
+#subscription-collapse {
+  font-family: 'Montserrat';
+}
+.mysubscription-info span {
+  color: #8f9192 !important;
+  font-size: 12px !important;
+  text-transform: capitalize;
+}
+.bold-600 {
+  font-weight: 600;
+}
+.mysubscription-info {
+  font-size: 12px !important;
+}
+.subscription-card-header {
+  border-bottom: 0.75px solid #8f9192;
+  text-transform: capitalize;
+}
+.cancel-subscription {
+  text-decoration: underline;
+  color: #2d68c4;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+}
+.subscription-card-header > h3 {
+  font-size: 20px !important;
+  font-family: 'Montserrat';
+}
+.subscription-card-header > span {
+  font-size: medium;
+  color: #4caf50;
+  height: 25px;
+  border-radius: 35px;
+  background-color: #ecf8eb !important;
+  font-size: 14px !important;
+}

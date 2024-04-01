@@ -18,7 +18,7 @@ import ChatWindowSelection from "../ChatWindowSelection/index.js";
 import toast from "react-hot-toast";
 import API_ENDPOINTS from "../apiConfig.js";
 import MediaUtilsContext from "../../contexts/MediaUtilsContext.js";
-import { VideoPreview } from "../videoPreview.jsx";
+import { VideoPreview } from "../VideoPreview.jsx";
 const MessageComposer = () => {
   const [displayComp, setDisplayComp] = useState("DefaultCard");
   const [activateCalenderLink, setActivateCalenderLink] = useState(false);

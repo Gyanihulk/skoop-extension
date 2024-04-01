@@ -564,6 +564,23 @@ export const AuthProvider = ({ children }) => {
             return { ok: false };
         }
     };
+    const deactivateMySubscription = async (videoId) => {
+        try {
+            const res = await fetch(API_ENDPOINTS.mySubscriptions , {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                },
+            });
+            
+            if (res.ok) {
+                return res;
+            }
+        } catch (err) {
+            return { ok: false };
+        }
+    };
     return (
         <AuthContext.Provider
             value={{
@@ -597,7 +614,8 @@ export const AuthProvider = ({ children }) => {
                 getUserDevice,
                 verifyCoupon,
                 getVideoInfo,
-                getMySubscription
+                getMySubscription,
+                deactivateMySubscription
             }}
         >
             {children}

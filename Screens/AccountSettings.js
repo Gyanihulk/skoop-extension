@@ -470,14 +470,20 @@ const CalendarUrlForm = ({ userProfileData }) => {
 };
 const UserSubscriptions = () => {
     const [toggleInfo, setToggleInfo] = useState(false);
-    const { getMySubscription } = useContext(AuthContext);
+    const { getMySubscription ,deactivateMySubscription} = useContext(AuthContext);
+    const [subsriptionInfo, setSubscriptionInfo] = useState();
     async function setup() {
-        const subs = await getMySubscription();
-        console.log(subs,"from my subscription")
+        const response = await getMySubscription();
+        const subs = await response.json();
+        console.log(subs, 'from subs ');
+        setSubscriptionInfo(subs);
     }
     useEffect(() => {
         setup();
     }, []);
+  async function handleCancel(){
+    deactivateMySubscription()
+  }
     return (
         <div className="card border-radius-12 overflow-hidden">
             <div
@@ -494,33 +500,43 @@ const UserSubscriptions = () => {
                 </div>
             </div>
             <div className="collapse" id="subscription-collapse">
-                <div class="container mt-2">
-                    <div class="subscription-card-header d-flex justify-content-between">
-                        <h3>Free Trial</h3> <span class="badge badge-active ml-2">Active</span>
-                    </div>
-                    <ul class="list-group">
-                        <li class="d-flex justify-content-between align-items-center">
-                            Plan details
-                            <span></span>
-                        </li>
-                        <li class="d-flex justify-content-between align-items-center">
-                            Subscription ID
-                            <span>2</span>
-                        </li>
-                        <li class="d-flex justify-content-between align-items-center">
-                            Plan
-                            <span>1</span>
-                        </li>
-                        <li class="d-flex justify-content-between align-items-center">
-                            Expiration date
-                            <span>1</span>
-                        </li>
-                        <li class="d-flex justify-content-between align-items-center">
-                            <a>Cancel Subscription</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+                <div class="container my-2">
+                    {subsriptionInfo?.id && (
+                        <>
+                            <div class="subscription-card-header d-flex justify-content-between mt-3">
+                                <h3>{subsriptionInfo?.current_plan_status}</h3>{' '}
+                                <span class="badge badge-active ml-2">Active</span>
+                            </div>
+
+                            <ul class="list-group">
+                                <li class="d-flex justify-content-start align-items-center mt-2 mysubscription-info bold-600">
+                                   Plan details
+                                </li>
+                                <li class="d-flex justify-content-between align-items-center mysubscription-info">
+                                    Subscription Id
+                                    <span>{subsriptionInfo?.subscription_id}</span>
+                                </li>
+                                <li class="d-flex justify-content-between align-items-center mysubscription-info">
+                                    Plan
+                                    <span>{subsriptionInfo?.plan_type}</span>
+                                </li>
+
+                                <li class="d-flex justify-content-between align-items-center mysubscription-info">
+                                    Start date
+                                    <span>{subsriptionInfo?.start_date}</span>
+                                </li>
+                                <li class="d-flex justify-content-between align-items-center mysubscription-info">
+                                    Expiration date
+                                    <span>{subsriptionInfo?.expiration_date}</span>
+                                </li>
+                                <li class="d-flex justify-content-end align-items-center mt-1">
+                                    {/* <div className="cancel-subscription">View Payment</div> */}
+                                    <div className="cancel-subscription" onClick={()=>{handleCancel()}}>Cancel Subscription</div>
+                                </li>
+                            </ul>
+                        </>
+                    )}
+                </div>            </div>
         </div>
     );
 };

@@ -83,43 +83,43 @@ const HelperVideos = () => {
 
   const detail = [
     {
-      videoSrc: "https://play.vidyard.com/2ZvdQMJWiHaN6GHDMwG6wG",
-      imgSrc: "/screens/Record_video.png",
+      videoSrc: "https://play.vidyard.com/UGEUwRVNppReqNcqthBrNh",
+      imgSrc: "/screens/helperImages/TUTORIAL 2.jpg",
       alt: "This image is related to a video which says about how to record & send video",
-      text: "How to send Video",
+      text: "Creating a simple video",
     },
     {
-      videoSrc: "https://play.vidyard.com/JXjqZR2ACN5aoZNJxWkZJJ",
-      imgSrc: "/screens/Record_audio.png",
+      videoSrc: "https://play.vidyard.com/Az8t22sqAuJeZytJwGekE4",
+      imgSrc: "/screens/helperImages/TUTORIAL 3.jpg",
       alt: "This image is related to a video which says about how to send audio",
-      text: "How to send Audio",
+      text: " Creating a Welcome Video",
     },
   ];
 
   const info = [
     {
-      videoSrc: "https://play.vidyard.com/2ZvdQMJWiHaN6GHDMwG6wG",
-      imgSrc: "/screens/Record_video.png",
+      videoSrc: "https://play.vidyard.com/GFCJo68GJP6PARscaHAQg7",
+      imgSrc: "/screens/helperImages/TUTORIAL 4.jpg",
       alt: "This image is related to a video which says about how to record & send video",
-      text: "How to send Video",
+      text: "Creating a Voice Memo",
     },
     {
-      videoSrc: "https://play.vidyard.com/JXjqZR2ACN5aoZNJxWkZJJ",
-      imgSrc: "/screens/Record_audio.png",
+      videoSrc: "https://play.vidyard.com/bLmzPhpegHvo8rWpLboKNb",
+      imgSrc: "/screens/helperImages/TUTORIAL 5.jpg",
       alt: "This image is related to a video which says about how to send audio",
-      text: "How to send Audio",
+      text: "Adding an Animated Gif",
     },
     {
-      videoSrc: "https://play.vidyard.com/nfAw1a2scendwz7VfuydyE",
-      imgSrc: "/screens/Record_chatgpt_prompts.png",
+      videoSrc: "https://play.vidyard.com/U15yecB66tJ2Fxnh2bQFhY",
+      imgSrc: "/screens/helperImages/TUTORIAL 6.jpg",
       alt: "This image is related to a video which says about how to send Chatgpt prompts",
-      text: "How to add Chatgpt",
+      text: "Reusable Replies",
     },
     {
-      videoSrc: "https://play.vidyard.com/bZYGwE5EsWUMzMjf9zNJpa",
-      imgSrc: "/screens/Record_gif.png",
+      videoSrc: "https://play.vidyard.com/oMuPe7PpZZCEZXjpueFshA",
+      imgSrc: "/screens/helperImages/TUTORIAL 7.jpg",
       alt: "This image is related to a video which says about how to send GIF",
-      text: "How to send GIF",
+      text: "Manage Your Videos and Media",
     },
   ];
 
@@ -141,11 +141,11 @@ const HelperVideos = () => {
             <section className="video-header m-0 p-0">
               <div className="border-radius-8 overflow-hidden">
                 <img
-                  src="/screens/Record_video.png"
+                  src= "/screens/helperImages/TUTORIAL 1.jpg"
                   alt="This image is related to a video which says about how to record & send video"
                   onClick={(e) => {
                     openPopUp(
-                      "https://play.vidyard.com/2ZvdQMJWiHaN6GHDMwG6wG",
+                      "https://play.vidyard.com/WnmHTXaJe9StcYvc8uqJdm",
                       e
                     );
                   }}
@@ -154,7 +154,7 @@ const HelperVideos = () => {
                   className="para-md mt-1 text-wrap text-center cursor-pointer"
                   onClick={(e) => {
                     openPopUp(
-                      "https://play.vidyard.com/2ZvdQMJWiHaN6GHDMwG6wG",
+                      "https://play.vidyard.com/WnmHTXaJe9StcYvc8uqJdm",
                       e
                     );
                   }}

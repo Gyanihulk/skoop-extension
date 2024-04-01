@@ -119,6 +119,7 @@ export const VideoPreview = () => {
       toast.error("Failed to rename video.");
     }
   };
+  
   const handleDeleteClick = async () => {
     try {
       await deleteVideo(latestVideo.id);
@@ -128,6 +129,7 @@ export const VideoPreview = () => {
       toast.error("Failed to delete video");
     }
   };
+
   const handleDownload = React.useCallback(() => {
     if (latestBlob) {
       const urlToDownload =

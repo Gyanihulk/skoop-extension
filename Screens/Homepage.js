@@ -6,8 +6,6 @@ import GlobalStatesContext from "../contexts/GlobalStates.js";
 import RecordingButton from "../components/RecordingButton/index.js";
 
 import MessageComposer from "../components/MessageComposer/index.js";
-import { VideoPreview } from "../components/videoPreview.jsx";
-import { useVisitorData } from "@fingerprintjs/fingerprintjs-pro-react";
 const Homepage = (props) => {
   const { setIsLinkedin, setIsProfilePage, setFocusedElementId } =
     useContext(GlobalStatesContext);
