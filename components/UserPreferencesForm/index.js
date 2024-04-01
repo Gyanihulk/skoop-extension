@@ -14,8 +14,9 @@ import ValidationError from '../../components/Auth/ValidationError';
 import TimePicker from 'react-bootstrap-time-picker';
 import { timeFromInt, timeToInt } from 'time-number';
 import ScreenContext from '../../contexts/ScreenContext';
+import Collapse from 'react-bootstrap/Collapse';
 
-const UserPreferencesForm = ({ heading, collapse, showSkip }) => {
+const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
     const [values, setValues] = useState({
         preferredStartTime: '',
         preferredEndTime: '',
@@ -25,7 +26,7 @@ const UserPreferencesForm = ({ heading, collapse, showSkip }) => {
         breakEndTime: '',
     });
     const [isPreference, setIsPreference] = useState(false);
-    const [toggleInfo, setToggleInfo] = useState(false);
+    const [toggleInfo, setToggleInfo] = collapse ? useState(collapse) : useState(false);
     const [isTimezoneEmpty, setIsTimezoneEmpty] = useState(false);
     const [isTimezoneScreen, setIsTimezoneScreen] = useState(false);
     const [selectedTimezone, setSelectedTimezone] = useState('');
@@ -196,10 +197,8 @@ const UserPreferencesForm = ({ heading, collapse, showSkip }) => {
                 <div
                     className="light-pink card-header-custom toggle-collapse"
                     onClick={() => setToggleInfo(!toggleInfo)}
-                    data-toggle="collapse"
-                    data-target={!collapse ? '#user-preference-collapse' : ''}
-                    aria-expanded={collapse ? collapse : 'true'}
                     aria-controls="user-preference-collapse"
+                    aria-expanded={toggleInfo}
                 >
                     <div className="d-flex justify-content-between align-items-center">
                         <h6 className="mb-0 card-title">
@@ -208,192 +207,194 @@ const UserPreferencesForm = ({ heading, collapse, showSkip }) => {
                         {!collapse && (
                             <div>
                                 <FaAngleDown
-                                    style={toggleInfo ? { transform: 'rotate(180deg)' } : ''}
+                                    style={toggleInfo ? { transform: 'rotate(180deg)' } : { transform: 'rotate(0deg)' }}
                                 />
                             </div>
                         )}
                     </div>
                 </div>
-                <div className={`collapse ${collapse ? 'show' : ''}`} id="user-preference-collapse">
-                    <form onSubmit={handleSubmit}>
-                        <div className="card-body p-0">
-                            <div className="py-4-2 px--1 mt-3">
-                                <div className="mb-3">
-                                    <label className="form-label profile-text">
-                                        Preferred Start Time
-                                    </label>
-                                    <div className="position-relative mt-2">
-                                        <TimePicker
-                                            value={preferredStartTime}
-                                            onChange={(time) => setPreferredStartTime(time)}
-                                        />
-                                        <div className="clock-icon">
-                                            <FaRegClock size={20} />
+                <Collapse in={toggleInfo}>
+                    <div id="user-preference-collapse">
+                        <form onSubmit={handleSubmit}>
+                            <div className="card-body p-0">
+                                <div className="py-4-2 px--1 mt-3">
+                                    <div className="mb-3">
+                                        <label className="form-label profile-text">
+                                            Preferred Start Time
+                                        </label>
+                                        <div className="position-relative mt-2">
+                                            <TimePicker
+                                                value={preferredStartTime}
+                                                onChange={(time) => setPreferredStartTime(time)}
+                                            />
+                                            <div className="clock-icon">
+                                                <FaRegClock size={20} />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label profile-text">
-                                        Break Start Time
-                                    </label>
-                                    <div className="position-relative mt-2">
-                                        <TimePicker
-                                            value={breakStartTime}
-                                            onChange={(time) => setBreakStartTime(time)}
-                                        />
-                                        <div className="clock-icon">
-                                            <FaRegClock size={20} />
+                                    <div className="mb-3">
+                                        <label className="form-label profile-text">
+                                            Break Start Time
+                                        </label>
+                                        <div className="position-relative mt-2">
+                                            <TimePicker
+                                                value={breakStartTime}
+                                                onChange={(time) => setBreakStartTime(time)}
+                                            />
+                                            <div className="clock-icon">
+                                                <FaRegClock size={20} />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label profile-text">
-                                        Break End Time
-                                    </label>
-                                    <div className="position-relative mt-2">
-                                        <TimePicker
-                                            value={breakEndTime}
-                                            onChange={(time) => setBreakEndTime(time)}
-                                        />
-                                        <div className="clock-icon">
-                                            <FaRegClock size={20} />
+                                    <div className="mb-3">
+                                        <label className="form-label profile-text">
+                                            Break End Time
+                                        </label>
+                                        <div className="position-relative mt-2">
+                                            <TimePicker
+                                                value={breakEndTime}
+                                                onChange={(time) => setBreakEndTime(time)}
+                                            />
+                                            <div className="clock-icon">
+                                                <FaRegClock size={20} />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label profile-text">
-                                        Preferred End Time
-                                    </label>
-                                    <div className="position-relative mt-2">
-                                        <TimePicker
-                                            value={preferredEndTime}
-                                            onChange={(time) => setPreferredEndTime(time)}
-                                        />
-                                        <div className="clock-icon">
-                                            <FaRegClock size={20} />
+                                    <div className="mb-3">
+                                        <label className="form-label profile-text">
+                                            Preferred End Time
+                                        </label>
+                                        <div className="position-relative mt-2">
+                                            <TimePicker
+                                                value={preferredEndTime}
+                                                onChange={(time) => setPreferredEndTime(time)}
+                                            />
+                                            <div className="clock-icon">
+                                                <FaRegClock size={20} />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label profile-text">Time Zone</label>
-                                    <div
-                                        className="position-relative mt-2"
-                                        onClick={handleToggleTimezoneScreen}
-                                    >
-                                        <input
-                                            className="form-control cursor-pointer"
-                                            id="time-zone-dropdown"
-                                            type="text"
-                                            name="timezone"
-                                            placeholder="Select time zone"
-                                            value={selectedTimezone}
-                                            readOnly
-                                        />
-                                        <button
-                                            className="btn position-absolute end-0 top-50 translate-middle-y border-0"
-                                            type="button"
+                                    <div className="mb-3">
+                                        <label className="form-label profile-text">Time Zone</label>
+                                        <div
+                                            className="position-relative mt-2"
+                                            onClick={handleToggleTimezoneScreen}
                                         >
-                                            <MdExpandMore size={30} />
-                                        </button>
+                                            <input
+                                                className="form-control cursor-pointer"
+                                                id="time-zone-dropdown"
+                                                type="text"
+                                                name="timezone"
+                                                placeholder="Select time zone"
+                                                value={selectedTimezone}
+                                                readOnly
+                                            />
+                                            <button
+                                                className="btn position-absolute end-0 top-50 translate-middle-y border-0"
+                                                type="button"
+                                            >
+                                                <MdExpandMore size={30} />
+                                            </button>
+                                        </div>
+                                        {isTimezoneEmpty && (
+                                            <ValidationError title="Please select timezone" />
+                                        )}
                                     </div>
-                                    {isTimezoneEmpty && (
-                                        <ValidationError title="Please select timezone" />
-                                    )}
-                                </div>
-                                <div className="mb-3">
-                                    <label className="form-label profile-text">
-                                        Additional Details
-                                    </label>
-                                    <textarea
-                                        className="form-control mt-2"
-                                        id="additionalDetails"
-                                        name="additionalDetails"
-                                        placeholder="Additional Info"
-                                        value={additionalDetails}
-                                        onChange={(e) => setAdditionalDetails(e.target.value)}
-                                        rows="3"
-                                    ></textarea>
-                                </div>
-                                <div className="mb-3">
-                                    <p className="card-title">
-                                        You can add update these from the account settings anytime.
-                                    </p>
-                                    <p className="card-title">
-                                        Connect your calendar to auto-check for busy times and add
-                                        new events as they are scheduled.
-                                    </p>
+                                    <div className="mb-3">
+                                        <label className="form-label profile-text">
+                                            Additional Details
+                                        </label>
+                                        <textarea
+                                            className="form-control mt-2"
+                                            id="additionalDetails"
+                                            name="additionalDetails"
+                                            placeholder="Additional Info"
+                                            value={additionalDetails}
+                                            onChange={(e) => setAdditionalDetails(e.target.value)}
+                                            rows="3"
+                                        ></textarea>
+                                    </div>
+                                    <div className="mb-3">
+                                        <p className="card-title">
+                                            You can add update these from the account settings anytime.
+                                        </p>
+                                        <p className="card-title">
+                                            Connect your calendar to auto-check for busy times and add
+                                            new events as they are scheduled.
+                                        </p>
 
-                                    <div class="d-flex flex-column align-items-center justify-content-start mt-3">
-                                        <div class="d-flex align-items-center w-100">
-                                            <div class="d-flex align-items-center">
-                                                <input
-                                                    class="form-check-input mt-0 pt-0 ml-0-4"
-                                                    type="checkbox"
-                                                    value=""
-                                                    checked={google}
-                                                    onChange={() => {
-                                                        setGoogle(!google);
-                                                        setMicrosoft(false);
-                                                    }}
-                                                    id="google"
-                                                ></input>
-                                                <label
-                                                    class="d-flex align-items-center ms-2"
-                                                    for="google"
-                                                >
-                                                    <FcGoogle />
-                                                    <h5 class="card-title mb-0 pb-0 ms-1">
-                                                        Google Calendar
-                                                    </h5>
-                                                </label>
+                                        <div class="d-flex flex-column align-items-center justify-content-start mt-3">
+                                            <div class="d-flex align-items-center w-100">
+                                                <div class="d-flex align-items-center">
+                                                    <input
+                                                        class="form-check-input mt-0 pt-0 ml-0-4"
+                                                        type="checkbox"
+                                                        value=""
+                                                        checked={google}
+                                                        onChange={() => {
+                                                            setGoogle(!google);
+                                                            setMicrosoft(false);
+                                                        }}
+                                                        id="google"
+                                                    ></input>
+                                                    <label
+                                                        class="d-flex align-items-center ms-2"
+                                                        for="google"
+                                                    >
+                                                        <FcGoogle />
+                                                        <h5 class="card-title mb-0 pb-0 ms-1">
+                                                            Google Calendar
+                                                        </h5>
+                                                    </label>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="d-flex align-items-center w-100 mt-3">
-                                            <div class="d-flex align-items-center">
-                                                <input
-                                                    class="form-check-input mt-0 pt-0 ml-0-4"
-                                                    type="checkbox"
-                                                    value=""
-                                                    checked={microsoft}
-                                                    onChange={() => {
-                                                        setMicrosoft(!microsoft);
-                                                        setGoogle(false);
-                                                    }}
-                                                    id="microsoft"
-                                                ></input>
-                                                <label
-                                                    class="d-flex align-items-center ms-2"
-                                                    for="microsoft"
-                                                >
-                                                    <FaMicrosoft />
-                                                </label>
-                                                <h5 class="card-title mb-0 pb-0 ms-1">
-                                                    Outlook Calendar
-                                                </h5>
+                                            <div class="d-flex align-items-center w-100 mt-3">
+                                                <div class="d-flex align-items-center">
+                                                    <input
+                                                        class="form-check-input mt-0 pt-0 ml-0-4"
+                                                        type="checkbox"
+                                                        value=""
+                                                        checked={microsoft}
+                                                        onChange={() => {
+                                                            setMicrosoft(!microsoft);
+                                                            setGoogle(false);
+                                                        }}
+                                                        id="microsoft"
+                                                    ></input>
+                                                    <label
+                                                        class="d-flex align-items-center ms-2"
+                                                        for="microsoft"
+                                                    >
+                                                        <FaMicrosoft />
+                                                    </label>
+                                                    <h5 class="card-title mb-0 pb-0 ms-1">
+                                                        Outlook Calendar
+                                                    </h5>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="mt-4 d-flex justify-content-end">
-                                    {showSkip && (
-                                        <button
-                                            onClick={() => {
-                                                navigateToPage('Home');
-                                                setNewUser(false);
-                                            }}
-                                            className="mx-2 card-btn btn-text"
-                                        >
-                                            Skip
+                                    <div className="mt-4 d-flex justify-content-end">
+                                        {showSkip && (
+                                            <button
+                                                onClick={() => {
+                                                    navigateToPage('Home');
+                                                    setNewUser(false);
+                                                }}
+                                                className="mx-2 card-btn btn-text"
+                                            >
+                                                Skip
+                                            </button>
+                                        )}
+                                        <button type="submit" className="mx-2 card-btn btn-text">
+                                            {!isPreference ? 'Save' : 'Update'}
                                         </button>
-                                    )}
-                                    <button type="submit" className="mx-2 card-btn btn-text">
-                                        {!isPreference ? 'Save' : 'Update'}
-                                    </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
-                </div>
+                        </form>
+                    </div>
+                </Collapse>
             </div>
             {isTimezoneScreen && (
                 <div className=" py-3 px-2 time-zone-main">
@@ -428,9 +429,8 @@ const UserPreferencesForm = ({ heading, collapse, showSkip }) => {
                                 <div
                                     onClick={() => handleSelectTimezone(timezone)}
                                     className={`px-2 timezone-item cursor-pointer`}
-                                    id={`${
-                                        selectedTimezone === timezone ? 'selected-timezone' : ''
-                                    }`}
+                                    id={`${selectedTimezone === timezone ? 'selected-timezone' : ''
+                                        }`}
                                     key={index}
                                 >
                                     <div>{timezone}</div>

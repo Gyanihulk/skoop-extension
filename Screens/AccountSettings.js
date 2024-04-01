@@ -8,6 +8,7 @@ import ScreenContext from '../contexts/ScreenContext';
 
 import { GrPowerReset } from 'react-icons/gr';
 import BackButton from '../components/BackButton';
+import Collapse from 'react-bootstrap/Collapse';
 
 const AccountProfile = ({ userData }) => {
     // State for the profile image URL
@@ -220,93 +221,99 @@ const SettingsPassword = () => {
             <div
                 className="light-pink card-header-custom toggle-collapse"
                 onClick={() => setToggleInfo(!toggleInfo)}
-                data-toggle="collapse"
-                data-target="#change-password-collapse"
-                aria-expanded="false"
+                aria-expanded={toggleInfo}
                 aria-controls="change-password-collapse"
             >
                 <div className="d-flex justify-content-between align-items-center">
                     <h6 className="mb-0 card-title">Change Password</h6>
                     <div>
-                        <FaAngleDown style={toggleInfo ? { transform: 'rotate(180deg)' } : ''} />
+                        <FaAngleDown
+                            style={
+                                toggleInfo
+                                    ? { transform: 'rotate(180deg)' }
+                                    : { transform: 'rotate(0deg)' }
+                            }
+                        />
                     </div>
                 </div>
             </div>
-            <div className={`collapse`} id="change-password-collapse">
-                <form onSubmit={handleSubmit}>
-                    <div className="card-body p-0">
-                        <div className="px--1 py-4-2 mt-3">
-                            <div className="row">
-                                <div className="col-sm-6 mb-3 password-with-tooltip">
-                                    <div className="position-relative password-with-tooltip">
-                                        <div className="form-group">
-                                            <input
-                                                type={showPassword ? 'text' : 'password'}
-                                                className="form-control"
-                                                id="oldPassword"
-                                                name="oldPassword"
-                                                onChange={handleChange}
-                                                onFocus={handleFocus}
-                                                onBlur={handleBlur}
-                                                value={values.oldPassword}
-                                                placeholder="Current Password"
-                                                required
-                                            />
+            <Collapse in={toggleInfo}>
+                <div id="change-password-collapse">
+                    <form onSubmit={handleSubmit}>
+                        <div className="card-body p-0">
+                            <div className="px--1 py-4-2 mt-3">
+                                <div className="row">
+                                    <div className="col-sm-6 mb-3 password-with-tooltip">
+                                        <div className="position-relative password-with-tooltip">
+                                            <div className="form-group">
+                                                <input
+                                                    type={showPassword ? 'text' : 'password'}
+                                                    className="form-control"
+                                                    id="oldPassword"
+                                                    name="oldPassword"
+                                                    onChange={handleChange}
+                                                    onFocus={handleFocus}
+                                                    onBlur={handleBlur}
+                                                    value={values.oldPassword}
+                                                    placeholder="Current Password"
+                                                    required
+                                                />
+                                            </div>
+                                            {showOldPasswordTooltip && <PasswordToolTip />}
                                         </div>
-                                        {showOldPasswordTooltip && <PasswordToolTip />}
                                     </div>
-                                </div>
 
-                                <div className="col-sm-6 mb-3">
-                                    <div className="position-relative password-with-tooltip">
-                                        <div className="form-group">
-                                            <input
-                                                type={showPassword ? 'text' : 'password'}
-                                                className="form-control"
-                                                id="password"
-                                                name="password"
-                                                onChange={handleChange}
-                                                onFocus={handleFocus}
-                                                onBlur={handleBlur}
-                                                value={values.password}
-                                                placeholder="New Password"
-                                                required
-                                            />
+                                    <div className="col-sm-6 mb-3">
+                                        <div className="position-relative password-with-tooltip">
+                                            <div className="form-group">
+                                                <input
+                                                    type={showPassword ? 'text' : 'password'}
+                                                    className="form-control"
+                                                    id="password"
+                                                    name="password"
+                                                    onChange={handleChange}
+                                                    onFocus={handleFocus}
+                                                    onBlur={handleBlur}
+                                                    value={values.password}
+                                                    placeholder="New Password"
+                                                    required
+                                                />
+                                            </div>
+                                            {showPasswordTooltip && <PasswordToolTip />}
                                         </div>
-                                        {showPasswordTooltip && <PasswordToolTip />}
                                     </div>
                                 </div>
-                            </div>
-                            <div className="row">
-                                <div className="col-sm-6">
-                                    <div className="position-relative password-with-tooltip">
-                                        <div className="form-group">
-                                            <input
-                                                type={showPassword ? 'text' : 'password'}
-                                                className="form-control"
-                                                id="confirm"
-                                                name="confirm"
-                                                onChange={handleChange}
-                                                onFocus={handleFocus}
-                                                onBlur={handleBlur}
-                                                value={values.confirm}
-                                                placeholder="Confirm Password"
-                                                required
-                                            />
+                                <div className="row">
+                                    <div className="col-sm-6">
+                                        <div className="position-relative password-with-tooltip">
+                                            <div className="form-group">
+                                                <input
+                                                    type={showPassword ? 'text' : 'password'}
+                                                    className="form-control"
+                                                    id="confirm"
+                                                    name="confirm"
+                                                    onChange={handleChange}
+                                                    onFocus={handleFocus}
+                                                    onBlur={handleBlur}
+                                                    value={values.confirm}
+                                                    placeholder="Confirm Password"
+                                                    required
+                                                />
+                                            </div>
+                                            {showConfirmPasswordTooltip && <PasswordToolTip />}
                                         </div>
-                                        {showConfirmPasswordTooltip && <PasswordToolTip />}
                                     </div>
                                 </div>
-                            </div>
-                            <div className="mt-4 d-flex justify-content-end">
-                                <button type="submit" className="card-btn">
-                                    Update
-                                </button>
+                                <div className="mt-4 d-flex justify-content-end">
+                                    <button type="submit" className="card-btn">
+                                        Update
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </form>
-            </div>
+                    </form>
+                </div>
+            </Collapse>
         </div>
     );
 };
@@ -403,74 +410,82 @@ const CalendarUrlForm = ({ userProfileData }) => {
     return (
         <div className="card border-radius-12 overflow-hidden">
             <div
-                className="light-pink card-header-custom d-flex justify-content-between align-items-center toggle-collapse"
+                className="light-pink card-header-custom d-flex justify-content-between align-items-center"
                 onClick={() => setToggleInfo(!toggleInfo)}
-                data-toggle="collapse"
-                data-target="#appointment-collapse"
-                aria-expanded="false"
+                aria-expanded={toggleInfo}
                 aria-controls="appointment-collapse"
             >
                 <h6 className="mb-0 card-title">Appointment booking link</h6>
                 <div>
-                    <FaAngleDown style={toggleInfo ? { transform: 'rotate(180deg)' } : ''} />
+                    <FaAngleDown
+                        style={
+                            toggleInfo
+                                ? { transform: 'rotate(180deg)' }
+                                : { transform: 'rotate(0deg)' }
+                        }
+                    />
                 </div>
             </div>
-            <div className="collapse" id="appointment-collapse">
-                <form onSubmit={handleSubmit}>
-                    <div className="card-body p-0">
-                        <div className="py-4-2 px--1">
-                            <div>
-                                <div className="d-flex justify-content-between align-items-center">
-                                    <label
-                                        htmlFor="calendarUrl"
-                                        className="form-label profile-text"
-                                    >
-                                        Your Appointment Booking Link
-                                    </label>
-                                    {showResetButton && (
-                                        <GrPowerReset
-                                            className="ms-1"
-                                            onClick={resetAppointmentLink}
-                                        />
-                                    )}
+            <Collapse in={toggleInfo}>
+                <div id="appointment-collapse">
+                    <form onSubmit={handleSubmit}>
+                        <div className="card-body p-0">
+                            <div className="py-4-2 px--1">
+                                <div>
+                                    <div className="d-flex justify-content-between align-items-center">
+                                        <label
+                                            htmlFor="calendarUrl"
+                                            className="form-label profile-text"
+                                        >
+                                            Your Appointment Booking Link
+                                        </label>
+                                        {showResetButton && (
+                                            <GrPowerReset
+                                                className="ms-1"
+                                                onClick={resetAppointmentLink}
+                                            />
+                                        )}
+                                    </div>
+                                    <input
+                                        type="text"
+                                        className="form-control mt-3"
+                                        id="calendarUrl"
+                                        name="calendarUrl"
+                                        value={calendarUrl}
+                                        onChange={handleChange}
+                                        placeholder="Enter your calendar link"
+                                        required
+                                    />
                                 </div>
-                                <input
-                                    type="text"
-                                    className="form-control mt-3"
-                                    id="calendarUrl"
-                                    name="calendarUrl"
-                                    value={calendarUrl}
-                                    onChange={handleChange}
-                                    placeholder="Enter your calendar link"
-                                    required
-                                />
-                            </div>
-                            <div
-                                className={`mt-4 d-flex ${
-                                    preferences?.length == 0
-                                        ? 'justify-content-between'
-                                        : 'justify-content-end'
-                                }`}
-                            >
-                                {preferences?.length == 0 && (
-                                    <span className="badge badge-info d-flex align-items-center text-danger">
-                                        User appointment preferences not set.
-                                    </span>
-                                )}
-                                <button type="submit" className="card-btn">
-                                    Save
-                                </button>
+                                <div
+                                    className={`mt-4 d-flex ${
+                                        preferences?.length == 0
+                                            ? 'justify-content-between'
+                                            : 'justify-content-end'
+                                    }`}
+                                >
+                                    {preferences?.length == 0 && (
+                                        <div className="d-flex flex-wrap">
+                                            <span className="badge badge-info d-flex align-items-center justify-content-start text-danger text-wrap">
+                                                User appointment preferences not set.
+                                            </span>
+                                        </div>
+                                    )}
+                                    <button type="submit" className="card-btn">
+                                        Save
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </form>
-            </div>
+                    </form>
+                </div>
+            </Collapse>
         </div>
     );
 };
 const UserSubscriptions = () => {
     const [toggleInfo, setToggleInfo] = useState(false);
-    const { getMySubscription ,deactivateMySubscription} = useContext(AuthContext);
+    const { getMySubscription, deactivateMySubscription } = useContext(AuthContext);
     const [subsriptionInfo, setSubscriptionInfo] = useState();
     async function setup() {
         const response = await getMySubscription();
@@ -481,24 +496,29 @@ const UserSubscriptions = () => {
     useEffect(() => {
         setup();
     }, []);
-  async function handleCancel(){
-    deactivateMySubscription()
-  }
+    async function handleCancel() {
+        deactivateMySubscription();
+    }
     return (
         <div className="card border-radius-12 overflow-hidden">
             <div
-                className="light-pink card-header-custom d-flex justify-content-between align-items-center toggle-collapse"
+                className="light-pink card-header-custom d-flex justify-content-between align-items-center"
                 onClick={() => setToggleInfo(!toggleInfo)}
-                data-toggle="collapse"
-                data-target="#subscription-collapse"
-                aria-expanded="false"
+                aria-expanded={toggleInfo}
                 aria-controls="subscription-collapse"
             >
                 <h6 className="mb-0 card-title">Subscription</h6>
                 <div>
-                    <FaAngleDown style={toggleInfo ? { transform: 'rotate(180deg)' } : ''} />
+                    <FaAngleDown
+                        style={
+                            toggleInfo
+                                ? { transform: 'rotate(180deg)' }
+                                : { transform: 'rotate(0deg)' }
+                        }
+                    />
                 </div>
             </div>
+            <Collapse in={toggleInfo}>
             <div className="collapse" id="subscription-collapse">
                 <div class="container my-2">
                     {subsriptionInfo?.id && (
@@ -510,7 +530,7 @@ const UserSubscriptions = () => {
 
                             <ul class="list-group">
                                 <li class="d-flex justify-content-start align-items-center mt-2 mysubscription-info bold-600">
-                                   Plan details
+                                    Plan details
                                 </li>
                                 <li class="d-flex justify-content-between align-items-center mysubscription-info">
                                     Subscription Id
@@ -531,12 +551,21 @@ const UserSubscriptions = () => {
                                 </li>
                                 <li class="d-flex justify-content-end align-items-center mt-1">
                                     {/* <div className="cancel-subscription">View Payment</div> */}
-                                    <div className="cancel-subscription" onClick={()=>{handleCancel()}}>Cancel Subscription</div>
+                                    <div
+                                        className="cancel-subscription"
+                                        onClick={() => {
+                                            handleCancel();
+                                        }}
+                                    >
+                                        Cancel Subscription
+                                    </div>
                                 </li>
                             </ul>
                         </>
                     )}
-                </div>            </div>
+                </div>{' '}
+            </div>
+            </Collapse>
         </div>
     );
 };
