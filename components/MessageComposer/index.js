@@ -290,7 +290,7 @@ const MessageComposer = () => {
               displayComp === eventKey ? "active-path" : "default-path"
             }`,
           })}
-          <span className="record-button-bottom-text">{eventKey}</span>
+          <span className="nav-item-label">{eventKey}</span>
         </div>
       </a>
     </li>
@@ -364,8 +364,8 @@ const MessageComposer = () => {
         accept="video/*"
       />
       <nav className="nav-btn">
-        <div class="container">
-          <ul className="nav-button">
+        <div class="container mt-2 mx-2">
+          <ul className="nav-button mb-1">
             {renderNavButtonItem(
               "Message",
               <svg

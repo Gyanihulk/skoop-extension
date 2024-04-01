@@ -176,7 +176,7 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
         >
           {isRecording ? (
             <svg
-              width="28"
+              width="12"
               height="28"
               viewBox="0 0 28 28"
               fill="none"
@@ -186,8 +186,8 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
             </svg>
           ) : (
             <svg
-              width="40"
-              height="40"
+              width="24"
+              height="24"
               viewBox="0 0 40 40"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"

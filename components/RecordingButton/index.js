@@ -1,13 +1,30 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
+import API_ENDPOINTS from "../apiConfig.js";
+import { FaDownload } from "react-icons/fa6";
+import { FaTimesCircle } from "react-icons/fa";
+import { FaRegCirclePlay } from "react-icons/fa6";
+import {
+  MdDeleteForever,
+  MdOutlineVideoSettings,
+  MdOutlineSendTimeExtension,
+} from "react-icons/md";
+import { AiOutlineClose } from "react-icons/ai";
 
 import {
   getCurrentDateTimeString,
+  handleCopyToClipboard,
+  insertHtmlAtPositionInMail,
+  insertIntoLinkedInMessageWindow,
+  replaceInvalidCharacters,
 } from "../../utils/index.js";
 import GlobalStatesContext from "../../contexts/GlobalStates.js";
+import toast from "react-hot-toast";
 import MediaUtilsContext from "../../contexts/MediaUtilsContext.js";
 import VoiceVisualization from "../AudioRecording/index.js";
 
+import { IoLink } from "react-icons/io5";
 import MessageContext from "../../contexts/MessageContext.js";
+import RenameVideoPopup from "../Library/RenameVideoPopup.js";
 
 import { IoMdClose } from "react-icons/io";
 import Vertical from "../SVG/Vertical.jsx";
@@ -29,7 +46,7 @@ const RecordingButton = () => {
   const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
   const [selectedVideoStyle, setSelectedVideoStyle] = useState("Vertical Mode");
 
-  const { setGlobalRefresh, setLatestVideo,  setLatestBlob } =
+  const { setGlobalRefresh, setLatestVideo, setLatestBlob } =
     useContext(GlobalStatesContext);
   const { uploadVideo } = useContext(MediaUtilsContext);
   const { addToMessage } = useContext(MessageContext);
@@ -98,29 +115,29 @@ const RecordingButton = () => {
     return () => clearInterval(intervalId);
   }, [countdown, countTimer]);
 
-    //useable functions
-    
-    function sendMessageToBackgroundScript(request, callback) {
-        chrome.runtime.sendMessage(request, (response) => {
-            if (callback && response) {
-                callback(response);
-            }
-        });
+  //useable functions
+
+  function sendMessageToBackgroundScript(request, callback) {
+    chrome.runtime.sendMessage(request, (response) => {
+      if (callback && response) {
+        callback(response);
+      }
+    });
+  }
+  async function getBlobFromUrl(url) {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const blob = await response.blob();
+      url = URL.createObjectURL(blob);
+      setBlobUrl(url);
+      return blob;
+    } catch (error) {
+      console.error("Error fetching blob:", error);
     }
-    async function getBlobFromUrl(url) {
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            const blob = await response.blob();
-            url = URL.createObjectURL(blob);
-            setBlobUrl(url);
-            return blob;
-        } catch (error) {
-            console.error('Error fetching blob:', error);
-        }
-    }
+  }
 
   function handleVideoBlob(response) {
     if (response.error) {
@@ -140,7 +157,11 @@ const RecordingButton = () => {
         );
         setIsUploading(false);
         setLatestVideo(response);
-        addToMessage(response.facade_player_uuid, response?.urlForThumbnail,response?.name);
+        addToMessage(
+          response.facade_player_uuid,
+          response?.urlForThumbnail,
+          response?.name
+        );
         setGlobalRefresh(true);
         setCapturing(false);
       });
@@ -166,10 +187,9 @@ const RecordingButton = () => {
     );
     setCapturing(true);
   };
-
   return (
     <>
-      <div className="pt-1">
+      <div className="pt-1" id="recording-container">
         <div class="container">
           <div class="row justify-content-center px-3">
             <div class="col-auto">
@@ -187,7 +207,7 @@ const RecordingButton = () => {
                   <span class="icon">
                     {capturing ? (
                       <svg
-                        width="16"
+                        width="12"
                         height="28"
                         viewBox="0 0 28 28"
                         fill="none"
@@ -197,8 +217,8 @@ const RecordingButton = () => {
                       </svg>
                     ) : (
                       <svg
-                        width="32"
-                        height="32"
+                        width="24"
+                        height="24"
                         viewBox="0 0 40 40"
                         fill="currentcolor"
                         xmlns="http://www.w3.org/2000/svg"
@@ -226,8 +246,8 @@ const RecordingButton = () => {
                     onClick={handleIconClick}
                   >
                     <svg
-                            width="16"
-                            height="16"
+                      width="16"
+                      height="16"
                       viewBox="0 0 18 18"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"

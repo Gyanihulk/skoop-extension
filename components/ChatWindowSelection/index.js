@@ -157,14 +157,16 @@ const ChatWindowSelection = () => {
       {isLinkedin && (
         <>
           {initialItems?.length > 0 ? (
-            <div className="fw-bold fs-6">
-              Select Recipients ({checkedItemCount} out of {initialItems.length}
-              )
+            <div id="select-recipients-title">
+              Select Recipients{" "}
+              <span>
+                ({checkedItemCount} out of {initialItems.length})
+              </span>
             </div>
           ) : (
-            <div className="fw-bold fs-6">Please open any chat window.</div>
+            <div id="select-recipients-title">Please open any chat window.</div>
           )}
-          <div className="row">
+          <div className="row mt-2">
             {initialItems?.map((item, index) => {
               if (!uniqueNamesSet.has(item.name)) {
                 uniqueNamesSet.add(item.name);
@@ -172,6 +174,7 @@ const ChatWindowSelection = () => {
                   <div key={index} className="col-4">
                     <div className="d-flex flex-row">
                       <input
+                        id="recipient-checkbox"
                         type="checkbox"
                         className="form-check-input"
                         value={item.name}
@@ -180,7 +183,12 @@ const ChatWindowSelection = () => {
                         )}
                         onChange={handleCheckboxChange}
                       />
-                      <label className="form-check-label">{item.name}</label>
+                      <label
+                        id="select-recipient-item"
+                        className="form-check-label"
+                      >
+                        {item.name}
+                      </label>
                     </div>
                   </div>
                 );

@@ -81,7 +81,7 @@ const Homepage = (props) => {
   }, []);
 
   return (
-    <div className="mt-3">
+    <div className="mt-1">
       <RecordingButton />
       <MessageComposer />
     </div>
