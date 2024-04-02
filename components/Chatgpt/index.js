@@ -293,7 +293,7 @@ const ChatGpt = ({ appendToBody, close }) => {
             </svg>
           </div>
         </div>
-        <div className="form-group mt-3">
+        <div className="form-group mt-2">
           <div className="row">
             <div>
               {/* <select
@@ -387,7 +387,7 @@ const ChatGpt = ({ appendToBody, close }) => {
                 ))}
               </DropdownButton>
             </div>
-            <div className="col-12 mb-3">
+            <div className="col-12 mb-2">
               <textarea
                 id="chatgpt-msg-box"
                 className="form-control"
@@ -401,7 +401,7 @@ const ChatGpt = ({ appendToBody, close }) => {
             <div className="d-flex justify-content-end ">
               <button
                 type="button"
-                className="btn btn-secondary generate-response"
+                className="generate-response"
                 onClick={sendPrompt}
               >
                 Generate response

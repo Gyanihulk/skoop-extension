@@ -1,4 +1,3 @@
-
 /* Lato */
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
 
@@ -941,6 +940,7 @@ input.form-control {
 #floatingTextarea {
   background-color: #a9aaab33;
   resize: none;
+  max-height: 6rem;
 }
 
 input[type="time"].form-control {
@@ -1391,9 +1391,13 @@ ul.nav-button li svg path {
   font-size: 12px;
 }
 .generate-response {
-  background-color: #a9aaab !important;
-  font-size: 14px !important;
-  border-radius: 10px !important;
+  width: 144px;
+  height: 28px;
+  border: none;
+  color: #fff;
+  background-color: #a9aaaa;
+  font-size: 12px;
+  border-radius: 8px;
 }
 
 #chatWindowsList {
@@ -1663,13 +1667,13 @@ img.icon-style-normal {
 
 .subscription-card-header > h1 {
   font-size: 30px;
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
 }
 .subscription-card-header > span {
   font-size: medium;
-  color: #4CAF50;
+  color: #4caf50;
   border-radius: 30%;
-  background-color: #ECF8EB !important;
+  background-color: #ecf8eb !important;
 }
 .subscription-button {
   text-align: center;
@@ -1727,17 +1731,6 @@ img.icon-style-normal {
   justify-content: space-between;
   align-items: center;
 }
-#gpt-dropdown {
-  width: 18.5rem !important;
-  height: 1.5rem;
-  border-color: #2a2b3966;
-  background-color: white;
-  color: rgba(42, 43, 57, 0.8);
-  text-align: start;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
 
 .dropdown-item {
   font-size: 12px;
@@ -1752,16 +1745,19 @@ img.icon-style-normal {
   justify-content: space-between;
   align-items: center;
 }
+
 #gpt-dropdown {
-  width: 288px !important;
+  width: 18.5rem;
+  height: 1.6rem;
   background-color: white;
   color: rgba(42, 43, 57, 0.8);
   text-align: start;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 12px;
 }
-.small-bold-text{
+.small-bold-text {
   font-family: "Montserrat";
   font-weight: 700;
   font-size: 10px;
@@ -1773,13 +1769,15 @@ img.icon-style-normal {
   border: none !important;
 }
 .custom-video-nav-item {
-  padding: 5px !important;
+  display: flex;
+  align-items: center;
+  padding: 0px 8px;
   background-color: var(--main-color);
-  margin: 5px;
-  border-radius: 5px;
-  height: 36px;
-  color: white;
-  display: inline-block;
+  margin: 6px;
+  border-radius: 6px;
+  height: 24px;
+  color: #fff;
+  font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1790,11 +1788,9 @@ img.icon-style-normal {
 }
 
 .custom-video-nav {
-  border-radius: 5px;
+  border-radius: 8px;
   background-color: var(--main-color);
   width: 100%;
-  margin-left: 15px;
-  margin-right: 5px;
 }
 .video-card-footer {
   background-color: rgba(255, 255, 255, 0.8) !important;
@@ -1824,9 +1820,12 @@ img.icon-style-normal {
 }
 
 .pagination-button {
-  border-radius: 5px;
+  font-size: 12px;
+  border-radius: 4px;
   background-color: var(--main-color);
-  color: white;
+  color: #fff;
+  border: 1px solid;
+  margin-right: 4px;
 }
 
 .pagination-button.active {
@@ -1837,6 +1836,16 @@ img.icon-style-normal {
   padding: 0 !important;
   height: 1.5rem;
 }
+
+.pagination {
+  margin-bottom: 0 !important;
+}
+
+#media-list-container {
+  max-height: 10rem;
+  overflow: scroll;
+}
+
 #select-recipients-title {
   font-family: "Montserrat", sans-serif;
   font-size: 14px;
@@ -1864,9 +1873,9 @@ img.icon-style-normal {
 }
 
 #chatgpt-msg-box {
-  width: 18rem !important;
+  margin-top: 4px;
+  width: 100%;
 }
-
 
 .confirmation-container {
   background-color: #fff;
