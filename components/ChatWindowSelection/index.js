@@ -166,12 +166,12 @@ const ChatWindowSelection = () => {
           ) : (
             <div id="select-recipients-title">Please open any chat window.</div>
           )}
-          <div className="row mt-2">
+          <div className="mt-2 select-recipient-list">
             {initialItems?.map((item, index) => {
               if (!uniqueNamesSet.has(item.name)) {
                 uniqueNamesSet.add(item.name);
                 return (
-                  <div key={index} className="col-4">
+                  <div key={index}>
                     <div className="d-flex flex-row">
                       <input
                         id="recipient-checkbox"

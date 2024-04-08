@@ -10,13 +10,13 @@
     visibility: hidden;
     opacity: 0;
     top: 46%;
-    width: 8rem;
+    width: 7rem;
   }
   to {
     visibility: visible;
     opacity: 1;
     top: 30%;
-    width: 18rem;
+    width: 15rem;
   }
 }
 
@@ -52,7 +52,7 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  height: 13rem;
+  height: 10rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -89,7 +89,7 @@
 
 .logo-content h3 {
   font-family: "Montserrat", sans-serif;
-  font-size: 36px;
+  font-size: 20px;
   font-weight: 500;
   color: white;
   margin-top: -0.5rem;
@@ -114,7 +114,7 @@
   font-family: "Montserrat", sans-serif;
   text-align: center;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 12px;
   color: white;
   margin-top: 3rem;
   padding: 0.5rem 2rem 0;
@@ -128,12 +128,12 @@
   from {
     visibility: hidden;
     opacity: 0;
-    margin-top: 15rem;
+    margin-top: 10rem;
   }
   to {
     visibility: visible;
     opacity: 1;
-    margin-top: 2rem;
+    margin-top: 1rem;
   }
 }
 

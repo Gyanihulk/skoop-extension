@@ -31,7 +31,7 @@ import Vertical from "../SVG/Vertical.jsx";
 import Horizontal from "../SVG/Horizontal.jsx";
 import Square from "../SVG/Square.jsx";
 
-const videoResizeConstant = 40;
+const videoResizeConstant = 32;
 const RecordingButton = () => {
   const [capturing, setCapturing] = useState(false);
   const [prev, setPrev] = useState("");

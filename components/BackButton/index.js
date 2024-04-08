@@ -3,6 +3,7 @@ import ScreenContext from "../../contexts/ScreenContext";
 import { FaArrowLeft } from "react-icons/fa";
 const BackButton = ({ navigateTo }) => {
     const { navigateToPage } = useContext(ScreenContext);
+    
     return (
         <div
             class="back-button d-flex align-items-center cursor-pointer"

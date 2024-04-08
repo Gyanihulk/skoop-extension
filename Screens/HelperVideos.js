@@ -84,13 +84,13 @@ const HelperVideos = () => {
   const detail = [
     {
       videoSrc: "https://play.vidyard.com/UGEUwRVNppReqNcqthBrNh",
-      imgSrc: "/screens/helperImages/TUTORIAL 2.jpg",
+      imgSrc: "/screens/helperImages/2.png",
       alt: "This image is related to a video which says about how to record & send video",
       text: "Creating a simple video",
     },
     {
       videoSrc: "https://play.vidyard.com/Az8t22sqAuJeZytJwGekE4",
-      imgSrc: "/screens/helperImages/TUTORIAL 3.jpg",
+      imgSrc: "/screens/helperImages/3.png",
       alt: "This image is related to a video which says about how to send audio",
       text: " Creating a Welcome Video",
     },
@@ -99,25 +99,25 @@ const HelperVideos = () => {
   const info = [
     {
       videoSrc: "https://play.vidyard.com/GFCJo68GJP6PARscaHAQg7",
-      imgSrc: "/screens/helperImages/TUTORIAL 4.jpg",
+      imgSrc: "/screens/helperImages/4.png",
       alt: "This image is related to a video which says about how to record & send video",
       text: "Creating a Voice Memo",
     },
     {
       videoSrc: "https://play.vidyard.com/bLmzPhpegHvo8rWpLboKNb",
-      imgSrc: "/screens/helperImages/TUTORIAL 5.jpg",
+      imgSrc: "/screens/helperImages/5.png",
       alt: "This image is related to a video which says about how to send audio",
       text: "Adding an Animated Gif",
     },
     {
       videoSrc: "https://play.vidyard.com/U15yecB66tJ2Fxnh2bQFhY",
-      imgSrc: "/screens/helperImages/TUTORIAL 6.jpg",
+      imgSrc: "/screens/helperImages/6.png",
       alt: "This image is related to a video which says about how to send Chatgpt prompts",
       text: "Reusable Replies",
     },
     {
       videoSrc: "https://play.vidyard.com/oMuPe7PpZZCEZXjpueFshA",
-      imgSrc: "/screens/helperImages/TUTORIAL 7.jpg",
+      imgSrc: "/screens/helperImages/7.png",
       alt: "This image is related to a video which says about how to send GIF",
       text: "Manage Your Videos and Media",
     },
@@ -141,7 +141,7 @@ const HelperVideos = () => {
             <section className="video-header m-0 p-0">
               <div className="border-radius-8 overflow-hidden">
                 <img
-                  src= "/screens/helperImages/TUTORIAL 1.jpg"
+                  src= "/screens/helperImages/1.png"
                   alt="This image is related to a video which says about how to record & send video"
                   onClick={(e) => {
                     openPopUp(

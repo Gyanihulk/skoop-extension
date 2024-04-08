@@ -19,6 +19,7 @@ import toast from "react-hot-toast";
 import API_ENDPOINTS from "../apiConfig.js";
 import MediaUtilsContext from "../../contexts/MediaUtilsContext.js";
 import { VideoPreview } from "../VideoPreview.jsx";
+import ScreenContext from "../../contexts/ScreenContext.js";
 const MessageComposer = () => {
   const [displayComp, setDisplayComp] = useState("DefaultCard");
   const [activateCalenderLink, setActivateCalenderLink] = useState(false);
@@ -37,6 +38,8 @@ const MessageComposer = () => {
   const { getCalendarUrl, getUserPreferences } = useContext(AuthContext);
   const { uploadVideo } = useContext(MediaUtilsContext);
   const { addToMessage } = useContext(MessageContext);
+  const { navigateToPage } = useContext(ScreenContext);
+
   const handleInsertion = (text) => {
     const newText = text + " \n ";
     addMessage(newText);
@@ -86,6 +89,9 @@ const MessageComposer = () => {
     }
     if (eventKey === "Upload Video") {
       document.getElementById("video-upload").click();
+    }
+    if (eventKey === "Videos") {
+      navigateToPage("RecordVideos");
     }
     if (displayComp == eventKey) {
       setDisplayComp("DefaultCard");
@@ -463,7 +469,6 @@ const MessageComposer = () => {
         {displayComp === "ChatGpt" && (
           <ChatGpt appendToBody={handleInsertion} close={setDisplayComp} />
         )}
-        {displayComp === "Videos" && <Library appendToBody={handleInsertion} />}
         <VideoPreview />
       </div>
       {!expand && (
@@ -476,7 +481,7 @@ const MessageComposer = () => {
             <GiphyWindow appendToBody={handleInsertion} />
           )}
           {displayComp === "Emoji" && (
-            <EmojiPicker onEmojiClick={onEmojiClick} />
+            <EmojiPicker onEmojiClick={onEmojiClick} searchDisabled />
           )}
           <nav className="navbar pe-3" id="messageFooter">
             <div class="navbar-brand d-flex flex-row ps-2">

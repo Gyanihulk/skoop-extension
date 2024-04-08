@@ -9,6 +9,7 @@ import { handleCopyToClipboard } from "../utils";
 import RenameVideoPopup from "./Library/RenameVideoPopup";
 import { sendMessageToBackgroundScript } from "../lib/sendMessageToBackground";
 import { FaPencilAlt } from "react-icons/fa";
+import MessageContext from "../contexts/MessageContext";
 
 export const VideoPreview = () => {
   const [thumbnailImage, setThumbnailImage] = useState(
@@ -18,12 +19,14 @@ export const VideoPreview = () => {
   const [showVideoOptionsDialog, setShowVideoOptionsDialog] = useState(false);
   const [newTitle, setNewTitle] = useState();
   const [showBookingLink, setShowBookingLink] = useState(true);
-  const { latestVideo, latestBlob, setLatestVideo, setLatestBlob } =
+  let { latestVideo, latestBlob, setLatestVideo, setLatestBlob } =
     useContext(GlobalStatesContext);
   const { deleteVideo, updateBookingLinkOfVideo } =
     useContext(MediaUtilsContext);
+    const { message, setMessage } =
+    useContext(MessageContext);
+
   useEffect(() => {
-    console.log(latestVideo, thumbnailImage, "from video preview ");
 
     if (latestVideo?.urlForThumbnail) {
       setThumbnailImage(latestVideo?.urlForThumbnail);
@@ -93,6 +96,7 @@ export const VideoPreview = () => {
 
   const handleRenameSave = async () => {
     try {
+      console.log(latestVideo?.name, newTitle, message);
       const response = await fetch(
         API_ENDPOINTS.renameVideo + `/${latestVideo?.id}`,
         {
@@ -108,10 +112,21 @@ export const VideoPreview = () => {
           }),
         }
       );
-
+  
       if (response.ok) {
         toast.success("Video renamed successfully");
         setShowRenamePopup(!showRenamePopup);
+  
+        // Check if the video title has changed
+        if (latestVideo?.name !== newTitle) {
+          // Update the message with the new video title
+          const updatedMessage = message.replace(
+            /Watch Video - .*?<\/a>/,
+            `Watch Video - ${newTitle}</a>`
+          );
+          latestVideo.name=newTitle
+          setMessage(updatedMessage);
+        }
       } else {
         toast.error("Failed to rename video.");
       }
@@ -119,7 +134,7 @@ export const VideoPreview = () => {
       toast.error("Failed to rename video.");
     }
   };
-  
+
   const handleDeleteClick = async () => {
     try {
       await deleteVideo(latestVideo.id);
@@ -221,6 +236,7 @@ export const VideoPreview = () => {
                   : " "}
               </span>
               <FaPencilAlt
+                size={12}
                 onClick={() => handleIconClick("Rename Title")}
                 title="Edit Title"
               />

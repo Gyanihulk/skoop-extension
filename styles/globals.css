@@ -389,10 +389,48 @@
 }
 
 .contact-container {
-  background-color: white;
+  font-family: "Montserrat", sans-serif;
+}
+
+.contact-info-head h3 {
+  font-family: "Lato", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.contact-info-head p {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.contact-info-custom-textarea {
+  width: 100%;
+  resize: none;
+  color: #2a2b39;
+  border-color: #a9aaabcc;
+  font-size: 12px;
+  font-family: Montserrat, sans-serif;
+  padding: 12px;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 92%;
+}
+
+.contact-info-custom-textarea:focus-visible {
+  outline: none;
+  border-color: #ff8210;
+}
+
+.contact-info-custom-textarea::placeholder {
+  color: #a9aaabcc;
+}
+
+.contact-info-save-btn {
+  margin-top: 1.5rem;
+  color: #fff;
+  width: 100%;
+  height: 36px;
+  background-color: var(--main-color);
+  border: none;
+  border-radius: 8px;
 }
 
 .refresh-button {
@@ -1295,6 +1333,17 @@ select.form-control {
   padding-left: 1vh;
 }
 
+.select-recipient-list {
+  max-width: 100%;
+  display: flex;
+  gap: 12px;
+  padding: 0 0.5rem;
+}
+
+.select-recipient-list:hover {
+  overflow-x: auto;
+}
+
 .nav-btn {
   font-family: "Montserrat", sans-serif;
   position: relative;
@@ -1427,7 +1476,8 @@ ul.nav-button li svg path {
 
 .video-preview-iframe-img {
   width: 100%;
-  max-height: 11rem;
+  max-height: 12rem !important;
+  min-height: 11.5rem !important;
   object-fit: contain;
   border-radius: 3px;
 }
@@ -1596,7 +1646,7 @@ img.icon-style-normal {
   transform: translateX(-50%); */
 }
 #preview-video-name {
-  margin-right: 4px;
+  margin-right: 6px;
 }
 
 /* .form-switch {
@@ -1778,9 +1828,11 @@ img.icon-style-normal {
   height: 24px;
   color: #fff;
   font-size: 12px;
+  font-family: "Montserrat" sans-serif;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
 }
 .custom-video-nav-item.active {
   background-color: white;
@@ -1820,6 +1872,7 @@ img.icon-style-normal {
 }
 
 .pagination-button {
+  font-family: "Montserrat" sans-serif;
   font-size: 12px;
   border-radius: 4px;
   background-color: var(--main-color);
@@ -1839,11 +1892,6 @@ img.icon-style-normal {
 
 .pagination {
   margin-bottom: 0 !important;
-}
-
-#media-list-container {
-  max-height: 10rem;
-  overflow: scroll;
 }
 
 #select-recipients-title {
@@ -1946,7 +1994,7 @@ img.icon-style-normal {
   margin-top: 20px;
 }
 #subscription-collapse {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
 }
 .mysubscription-info span {
   color: #8f9192 !important;
@@ -1964,6 +2012,7 @@ img.icon-style-normal {
   text-transform: capitalize;
 }
 .cancel-subscription {
+  margin-top: 12px;
   text-decoration: underline;
   color: #2d68c4;
   font-weight: 500;
@@ -1972,13 +2021,68 @@ img.icon-style-normal {
 }
 .subscription-card-header > h3 {
   font-size: 20px !important;
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
 }
 .subscription-card-header > span {
-  font-size: medium;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #4caf50;
-  height: 25px;
-  border-radius: 35px;
+  height: 24px;
+  border-radius: 32px;
   background-color: #ecf8eb !important;
+  font-size: 12px;
+  font-weight: 600;
+  width: 60px;
+}
+
+.login-device-head h4 {
+  font-size: 20px !important;
+  font-family: Lato, sans-serif;
+  font-weight: 600;
+}
+
+.current-session-title {
+  font-size: 16px !important;
+  font-family: Lato, sans-serif;
+  font-weight: 600;
+}
+
+.device-login-card-title {
   font-size: 14px !important;
+  font-family: "Montserrat" sans-serif;
+  font-weight: 400;
+}
+
+.device-login-card-title-bold {
+  font-weight: 500;
+}
+
+.device-remove-btn {
+  background-color: var(--main-color);
+  border: none;
+  border-radius: 8px;
+  width: 100%;
+  height: 32px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: "Montserrat" sans-serif;
+  color: white;
+}
+
+.media-count {
+  font-size: 14px;
+  font-family: "Montserrat";
+  font-weight: 500;
+}
+
+/* Emoji style */
+
+/* This is for hide emoji preview on the bottom */
+.epr_-kg0voo {
+  display: none !important;
+}
+
+.EmojiPickerReact {
+  height: 14rem !important;
 }
