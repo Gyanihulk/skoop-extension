@@ -222,9 +222,7 @@ const MessageComposer = () => {
     }
     if (isLinkedin) {
       if (selectedChatWindows?.length === 0) {
-        toast.error("Please select a recipitent",{
-          className: "custom-toast",
-        });
+        toast.error("Please select a recipitent");
         return;
       }
       for (const item of selectedChatWindows) {

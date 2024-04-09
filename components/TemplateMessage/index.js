@@ -5,6 +5,8 @@ import { IoMdClose } from "react-icons/io";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
+import DeleteModal from "../DeleteModal";
+
 const SavedMessages = ({ appendToBody, close }) => {
   const [cgpt, setCgpt] = useState("");
   const [prompt, setPrompt] = useState("");
@@ -459,54 +461,12 @@ const SavedMessages = ({ appendToBody, close }) => {
           </div>
         </div>
 
-        <div
-          className="modal"
-          tabIndex="-1"
-          role="dialog"
-          style={{ display: isDeleteModal ? "block" : "none" }}
-        >
-          <div className="modal-overlay  modal-dialog-centered" role="document">
-            <div className="modal-content mx-2">
-              <div className="modal-header d-flex flex-row justify-content-between px-3 pt-3 pb-2 border-0">
-                <h5 className="modal-title">
-                  Are you sure you want to detele?
-                </h5>
-                <button
-                  type="button"
-                  className="custom-close-button"
-                  onClick={() => setIsDeleteModal(false)}
-                  aria-label="Close"
-                >
-                  <IoMdClose size={16} />
-                </button>
-              </div>
-              <div className="modal-body">
-                <h5 className="modal-title">{deleteTemplate?.heading}</h5>
-              </div>
-              <div className="modal-footer d-flex justify-content-end border-0 py-1">
-                <button
-                  type="button"
-                  className="modal-btn me-2"
-                  onClick={() => {
-                    setIsDeleteModal(false);
-                  }}
-                >
-                  No
-                </button>
-                <button
-                  type="button"
-                  className="modal-btn"
-                  onClick={() => {
-                    deletePrompt(deleteTemplate.id);
-                    setIsDeleteModal(false);
-                  }}
-                >
-                  Yes
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <DeleteModal
+          middleContent={deleteTemplate?.heading}
+          show={isDeleteModal}
+          onHide={() => setIsDeleteModal(false)}
+          onDelete={() => deletePrompt(deleteTemplate?.id)}
+        />
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ import { sendMessageToBackgroundScript } from "../lib/sendMessageToBackground";
 import { FaPencilAlt } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import MessageContext from "../contexts/MessageContext";
+import DeleteModal from "./DeleteModal";
 
 export const VideoPreview = () => {
   const [thumbnailImage, setThumbnailImage] = useState(
@@ -23,11 +24,10 @@ export const VideoPreview = () => {
     useContext(GlobalStatesContext);
   const { deleteVideo, updateBookingLinkOfVideo } =
     useContext(MediaUtilsContext);
-    const { message, setMessage } =
-    useContext(MessageContext);
+  const { message, setMessage } = useContext(MessageContext);
+  const [isDeleteModal, setIsDeleteModal] = useState(false);
 
   useEffect(() => {
-
     if (latestVideo?.urlForThumbnail) {
       setThumbnailImage(latestVideo?.urlForThumbnail);
       setNewTitle(latestVideo?.name);
@@ -116,13 +116,13 @@ export const VideoPreview = () => {
           }),
         }
       );
-  
+
       if (response.ok) {
         toast.success("Video renamed successfully", {
           className: "custom-toast",
         });
         setShowRenamePopup(!showRenamePopup);
-  
+
         // Check if the video title has changed
         if (latestVideo?.name !== newTitle) {
           // Update the message with the new video title
@@ -130,7 +130,7 @@ export const VideoPreview = () => {
             /Watch Video - .*?<\/a>/,
             `Watch Video - ${newTitle}</a>`
           );
-          latestVideo.name=newTitle
+          latestVideo.name = newTitle;
           setMessage(updatedMessage);
         }
       } else {
@@ -180,6 +180,11 @@ export const VideoPreview = () => {
     }
   }, [latestBlob]);
 
+  const onDeleteVideo = () => {
+    handleDeleteClick();
+    setLatestVideo();
+  };
+
   const handleIconClick = (eventKey) => {
     console.log(eventKey);
     if (eventKey == "Copy Link") {
@@ -195,8 +200,7 @@ export const VideoPreview = () => {
       document.getElementById("file-upload").click();
     }
     if (eventKey == "Delete") {
-      handleDeleteClick();
-      setLatestVideo();
+      setIsDeleteModal(true);
     }
     if (eventKey == "Rename Title") {
       setShowRenamePopup(!showRenamePopup);
@@ -318,6 +322,13 @@ export const VideoPreview = () => {
           </div>
         </div>
       </div>
+
+      <DeleteModal
+        middleContent={newTitle}
+        show={isDeleteModal}
+        onHide={() => setIsDeleteModal(false)}
+        onDelete={() => onDeleteVideo()}
+      />
     </>
   );
 };

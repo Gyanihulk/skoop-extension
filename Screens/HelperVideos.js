@@ -1,18 +1,22 @@
 import React, { useContext, useState } from "react";
 import ScreenContext from "../contexts/ScreenContext";
 import BackButton from "../components/BackButton";
+import { FaPlay } from "react-icons/fa";
 
 const MiddleSection = ({ detail, openModal }) => {
   const addModules = detail.map(({ imgSrc, videoSrc, alt, text }, index) => {
     return (
       <div className="title-video-parent" key={index}>
-        <div class="title-video border-radius-8 overflow-hidden ">
+        <div class="title-video overflow-hidden position-relative">
           <img
             key={index}
             src={imgSrc}
             alt={alt}
             onClick={(e) => openModal(videoSrc, e)}
           />
+          <div id="video-play-icon" style={{ width: "24px", height: "24px" }}>
+            <FaPlay color="white" size={10} />
+          </div>
         </div>
         <p
           className="para-sm mt-1 text-wrap cursor-pointer"
@@ -25,8 +29,8 @@ const MiddleSection = ({ detail, openModal }) => {
   });
 
   return (
-    <section className="video-header mt-2">
-      <div className="d-flex align-items-center justify-content-between p-0 m-0 mt-2">
+    <section className="video-middle mt-2">
+      <div className="w-100 d-flex align-items-center justify-content-between mt-2">
         {detail && addModules}
       </div>
     </section>
@@ -35,8 +39,8 @@ const MiddleSection = ({ detail, openModal }) => {
 
 const SmallVideoModule = ({ detail, openModal }) => {
   return (
-    <div className="d-flex align-items-center justify-content-start px-0 mx-0 mt-2">
-      <div class="title-video-sm border-radius-8 overflow-hidden ">
+    <div className="d-flex align-items-center justify-content-start mb-2">
+      <div class="title-video-sm overflow-hidden position-relative">
         <img
           width={120}
           height={80}
@@ -44,9 +48,12 @@ const SmallVideoModule = ({ detail, openModal }) => {
           alt={detail.alt}
           onClick={(e) => openModal(detail.videoSrc, e)}
         />
+        <div id="video-play-icon" style={{ width: "18px", height: "18px" }}>
+          <FaPlay color="white" size={6} />
+        </div>
       </div>
       <p
-        className="para-sm ms-3 text-wrap cursor-pointer"
+        className="title-para-sm ms-3 text-wrap cursor-pointer"
         onClick={(e) => openModal(detail.videoSrc, e)}
       >
         {detail.text}
@@ -141,26 +148,37 @@ const HelperVideos = () => {
           </div>
           <div className="px-4-2">
             <section className="video-header m-0 p-0">
-              <div className="border-radius-8 overflow-hidden">
-                <img
-                  src="/screens/helperImages/1.png"
-                  alt="This image is related to a video which says about how to record & send video"
-                  onClick={(e) => {
-                    openPopUp(
-                      "https://play.vidyard.com/WnmHTXaJe9StcYvc8uqJdm",
-                      e
-                    );
-                  }}
-                />
+              <div className="overflow-hidden">
+                <div className="position-relative">
+                  <img
+                    src="/screens/helperImages/1.png"
+                    alt="This image is related to a video which says about how to record & send video"
+                    onClick={(e) => {
+                      openPopUp(
+                        "https://play.vidyard.com/WnmHTXaJe9StcYvc8uqJdm",
+                        e
+                      );
+                    }}
+                  />
+
+                  <div
+                    id="video-play-icon"
+                    style={{ width: "44px", height: "44px" }}
+                  >
+                    <FaPlay color="white" />
+                  </div>
+                </div>
                 <p
-                  className="para-md mt-1 text-wrap text-center cursor-pointer"
+                  className="para-md my-2 text-wrap text-center cursor-pointer"
                   onClick={(e) => {
                     openPopUp(
                       "https://play.vidyard.com/WnmHTXaJe9StcYvc8uqJdm",
                       e
                     );
                   }}
-                ></p>
+                >
+                  How to record & Send video
+                </p>
               </div>
             </section>
 

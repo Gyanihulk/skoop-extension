@@ -10,6 +10,8 @@ import RenameVideoPopup from "./RenameVideoPopup";
 import API_ENDPOINTS from "../apiConfig";
 import VideoPreviewPopup from "./VideoPreviewPopup";
 import { sendMessageToBackgroundScript } from "../../lib/sendMessageToBackground";
+import DeleteModal from "../DeleteModal";
+
 const VideoCard = ({
   video,
   handleLinkInsertion,
@@ -21,6 +23,7 @@ const VideoCard = ({
   const [showRenamePopup, setShowRenamePopup] = useState(false);
   const [newTitle, setNewTitle] = useState(video.video_title);
   const [showPreviewPopup, setShowPreviewPopup] = useState(false);
+  const [isDeleteModal, setIsDeleteModal] = useState(false);
 
   const handleMoveClick = () => {
     setShowMovePopup(true);
@@ -56,22 +59,21 @@ const VideoCard = ({
       if (response.ok) {
         video.video_title = newTitle;
         handleCloseRenamePopup();
-        toast.success("Video renamed successfully", {
-          className: "custom-toast",
-        });
+        toast.success("Video renamed successfully", );
       } else {
-        toast.error("Failed to rename video", {
-          className: "custom-toast",
-        });
+        toast.error("Failed to rename video", );
       }
     } catch (error) {
-      toast.error("Failed to rename video", {
-        className: "custom-toast",
-      });
+      toast.error("Failed to rename video", );
     }
   };
 
   const handleDeleteClick = async () => {
+    setIsDeleteModal(true);
+  };
+
+  const onDeleteVideo = async () => {
+    console.log("delete video start");
     try {
       await deleteVideo(video.id);
       toast.success("Video deleted successfully", {
@@ -83,6 +85,7 @@ const VideoCard = ({
         className: "custom-toast",
       });
     }
+    console.log("delete video end");
   };
 
   const handleToggleFavouriteClick = async () => {
@@ -223,6 +226,13 @@ const VideoCard = ({
         {showPreviewPopup && (
           <VideoPreviewPopup video={video} onClose={handleClosePreviewPopup} />
         )}
+
+        <DeleteModal
+          middleContent={newTitle}
+          show={isDeleteModal}
+          onHide={() => setIsDeleteModal(false)}
+          onDelete={() => onDeleteVideo()}
+        />
       </div>
     </div>
   );

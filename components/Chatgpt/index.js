@@ -5,6 +5,7 @@ import { IoMdClose } from "react-icons/io";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
+import DeleteModal from "../DeleteModal";
 const ChatGpt = ({ appendToBody, close }) => {
   const [cgpt, setCgpt] = useState("");
   const [prompt, setPrompt] = useState("");
@@ -20,13 +21,15 @@ const ChatGpt = ({ appendToBody, close }) => {
   const [titleError, setTitleError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const [responseGenerated, setResponseGenerated] = useState(false);
+  const [isDeleteModal, setIsDeleteModal] = useState(false);
+  const [deleteTemplate, setDeleteTemplate] = useState();
 
   const handleDropdownChange = (event) => {
     const value = event;
     console.log(event, "dropdown selection");
     if (value === "AddPrompt") {
       setShowModal(true);
-      setSelectedOption("Select prompt");
+      setSelectedOption("Select Prompt");
       setIsEditing(false);
       setEditingPrompt(null);
     } else {
@@ -254,9 +257,7 @@ const ChatGpt = ({ appendToBody, close }) => {
           newPrompt.description ? "" : "Description is required"
         );
         toast.error(
-          "Please fill in all required fields and ensure you are editing a valid prompt.", {
-            className: "custom-toast",
-          }
+          "Please fill in all required fields and ensure you are editing a valid prompt."
         );
       }
     } catch (error) {
@@ -391,8 +392,11 @@ const ChatGpt = ({ appendToBody, close }) => {
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                         onClick={(e) => {
+                          // e.stopPropagation();
+                          // deletePrompt(option.id);
+                          setIsDeleteModal(true);
+                          setDeleteTemplate(option);
                           e.stopPropagation();
-                          deletePrompt(option.id);
                         }}
                       >
                         <path
@@ -503,6 +507,13 @@ const ChatGpt = ({ appendToBody, close }) => {
             </div>
           </div>
         </div>
+
+        <DeleteModal
+          middleContent={deleteTemplate?.heading}
+          show={isDeleteModal}
+          onHide={() => setIsDeleteModal(false)}
+          onDelete={() => deletePrompt(deleteTemplate?.id)}
+        />
       </div>
     </div>
   );

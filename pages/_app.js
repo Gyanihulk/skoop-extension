@@ -29,7 +29,12 @@ export default function App({ Component, pageProps }) {
             <ScreenProvider>
               <AuthProvider>
                 <MessageProvider>
-                  <Toaster position="top-right" />
+                  <Toaster
+                    position="top-right"
+                    toastOptions={{
+                      className: "custom-toast",
+                    }}
+                  />
 
                   <Component {...pageProps} />
                 </MessageProvider>
