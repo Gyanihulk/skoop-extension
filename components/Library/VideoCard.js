@@ -59,12 +59,18 @@ const VideoCard = ({
       if (response.ok) {
         video.video_title = newTitle;
         handleCloseRenamePopup();
-        toast.success("Video renamed successfully", );
+        toast.success("Video renamed successfully", {
+          className: "custom-toast",
+        });
       } else {
-        toast.error("Failed to rename video", );
+        toast.error("Failed to rename video", {
+          className: "custom-toast",
+        });
       }
     } catch (error) {
-      toast.error("Failed to rename video", );
+      toast.error("Failed to rename video", {
+        className: "custom-toast",
+      });
     }
   };
 

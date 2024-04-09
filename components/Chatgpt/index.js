@@ -29,7 +29,7 @@ const ChatGpt = ({ appendToBody, close }) => {
     console.log(event, "dropdown selection");
     if (value === "AddPrompt") {
       setShowModal(true);
-      setSelectedOption("Select Prompt");
+      setSelectedOption("Select prompt");
       setIsEditing(false);
       setEditingPrompt(null);
     } else {
@@ -257,7 +257,10 @@ const ChatGpt = ({ appendToBody, close }) => {
           newPrompt.description ? "" : "Description is required"
         );
         toast.error(
-          "Please fill in all required fields and ensure you are editing a valid prompt."
+          "Please fill in all required fields and ensure you are editing a valid prompt.",
+          {
+            className: "custom-toast",
+          }
         );
       }
     } catch (error) {

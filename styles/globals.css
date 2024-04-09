@@ -1624,6 +1624,7 @@ ul.nav-button li svg path {
   color: #2a2b39;
   padding: 0;
   text-align: center;
+  margin: 0 !important;
 }
 
 .title {
@@ -1875,7 +1876,7 @@ img.icon-style-normal {
   align-items: center;
   padding: 2px 6px;
   background-color: var(--main-color);
-  margin: 6px 0 0;
+  margin: 6px 0 5px;
   border-radius: 6px;
   color: #fff;
   font-size: 12px;
