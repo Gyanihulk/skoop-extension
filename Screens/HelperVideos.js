@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import ScreenContext from "../contexts/ScreenContext";
 import BackButton from "../components/BackButton";
 
-const MiddleSection = ({  detail, openModal }) => {
+const MiddleSection = ({ detail, openModal }) => {
   const addModules = detail.map(({ imgSrc, videoSrc, alt, text }, index) => {
     return (
       <div className="title-video-parent" key={index}>
@@ -38,6 +38,8 @@ const SmallVideoModule = ({ detail, openModal }) => {
     <div className="d-flex align-items-center justify-content-start px-0 mx-0 mt-2">
       <div class="title-video-sm border-radius-8 overflow-hidden ">
         <img
+          width={120}
+          height={80}
           src={detail.imgSrc}
           alt={detail.alt}
           onClick={(e) => openModal(detail.videoSrc, e)}
@@ -64,8 +66,8 @@ const HelperVideos = () => {
     if (event) {
       event.stopPropagation();
     }
-    const height = 322*2;
-    const width = 574*2;
+    const height = 322 * 2;
+    const width = 574 * 2;
 
     sendMessageToBackgroundScript({
       action: "startPlayingVideo",
@@ -92,7 +94,7 @@ const HelperVideos = () => {
       videoSrc: "https://play.vidyard.com/Az8t22sqAuJeZytJwGekE4",
       imgSrc: "/screens/helperImages/3.png",
       alt: "This image is related to a video which says about how to send audio",
-      text: " Creating a Welcome Video",
+      text: " Creating a video",
     },
   ];
 
@@ -133,15 +135,15 @@ const HelperVideos = () => {
       <div id="helper-videos">
         <div className="lighter-pink">
           <div>
-             <div className="pt-3 mb-4">
-                <BackButton navigateTo="Home" />
-             </div>
+            <div className="pt-3 mb-4">
+              <BackButton navigateTo="Home" />
+            </div>
           </div>
           <div className="px-4-2">
             <section className="video-header m-0 p-0">
               <div className="border-radius-8 overflow-hidden">
                 <img
-                  src= "/screens/helperImages/1.png"
+                  src="/screens/helperImages/1.png"
                   alt="This image is related to a video which says about how to record & send video"
                   onClick={(e) => {
                     openPopUp(
@@ -158,21 +160,13 @@ const HelperVideos = () => {
                       e
                     );
                   }}
-                >
-                
-                </p>
+                ></p>
               </div>
             </section>
 
-            {detail && (
-              <MiddleSection
-                detail={detail}
-                openModal={openPopUp}
-              />
-            )}
+            {detail && <MiddleSection detail={detail} openModal={openPopUp} />}
 
             <section className=" my-2 overflow-auto">
-
               {info && videomodules}
             </section>
           </div>

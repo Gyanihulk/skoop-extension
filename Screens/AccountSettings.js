@@ -56,10 +56,14 @@ const AccountProfile = ({ userData }) => {
           setProfileImage(
             API_ENDPOINTS.backendUrl + "/" + jsonResponse.image_path
           ); // Access image_path from JSON response
-          toast.success("Profile Image Updated");
+          toast.success("Profile Image Updated", {
+            className: "custom-toast",
+          });
         } else throw new Error("Error in the database");
       } catch (err) {
-        toast.error("Profile Image Not Updated, try Again");
+        toast.error("Profile Image Not Updated, try Again", {
+          className: "custom-toast",
+        });
       }
     }
   };
@@ -195,7 +199,9 @@ const SettingsPassword = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (values.password !== values.confirm) {
-      toast.error("New password doesnt match.");
+      toast.error("New password doesnt match.", {
+        className: "custom-toast",
+      });
       return;
     }
     try {
@@ -213,7 +219,9 @@ const SettingsPassword = () => {
         },
       });
       if (res.ok) {
-        toast.success("Password Changed");
+        toast.success("Password Changed", {
+          className: "custom-toast",
+        });
         setValues({
           password: "",
           confirm: "",
@@ -221,7 +229,9 @@ const SettingsPassword = () => {
         });
       } else throw "error in the database";
     } catch (err) {
-      toast.error("Password Not Updated, try Again");
+      toast.error("Password Not Updated, try Again", {
+        className: "custom-toast",
+      });
     }
   };
 
@@ -238,7 +248,7 @@ const SettingsPassword = () => {
         aria-controls="change-password-collapse"
       >
         <div className="d-flex justify-content-between align-items-center">
-          <h6 className="mb-0 card-title">Change Password</h6>
+          <h6 className="mb-0 card-title">Change password</h6>
           <div>
             <FaAngleDown
               style={
@@ -254,7 +264,7 @@ const SettingsPassword = () => {
         <div id="change-password-collapse">
           <form onSubmit={handleSubmit}>
             <div className="card-body p-0">
-              <div className="px--1 py-4-2">
+              <div className="container my-3">
                 <div className="row">
                   <div className="col-sm-6 mb-2 password-with-tooltip">
                     <div className="position-relative password-with-tooltip">
@@ -268,7 +278,7 @@ const SettingsPassword = () => {
                           onFocus={handleFocus}
                           onBlur={handleBlur}
                           value={values.oldPassword}
-                          placeholder="Current Password"
+                          placeholder="Current password"
                           required
                         />
                       </div>
@@ -288,7 +298,7 @@ const SettingsPassword = () => {
                           onFocus={handleFocus}
                           onBlur={handleBlur}
                           value={values.password}
-                          placeholder="New Password"
+                          placeholder="New password"
                           required
                         />
                       </div>
@@ -309,7 +319,7 @@ const SettingsPassword = () => {
                           onFocus={handleFocus}
                           onBlur={handleBlur}
                           value={values.confirm}
-                          placeholder="Confirm Password"
+                          placeholder="Confirm password"
                           required
                         />
                       </div>
@@ -386,7 +396,9 @@ const CalendarUrlForm = ({ userProfileData }) => {
       });
       const data = await res.text();
       if (res.ok) {
-        toast.success("Calendar link updated successfully");
+        toast.success("Calendar link updated successfully", {
+          className: "custom-toast",
+        });
         const url = await getCalendarUrl();
         setCalendarUrl(url);
         checkForDefaultUrl(url);
@@ -395,7 +407,9 @@ const CalendarUrlForm = ({ userProfileData }) => {
       }
     } catch (err) {
       toast.error(
-        err.message || "Failed to update calendar link. Please try again."
+        err.message || "Failed to update calendar link. Please try again.", {
+          className: "custom-toast",
+        }
       );
     }
   };
@@ -415,7 +429,9 @@ const CalendarUrlForm = ({ userProfileData }) => {
 
       const url = await res.text();
       if (res.ok) {
-        toast.success("Calendar link reset successfully");
+        toast.success("Calendar link reset successfully", {
+          className: "custom-toast",
+        });
         setCalendarUrl(url);
         checkForDefaultUrl(url);
       } else {
@@ -423,7 +439,9 @@ const CalendarUrlForm = ({ userProfileData }) => {
       }
     } catch (err) {
       toast.error(
-        err.message || "Failed to reset calendar url. Please try again."
+        err.message || "Failed to reset calendar url. Please try again.", {
+          className: "custom-toast",
+        }
       );
     }
   };
@@ -451,7 +469,7 @@ const CalendarUrlForm = ({ userProfileData }) => {
         <div id="appointment-collapse">
           <form onSubmit={handleSubmit}>
             <div className="card-body p-0">
-              <div className="py-4-2 px--1">
+              <div className="container my-3">
                 <div>
                   <div className="d-flex justify-content-between align-items-center">
                     <label
@@ -547,10 +565,10 @@ const UserSubscriptions = () => {
       </div>
       <Collapse in={toggleInfo}>
         <div className="collapse" id="subscription-collapse">
-          <div class="container my-2">
+          <div class="container my-3">
             {subsriptionInfo?.id && (
               <>
-                <div class="subscription-card-header d-flex justify-content-between mt-3">
+                <div class="subscription-card-header d-flex justify-content-between">
                   <h3>{subsriptionInfo?.current_plan_status}</h3>{" "}
                   <span class="badge badge-active ml-2">Active</span>
                 </div>
@@ -560,7 +578,7 @@ const UserSubscriptions = () => {
                     Plan details
                   </li>
                   <li class="d-flex justify-content-between align-items-center mysubscription-info">
-                    Subscription Id
+                    Subscription ID
                     <span>{subsriptionInfo?.subscription_id}</span>
                   </li>
                   <li class="d-flex justify-content-between align-items-center mysubscription-info">

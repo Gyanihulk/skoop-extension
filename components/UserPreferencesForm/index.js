@@ -169,7 +169,9 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
           });
           const data = await res.json();
           if (res.ok) {
-            toast.success("Preferences saved successfully");
+            toast.success("Preferences saved successfully", {
+              className: "custom-toast",
+            });
             handleFormSubmit();
             fetchUserPreferences();
           } else {
@@ -189,7 +191,9 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
           });
           const data = await res.json();
           if (res.ok) {
-            toast.success("Preferences saved successfully");
+            toast.success("Preferences saved successfully", {
+              className: "custom-toast",
+            });
             fetchUserPreferences();
           } else {
             console.log(data);
@@ -202,11 +206,15 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
         }
       } catch (err) {
         console.log(err);
-        toast.error("Preferences not saved. Please try again.");
+        toast.error("Preferences not saved. Please try again.", {
+          className: "custom-toast",
+        });
       }
     } else {
       toast.error(
-        "Preffered Start time OR Break time is greater than End Time"
+        "Preffered Start time OR Break time is greater than End Time", {
+          className: "custom-toast",
+        }
       );
     }
   };
@@ -240,7 +248,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
           <div id="user-preference-collapse">
             <form onSubmit={handleSubmit}>
               <div className="card-body p-0">
-                <div className="py-4-2 px--1">
+                <div className="container my-2">
                   <div className="mb-3">
                     <label className="form-label profile-text">
                       Preferred Start Time

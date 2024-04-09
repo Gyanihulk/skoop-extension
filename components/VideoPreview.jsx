@@ -3,12 +3,12 @@ import API_ENDPOINTS from "./apiConfig";
 import toast from "react-hot-toast";
 import GlobalStatesContext from "../contexts/GlobalStates";
 import Form from "react-bootstrap/Form";
-import { PiDotsThreeCircleVerticalDuotone } from "react-icons/pi";
 import MediaUtilsContext from "../contexts/MediaUtilsContext";
 import { handleCopyToClipboard } from "../utils";
 import RenameVideoPopup from "./Library/RenameVideoPopup";
 import { sendMessageToBackgroundScript } from "../lib/sendMessageToBackground";
 import { FaPencilAlt } from "react-icons/fa";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import MessageContext from "../contexts/MessageContext";
 
 export const VideoPreview = () => {
@@ -72,10 +72,14 @@ export const VideoPreview = () => {
           console.log(jsonResponse?.thumbnailUrl);
           setThumbnailImage(jsonResponse?.thumbnailUrl);
 
-          toast.success("Thumbnail Image Updated");
+          toast.success("Thumbnail Image Updated", {
+            className: "custom-toast",
+          });
         } else throw new Error("Error in the database");
       } catch (err) {
-        toast.error("Thumbnail Image Not Updated, Try Again");
+        toast.error("Thumbnail Image Not Updated, Try Again", {
+          className: "custom-toast",
+        });
       }
     }
   };
@@ -114,7 +118,9 @@ export const VideoPreview = () => {
       );
   
       if (response.ok) {
-        toast.success("Video renamed successfully");
+        toast.success("Video renamed successfully", {
+          className: "custom-toast",
+        });
         setShowRenamePopup(!showRenamePopup);
   
         // Check if the video title has changed
@@ -128,10 +134,14 @@ export const VideoPreview = () => {
           setMessage(updatedMessage);
         }
       } else {
-        toast.error("Failed to rename video.");
+        toast.error("Failed to rename video.", {
+          className: "custom-toast",
+        });
       }
     } catch (error) {
-      toast.error("Failed to rename video.");
+      toast.error("Failed to rename video.", {
+        className: "custom-toast",
+      });
     }
   };
 
@@ -141,7 +151,9 @@ export const VideoPreview = () => {
       setLatestVideo();
       setLatestBlob();
     } catch (error) {
-      toast.error("Failed to delete video");
+      toast.error("Failed to delete video", {
+        className: "custom-toast",
+      });
     }
   };
 
@@ -230,30 +242,39 @@ export const VideoPreview = () => {
             id="video-preview-top-content"
           >
             <div>
-              <span id="preview-video-name">
-                {newTitle?.length > 5
-                  ? `${newTitle?.slice(0, 5)}...${newTitle?.slice(-4)}`
-                  : " "}
-              </span>
-              <FaPencilAlt
-                size={12}
-                onClick={() => handleIconClick("Rename Title")}
-                title="Edit Title"
-              />
+              {newTitle != null ? (
+                <div>
+                  <span id="preview-video-name">
+                    {newTitle?.length > 5
+                      ? `${newTitle?.slice(0, 6)}...${newTitle?.slice(-4)}`
+                      : " "}
+                  </span>
+
+                  <FaPencilAlt
+                    className="video-preview-icon"
+                    size={12}
+                    onClick={() => handleIconClick("Rename Title")}
+                    title="Edit Title"
+                  />
+                </div>
+              ) : null}
             </div>
-            <div className="d-flex align-items-center gap-2">
+            <div className="d-flex align-items-center">
               <div id="booking-switch">
                 <Form title="Show Booking Link">
                   <Form.Check
                     type="switch"
                     checked={showBookingLink}
                     onChange={handleSwitchChange}
-                    className="small-switch"
+                    className="small-switch video-preview-icon"
+                    id="video-container-switch"
                   />
                 </Form>
               </div>
-              <PiDotsThreeCircleVerticalDuotone
-                size={30}
+              <BsThreeDotsVertical
+                title="Menu"
+                className="video-preview-icon"
+                size={12}
                 onClick={() =>
                   setShowVideoOptionsDialog(!showVideoOptionsDialog)
                 }

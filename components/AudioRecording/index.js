@@ -89,7 +89,9 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
       );
       customHeaders.append("title1", title1);
 
-      const loadingObj = toast.loading("Uploading Voice Memo...");
+      const loadingObj = toast.loading("Uploading Voice Memo...", {
+        className: "custom-toast",
+      });
       var response = await fetch(API_ENDPOINTS.vidyardUploadAudio, {
         method: "POST",
         headers: customHeaders,
@@ -99,6 +101,7 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
       console.log(response, "from audio");
       toast.success("Voice Memo uploaded,encoding in progress", {
         id: loadingObj,
+        className: "custom-toast",
       });
       setIsUploading(false);
       addToMessage(response.facade_player_uuid);
@@ -106,7 +109,9 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
       setLatestVideo(response);
     } catch (err) {
       toast.dismiss();
-      toast.error("could not upload");
+      toast.error("could not upload", {
+        className: "custom-toast",
+      });
     }
   };
 
@@ -130,7 +135,9 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
       setMediaRecorder(recorder);
       setIsRecording(true);
     } catch (error) {
-      toast.error("please provide the permission to access your microphone");
+      toast.error("please provide the permission to access your microphone", {
+        className: "custom-toast",
+      });
       return;
     }
   };
@@ -201,7 +208,7 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
             </svg>
           )}
         </button>
-        <span className="record-button-bottom-text"> Record Audio</span>
+        <span className="record-button-bottom-text">Voice Memo</span>
       </div>
       <div>
         <div

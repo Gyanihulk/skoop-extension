@@ -148,8 +148,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 3rem;
+  height: 3rem;
   background-color: white;
   color: var(--main-color);
   border-radius: 50%;
@@ -161,13 +161,6 @@
   text-decoration: none;
   transition: background-color 0.3s, box-shadow 0.3s;
 }
-
-/* @media screen and (max-width: 768px) {
-  #skoop_record_button {
-    width: 6rem;
-    height: 6rem;
-  }
-} */
 
 #skoop_record_button:hover svg path {
   fill: white;
@@ -724,13 +717,10 @@
   width: 80%;
   height: 30px;
 }
-.modal-overlay {
-  background-color: rgba(0, 0, 0, 0.2);
-}
 
 .modal-header {
   font-family: "Montserrat", sans-serif;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .embed-responsive-item {
@@ -895,11 +885,12 @@ input[type="time"]#preferredEndTime.filled:focus:before {
 }
 
 .card-btn {
+  width: 80px;
+  height: 32px;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 8px 24px;
   gap: 10px;
   background: var(--main-color);
   border-radius: 8px;
@@ -1215,6 +1206,7 @@ select.form-control {
 
 #Header,
 #messageFooter {
+  height: 44px;
   background-color: var(--main-color);
 }
 
@@ -1230,14 +1222,11 @@ select.form-control {
   margin-inline: 3px;
 }
 .header-text {
-  font-family: "Lato", sans-serif;
+  font-family: Lato, sans-serif;
   font-size: 16px;
-  color: #ffffff;
+  color: #fff;
   font-weight: 500;
-  text-align: justify;
-  padding: 0%;
-
-  padding-left: 50px;
+  padding-left: 2.4rem;
 }
 
 .btn-outline-warning {
@@ -1257,8 +1246,8 @@ select.form-control {
   position: relative;
   border: 2px #000;
   background-color: #fff !important;
-  width: 72px;
-  height: 24px;
+  width: 80px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1323,10 +1312,10 @@ select.form-control {
 }
 
 .cursor-pointer {
-  cursor: pointer;
+  cursor: pointer !important;
 }
 #chatWindowsList {
-  padding: 1vh;
+  padding: 0 6px;
 }
 #chatWindowsList label {
   font-size: small;
@@ -1335,9 +1324,11 @@ select.form-control {
 
 .select-recipient-list {
   max-width: 100%;
+  overflow: hidden;
   display: flex;
   gap: 12px;
   padding: 0 0.5rem;
+  height: 32px;
 }
 
 .select-recipient-list:hover {
@@ -1447,6 +1438,7 @@ ul.nav-button li svg path {
   background-color: #a9aaaa;
   font-size: 12px;
   border-radius: 8px;
+  background-color: var(--main-color);
 }
 
 #chatWindowsList {
@@ -1454,18 +1446,23 @@ ul.nav-button li svg path {
   font-size: 10px;
 }
 
+#select-recipient-item {
+  max-width: 5.8rem;
+}
+
 #recipient-checkbox {
   border-color: #2a2b39;
+  margin-top: 3px;
+  transform: scale(1.3);
 }
 
 .form-check-label {
-  white-space: nowrap; /* Prevents the text from wrapping to the next line */
-  overflow: hidden; /* Hides the overflow of text */
-  text-overflow: ellipsis; /* Adds an ellipsis to signify that there is more text */
-  display: block; /* Optional: Ensures the label is a block-level element */
-  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis !important;
+  display: block;
   font-family: "Montserrat", sans-serif;
-  font-size: 12px;
+  font-size: 12px !important;
   font-weight: 400;
   margin-left: 4px;
 }
@@ -1489,13 +1486,14 @@ ul.nav-button li svg path {
 
 #video-preview-option {
   position: absolute;
-  top: 2rem;
+  top: 1.8rem;
   right: 8rem;
   z-index: 1000;
 }
 
 #video-preview-top-content {
   width: 100%;
+  height: 28px;
   position: absolute;
   top: 0px;
   z-index: 1000;
@@ -1546,9 +1544,7 @@ ul.nav-button li svg path {
   object-fit: center;
   cursor: pointer;
 }
-.cursor-pointer {
-  cursor: pointer;
-}
+
 .video-header {
   box-sizing: border-box;
 }
@@ -1566,7 +1562,7 @@ ul.nav-button li svg path {
   margin: 5px;
 }
 .title-video-sm {
-  width: 120px;
+  min-width: 120px;
   height: 80px;
 }
 
@@ -1593,6 +1589,7 @@ ul.nav-button li svg path {
   letter-spacing: 0.03em;
   color: #2a2b39;
   padding: 0;
+  text-align: left;
 }
 
 .title {
@@ -1617,8 +1614,12 @@ ul.nav-button li svg path {
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: #eee3fc34;
+  background-color: rgba(0, 0, 0, 0.4);
   z-index: 999;
+}
+
+.modal-content {
+  border: none !important;
 }
 
 img.icon-style-normal {
@@ -1639,20 +1640,23 @@ img.icon-style-normal {
   font-weight: 700;
 }
 #booking-switch {
-  /* position: absolute;
-  bottom: 5px; */
-  font-size: 12px;
-  /* left: 50%;
-  transform: translateX(-50%); */
-}
-#preview-video-name {
-  margin-right: 6px;
+  font-size: 12px !important;
 }
 
-/* .form-switch {
-  padding-left: 3.5em !important;
-  padding-right: 3.5em !important;
-} */
+#video-container-switch {
+  transform: scale(1.1);
+}
+
+#preview-video-name {
+  margin-right: 6px;
+  font-size: 12px;
+  font-family: "Montserrat" sans-serif;
+}
+
+.video-preview-icon {
+  cursor: pointer;
+}
+
 .subscription-container {
   max-width: 400px;
   margin: auto;
@@ -1818,32 +1822,50 @@ img.icon-style-normal {
   border-radius: 10px !important;
   border: none !important;
 }
-.custom-video-nav-item {
-  display: flex;
-  align-items: center;
-  padding: 0px 8px;
+
+.custom-video-nav {
+  border-radius: 8px;
   background-color: var(--main-color);
-  margin: 6px;
+  width: 100%;
+  border: none !important;
+  overflow-x: auto;
+  padding-left: 4px;
+}
+
+.custom-video-nav::-webkit-scrollbar {
+  height: 15px;
+}
+
+.custom-video-nav-item {
+  display: block;
+  align-items: center;
+  padding: 2px 6px;
+  background-color: var(--main-color);
+  margin: 6px 0 0;
   border-radius: 6px;
-  height: 24px;
   color: #fff;
   font-size: 12px;
   font-family: "Montserrat" sans-serif;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: ellipsis !important;
   cursor: pointer;
+  width: 4rem;
+  text-align: center;
 }
 .custom-video-nav-item.active {
   background-color: white;
   color: var(--main-color);
 }
 
-.custom-video-nav {
-  border-radius: 8px;
-  background-color: var(--main-color);
-  width: 100%;
+.custom-video-nav > ul {
+  border: none;
 }
+
+.custom-video-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
 .video-card-footer {
   background-color: rgba(255, 255, 255, 0.8) !important;
   display: flex;
@@ -1902,6 +1924,13 @@ img.icon-style-normal {
 
 #select-recipients-title span {
   font-size: 12px;
+}
+
+#none-recipients-title {
+  font-family: "Montserrat", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding-bottom: 6px;
 }
 
 .modal-title {
@@ -2074,6 +2103,11 @@ img.icon-style-normal {
   font-size: 14px;
   font-family: "Montserrat";
   font-weight: 500;
+}
+
+.custom-toast {
+  font-size: 12px;
+  font-family: "Montserrat" sans-serif;
 }
 
 /* Emoji style */

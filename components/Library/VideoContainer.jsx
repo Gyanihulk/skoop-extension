@@ -21,7 +21,7 @@ const VideoContainer = ({
       const response = await fetch(
         `${
           API_ENDPOINTS.linkData
-        }directory=${folderName}&page=${currentPage}&limit=${8}`,
+        }directory=${folderName}&page=${currentPage}&limit=${4}`,
         {
           method: "GET",
           headers: {

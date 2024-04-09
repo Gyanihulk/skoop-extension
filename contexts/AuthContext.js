@@ -28,7 +28,9 @@ export const AuthProvider = ({ children }) => {
     return passwordRegex.test(password);
   };
   const handleSkoopLogin = async (username, password) => {
-    const toastId = toast.loading("Signing In...");
+    const toastId = toast.loading("Signing In...", {
+      className: "custom-toast",
+    });
     try {
       const response = await fetch(API_ENDPOINTS.signIn, {
         method: "POST",
@@ -43,7 +45,10 @@ export const AuthProvider = ({ children }) => {
         },
       });
       if (response.ok) {
-        toast.success("Log In Successfull", { id: toastId });
+        toast.success("Log In Successfull", {
+          id: toastId,
+          className: "custom-toast",
+        });
         const resjson = await response.json();
         localStorage.setItem(
           "accessToken",
@@ -60,11 +65,16 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true);
         navigateToPage("Home");
       } else {
-        toast.error("incorrect username or password", { id: toastId });
+        toast.error("incorrect username or password", {
+          id: toastId,
+          className: "custom-toast",
+        });
       }
     } catch (err) {
       toast.dismiss();
-      toast.error("Something went wrong, please try again");
+      toast.error("Something went wrong, please try again", {
+        className: "custom-toast",
+      });
     }
   };
 
@@ -104,11 +114,15 @@ export const AuthProvider = ({ children }) => {
           navigateToPage("Home");
         }
       } else {
-        toast.error("Could not sign in Correctly.");
+        toast.error("Could not sign in Correctly.", {
+          className: "custom-toast",
+        });
       }
     } catch (err) {
       console.log(err);
-      toast.error("Could not sign in");
+      toast.error("Could not sign in", {
+        className: "custom-toast",
+      });
       navigateToPage("SignInIntro");
     }
   };
@@ -139,7 +153,9 @@ export const AuthProvider = ({ children }) => {
         );
       }
     } catch (err) {
-      toast.error("Something went wrong, please try again");
+      toast.error("Something went wrong, please try again", {
+        className: "custom-toast",
+      });
     }
   };
 
@@ -162,11 +178,15 @@ export const AuthProvider = ({ children }) => {
       if (Number(response.status) === 200) {
         navigateToPage("Home");
       } else {
-        toast.error("Could not sign in.");
+        toast.error("Could not sign in.", {
+          className: "custom-toast",
+        });
       }
     } catch (err) {
       console.log(err);
-      toast.error("Could not sign in");
+      toast.error("Could not sign in", {
+        className: "custom-toast",
+      });
     }
   };
 
@@ -245,12 +265,17 @@ export const AuthProvider = ({ children }) => {
     try {
       if (!validatePassword(password)) {
         toast.error(
-          "Password should contain minimum 8 characters, at least one uppercase letter, and one special character"
+          "Password should contain minimum 8 characters, at least one uppercase letter, and one special character",
+          {
+            className: "custom-toast",
+          }
         );
         return;
       }
 
-      const toastId = toast.loading("Signing Up ...");
+      const toastId = toast.loading("Signing Up ...", {
+        className: "custom-toast",
+      });
       const res = await fetch(API_ENDPOINTS.signUp, {
         method: "POST",
         body: JSON.stringify({
@@ -278,14 +303,23 @@ export const AuthProvider = ({ children }) => {
           action: "storeToken",
           token: resjson.accessToken,
         });
-        toast.success("Sign up was complete", { id: toastId });
+        toast.success("Sign up was complete", {
+          id: toastId,
+          className: "custom-toast",
+        });
         setNewUser(true);
         setIsAuthenticated(true);
         navigateToPage("CalendarSync");
-      } else toast.error("Email already exists ", { id: toastId });
+      } else
+        toast.error("Email already exists ", {
+          id: toastId,
+          className: "custom-toast",
+        });
     } catch (err) {
       toast.dismiss();
-      toast.error("Something Went Wrong");
+      toast.error("Something Went Wrong", {
+        className: "custom-toast",
+      });
     }
   };
   const verifyToken = async () => {
@@ -375,11 +409,15 @@ export const AuthProvider = ({ children }) => {
         const data = await response.text();
         return data;
       } else {
-        toast.error("Could not get calendar url.");
+        toast.error("Could not get calendar url.", {
+          className: "custom-toast",
+        });
       }
     } catch (err) {
       console.log(err);
-      toast.error("Could not get calendar url");
+      toast.error("Could not get calendar url", {
+        className: "custom-toast",
+      });
     }
   };
 
@@ -398,229 +436,263 @@ export const AuthProvider = ({ children }) => {
         const data = await response.json();
         return data;
       } else {
-        toast.error("Could not get calendar url.");
+        toast.error("Could not get calendar url.", {
+          className: "custom-toast",
+        });
       }
     } catch (err) {
       console.log(err);
-      toast.error("Could not get calendar url");
+      toast.error("Could not get calendar url", {
+        className: "custom-toast",
+      });
     }
   };
-    const createSubscription = async (subscriptionData) => {
-        const toastId = toast.loading('Processing Subscription...');
-        navigateToPage(' ');
-        try {
-            let res = await fetch(API_ENDPOINTS.createSubscription, {
-                method: 'POST',
-                body: JSON.stringify(subscriptionData),
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                },
-            });
-            let response = await res.json();
+  const createSubscription = async (subscriptionData) => {
+    const toastId = toast.loading("Processing Subscription...", {
+      className: "custom-toast",
+    });
+    navigateToPage(" ");
+    try {
+      let res = await fetch(API_ENDPOINTS.createSubscription, {
+        method: "POST",
+        body: JSON.stringify(subscriptionData),
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+          authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("accessToken")
+          )}`,
+        },
+      });
+      let response = await res.json();
 
-            if (res.ok) {
-                chrome.identity.launchWebAuthFlow(
-                    { url: response.url, interactive: true },
-                    function (redirectUrl) {
-                        if (chrome.runtime.lastError || !redirectUrl) {
-                            // Handle errors or user cancellation here
-                            console.error(
-                                chrome.runtime.lastError
-                                    ? chrome.runtime.lastError.message
-                                    : 'No redirect URL'
-                            );
-                            return;
-                        }
-                        const sessionId = new URL(redirectUrl).searchParams.get('session_id');
-                        if (sessionId) {
-                            setIsPro(true);
-                        }
-                    }
-                );
-                navigateToPage('Home');
-                toast.success('Subscription Created Successfully', { id: toastId });
-                return response;
-            } else {
-                toast.error('Your trial subscription is already finished', { id: toastId });
+      if (res.ok) {
+        chrome.identity.launchWebAuthFlow(
+          { url: response.url, interactive: true },
+          function (redirectUrl) {
+            if (chrome.runtime.lastError || !redirectUrl) {
+              // Handle errors or user cancellation here
+              console.error(
+                chrome.runtime.lastError
+                  ? chrome.runtime.lastError.message
+                  : "No redirect URL"
+              );
+              return;
             }
-        } catch (err) {
-            toast.error('Something went wrong, please try again');
-        }
-    };
-    const createUserDevice = async (deviceData) => {
-        try {
-            let res = await fetch(API_ENDPOINTS.createUserDevice, {
-                method: 'POST',
-                body: JSON.stringify(deviceData),
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                },
-            });
-            let response = await res.json();
-            setUserDevices(response?.devices);
-            if (res.status == 403) {
-                toast.error(response.error);
-                handleLogOut();
+            const sessionId = new URL(redirectUrl).searchParams.get(
+              "session_id"
+            );
+            if (sessionId) {
+              setIsPro(true);
             }
-            console.log(res, response, response?.devices, 'test');
-        } catch (err) {
-            console.error('API call failed:', err);
+          }
+        );
+        navigateToPage("Home");
+        toast.success("Subscription Created Successfully", {
+          id: toastId,
+          className: "custom-toast",
+        });
+        return response;
+      } else {
+        toast.error("Your trial subscription is already finished", {
+          id: toastId,
+          className: "custom-toast",
+        });
+      }
+    } catch (err) {
+      toast.error("Something went wrong, please try again", {
+        className: "custom-toast",
+      });
+    }
+  };
+  const createUserDevice = async (deviceData) => {
+    try {
+      let res = await fetch(API_ENDPOINTS.createUserDevice, {
+        method: "POST",
+        body: JSON.stringify(deviceData),
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+          authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("accessToken")
+          )}`,
+        },
+      });
+      let response = await res.json();
+      setUserDevices(response?.devices);
+      if (res.status == 403) {
+        toast.error(response.error,{
+          className: "custom-toast",
+        });
+        handleLogOut();
+      }
+      console.log(res, response, response?.devices, "test");
+    } catch (err) {
+      console.error("API call failed:", err);
+    }
+  };
+  const getUserDevice = async (deviceData) => {
+    try {
+      let res = await fetch(API_ENDPOINTS.createUserDevice, {
+        method: "GET",
+        body: JSON.stringify(deviceData),
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+          authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("accessToken")
+          )}`,
+        },
+      });
+      let response = await res.json();
+      console.log(response);
+      setUserDevices(response?.devices);
+      return response;
+    } catch (err) {
+      console.error("API call failed:", err);
+    }
+  };
+  const deleteUserDevice = async (id, deviceId) => {
+    console.log(deviceId, fingerPrint.data.visitorId);
+    try {
+      let res = await fetch(API_ENDPOINTS.createUserDevice + "/" + id, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+          authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("accessToken")
+          )}`,
+        },
+      });
+      let response = await res.json();
+      if (res.ok) {
+        setUserDevices(response?.devices);
+        if (deviceId == fingerPrint.data.visitorId) {
+          handleLogOut();
         }
-    };
-    const getUserDevice = async (deviceData) => {
-        try {
-            let res = await fetch(API_ENDPOINTS.createUserDevice, {
-                method: 'GET',
-                body: JSON.stringify(deviceData),
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                },
-            });
-            let response = await res.json();
-            console.log(response);
-            setUserDevices(response?.devices);
-            return response;
-        } catch (err) {
-            console.error('API call failed:', err);
-        }
-    };
-    const deleteUserDevice = async (id, deviceId) => {
-        console.log(deviceId, fingerPrint.data.visitorId);
-        try {
-            let res = await fetch(API_ENDPOINTS.createUserDevice + '/' + id, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                },
-            });
-            let response = await res.json();
-            if (res.ok) {
-                setUserDevices(response?.devices);
-                if (deviceId == fingerPrint.data.visitorId) {
-                    handleLogOut();
-                }
-            } else {
-                console.error('Failed to delete device:', response.message);
-            }
-            console.log(userDevices);
-        } catch (err) {
-            console.error('API call failed:', err);
-        }
-    };
-    const verifyCoupon = async (coupon) => {
-        try {
-            const res = await fetch(API_ENDPOINTS.validateCoupon + '/' + coupon, {
-                method: 'GET',
-            });
-            console.log(res,"rcoupon")
-            if (!res.ok) {
-                toast.error('Coupon not valid');
-            }
+      } else {
+        console.error("Failed to delete device:", response.message);
+      }
+      console.log(userDevices);
+    } catch (err) {
+      console.error("API call failed:", err);
+    }
+  };
+  const verifyCoupon = async (coupon) => {
+    try {
+      const res = await fetch(API_ENDPOINTS.validateCoupon + "/" + coupon, {
+        method: "GET",
+      });
+      console.log(res, "rcoupon");
+      if (!res.ok) {
+        toast.error("Coupon not valid", {
+          className: "custom-toast",
+        });
+      }
 
-            return res;
-        } catch (err) {
-            toast.err("Coupon not valid.")
-            return { ok: false };
-        }
-    };
-    const getVideoInfo = async (videoId) => {
-        try {
-            const res = await fetch(API_ENDPOINTS.getVideoInfo + '/' + videoId, {
-                method: 'GET',
-            });
-            
-            if (res.ok) {
-                return res;
-            }
-        } catch (err) {
-            return { ok: false };
-        }
-    };
-    const handleLogOut = () => {
-        localStorage.setItem('accessToken', JSON.stringify('none'));
-        setIsAuthenticated(false);
-        setIsPro(false);
-        setNewUser(false);
-        navigateToPage('SignInIntro');
-    };
-    const getMySubscription = async (videoId) => {
-        try {
-            const res = await fetch(API_ENDPOINTS.mySubscriptions , {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                },
-            });
-            
-            if (res.ok) {
-                return res;
-            }
-        } catch (err) {
-            return { ok: false };
-        }
-    };
-    const deactivateMySubscription = async (videoId) => {
-        try {
-            const res = await fetch(API_ENDPOINTS.mySubscriptions , {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-                },
-            });
-            
-            if (res.ok) {
-                return res;
-            }
-        } catch (err) {
-            return { ok: false };
-        }
-    };
-    return (
-        <AuthContext.Provider
-            value={{
-                handleLogOut,
-                isAuthenticated,
-                setIsAuthenticated,
-                handleSkoopLogin,
-                handleSocialLogin,
-                handleRegister,
-                verifyToken,
-                getOtpForPasswordReset,
-                resetPasswordUsingOtp,
-                rememberMe,
-                setRememberMe,
-                newUser,
-                setNewUser,
-                calendarSync,
-                getCalendarUrl,
-                getUserPreferences,
-                loadingAuthState,
-                isPro,
-                createSubscription,
-                setVersion,
-                setIpAddress,
-                setOperatingSystem,
-                setFingerPrint,
-                createUserDevice,
-                userDevices,
-                setUserDevices,
-                deleteUserDevice,
-                getUserDevice,
-                verifyCoupon,
-                getVideoInfo,
-                getMySubscription,
-                deactivateMySubscription
-            }}
-        >
-            {children}
-        </AuthContext.Provider>
-    );
+      return res;
+    } catch (err) {
+      toast.err("Coupon not valid.", {
+        className: "custom-toast",
+      });
+      return { ok: false };
+    }
+  };
+  const getVideoInfo = async (videoId) => {
+    try {
+      const res = await fetch(API_ENDPOINTS.getVideoInfo + "/" + videoId, {
+        method: "GET",
+      });
+
+      if (res.ok) {
+        return res;
+      }
+    } catch (err) {
+      return { ok: false };
+    }
+  };
+  const handleLogOut = () => {
+    localStorage.setItem("accessToken", JSON.stringify("none"));
+    setIsAuthenticated(false);
+    setIsPro(false);
+    setNewUser(false);
+    navigateToPage("SignInIntro");
+  };
+  const getMySubscription = async (videoId) => {
+    try {
+      const res = await fetch(API_ENDPOINTS.mySubscriptions, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+          authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("accessToken")
+          )}`,
+        },
+      });
+
+      if (res.ok) {
+        return res;
+      }
+    } catch (err) {
+      return { ok: false };
+    }
+  };
+  const deactivateMySubscription = async (videoId) => {
+    try {
+      const res = await fetch(API_ENDPOINTS.mySubscriptions, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+          authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("accessToken")
+          )}`,
+        },
+      });
+
+      if (res.ok) {
+        return res;
+      }
+    } catch (err) {
+      return { ok: false };
+    }
+  };
+  return (
+    <AuthContext.Provider
+      value={{
+        handleLogOut,
+        isAuthenticated,
+        setIsAuthenticated,
+        handleSkoopLogin,
+        handleSocialLogin,
+        handleRegister,
+        verifyToken,
+        getOtpForPasswordReset,
+        resetPasswordUsingOtp,
+        rememberMe,
+        setRememberMe,
+        newUser,
+        setNewUser,
+        calendarSync,
+        getCalendarUrl,
+        getUserPreferences,
+        loadingAuthState,
+        isPro,
+        createSubscription,
+        setVersion,
+        setIpAddress,
+        setOperatingSystem,
+        setFingerPrint,
+        createUserDevice,
+        userDevices,
+        setUserDevices,
+        deleteUserDevice,
+        getUserDevice,
+        verifyCoupon,
+        getVideoInfo,
+        getMySubscription,
+        deactivateMySubscription,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export default AuthContext;

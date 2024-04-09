@@ -26,7 +26,7 @@ const ChatGpt = ({ appendToBody, close }) => {
     console.log(event, "dropdown selection");
     if (value === "AddPrompt") {
       setShowModal(true);
-      setSelectedOption("Select Prompt");
+      setSelectedOption("Select prompt");
       setIsEditing(false);
       setEditingPrompt(null);
     } else {
@@ -117,7 +117,9 @@ const ChatGpt = ({ appendToBody, close }) => {
       setResponseGenerated(true);
       console.log();
     } catch (err) {
-      toast.error("could not get chatGpt response");
+      toast.error("could not get chatGpt response", {
+        className: "custom-toast",
+      });
     }
   };
 
@@ -135,7 +137,9 @@ const ChatGpt = ({ appendToBody, close }) => {
       const data = await response.json();
       setMessageOptions(data);
     } catch (error) {
-      toast.error("Error fetching prompts");
+      toast.error("Error fetching prompts", {
+        className: "custom-toast",
+      });
     }
   };
 
@@ -162,17 +166,23 @@ const ChatGpt = ({ appendToBody, close }) => {
         setShowModal(false);
         setNewPrompt({ heading: "", description: "" });
         fetchPrompts();
-        toast.success("New Prompt added successfully!");
+        toast.success("New Prompt added successfully!", {
+          className: "custom-toast",
+        });
       } else {
         // Set validation errors if the fields are empty
         setTitleError(newPrompt.heading ? "" : "Title is required");
         setDescriptionError(
           newPrompt.description ? "" : "Description is required"
         );
-        toast.error("Please fill in all required fields.");
+        toast.error("Please fill in all required fields.", {
+          className: "custom-toast",
+        });
       }
     } catch (error) {
-      toast.error("Error adding prompt");
+      toast.error("Error adding prompt", {
+        className: "custom-toast",
+      });
     }
   };
 
@@ -196,9 +206,13 @@ const ChatGpt = ({ appendToBody, close }) => {
       }
 
       fetchPrompts();
-      toast.success("Prompt deleted successfully!");
+      toast.success("Prompt deleted successfully!", {
+        className: "custom-toast",
+      });
     } catch (error) {
-      toast.error("Error deleting prompt");
+      toast.error("Error deleting prompt", {
+        className: "custom-toast",
+      });
     }
   };
 
@@ -229,8 +243,10 @@ const ChatGpt = ({ appendToBody, close }) => {
         setNewPrompt({ heading: "", description: "" });
         setIsEditing(false);
         fetchPrompts();
-        toast.success("Prompt updated successfully!");
-        setSelectedOption("Select Prompt");
+        toast.success("Prompt updated successfully!", {
+          className: "custom-toast",
+        });
+        setSelectedOption("Select prompt");
       } else {
         // Set validation errors if the fields are empty or editingPrompt is not available
         setTitleError(newPrompt.heading ? "" : "Title is required");
@@ -238,11 +254,15 @@ const ChatGpt = ({ appendToBody, close }) => {
           newPrompt.description ? "" : "Description is required"
         );
         toast.error(
-          "Please fill in all required fields and ensure you are editing a valid prompt."
+          "Please fill in all required fields and ensure you are editing a valid prompt.", {
+            className: "custom-toast",
+          }
         );
       }
     } catch (error) {
-      toast.error("Error updating prompt");
+      toast.error("Error updating prompt", {
+        className: "custom-toast",
+      });
     }
   };
 
@@ -273,7 +293,7 @@ const ChatGpt = ({ appendToBody, close }) => {
         <div className="d-flex flex-row">
           <div className="col">
             <div className="heading">
-              Select Prompts To Generate ChatGPT responses
+              Select Prompts to generate ChatGPT responses
             </div>
           </div>
           <div
@@ -314,7 +334,7 @@ const ChatGpt = ({ appendToBody, close }) => {
               <DropdownButton
                 as={ButtonGroup}
                 size="sm"
-                title="Select Prompt"
+                title="Select prompt"
                 id="gpt-dropdown"
                 value={selectedOption}
                 onSelect={handleDropdownChange}
@@ -335,7 +355,7 @@ const ChatGpt = ({ appendToBody, close }) => {
                       fill="#2A2B39"
                     />
                   </svg>
-                  Add New Prompt
+                  Add new prompt
                 </Dropdown.Item>
                 <Dropdown.Divider />
                 {messageOptions.map((option) => (
@@ -417,10 +437,10 @@ const ChatGpt = ({ appendToBody, close }) => {
         >
           <div className="modal-overlay  modal-dialog-centered" role="document">
             <div className="modal-content mx-2">
-              <div className="modal-header d-flex flex-row justify-content-between">
+              <div className="modal-header d-flex flex-row justify-content-between px-3 pt-3 pb-2 border-0">
                 <h5 className="modal-title">
                   {" "}
-                  {isEditing ? "Edit Prompt" : "Add New Prompt"}
+                  {isEditing ? "Edit prompt" : "Add new prompt"}
                 </h5>
                 <button
                   type="button"
@@ -428,7 +448,7 @@ const ChatGpt = ({ appendToBody, close }) => {
                   onClick={() => setShowModal(false)}
                   aria-label="Close"
                 >
-                  <IoMdClose />
+                  <IoMdClose size={16} />
                 </button>
               </div>
               <div className="modal-body">
@@ -436,7 +456,7 @@ const ChatGpt = ({ appendToBody, close }) => {
                   type="text"
                   required
                   className="form-control"
-                  placeholder="Enter prompt Title"
+                  placeholder="Enter prompt title"
                   value={newPrompt.heading}
                   onChange={(e) =>
                     handleChange({
@@ -463,7 +483,7 @@ const ChatGpt = ({ appendToBody, close }) => {
                   <div className="invalid-feedback">{descriptionError}</div>
                 )}
               </div>
-              <div className="modal-footer">
+              <div className="modal-footer border-0 py-1">
                 <button
                   type="button"
                   className="modal-btn"

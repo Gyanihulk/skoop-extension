@@ -7,9 +7,9 @@ const VideoPreviewPopup = ({ video, onClose }) => {
     <div className="modal" style={{ display: 'block' }} tabIndex="-1" role="dialog" aria-hidden="true">
       <div className=" modal-overlay modal-dialog-centered">
         <div className="modal-content">
-          <div className="modal-header">
+          <div className="modal-header px-3 pt-3 pb-2">
             <button type="button" className="custom-close-button" onClick={onClose} aria-label="Close">
-                <IoMdClose/>
+                <IoMdClose size={16}/>
             </button>
           </div>
           <div className="modal-body">

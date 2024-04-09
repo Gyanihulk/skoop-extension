@@ -122,10 +122,14 @@ export const insertHtmlAtPositionInMail= (textInput, elementId) => {
             args: [textInput, elementId]
           }, (injectionResults) => {
             if (!injectionResults[0]?.result) {
-              toast.error("Cursor not on the mail window");
+              toast.error("Cursor not on the mail window", {
+                className: "custom-toast",
+              });
               reject(new Error("Cursor not on the mail window"));
             } else {
-              toast.success("Message added to cursor location.");
+              toast.success("Message added to cursor location.", {
+                className: "custom-toast",
+              });
               resolve(injectionResults[0]?.result);
             }
           });

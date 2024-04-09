@@ -43,7 +43,9 @@ export const MediaUtilsProvider = ({ children }) => {
               `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`
           );
 
-          const loadingObj = toast.loading('Uploading Video...');
+          const loadingObj = toast.loading('Uploading Video...', {
+            className: "custom-toast",
+          });
           var response = await fetch(API_ENDPOINTS.vidyardUpload, {
               method: 'POST',
               headers: customHeaders,
@@ -52,18 +54,23 @@ export const MediaUtilsProvider = ({ children }) => {
           response = await response.json();         
           toast.success('Video link Added to Custom Message', {
               id: loadingObj,
+              className: "custom-toast",
           });
           return response
         
       } catch (err) {
         console.log(err)
           toast.dismiss();
-          toast.error('could not upload');
+          toast.error('could not upload', {
+            className: "custom-toast",
+          });
       }
   };
 
     const deleteVideo=async (id)=>{
-      const toastId=toast.loading("Deleting video");
+      const toastId=toast.loading("Deleting video", {
+        className: "custom-toast",
+      });
       try{
           
           const response = await fetch(`${API_ENDPOINTS.deleteVideo}${id}`,{
@@ -76,16 +83,20 @@ export const MediaUtilsProvider = ({ children }) => {
           if(!response.ok){
             throw Error;
           }
-          toast.success("Video deleted",{id: toastId});
+          toast.success("Video deleted",{id: toastId,
+            className: "custom-toast",});
           return true;
       }catch(err){
-          toast.error("Could not delete",{id: toastId});
+          toast.error("Could not delete",{id: toastId,
+            className: "custom-toast",});
           return false;
       }
     }
 
     const updateBookingLinkOfVideo=async (id,booking_link)=>{
-      const toastId=toast.loading("Updating booking link");
+      const toastId=toast.loading("Updating booking link", {
+        className: "custom-toast",
+      });
       try{
           const body={booking_link}
           console.log(body)
@@ -101,10 +112,11 @@ export const MediaUtilsProvider = ({ children }) => {
           if(!response.ok){
             throw Error;
           }
-          toast.success("Video Booking Link Updated",{id: toastId});
+          toast.success("Video Booking Link Updated",{id: toastId,
+            className: "custom-toast",});
           return true;
       }catch(err){
-          toast.error("Could not update booking link",{id: toastId});
+          toast.error("Could not update booking link",{id: toastId, className: "custom-toast",});
           return false;
       }
     }

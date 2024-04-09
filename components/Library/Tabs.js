@@ -4,8 +4,8 @@ import { LuPlus } from "react-icons/lu";
 import VideoContainer from "./VideoContainer";
 
 const Tabs = ({ activeTab, handleTabChange, handleNewTab, folders }) => (
-  <div className="d-flex overflow-auto custom-video-nav">
-    <ul className="nav nav-tabs flex-nowrap ">
+  <div className="d-flex custom-video-nav">
+    <ul className="nav nav-tabs flex-nowrap">
       {/* Existing tabs */}
 
       <li

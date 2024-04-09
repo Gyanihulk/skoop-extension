@@ -16,6 +16,7 @@ export const GlobalStatesProvider = ({ children }) => {
   const [newTitle, setNewTitle] = useState();
   const [subscriptionType, setSubscriptionType] = useState("monthly");
   const [totalMediaCount, setTotalMediaCount] = useState();
+  const [isVideoContainer, setIsVideoContainer] = useState(false);
 
   useEffect(() => {}, [globalRefresh]);
 
@@ -47,7 +48,10 @@ export const GlobalStatesProvider = ({ children }) => {
         subscriptionType,
         setSubscriptionType,
         totalMediaCount,
-        setTotalMediaCount
+        setTotalMediaCount,
+        isVideoContainer,
+        setIsVideoContainer,
+
       }}
     >
       {children}

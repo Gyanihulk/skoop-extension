@@ -157,46 +157,45 @@ const ChatWindowSelection = () => {
       {isLinkedin && (
         <>
           {initialItems?.length > 0 ? (
-            <div id="select-recipients-title">
-              Select Recipients{" "}
-              <span>
-                ({checkedItemCount} out of {initialItems.length})
-              </span>
+            <div>
+              <div id="select-recipients-title">
+                Select Recipients{" "}
+                <span>
+                  ({checkedItemCount} out of {initialItems.length})
+                </span>
+              </div>
+              <div className="mt-1 select-recipient-list">
+                {initialItems?.map((item, index) => {
+                  if (!uniqueNamesSet.has(item.name)) {
+                    uniqueNamesSet.add(item.name);
+                    return (
+                      <div
+                        key={index}
+                        id="select-recipient-item"
+                        className="d-flex"
+                      >
+                        <input
+                          id="recipient-checkbox"
+                          type="checkbox"
+                          className="form-check-input"
+                          value={item.name}
+                          checked={selectedChatWindows.some(
+                            (checkedItem) => checkedItem.name === item.name
+                          )}
+                          onChange={handleCheckboxChange}
+                        />
+                        <label className="form-check-label">{item.name}</label>
+                      </div>
+                    );
+                  } else {
+                    return null;
+                  }
+                })}
+              </div>
             </div>
           ) : (
-            <div id="select-recipients-title">Please open any chat window.</div>
+            <div id="none-recipients-title">Please open any chat window.</div>
           )}
-          <div className="mt-2 select-recipient-list">
-            {initialItems?.map((item, index) => {
-              if (!uniqueNamesSet.has(item.name)) {
-                uniqueNamesSet.add(item.name);
-                return (
-                  <div key={index}>
-                    <div className="d-flex flex-row">
-                      <input
-                        id="recipient-checkbox"
-                        type="checkbox"
-                        className="form-check-input"
-                        value={item.name}
-                        checked={selectedChatWindows.some(
-                          (checkedItem) => checkedItem.name === item.name
-                        )}
-                        onChange={handleCheckboxChange}
-                      />
-                      <label
-                        id="select-recipient-item"
-                        className="form-check-label"
-                      >
-                        {item.name}
-                      </label>
-                    </div>
-                  </div>
-                );
-              } else {
-                return null;
-              }
-            })}
-          </div>
         </>
       )}
     </div>

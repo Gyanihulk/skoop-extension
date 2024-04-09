@@ -189,7 +189,7 @@ const RecordingButton = () => {
   };
   return (
     <>
-      <div className="pt-1" id="recording-container">
+      <div id="recording-container">
         <div class="container">
           <div class="row justify-content-center px-3">
             <div class="col-auto">
@@ -242,7 +242,7 @@ const RecordingButton = () => {
                       : "Recording..."
                     : "Record Video"}{" "}
                   <div
-                    className="d-flex flex-column justify-content-center ps-1"
+                    className="d-flex flex-column justify-content-center ps-1 cursor-pointer"
                     onClick={handleIconClick}
                   >
                     <svg
@@ -278,7 +278,7 @@ const RecordingButton = () => {
       >
         <div className="modal-overlay modal-dialog-centered" role="document">
           <div className="modal-content mx-4 justify-content-center align-items-center">
-            <div className="modal-header">
+            <div className="modal-header d-flex justify-content-between w-100 px-3 pt-3 pb-2">
               Video settings
               <button
                 type="button"
@@ -286,7 +286,7 @@ const RecordingButton = () => {
                 onClick={() => setShowModal(false)}
                 aria-label="Close"
               >
-                <IoMdClose />
+                <IoMdClose size={16} />
               </button>
             </div>
             <div className="modal-body d-flex flex-row align-items-center justify-content-center">

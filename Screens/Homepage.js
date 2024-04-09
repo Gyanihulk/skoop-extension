@@ -6,9 +6,14 @@ import GlobalStatesContext from "../contexts/GlobalStates.js";
 import RecordingButton from "../components/RecordingButton/index.js";
 
 import MessageComposer from "../components/MessageComposer/index.js";
+import VideosListContainer from "../components/VideosListContainer/index.js";
 const Homepage = (props) => {
-  const { setIsLinkedin, setIsProfilePage, setFocusedElementId } =
-    useContext(GlobalStatesContext);
+  const {
+    setIsLinkedin,
+    setIsProfilePage,
+    setFocusedElementId,
+    isVideoContainer,
+  } = useContext(GlobalStatesContext);
 
   function convertArrayOfObjectsToCSV(data) {
     const header = Object.keys(data[0]).join(",") + "\n";
@@ -79,8 +84,8 @@ const Homepage = (props) => {
   }, []);
 
   return (
-    <div className="mt-1">
-      <RecordingButton />
+    <div className="mt-2">
+      {isVideoContainer ? <VideosListContainer /> : <RecordingButton />}
       <MessageComposer />
     </div>
   );
