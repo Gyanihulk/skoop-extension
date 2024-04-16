@@ -40,10 +40,10 @@ const MiddleSection = ({ detail, openModal }) => {
 const SmallVideoModule = ({ detail, openModal }) => {
   return (
     <div className="d-flex align-items-center justify-content-start mb-2">
-      <div class="title-video-sm overflow-hidden position-relative">
+      <div class="title-video overflow-hidden position-relative">
         <img
-          width={120}
-          height={80}
+          width={150}
+          height={110}
           src={detail.imgSrc}
           alt={detail.alt}
           onClick={(e) => openModal(detail.videoSrc, e)}
@@ -95,13 +95,13 @@ const HelperVideos = () => {
       videoSrc: "https://play.vidyard.com/UGEUwRVNppReqNcqthBrNh",
       imgSrc: "/screens/helperImages/2.png",
       alt: "This image is related to a video which says about how to record & send video",
-      text: "Creating a simple video",
+      text: "2.Creating a simple video on linkedIn",
     },
     {
       videoSrc: "https://play.vidyard.com/Az8t22sqAuJeZytJwGekE4",
       imgSrc: "/screens/helperImages/3.png",
       alt: "This image is related to a video which says about how to send audio",
-      text: " Creating a video",
+      text: "3.Creating a welcome video",
     },
   ];
 
@@ -110,25 +110,37 @@ const HelperVideos = () => {
       videoSrc: "https://play.vidyard.com/GFCJo68GJP6PARscaHAQg7",
       imgSrc: "/screens/helperImages/4.png",
       alt: "This image is related to a video which says about how to record & send video",
-      text: "Creating a Voice Memo",
+      text: "4.Creating a Voice Memo",
     },
     {
       videoSrc: "https://play.vidyard.com/bLmzPhpegHvo8rWpLboKNb",
       imgSrc: "/screens/helperImages/5.png",
       alt: "This image is related to a video which says about how to send audio",
-      text: "Adding an Animated Gif",
+      text: "5.Adding an Animated Gif",
     },
     {
       videoSrc: "https://play.vidyard.com/U15yecB66tJ2Fxnh2bQFhY",
       imgSrc: "/screens/helperImages/6.png",
       alt: "This image is related to a video which says about how to send Chatgpt prompts",
-      text: "Reusable Replies",
+      text: "6.Reusable Replies",
     },
     {
       videoSrc: "https://play.vidyard.com/oMuPe7PpZZCEZXjpueFshA",
       imgSrc: "/screens/helperImages/7.png",
       alt: "This image is related to a video which says about how to send GIF",
-      text: "Manage Your Videos and Media",
+      text: "7.Manage Your Videos and Media",
+    },
+    {
+      videoSrc: "https://play.vidyard.com/2M5LM4R2B3Zx31sJPBZBHB",
+      imgSrc: "/screens/helperImages/8.png",
+      alt: "This image is related to a video which says about how use skoop calendar",
+      text: "8.Using Skoops Booking calendar",
+    },
+    {
+      videoSrc: "https://play.vidyard.com/eTUUQcXvEhZQiu5BQbTEkj",
+      imgSrc: "/screens/helperImages/9.png",
+      alt: "This image is related to a video which says about how to send GIF",
+      text: "9.Sending a video via Gmail",
     },
   ];
 
@@ -177,7 +189,7 @@ const HelperVideos = () => {
                     );
                   }}
                 >
-                  How to record & Send video
+                 1.Overview of the Skoop Application 
                 </p>
               </div>
             </section>

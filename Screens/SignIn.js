@@ -3,6 +3,8 @@ import ScreenContext from "../contexts/ScreenContext";
 import SignInForm from "../components/Auth/SignInForm";
 import ContinueWithLinkedInButton from "../components/Auth/button/ContinueWithLinkedInButton";
 import ContinueWithGoogleButton from "../components/Auth/button/ContinueWithGoogleButton";
+import AuthContext from "../contexts/AuthContext";
+import RemoveSessions from "../components/Auth/RemoveSessions";
 
 const SignIn = () => {
   const { navigateToPage } = useContext(ScreenContext);
@@ -13,7 +15,8 @@ const SignIn = () => {
         <h1>Welcome Back!</h1>
         <p>Sign in with email</p>
       </div>
-      <div className="sign-in-form">
+      <div className="sign-in-form mt-5">
+    
         <SignInForm />
       </div>
       <div className="mt-5">

@@ -1,12 +1,16 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import AuthContext from "../contexts/AuthContext";
 import ScreenContext from "../contexts/ScreenContext";
 import CustomButton from "../components/Auth/button/CustomButton";
+import RemoveSessions from "../components/Auth/RemoveSessions";
 
 function SignInWith() {
-  const { handleSocialLogin } = useContext(AuthContext);
-
+  const { handleSocialLogin, deleteMyAllJwtSessions,showClearSessionDialog ,deleteMyAllJwtSessionsBySocial} = useContext(AuthContext);
+  const [social,setSocial]=useState()
   const { navigateToPage } = useContext(ScreenContext);
+  function handleDeleteSessions(){
+    deleteMyAllJwtSessionsBySocial(social);
+  }
   return (
     <div className="signin-background-image container-fluid h-100 px-4 d-flex flex-column justify-content-end">
       <div className="pb-5">
@@ -17,16 +21,17 @@ function SignInWith() {
           </p>
         </div>
         <div className="mb-5 pb-3">
+        {showClearSessionDialog && <RemoveSessions onDelete={handleDeleteSessions}/>}
           <div className="mt-3 w-100">
             <CustomButton
               child="Login with LinkedIn"
-              onClick={() => handleSocialLogin(1)}
+              onClick={() =>{ handleSocialLogin(1);setSocial(1)}}
             />
           </div>
           <div className="mt-3 w-100">
             <CustomButton
               child="Login with Google"
-              onClick={() => handleSocialLogin(2)}
+              onClick={() => {handleSocialLogin(2);setSocial(2)}}
             />
           </div>
         </div>

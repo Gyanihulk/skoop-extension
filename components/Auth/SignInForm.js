@@ -5,10 +5,12 @@ import CustomButton from "./button/CustomButton";
 import ValidationError from "./ValidationError";
 import CustomPasswordInputBox from "./CustomPasswordInputBox";
 import CustomInputBox from "./CustomInputBox";
+import RemoveSessions from "./RemoveSessions";
+import toast from "react-hot-toast";
 
 const SignInForm = () => {
   const { navigateToPage } = useContext(ScreenContext);
-  const { handleSkoopLogin } = useContext(AuthContext);
+  const { handleSkoopLogin, deleteMyAllJwtSessions,showClearSessionDialog} = useContext(AuthContext);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -38,10 +40,17 @@ const SignInForm = () => {
       console.log("username or password can not be empty!");
     }
   };
-
+function handleDeleteSessions(){
+  if(username.trip() === "" ||password.trip() === "" ){
+toast.error("email or password can not be empty!")
+  }else{
+    deleteMyAllJwtSessions(username, password);
+  }
+  
+}
   return (
-    <div className="mt-5">
       <div className="row justify-content-center">
+          {showClearSessionDialog && <RemoveSessions onDelete={handleDeleteSessions}/>}
         <div className="col-md-6">
           <form onSubmit={handleSubmit}>
             <div className="form-group">
@@ -83,7 +92,6 @@ const SignInForm = () => {
           </form>
         </div>
       </div>
-    </div>
   );
 };
 

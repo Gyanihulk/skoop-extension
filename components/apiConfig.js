@@ -53,22 +53,15 @@ const API_ENDPOINTS = {
   validateCoupon: `${backendUrl}/validate-coupon`, //GET
   getVideoInfo: `${backendUrl}/videoinfobyvideoid`, //GET
   mySubscriptions: `${backendUrl}/subscription`, // GET
+  logout: `${backendUrl}/logout`, // delete
+  deleteAllJwtSessions:`${backendUrl}/jwtsession/all`, // delete
+  linkedInLogInDeleteSession: `${backendUrl}/linkedInDeleteSession`, //POST
+  GoogleLogInDeleteSession: `${backendUrl}/SignInWithGoogleDeleteSession`, //POST
 };
 
 // with POST or PATCH apis body is sent in JSON
 // Authorization is handled using bearer token
 // params must be attached whenever required in case of PATCH and GET requests
 
-/*
-PATCH moveVideos
-body: JSON.stringify({
-    to: *the directory where the videos have to be moved*
-    videoIds: *an array of video ids (eg vimeo video id = 866687951) * 
-})
 
-
-
-
-
-*/
 export default API_ENDPOINTS;

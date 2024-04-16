@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
   const [operatingSystem, setOperatingSystem] = useState("");
   const [fingerPrint, setFingerPrint] = useState();
   const [userDevices, setUserDevices] = useState();
+  const [showClearSessionDialog, setShowClearSessionDialog] = useState(false);
   const validatePassword = (password) => {
     if (!password) {
       return false;
@@ -44,6 +45,7 @@ export const AuthProvider = ({ children }) => {
           "Content-type": "application/json; charset=UTF-8",
         },
       });
+      console.log(response.status==401)
       if (response.ok) {
         toast.success("Log In Successfull", {
           id: toastId,
@@ -64,14 +66,16 @@ export const AuthProvider = ({ children }) => {
         });
         setIsAuthenticated(true);
         navigateToPage("Home");
-      } else {
+      }else if(response.status==401){setShowClearSessionDialog(true)} else {
         toast.error("incorrect username or password", {
           id: toastId,
           className: "custom-toast",
         });
       }
+      toast.dismiss();
     } catch (err) {
       toast.dismiss();
+      console.log(err)
       toast.error("Something went wrong, please try again", {
         className: "custom-toast",
       });
@@ -113,7 +117,7 @@ export const AuthProvider = ({ children }) => {
         } else {
           navigateToPage("Home");
         }
-      } else {
+      }else if(response.status==401){setShowClearSessionDialog(true)} else {
         toast.error("Could not sign in Correctly.", {
           className: "custom-toast",
         });
@@ -608,7 +612,16 @@ export const AuthProvider = ({ children }) => {
       return { ok: false };
     }
   };
-  const handleLogOut = () => {
+  const handleLogOut =async () => {
+    const res = await fetch(API_ENDPOINTS.logout, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+        authorization: `Bearer ${JSON.parse(
+          localStorage.getItem("accessToken")
+        )}`,
+      },
+    });
     localStorage.setItem("accessToken", JSON.stringify("none"));
     setIsAuthenticated(false);
     setIsPro(false);
@@ -653,6 +666,113 @@ export const AuthProvider = ({ children }) => {
       return { ok: false };
     }
   };
+  const deleteMyAllJwtSessions = async (username,password) => {
+    try {
+      const res = await fetch(API_ENDPOINTS.deleteAllJwtSessions, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+          authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("accessToken")
+          )}`,
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      });
+
+      if (res.ok) {
+        setShowClearSessionDialog(false)
+        toast.success("Please retry login")
+        return res;
+      }
+    } catch (err) {
+      return { ok: false };
+    }
+  };
+  const deleteMyAllJwtSessionsBySocial = async (type) => {
+    try {
+      if (type === 2) {
+        const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=148000187265-8v7ggl7msakbtt5qbk1vddvtkjegkpf4.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
+          chrome.identity.getRedirectURL()
+        )}&scope=profile%20email%20openid%20&access_type=offline`;
+        chrome.identity.launchWebAuthFlow(
+          { url: GoogleAuthUrl, interactive: true },
+          async function (redirectUrl) {
+            const code = new URL(redirectUrl).searchParams.get("code");
+            handleAuthCodeSessionDeletion(code, type);
+          }
+        );
+      } else {
+        const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77au9mtqfad5jq&redirect_uri=${encodeURIComponent(
+          chrome.identity.getRedirectURL()
+        )}&scope=openid%20profile%20email`;
+        chrome.identity.launchWebAuthFlow(
+          { url: linkedInAuthUrl, interactive: true },
+          function (redirectUrl) {
+            const code = new URL(redirectUrl).searchParams.get("code");
+            handleAuthCodeSessionDeletion(code, type);
+          }
+        );
+      }
+    } catch (err) {
+      toast.error("Something went wrong, please try again", {
+        className: "custom-toast",
+      });
+    }
+    try {
+      const res = await fetch(API_ENDPOINTS.deleteAllJwtSessions, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+          authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("accessToken")
+          )}`,
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
+      });
+
+      if (res.ok) {
+        setShowClearSessionDialog(false)
+        toast.success("Please retry login")
+        return res;
+      }
+    } catch (err) {
+      return { ok: false };
+    }
+  };
+  const handleAuthCodeSessionDeletion = async (authCode, type) => {
+    const url =
+      type === 1 ? API_ENDPOINTS.linkedInLogInDeleteSession : API_ENDPOINTS.GoogleLogInDeleteSession;
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    try {
+      var response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+        body: JSON.stringify({
+          code: authCode,
+          timezone,
+          version: version,
+        }),
+      });
+if(res.ok){
+  toast.success("Sessions deleted.")
+  setShowClearSessionDialog(false)
+}
+      
+    } catch (err) {
+      console.log(err);
+      toast.error("Could not sign in", {
+        className: "custom-toast",
+      });
+    }
+  };
   return (
     <AuthContext.Provider
       value={{
@@ -688,6 +808,10 @@ export const AuthProvider = ({ children }) => {
         getVideoInfo,
         getMySubscription,
         deactivateMySubscription,
+        deleteMyAllJwtSessions,
+        showClearSessionDialog, setShowClearSessionDialog,
+        deleteMyAllJwtSessions,
+        deleteMyAllJwtSessionsBySocial
       }}
     >
       {children}

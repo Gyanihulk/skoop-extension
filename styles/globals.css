@@ -1569,6 +1569,7 @@ ul.nav-button li svg path {
   height: auto;
 }
 .title-video {
+  min-width: 130px;
   width: 130px;
   height: 78px;
   border: 2px solid #2d68c4;
@@ -1580,8 +1581,7 @@ ul.nav-button li svg path {
   margin: 5px;
 }
 .title-video-sm {
-  min-width: 80px !important;
-  max-width: 80px !important;
+  width: 80px !important;
   height: 44px !important;
   border: 2px solid #2d68c4;
   border-radius: 6px;
@@ -2155,3 +2155,5 @@ img.icon-style-normal {
 .EmojiPickerReact {
   height: 14rem !important;
 }
+
+.font-8{font-size: 6px;}
