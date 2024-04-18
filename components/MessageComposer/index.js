@@ -77,9 +77,7 @@ const MessageComposer = () => {
       if (userPreferences && userPreferences.length > 0) {
         return true;
       } else {
-        toast.error("User preference is not set", {
-          className: "custom-toast",
-        });
+        toast.error("User preference is not set");
         return false;
       }
     } else {
@@ -215,16 +213,12 @@ const MessageComposer = () => {
 
   const handleInsertionToWebsite = async () => {
     if (message === null || message === undefined) {
-      toast.error("Please add message!!", {
-        className: "custom-toast",
-      });
+      toast.error("Please add message!!");
       return;
     }
     if (isLinkedin) {
       if (selectedChatWindows?.length === 0) {
-        toast.error("Please select a recipitent", {
-          className: "custom-toast",
-        });
+        toast.error("Please select a recipitent");
         return;
       }
       for (const item of selectedChatWindows) {
@@ -244,9 +238,7 @@ const MessageComposer = () => {
       setTimeout(() => {
         handleSend();
       }, 500);
-      toast.success("Message Sent Successfully!!", {
-        className: "custom-toast",
-      });
+      toast.success("Message Sent Successfully!!");
     } else {
       const gmailInsertion = await insertHtmlAtPositionInMail(
         message,
@@ -281,21 +273,13 @@ const MessageComposer = () => {
       );
 
       if (response.ok) {
-        toast.success("Message saved to template successfully", {
-          className: "custom-toast",
-        });
+        toast.success("Message saved to template successfully");
       } else {
-        toast.error("Failed to add as template message. Please try again.", {
-          className: "custom-toast",
-        });
+        toast.error("Failed to add as template message. Please try again.");
       }
     } catch (error) {
-      console.error("Error to add as template message:", error, {
-        className: "custom-toast",
-      });
-      toast.error("Failed to add as template message. Please try again.", {
-        className: "custom-toast",
-      });
+      console.error("Error to add as template message:", error);
+      toast.error("Failed to add as template message. Please try again.");
     }
   };
   const renderNavButtonItem = (eventKey, icon, tooltipText) => (

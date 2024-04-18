@@ -89,19 +89,15 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
       );
       customHeaders.append("title1", title1);
 
-      const loadingObj = toast.loading("Uploading Voice Memo...", {
-        className: "custom-toast",
-      });
+      const loadingObj = toast.loading("Uploading Voice Memo...");
       var response = await fetch(API_ENDPOINTS.vidyardUploadAudio, {
         method: "POST",
         headers: customHeaders,
         body: formData,
       });
       response = await response.json();
-      console.log(response, "from audio");
       toast.success("Voice Memo uploaded,encoding in progress", {
         id: loadingObj,
-        className: "custom-toast",
       });
       setIsUploading(false);
       addToMessage(response.facade_player_uuid);
@@ -109,9 +105,7 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
       setLatestVideo(response);
     } catch (err) {
       toast.dismiss();
-      toast.error("could not upload", {
-        className: "custom-toast",
-      });
+      toast.error("could not upload");
     }
   };
 
@@ -135,9 +129,7 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
       setMediaRecorder(recorder);
       setIsRecording(true);
     } catch (error) {
-      toast.error("please provide the permission to access your microphone", {
-        className: "custom-toast",
-      });
+      toast.error("please provide the permission to access your microphone");
       return;
     }
   };

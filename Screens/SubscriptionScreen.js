@@ -33,17 +33,13 @@ const SubscriptionScreen = () => {
     // A function to handle changes to the input field
     const handleCouponValidation = async () => {
         if (couponCode.length <= 1) {
-            toast.error('Please Enter Valid coupon Code', {
-                className: "custom-toast",
-              });
+            toast.error('Please Enter Valid coupon Code');
             return;
         }
         const couponValidation = await verifyCoupon(couponCode);
         if (couponValidation.ok) {
             setCouponValid(true);
-            toast.success('Coupon Applied', {
-                className: "custom-toast",
-              });
+            toast.success('Coupon Applied');
         }else{
             setCouponValid(false);
         }

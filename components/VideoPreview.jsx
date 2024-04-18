@@ -1,127 +1,120 @@
-import React, { useContext, useEffect, useState } from "react";
-import API_ENDPOINTS from "./apiConfig";
-import toast from "react-hot-toast";
-import GlobalStatesContext from "../contexts/GlobalStates";
-import Form from "react-bootstrap/Form";
-import MediaUtilsContext from "../contexts/MediaUtilsContext";
-import { handleCopyToClipboard } from "../utils";
-import RenameVideoPopup from "./Library/RenameVideoPopup";
-import { sendMessageToBackgroundScript } from "../lib/sendMessageToBackground";
-import { FaPencilAlt } from "react-icons/fa";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import MessageContext from "../contexts/MessageContext";
-import DeleteModal from "./DeleteModal";
+import React, { useContext, useEffect, useState } from 'react'
+import API_ENDPOINTS from './apiConfig'
+import toast from 'react-hot-toast'
+import GlobalStatesContext from '../contexts/GlobalStates'
+import Form from 'react-bootstrap/Form'
+import MediaUtilsContext from '../contexts/MediaUtilsContext'
+import { handleCopyToClipboard } from '../utils'
+import RenameVideoPopup from './Library/RenameVideoPopup'
+import { sendMessageToBackgroundScript } from '../lib/sendMessageToBackground'
+import { FaPencilAlt } from 'react-icons/fa'
+import { BsThreeDotsVertical } from 'react-icons/bs'
+import MessageContext from '../contexts/MessageContext'
+import DeleteModal from './DeleteModal'
 
 export const VideoPreview = () => {
   const [thumbnailImage, setThumbnailImage] = useState(
-    "/images/videoProcessing.png"
-  );
-  const [showRenamePopup, setShowRenamePopup] = useState(false);
-  const [showVideoOptionsDialog, setShowVideoOptionsDialog] = useState(false);
-  const [newTitle, setNewTitle] = useState();
-  const [showBookingLink, setShowBookingLink] = useState(true);
+    '/images/videoProcessing.png'
+  )
+  const [showRenamePopup, setShowRenamePopup] = useState(false)
+  const [showVideoOptionsDialog, setShowVideoOptionsDialog] = useState(false)
+  const [newTitle, setNewTitle] = useState()
+  const [showBookingLink, setShowBookingLink] = useState(true)
   let { latestVideo, latestBlob, setLatestVideo, setLatestBlob } =
-    useContext(GlobalStatesContext);
+    useContext(GlobalStatesContext)
   const { deleteVideo, updateBookingLinkOfVideo } =
-    useContext(MediaUtilsContext);
-  const { message, setMessage } = useContext(MessageContext);
-  const [isDeleteModal, setIsDeleteModal] = useState(false);
+    useContext(MediaUtilsContext)
+  const { message, setMessage } = useContext(MessageContext)
+  const [isDeleteModal, setIsDeleteModal] = useState(false)
 
   useEffect(() => {
     if (latestVideo?.urlForThumbnail) {
-      setThumbnailImage(latestVideo?.urlForThumbnail);
-      setNewTitle(latestVideo?.name);
-      setShowBookingLink(true);
+      setThumbnailImage(latestVideo?.urlForThumbnail)
+      setNewTitle(latestVideo?.name)
+      setShowBookingLink(true)
     } else {
-      setThumbnailImage("/images/videoProcessing.png");
+      setThumbnailImage('/images/videoProcessing.png')
     }
-  }, [latestVideo]);
+  }, [latestVideo])
   useEffect(() => {
-    console.log(latestBlob, "from video preview ");
-  }, [latestBlob, thumbnailImage, , showRenamePopup, showVideoOptionsDialog]);
+    console.log(latestBlob, 'from video preview ')
+  }, [latestBlob, thumbnailImage, , showRenamePopup, showVideoOptionsDialog])
   const UpdateThumbnail = async (event) => {
-    const file = event.target.files[0];
+    const file = event.target.files[0]
 
     if (file) {
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onload = (e) => {
-        setThumbnailImage(e.target.result);
-      };
-      reader.readAsDataURL(file);
+        setThumbnailImage(e.target.result)
+      }
+      reader.readAsDataURL(file)
 
-      const formData = new FormData();
-      formData.append("thumbnailImage", file);
+      const formData = new FormData()
+      formData.append('thumbnailImage', file)
 
       try {
         const res = await fetch(
           API_ENDPOINTS.updateThumbnailImage +
-            "/" +
+            '/' +
             latestVideo.facade_player_uuid,
           {
-            method: "PATCH",
+            method: 'PATCH',
             body: formData,
             headers: {
               authorization: `Bearer ${JSON.parse(
-                localStorage.getItem("accessToken")
+                localStorage.getItem('accessToken')
               )}`,
             },
           }
-        );
+        )
         if (res.ok) {
-          const jsonResponse = await res.json();
-          console.log(jsonResponse?.thumbnailUrl);
-          setThumbnailImage(jsonResponse?.thumbnailUrl);
+          const jsonResponse = await res.json()
+          setThumbnailImage(jsonResponse?.thumbnailUrl)
 
-          toast.success("Thumbnail Image Updated", {
-            className: "custom-toast",
-          });
-        } else throw new Error("Error in the database");
+          toast.success('Thumbnail Image Updated')
+        } else throw new Error('Error in the database')
       } catch (err) {
-        toast.error("Thumbnail Image Not Updated, Try Again", {
-          className: "custom-toast",
-        });
+        toast.error('Thumbnail Image Not Updated, Try Again')
       }
     }
-  };
+  }
   const openPopUp = (src, event) => {
     if (event) {
-      event.stopPropagation();
+      event.stopPropagation()
     }
-    const height = 322 * 1.5;
-    const width = 574 * 1.5;
+    const height = 322 * 1.5
+    const width = 574 * 1.5
 
     sendMessageToBackgroundScript({
-      action: "startPlayingVideo",
+      action: 'startPlayingVideo',
       height,
       width,
       src,
-    });
-  };
+    })
+  }
 
   const handleRenameSave = async () => {
     try {
-      console.log(latestVideo?.name, newTitle, message);
+      console.log(latestVideo?.name, newTitle, message)
       const response = await fetch(
         API_ENDPOINTS.renameVideo + `/${latestVideo?.id}`,
         {
-          method: "PATCH",
+          method: 'PATCH',
           headers: {
             authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("accessToken")
+              localStorage.getItem('accessToken')
             )}`,
-            "Content-type": "application/json; charset=UTF-8",
+            'Content-type': 'application/json; charset=UTF-8',
           },
           body: JSON.stringify({
             newTitle: newTitle,
           }),
         }
-      );
+      )
 
       if (response.ok) {
-        toast.success("Video renamed successfully", {
-          className: "custom-toast",
-        });
-        setShowRenamePopup(!showRenamePopup);
+        toast.success('Video renamed successfully')
+        setShowRenamePopup(!showRenamePopup)
 
         // Check if the video title has changed
         if (latestVideo?.name !== newTitle) {
@@ -129,103 +122,96 @@ export const VideoPreview = () => {
           const updatedMessage = message.replace(
             /Watch Video - .*?<\/a>/,
             `Watch Video - ${newTitle}</a>`
-          );
-          latestVideo.name = newTitle;
-          setMessage(updatedMessage);
+          )
+          latestVideo.name = newTitle
+          setMessage(updatedMessage)
         }
       } else {
-        toast.error("Failed to rename video.", {
-          className: "custom-toast",
-        });
+        toast.error('Failed to rename video.')
       }
     } catch (error) {
-      toast.error("Failed to rename video.", {
-        className: "custom-toast",
-      });
+      toast.error('Failed to rename video.')
     }
-  };
+  }
 
   const handleDeleteClick = async () => {
     try {
-      await deleteVideo(latestVideo.id);
-      setLatestVideo();
-      setLatestBlob();
+      await deleteVideo(latestVideo.id)
+      setLatestVideo()
+      setLatestBlob()
     } catch (error) {
-      toast.error("Failed to delete video", {
-        className: "custom-toast",
-      });
+      toast.error('Failed to delete video')
     }
-  };
+  }
 
   const handleDownload = React.useCallback(() => {
     if (latestBlob) {
       const urlToDownload =
         latestBlob instanceof Blob
           ? window.URL.createObjectURL(latestBlob)
-          : latestBlob;
+          : latestBlob
 
-      const a = document.createElement("a");
-      document.body.appendChild(a);
-      a.style = "display: none";
-      a.href = urlToDownload;
-      a.target = "_blank";
-      a.download = "Skoop video.mp4";
-      a.click();
+      const a = document.createElement('a')
+      document.body.appendChild(a)
+      a.style = 'display: none'
+      a.href = urlToDownload
+      a.target = '_blank'
+      a.download = 'Skoop video.mp4'
+      a.click()
 
-      document.body.removeChild(a);
+      document.body.removeChild(a)
 
       if (urlToDownload !== latestBlob) {
-        window.URL.revokeObjectURL(urlToDownload);
+        window.URL.revokeObjectURL(urlToDownload)
       }
     }
-  }, [latestBlob]);
+  }, [latestBlob])
 
   const onDeleteVideo = () => {
-    handleDeleteClick();
-    setLatestVideo();
-  };
+    handleDeleteClick()
+    setLatestVideo()
+  }
 
   const handleIconClick = (eventKey) => {
-    console.log(eventKey);
-    if (eventKey == "Copy Link") {
+    console.log(eventKey)
+    if (eventKey == 'Copy Link') {
       handleCopyToClipboard(
-        "https://skoop.hubs.vidyard.com/watch/" +
+        'https://skoop.hubs.vidyard.com/watch/' +
           latestVideo?.facade_player_uuid
-      );
+      )
     }
-    if (eventKey == "Download") {
-      handleDownload();
+    if (eventKey == 'Download') {
+      handleDownload()
     }
-    if (eventKey == "Update Thumbnail") {
-      document.getElementById("file-upload").click();
+    if (eventKey == 'Update Thumbnail') {
+      document.getElementById('file-upload').click()
     }
-    if (eventKey == "Delete") {
-      setIsDeleteModal(true);
+    if (eventKey == 'Delete') {
+      setIsDeleteModal(true)
     }
-    if (eventKey == "Rename Title") {
-      setShowRenamePopup(!showRenamePopup);
+    if (eventKey == 'Rename Title') {
+      setShowRenamePopup(!showRenamePopup)
     }
-    setShowVideoOptionsDialog(!showVideoOptionsDialog);
-  };
+    setShowVideoOptionsDialog(!showVideoOptionsDialog)
+  }
 
   if (!latestBlob && !latestVideo) {
-    return <></>;
+    return <></>
   }
   const handleSwitchChange = async (e) => {
-    console.log(e.target.checked);
-    setShowBookingLink(e.target.checked);
+    setShowBookingLink(e.target.checked)
     await updateBookingLinkOfVideo(
       latestVideo.facade_player_uuid,
       e.target.checked
-    );
-  };
+    )
+  }
   return (
     <>
       {showRenamePopup && (
         <RenameVideoPopup
           newTitle={newTitle}
           onClose={() => {
-            setShowRenamePopup(!showRenamePopup);
+            setShowRenamePopup(!showRenamePopup)
           }}
           onSave={handleRenameSave}
           onTitleChange={(e) => setNewTitle(e.target.value)}
@@ -234,7 +220,7 @@ export const VideoPreview = () => {
       <input
         id="file-upload"
         type="file"
-        style={{ display: "none" }}
+        style={{ display: 'none' }}
         onChange={UpdateThumbnail}
         accept="image/*"
       />
@@ -251,13 +237,13 @@ export const VideoPreview = () => {
                   <span id="preview-video-name">
                     {newTitle?.length > 5
                       ? `${newTitle?.slice(0, 6)}...${newTitle?.slice(-4)}`
-                      : " "}
+                      : ' '}
                   </span>
 
                   <FaPencilAlt
                     className="video-preview-icon"
                     size={12}
-                    onClick={() => handleIconClick("Rename Title")}
+                    onClick={() => handleIconClick('Rename Title')}
                     title="Edit Title"
                   />
                 </div>
@@ -294,22 +280,22 @@ export const VideoPreview = () => {
               openPopUp(
                 `https://play.vidyard.com/${latestVideo?.facade_player_uuid}.html?`,
                 e
-              );
+              )
             }}
           />
 
           <div id="video-preview-option">
             <div
               className={`ddstyle dropdown-menu ${
-                showVideoOptionsDialog ? "show" : ""
+                showVideoOptionsDialog ? 'show' : ''
               }`}
             >
               {[
-                "Rename Title",
-                "Update Thumbnail",
-                "Copy Link",
-                "Download",
-                "Delete",
+                'Rename Title',
+                'Update Thumbnail',
+                'Copy Link',
+                'Download',
+                'Delete',
               ].map((key, index) => (
                 <button
                   onClick={() => handleIconClick(key)}
@@ -330,5 +316,5 @@ export const VideoPreview = () => {
         onDelete={() => onDeleteVideo()}
       />
     </>
-  );
-};
+  )
+}

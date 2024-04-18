@@ -1,24 +1,22 @@
-import React from "react";
-import toast from "react-hot-toast";
-import { IoMdClose } from "react-icons/io";
+import React from 'react'
+import toast from 'react-hot-toast'
+import { IoMdClose } from 'react-icons/io'
 
 const RenameVideoPopup = ({ newTitle, onClose, onSave, onTitleChange }) => {
   const handleSave = () => {
-    if (newTitle.trim() === "") {
-      toast.error("Please enter a folder name before saving.", {
-        className: "custom-toast",
-      });
+    if (newTitle.trim() === '') {
+      toast.error('Please enter a folder name before saving.')
     } else {
-      onSave();
+      onSave()
     }
-  };
+  }
 
   return (
     <div
       className="modal"
       tabIndex="-1"
       role="dialog"
-      style={{ display: "block" }}
+      style={{ display: 'block' }}
     >
       <div className=" modal-overlay modal-dialog-centered">
         <div className="modal-content mx-2">
@@ -37,10 +35,10 @@ const RenameVideoPopup = ({ newTitle, onClose, onSave, onTitleChange }) => {
             <input
               type="text"
               id="newTitle"
-              placeholder="Enter New Video name"
+              placeholder="Enter new video name"
               value={newTitle}
               onChange={onTitleChange}
-              className="form-control"
+              className="form-control custom-input-global"
               required
             />
           </div>
@@ -52,7 +50,7 @@ const RenameVideoPopup = ({ newTitle, onClose, onSave, onTitleChange }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default RenameVideoPopup;
+export default RenameVideoPopup

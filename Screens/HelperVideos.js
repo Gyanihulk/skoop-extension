@@ -1,7 +1,7 @@
-import React, { useContext, useState } from "react";
-import ScreenContext from "../contexts/ScreenContext";
-import BackButton from "../components/BackButton";
-import { FaPlay } from "react-icons/fa";
+import React, { useContext, useState } from 'react'
+import ScreenContext from '../contexts/ScreenContext'
+import BackButton from '../components/BackButton'
+import { FaPlay } from 'react-icons/fa'
 
 const MiddleSection = ({ detail, openModal }) => {
   const addModules = detail.map(({ imgSrc, videoSrc, alt, text }, index) => {
@@ -14,28 +14,28 @@ const MiddleSection = ({ detail, openModal }) => {
             alt={alt}
             onClick={(e) => openModal(videoSrc, e)}
           />
-          <div id="video-play-icon" style={{ width: "24px", height: "24px" }}>
+          <div id="video-play-icon" style={{ width: '24px', height: '24px' }}>
             <FaPlay color="white" size={10} />
           </div>
         </div>
         <p
-          className="para-sm mt-1 text-wrap cursor-pointer"
+          className="para-md mt-1 text-wrap cursor-pointer"
           onClick={(e) => openModal(videoSrc, e)}
         >
           {text}
         </p>
       </div>
-    );
-  });
+    )
+  })
 
   return (
     <section className="video-middle mt-2">
-      <div className="w-100 d-flex align-items-center justify-content-between mt-2">
+      <div className="w-100 d-flex justify-content-between mt-2 mb-4">
         {detail && addModules}
       </div>
     </section>
-  );
-};
+  )
+}
 
 const SmallVideoModule = ({ detail, openModal }) => {
   return (
@@ -48,47 +48,47 @@ const SmallVideoModule = ({ detail, openModal }) => {
           alt={detail.alt}
           onClick={(e) => openModal(detail.videoSrc, e)}
         />
-        <div id="video-play-icon" style={{ width: "18px", height: "18px" }}>
+        <div id="video-play-icon" style={{ width: '18px', height: '18px' }}>
           <FaPlay color="white" size={6} />
         </div>
       </div>
       <p
-        className="title-para-sm ms-3 text-wrap cursor-pointer"
+        className="title-para-sm ms-2 mb-0 text-wrap cursor-pointer"
         onClick={(e) => openModal(detail.videoSrc, e)}
       >
         {detail.text}
       </p>
     </div>
-  );
-};
+  )
+}
 const HelperVideos = () => {
-  const [playingVideo, setPlayingVideo] = useState(false);
-  const { navigateToPage } = useContext(ScreenContext);
+  const [playingVideo, setPlayingVideo] = useState(false)
+  const { navigateToPage } = useContext(ScreenContext)
 
   async function sendMessageToBackgroundScript(request) {
-    await chrome.runtime.sendMessage(request);
+    await chrome.runtime.sendMessage(request)
   }
 
   const openPopUp = (src, event) => {
     if (event) {
-      event.stopPropagation();
+      event.stopPropagation()
     }
-    const height = 322 * 2;
-    const width = 574 * 2;
+    const height = 322 * 2
+    const width = 574 * 2
 
     sendMessageToBackgroundScript({
-      action: "startPlayingVideo",
+      action: 'startPlayingVideo',
       height,
       width,
       src,
-    });
-    setPlayingVideo(true);
-  };
+    })
+    setPlayingVideo(true)
+  }
 
   const closePopUp = () => {
-    setSource("");
-    setShowModal(false);
-  };
+    setSource('')
+    setShowModal(false)
+  }
 
   const detail = [
     {
@@ -103,7 +103,7 @@ const HelperVideos = () => {
       alt: "This image is related to a video which says about how to send audio",
       text: "3.Creating a welcome video",
     },
-  ];
+  ]
 
   const info = [
     {
@@ -142,13 +142,13 @@ const HelperVideos = () => {
       alt: "This image is related to a video which says about how to send GIF",
       text: "9.Sending a video via Gmail",
     },
-  ];
+  ]
 
   const videomodules = info.map((detail, index) => {
     return (
       <SmallVideoModule detail={detail} key={index} openModal={openPopUp} />
-    );
-  });
+    )
+  })
   return (
     <>
       <div id="helper-videos">
@@ -167,15 +167,15 @@ const HelperVideos = () => {
                     alt="This image is related to a video which says about how to record & send video"
                     onClick={(e) => {
                       openPopUp(
-                        "https://play.vidyard.com/WnmHTXaJe9StcYvc8uqJdm",
+                        'https://play.vidyard.com/WnmHTXaJe9StcYvc8uqJdm',
                         e
-                      );
+                      )
                     }}
                   />
 
                   <div
                     id="video-play-icon"
-                    style={{ width: "44px", height: "44px" }}
+                    style={{ width: '44px', height: '44px' }}
                   >
                     <FaPlay color="white" />
                   </div>
@@ -184,9 +184,9 @@ const HelperVideos = () => {
                   className="para-md my-2 text-wrap text-center cursor-pointer"
                   onClick={(e) => {
                     openPopUp(
-                      "https://play.vidyard.com/WnmHTXaJe9StcYvc8uqJdm",
+                      'https://play.vidyard.com/WnmHTXaJe9StcYvc8uqJdm',
                       e
-                    );
+                    )
                   }}
                 >
                  1.Overview of the Skoop Application 
@@ -203,6 +203,6 @@ const HelperVideos = () => {
         </div>
       </div>
     </>
-  );
-};
-export default HelperVideos;
+  )
+}
+export default HelperVideos

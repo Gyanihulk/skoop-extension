@@ -27,9 +27,7 @@ const ContactInfoCard = () => {
 
   const handleSave = async () => {
     try {
-      const toastId = toast.loading("saving...", {
-        className: "custom-toast",
-      });
+      const toastId = toast.loading("saving...");
       const response = await fetch(API_ENDPOINTS.CrmAddContactInfo, {
         method: "POST",
         headers: {
@@ -54,13 +52,10 @@ const ContactInfoCard = () => {
       if (!response.ok) throw Error("");
       toast.success("saved successfully", {
         id: toastId,
-        className: "custom-toast",
       });
     } catch (err) {
       toast.dismiss();
-      toast.error("some error occured", {
-        className: "custom-toast",
-      });
+      toast.error("some error occured");
     }
   };
 

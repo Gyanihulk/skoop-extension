@@ -1,77 +1,75 @@
-import React, { useState, useEffect, useContext } from "react";
-import { FaAngleDown, FaArrowLeft } from "react-icons/fa";
-import API_ENDPOINTS from "../components/apiConfig";
-import UserPreferencesForm from "../components/UserPreferencesForm";
-import { toast } from "react-hot-toast";
-import AuthContext from "../contexts/AuthContext";
-import ScreenContext from "../contexts/ScreenContext";
+import React, { useState, useEffect, useContext } from 'react'
+import { FaAngleDown, FaArrowLeft } from 'react-icons/fa'
+import API_ENDPOINTS from '../components/apiConfig'
+import UserPreferencesForm from '../components/UserPreferencesForm'
+import { toast } from 'react-hot-toast'
+import AuthContext from '../contexts/AuthContext'
+import ScreenContext from '../contexts/ScreenContext'
 
-import { GrPowerReset } from "react-icons/gr";
-import BackButton from "../components/BackButton";
-import Collapse from "react-bootstrap/Collapse";
+import { GrPowerReset } from 'react-icons/gr'
+import BackButton from '../components/BackButton'
+import Collapse from 'react-bootstrap/Collapse'
+import PasswordTooltip from '../components/PasswordTooltip'
+import GlobalStatesContext from '../contexts/GlobalStates'
 
 const AccountProfile = ({ userData }) => {
   // State for the profile image URL
   const [profileImage, setProfileImage] = useState(
-    "https://static-00.iconduck.com/assets.00/user-avatar-happy-icon-1023x1024-bve9uom6.png"
-  );
-  const { navigateToPage } = useContext(ScreenContext);
+    'https://static-00.iconduck.com/assets.00/user-avatar-happy-icon-1023x1024-bve9uom6.png'
+  )
+  const { navigateToPage } = useContext(ScreenContext)
   useEffect(() => {
     if (userData.image_path) {
       setProfileImage(
-        userData.image_path.startsWith("public")
-          ? API_ENDPOINTS.backendUrl + "/" + userData.image_path
+        userData.image_path.startsWith('public')
+          ? API_ENDPOINTS.backendUrl + '/' + userData.image_path
           : userData.image_path
-      );
+      )
     }
-  }, [userData]);
+  }, [userData])
   // Function to handle the file input change event
   const handleFileChange = async (event) => {
-    const file = event.target.files[0];
+    const file = event.target.files[0]
 
     if (file) {
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onload = (e) => {
-        setProfileImage(e.target.result);
-      };
-      reader.readAsDataURL(file);
+        setProfileImage(e.target.result)
+      }
+      reader.readAsDataURL(file)
 
-      const formData = new FormData();
-      formData.append("profileImage", file);
+      const formData = new FormData()
+      formData.append('profileImage', file)
 
       try {
         const res = await fetch(API_ENDPOINTS.updateProfileImage, {
-          method: "PATCH",
+          method: 'PATCH',
           body: formData, // Use FormData here
           headers: {
             authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("accessToken")
+              localStorage.getItem('accessToken')
             )}`,
             // Remove 'Content-Type' header when using FormData
           },
-        });
+        })
 
         if (res.ok) {
-          const jsonResponse = await res.json();
+          const jsonResponse = await res.json()
           setProfileImage(
-            API_ENDPOINTS.backendUrl + "/" + jsonResponse.image_path
-          ); // Access image_path from JSON response
-          toast.success("Profile Image Updated", {
-            className: "custom-toast",
-          });
-        } else throw new Error("Error in the database");
+            API_ENDPOINTS.backendUrl + '/' + jsonResponse.image_path
+          ) // Access image_path from JSON response
+          toast.success('Profile Image Updated')
+        } else throw new Error('Error in the database')
       } catch (err) {
-        toast.error("Profile Image Not Updated, try Again", {
-          className: "custom-toast",
-        });
+        toast.error('Profile Image Not Updated, try Again')
       }
     }
-  };
+  }
 
   // Function to trigger the file input when the image is clicked
   const triggerFileInput = () => {
-    document.getElementById("fileInput").click();
-  };
+    document.getElementById('fileInput').click()
+  }
 
   return (
     <div className="lighter-pink">
@@ -91,7 +89,7 @@ const AccountProfile = ({ userData }) => {
               <input
                 type="file"
                 id="fileInput"
-                style={{ display: "none" }}
+                style={{ display: 'none' }}
                 onChange={handleFileChange}
               />
               <div>
@@ -103,142 +101,121 @@ const AccountProfile = ({ userData }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const SettingsPassword = () => {
   const [values, setValues] = useState({
-    password: "",
-    confirm: "",
-    oldPassword: "",
-  });
+    password: '',
+    confirm: '',
+    oldPassword: '',
+  })
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [toggleInfo, setToggleInfo] = useState(false);
-  const [showOldPasswordTooltip, setShowOldPasswordTooltip] = useState(false);
-  const [showPasswordTooltip, setShowPasswordTooltip] = useState(false);
+  const [showPassword, setShowPassword] = useState(false)
+  const [toggleInfo, setToggleInfo] = useState(false)
+  const [showOldPasswordTooltip, setShowOldPasswordTooltip] = useState(false)
+  const [showPasswordTooltip, setShowPasswordTooltip] = useState(false)
   const [showConfirmPasswordTooltip, setShowConfirmPasswordTooltip] =
-    useState(false);
+    useState(false)
 
   function validatePassword(password) {
-    const uppercaseRegex = /[A-Z]/;
-    const lowercaseRegex = /[a-z]/;
-    const specialCharRegex = /[!@#$%^&*]/;
-    const numericRegex = /[0-9]/;
+    const uppercaseRegex = /[A-Z]/
+    const lowercaseRegex = /[a-z]/
+    const specialCharRegex = /[!@#$%^&*]/
+    const numericRegex = /[0-9]/
 
-    const isUppercase = uppercaseRegex.test(password);
-    const isLowercase = lowercaseRegex.test(password);
-    const isSpecialChar = specialCharRegex.test(password);
-    const isNumeric = numericRegex.test(password);
-    const isLengthValid = password.length >= 8 && password.length <= 16;
+    const isUppercase = uppercaseRegex.test(password)
+    const isLowercase = lowercaseRegex.test(password)
+    const isSpecialChar = specialCharRegex.test(password)
+    const isNumeric = numericRegex.test(password)
+    const isLengthValid = password.length >= 8 && password.length <= 16
 
     return (
       isUppercase && isLowercase && isSpecialChar && isNumeric && isLengthValid
-    );
+    )
   }
 
-  const PasswordToolTip = () => {
-    return (
-      <div id="password-tooltip">
-        <h5>Password Instructions</h5>
-        <ul>
-          <li>At least 1 uppercase character (A-Z)</li>
-          <li>At least 1 lowercase character (a-z)</li>
-          <li>At least 1 special character (e.g., @#$%!^&*)</li>
-          <li>At least 1 numeric character (i.e., 0-9)</li>
-          <li>Password length must be 8-16 characters long</li>
-        </ul>
-      </div>
-    );
-  };
-
   const handleChange = (event) => {
-    const { name, value } = event.target;
-    if (name === "oldPassword") {
+    const { name, value } = event.target
+    if (name === 'oldPassword') {
       setValues((prevState) => ({
         ...prevState,
         [event.target.name]: event.target.value,
-      }));
-      setShowOldPasswordTooltip(!validatePassword(value));
+      }))
+      setShowOldPasswordTooltip(!validatePassword(value))
     }
-    if (name === "password") {
+    if (name === 'password') {
       setValues((prevState) => ({
         ...prevState,
         [event.target.name]: event.target.value,
-      }));
-      setShowPasswordTooltip(!validatePassword(value));
+      }))
+      setShowPasswordTooltip(!validatePassword(value))
     }
-    if (name === "confirm") {
+    if (name === 'confirm') {
       setValues((prevState) => ({
         ...prevState,
         [event.target.name]: event.target.value,
-      }));
-      setShowConfirmPasswordTooltip(!validatePassword(value));
+      }))
+      setShowConfirmPasswordTooltip(!validatePassword(value))
     }
-  };
+  }
 
   const handleFocus = (event) => {
-    const { name } = event.target;
-    if (name === "oldPassword") {
-      setShowOldPasswordTooltip(true);
+    const { name } = event.target
+    if (name === 'oldPassword') {
+      setShowOldPasswordTooltip(true)
     }
-    if (name === "password") {
-      setShowPasswordTooltip(true);
+    if (name === 'password') {
+      setShowPasswordTooltip(true)
     }
-    if (name === "confirm") {
-      setShowConfirmPasswordTooltip(true);
+    if (name === 'confirm') {
+      setShowConfirmPasswordTooltip(true)
     }
-  };
+  }
 
   const handleBlur = () => {
-    setShowOldPasswordTooltip(false);
-    setShowPasswordTooltip(false);
-    setShowConfirmPasswordTooltip(false);
-  };
+    setShowOldPasswordTooltip(false)
+    setShowPasswordTooltip(false)
+    setShowConfirmPasswordTooltip(false)
+  }
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
     if (values.password !== values.confirm) {
-      toast.error("New password doesnt match.", {
-        className: "custom-toast",
-      });
-      return;
+      toast.error('New password doesnt match.')
+      return
     }
     try {
       const res = await fetch(API_ENDPOINTS.changePassword, {
-        method: "PATCH",
+        method: 'PATCH',
         body: JSON.stringify({
           oldPassword: values.oldPassword,
           newPassword: values.password,
         }),
         headers: {
           authorization: `Bearer ${JSON.parse(
-            localStorage.getItem("accessToken")
+            localStorage.getItem('accessToken')
           )}`,
-          "Content-type": "application/json; charset=UTF-8",
+          'Content-type': 'application/json; charset=UTF-8',
         },
-      });
+      })
       if (res.ok) {
-        toast.success("Password Changed", {
-          className: "custom-toast",
-        });
+        toast.success('Password Changed')
         setValues({
-          password: "",
-          confirm: "",
-          oldPassword: "",
-        });
-      } else throw "error in the database";
+          password: '',
+          confirm: '',
+          oldPassword: '',
+        })
+      } else throw 'error in the database'
     } catch (err) {
-      toast.error("Password Not Updated, try Again", {
-        className: "custom-toast",
-      });
+      toast.error('Password Not Updated, try Again')
     }
-  };
+  }
 
   return (
     <div
       className={`card border-radius-12 ${
-        !toggleInfo ? "overflow-hidden" : ""
+        !toggleInfo ? 'overflow-hidden' : ''
       } `}
     >
       <div
@@ -253,8 +230,8 @@ const SettingsPassword = () => {
             <FaAngleDown
               style={
                 toggleInfo
-                  ? { transform: "rotate(180deg)" }
-                  : { transform: "rotate(0deg)" }
+                  ? { transform: 'rotate(180deg)' }
+                  : { transform: 'rotate(0deg)' }
               }
             />
           </div>
@@ -270,8 +247,8 @@ const SettingsPassword = () => {
                     <div className="position-relative password-with-tooltip">
                       <div className="form-group">
                         <input
-                          type={showPassword ? "text" : "password"}
-                          className="form-control"
+                          type={showPassword ? 'text' : 'password'}
+                          className="form-control custom-input-global"
                           id="oldPassword"
                           name="oldPassword"
                           onChange={handleChange}
@@ -282,7 +259,7 @@ const SettingsPassword = () => {
                           required
                         />
                       </div>
-                      {showOldPasswordTooltip && <PasswordToolTip />}
+                      {showOldPasswordTooltip && <PasswordTooltip />}
                     </div>
                   </div>
 
@@ -290,8 +267,8 @@ const SettingsPassword = () => {
                     <div className="position-relative password-with-tooltip">
                       <div className="form-group">
                         <input
-                          type={showPassword ? "text" : "password"}
-                          className="form-control"
+                          type={showPassword ? 'text' : 'password'}
+                          className="form-control custom-input-global"
                           id="password"
                           name="password"
                           onChange={handleChange}
@@ -302,7 +279,7 @@ const SettingsPassword = () => {
                           required
                         />
                       </div>
-                      {showPasswordTooltip && <PasswordToolTip />}
+                      {showPasswordTooltip && <PasswordTooltip />}
                     </div>
                   </div>
                 </div>
@@ -311,8 +288,8 @@ const SettingsPassword = () => {
                     <div className="position-relative password-with-tooltip">
                       <div className="form-group">
                         <input
-                          type={showPassword ? "text" : "password"}
-                          className="form-control"
+                          type={showPassword ? 'text' : 'password'}
+                          className="form-control custom-input-global"
                           id="confirm"
                           name="confirm"
                           onChange={handleChange}
@@ -323,7 +300,7 @@ const SettingsPassword = () => {
                           required
                         />
                       </div>
-                      {showConfirmPasswordTooltip && <PasswordToolTip />}
+                      {showConfirmPasswordTooltip && <PasswordTooltip />}
                     </div>
                   </div>
                 </div>
@@ -338,113 +315,105 @@ const SettingsPassword = () => {
         </div>
       </Collapse>
     </div>
-  );
-};
+  )
+}
 
 const CalendarUrlForm = ({ userProfileData }) => {
-  const [calendarUrl, setCalendarUrl] = useState("");
-  const [toggleInfo, setToggleInfo] = useState(false);
-  const [preferences, setPreferences] = useState([]);
-  const [showResetButton, setshowResetButton] = useState(false);
-  const { getCalendarUrl, getUserPreferences } = useContext(AuthContext);
+  const [calendarUrl, setCalendarUrl] = useState('')
+  const [toggleInfo, setToggleInfo] = useState(false)
+  const [preferences, setPreferences] = useState([])
+  const [showResetButton, setshowResetButton] = useState(false)
+  const { getCalendarUrl, getUserPreferences } = useContext(AuthContext)
 
   const checkForDefaultUrl = async (url) => {
     if (userProfileData && userProfileData.email && url) {
-      const userEmail = userProfileData.email.split("@");
+      const userEmail = userProfileData.email.split('@')
       const defaultUrl = `https://skoopcrm.sumits.in/booking?email=${encodeURIComponent(
         userEmail[0]
-      )}%40${encodeURIComponent(userEmail[1])}`;
+      )}%40${encodeURIComponent(userEmail[1])}`
       if (!url.startsWith(defaultUrl)) {
-        setshowResetButton(true);
+        setshowResetButton(true)
       } else {
-        setshowResetButton(false);
+        setshowResetButton(false)
       }
     } else {
-      console.log("userdata not found");
+      console.log('userdata not found')
     }
-  };
+  }
 
   const getData = async () => {
-    const preference = await getUserPreferences();
-    setPreferences(preference);
-    const url = await getCalendarUrl();
-    setCalendarUrl(url);
-    checkForDefaultUrl(url);
-  };
+    const preference = await getUserPreferences()
+    setPreferences(preference)
+    const url = await getCalendarUrl()
+    setCalendarUrl(url)
+    checkForDefaultUrl(url)
+  }
 
   useEffect(() => {
-    getData();
-  }, [userProfileData]);
+    getData()
+  }, [userProfileData])
 
   const handleChange = (event) => {
-    setCalendarUrl(event.target.value);
-  };
+    setCalendarUrl(event.target.value)
+  }
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
     try {
       const res = await fetch(API_ENDPOINTS.updateCalendarUrl, {
         // Replace with your API endpoint
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify({ calendarUrl }),
         headers: {
-          "Content-type": "application/json; charset=UTF-8",
+          'Content-type': 'application/json; charset=UTF-8',
           Authorization: `Bearer ${JSON.parse(
-            localStorage.getItem("accessToken")
+            localStorage.getItem('accessToken')
           )}`,
         },
-      });
-      const data = await res.text();
+      })
+      const data = await res.text()
       if (res.ok) {
-        toast.success("Calendar link updated successfully", {
-          className: "custom-toast",
-        });
-        const url = await getCalendarUrl();
-        setCalendarUrl(url);
-        checkForDefaultUrl(url);
+        toast.success('Calendar link updated successfully')
+        const url = await getCalendarUrl()
+        setCalendarUrl(url)
+        checkForDefaultUrl(url)
       } else {
-        throw new Error(data.message || "Error saving calendar URL");
+        throw new Error(data.message || 'Error saving calendar URL')
       }
     } catch (err) {
       toast.error(
-        err.message || "Failed to update calendar link. Please try again.", {
-          className: "custom-toast",
-        }
-      );
+        err.message || 'Failed to update calendar link. Please try again.'
+      )
     }
-  };
+  }
 
   const resetAppointmentLink = async () => {
     try {
       const res = await fetch(API_ENDPOINTS.resetBookingUrl, {
         // Replace with your API endpoint
-        method: "get",
+        method: 'get',
         headers: {
-          "Content-type": "application/json; charset=UTF-8",
+          'Content-type': 'application/json; charset=UTF-8',
           Authorization: `Bearer ${JSON.parse(
-            localStorage.getItem("accessToken")
+            localStorage.getItem('accessToken')
           )}`,
         },
-      });
+      })
 
-      const url = await res.text();
+      const url = await res.text()
       if (res.ok) {
-        toast.success("Calendar link reset successfully", {
-          className: "custom-toast",
-        });
-        setCalendarUrl(url);
-        checkForDefaultUrl(url);
+        toast.success('Calendar link reset successfully')
+        setCalendarUrl(url)
+        checkForDefaultUrl(url)
       } else {
-        throw new Error(data.message || "Error reseting calendar URL");
+        throw new Error(data.message || 'Error reseting calendar URL')
       }
     } catch (err) {
       toast.error(
-        err.message || "Failed to reset calendar url. Please try again.", {
-          className: "custom-toast",
-        }
-      );
+        err.message || 'Failed to reset calendar url. Please try again.'
+      )
     }
-  };
+  }
 
   return (
     <div className="card border-radius-12 overflow-hidden">
@@ -459,8 +428,8 @@ const CalendarUrlForm = ({ userProfileData }) => {
           <FaAngleDown
             style={
               toggleInfo
-                ? { transform: "rotate(180deg)" }
-                : { transform: "rotate(0deg)" }
+                ? { transform: 'rotate(180deg)' }
+                : { transform: 'rotate(0deg)' }
             }
           />
         </div>
@@ -487,7 +456,7 @@ const CalendarUrlForm = ({ userProfileData }) => {
                   </div>
                   <input
                     type="text"
-                    className="form-control mt-3"
+                    className="form-control mt-3 custom-input-global"
                     id="calendarUrl"
                     name="calendarUrl"
                     value={calendarUrl}
@@ -499,8 +468,8 @@ const CalendarUrlForm = ({ userProfileData }) => {
                 <div
                   className={`mt-1 d-flex ${
                     preferences?.length == 0
-                      ? "justify-content-between"
-                      : "justify-content-end"
+                      ? 'justify-content-between'
+                      : 'justify-content-end'
                   }`}
                 >
                   {preferences?.length == 0 && (
@@ -525,24 +494,24 @@ const CalendarUrlForm = ({ userProfileData }) => {
         </div>
       </Collapse>
     </div>
-  );
-};
+  )
+}
 const UserSubscriptions = () => {
-  const [toggleInfo, setToggleInfo] = useState(false);
+  const [toggleInfo, setToggleInfo] = useState(false)
   const { getMySubscription, deactivateMySubscription } =
-    useContext(AuthContext);
-  const [subsriptionInfo, setSubscriptionInfo] = useState();
+    useContext(AuthContext)
+  const [subsriptionInfo, setSubscriptionInfo] = useState()
   async function setup() {
-    const response = await getMySubscription();
-    const subs = await response.json();
-    console.log(subs, "from subs ");
-    setSubscriptionInfo(subs);
+    const response = await getMySubscription()
+    const subs = await response.json()
+    console.log(subs, 'from subs ')
+    setSubscriptionInfo(subs)
   }
   useEffect(() => {
-    setup();
-  }, []);
+    setup()
+  }, [])
   async function handleCancel() {
-    deactivateMySubscription();
+    deactivateMySubscription()
   }
   return (
     <div className="card border-radius-12 overflow-hidden">
@@ -557,8 +526,8 @@ const UserSubscriptions = () => {
           <FaAngleDown
             style={
               toggleInfo
-                ? { transform: "rotate(180deg)" }
-                : { transform: "rotate(0deg)" }
+                ? { transform: 'rotate(180deg)' }
+                : { transform: 'rotate(0deg)' }
             }
           />
         </div>
@@ -569,7 +538,7 @@ const UserSubscriptions = () => {
             {subsriptionInfo?.id && (
               <>
                 <div class="subscription-card-header d-flex justify-content-between">
-                  <h3>{subsriptionInfo?.current_plan_status}</h3>{" "}
+                  <h3>{subsriptionInfo?.current_plan_status}</h3>{' '}
                   <span class="badge badge-active ml-2">Active</span>
                 </div>
 
@@ -599,7 +568,7 @@ const UserSubscriptions = () => {
                     <div
                       className="cancel-subscription"
                       onClick={() => {
-                        handleCancel();
+                        handleCancel()
                       }}
                     >
                       Cancel Subscription
@@ -608,70 +577,78 @@ const UserSubscriptions = () => {
                 </ul>
               </>
             )}
-          </div>{" "}
+          </div>{' '}
         </div>
       </Collapse>
     </div>
-  );
-};
+  )
+}
 function AccountSettings(props) {
-  const [profileData, setProfileData] = useState({});
+  const [profileData, setProfileData] = useState({})
 
   const handleProfileUpdate = (newProfileData) => {
     setProfileData((prevData) => ({
       ...prevData,
       ...newProfileData,
-    }));
-  };
+    }))
+  }
 
   const getProfileDetails = async () => {
     try {
       var response = await fetch(API_ENDPOINTS.profileDetails, {
-        method: "GET",
+        method: 'GET',
         headers: {
           authorization: `Bearer ${JSON.parse(
-            localStorage.getItem("accessToken")
+            localStorage.getItem('accessToken')
           )}`,
-          "Content-type": "application/json; charset=UTF-8",
+          'Content-type': 'application/json; charset=UTF-8',
         },
-      });
-      response = await response.json();
-      const fullName = response.full_name.split(" ");
-      response.firstName = fullName[0];
-      response.lastName = fullName[1];
-      setProfileData(response);
-      return response;
+      })
+      response = await response.json()
+      const fullName = response.full_name.split(' ')
+      response.firstName = fullName[0]
+      response.lastName = fullName[1]
+      setProfileData(response)
+      return response
     } catch (err) {
-      console.log("could not get profile details", err);
+      console.log('could not get profile details', err)
     }
-  };
+  }
 
   useEffect(() => {
-    (async () => {
-      await getProfileDetails();
-    })();
-  }, []);
+    ;(async () => {
+      await getProfileDetails()
+    })()
+  }, [])
+
+  const { isTimezoneScreen, setIsTimezoneScreen } =
+    useContext(GlobalStatesContext)
 
   return (
     <>
       <div id="account-settings">
         <div className="pb-2">
           <div>
-            <AccountProfile userData={profileData} />
+            {!isTimezoneScreen && <AccountProfile userData={profileData} />}
           </div>
           <div className="mt-4 mx-3">
-            <div>
-              {profileData && (
-                <UserSubscriptions userProfileData={profileData} />
-              )}
-            </div>
-            <div className="mt-3">
-              {profileData && <CalendarUrlForm userProfileData={profileData} />}
-            </div>
-            <div className="mt-3">
-              <SettingsPassword />
-            </div>
-
+            {!isTimezoneScreen && (
+              <>
+                <div>
+                  {profileData && (
+                    <UserSubscriptions userProfileData={profileData} />
+                  )}
+                </div>
+                <div className="mt-3">
+                  {profileData && (
+                    <CalendarUrlForm userProfileData={profileData} />
+                  )}
+                </div>
+                <div className="mt-3">
+                  <SettingsPassword />
+                </div>
+              </>
+            )}
             <div className="mt-3">
               <UserPreferencesForm />
             </div>
@@ -679,7 +656,7 @@ function AccountSettings(props) {
         </div>
       </div>
     </>
-  );
+  )
 }
 
-export default AccountSettings;
+export default AccountSettings

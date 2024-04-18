@@ -115,9 +115,7 @@ const Library = (props) => {
       );
       response = await response.json();
     } catch (err) {
-      toast.error("could not fetch videos", err, {
-        className: "custom-toast",
-      });
+      toast.error("could not fetch videos", err);
     }
   };
 

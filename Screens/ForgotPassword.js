@@ -1,139 +1,138 @@
-import React, { useState, useContext } from "react";
-import { IoMdArrowBack } from "react-icons/io";
-import CustomInputBox from "../components/Auth/CustomInputBox";
-import ScreenContext from "../contexts/ScreenContext";
-import CustomButton from "../components/Auth/button/CustomButton";
-import ValidationError from "../components/Auth/ValidationError";
-import OtpTimer from "otp-timer";
-import AuthContext from "../contexts/AuthContext";
+import React, { useState, useContext } from 'react'
+import { IoMdArrowBack } from 'react-icons/io'
+import CustomInputBox from '../components/Auth/CustomInputBox'
+import ScreenContext from '../contexts/ScreenContext'
+import CustomButton from '../components/Auth/button/CustomButton'
+import ValidationError from '../components/Auth/ValidationError'
+import OtpTimer from 'otp-timer'
+import AuthContext from '../contexts/AuthContext'
 
 const ForgotPassword = () => {
-  const { navigateToPage } = useContext(ScreenContext);
+  const { navigateToPage } = useContext(ScreenContext)
   const { getOtpForPasswordReset, resetPasswordUsingOtp } =
-    useContext(AuthContext);
+    useContext(AuthContext)
 
-  const [isOTPSent, setIsOTPSent] = useState(false);
-  const [email, setEmail] = useState("");
-  const [isEmailEmpty, setIsEmailEmpty] = useState(false);
+  const [isOTPSent, setIsOTPSent] = useState(false)
+  const [email, setEmail] = useState('')
+  const [isEmailEmpty, setIsEmailEmpty] = useState(false)
 
-  const [isOtpEmpty, setIsOTPEmpty] = useState(false);
-  const [isPasswordEmpty, setIsPasswordEmpty] = useState(false);
-  const [isConfirmPasswordEmpty, setIsConfirmPasswordEmpty] = useState(false);
-  const [isPasswordMatch, setIsPasswordMatch] = useState(false);
+  const [isOtpEmpty, setIsOTPEmpty] = useState(false)
+  const [isPasswordEmpty, setIsPasswordEmpty] = useState(false)
+  const [isConfirmPasswordEmpty, setIsConfirmPasswordEmpty] = useState(false)
+  const [isPasswordMatch, setIsPasswordMatch] = useState(false)
 
-  const [isInvalidUser, setIsInvalidUser] = useState(false);
-  const [isInvalidOTP, setIsInvalidOTP] = useState(false);
+  const [isInvalidUser, setIsInvalidUser] = useState(false)
+  const [isInvalidOTP, setIsInvalidOTP] = useState(false)
 
-  const [otp, setOTP] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [otp, setOTP] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
-  const [isResendOTPButton, isSetResendOTPButton] = useState(true);
-  const [timer, setTimer] = useState(30);
+  const [isResendOTPButton, isSetResendOTPButton] = useState(true)
+  const [timer, setTimer] = useState(30)
 
   const handleChangeSendOTP = (event) => {
-    setIsInvalidUser(false);
-    setEmail(event.target.value);
-    setIsEmailEmpty(event.target.value.trim() === "");
-  };
+    setIsInvalidUser(false)
+    setEmail(event.target.value)
+    setIsEmailEmpty(event.target.value.trim() === '')
+  }
 
   const handleSendOTP = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    if (email !== "") {
-      const isOTPSendToMail = await getOtpForPasswordReset(email);
+    if (email !== '') {
+      const isOTPSendToMail = await getOtpForPasswordReset(email)
       if (isOTPSendToMail) {
-        setIsOTPSent(true);
+        setIsOTPSent(true)
       } else {
-        setIsInvalidUser(true);
+        setIsInvalidUser(true)
       }
     } else {
-      setIsEmailEmpty(true);
-      setIsOTPSent(false);
+      setIsEmailEmpty(true)
+      setIsOTPSent(false)
     }
-  };
+  }
 
   const handleChangeResetPassword = (event) => {
-    const { name, value } = event.target;
-    if (name === "otp") {
-      setOTP(value);
-      setIsOTPEmpty(value.trim() === "");
-      setIsInvalidOTP(false);
-    } else if (name === "password") {
-      setPassword(value);
-      setIsPasswordEmpty(value.trim() === "");
-      setIsPasswordMatch(false);
-    } else if (name == "confirmPassword") {
-      setConfirmPassword(value);
-      setIsConfirmPasswordEmpty(value.trim() === "");
-      setIsPasswordMatch(false);
+    const { name, value } = event.target
+    if (name === 'otp') {
+      setOTP(value)
+      setIsOTPEmpty(value.trim() === '')
+      setIsInvalidOTP(false)
+    } else if (name === 'password') {
+      setPassword(value)
+      setIsPasswordEmpty(value.trim() === '')
+      setIsPasswordMatch(false)
+    } else if (name == 'confirmPassword') {
+      setConfirmPassword(value)
+      setIsConfirmPasswordEmpty(value.trim() === '')
+      setIsPasswordMatch(false)
     }
-  };
+  }
 
   const handleResetPassword = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    if (otp !== "" && password !== "" && confirmPassword !== "") {
-      console.log("reset password: ", { otp, password, confirmPassword });
+    if (otp !== '' && password !== '' && confirmPassword !== '') {
       if (password === confirmPassword) {
         const isPasswordReset = await resetPasswordUsingOtp(
           email,
           otp,
           password
-        );
+        )
         if (isPasswordReset) {
-          navigateToPage("SignIn");
+          navigateToPage('SignIn')
         } else {
-          setIsInvalidOTP(true);
+          setIsInvalidOTP(true)
         }
       } else {
-        setIsPasswordMatch(true);
+        setIsPasswordMatch(true)
       }
     } else {
-      setIsOTPEmpty(otp.trim() === "");
-      setIsPasswordEmpty(password.trim() === "");
-      setIsConfirmPasswordEmpty(confirmPassword.trim() === "");
-      console.log("username or password can not be empty!");
+      setIsOTPEmpty(otp.trim() === '')
+      setIsPasswordEmpty(password.trim() === '')
+      setIsConfirmPasswordEmpty(confirmPassword.trim() === '')
+      console.log('username or password can not be empty!')
     }
-  };
+  }
 
   const startResentOTPTimer = () => {
-    let seconds = 30;
-    isSetResendOTPButton(false);
+    let seconds = 30
+    isSetResendOTPButton(false)
     const interval = setInterval(function () {
-      seconds--;
-      setTimer(seconds);
+      seconds--
+      setTimer(seconds)
       if (seconds == 0) {
-        clearInterval(interval);
-        isSetResendOTPButton(true);
+        clearInterval(interval)
+        isSetResendOTPButton(true)
       }
-    }, 1000);
-  };
+    }, 1000)
+  }
 
   const handleResendOTP = () => {
-    getOtpForPasswordReset(email);
-    startResentOTPTimer();
-  };
+    getOtpForPasswordReset(email)
+    startResentOTPTimer()
+  }
 
   return (
     <div class="container px-4 forgot-password-main mt-5">
       <div className="forgot-password-head">
         <div
           className="d-flex cursor-pointer"
-          onClick={() => navigateToPage("SignIn")}
+          onClick={() => navigateToPage('SignIn')}
         >
-          <IoMdArrowBack size={20} color="#2C2D2E" />
+          <IoMdArrowBack size={16} color="#2C2D2E" />
           <h6 className="ms-1">Back to Login</h6>
         </div>
-        <div className="d-flex justify-content-center mt-5">
+        <div className="d-flex justify-content-center mt-4">
           <img src="/screens/logo.png" alt="Skoop" />
         </div>
       </div>
-      <div className="forgot-password-content">
+      <div className="forgot-password-content mt-4">
         {!isOTPSent ? (
           <form onSubmit={handleSendOTP}>
             <h3 className="forgot-password-title">Forgot Password</h3>
-            <p class="text-muted fs-6 mb-4 forgot-password-description">
+            <p class="text-muted mb-4 forgot-password-description">
               Enter your email and we'll send you instructions on how to reset
               your password.
             </p>
@@ -160,11 +159,8 @@ const ForgotPassword = () => {
         ) : (
           <form className="mt-5" onSubmit={handleResetPassword}>
             <div className="mt-4">
-              <h3 className="forgot-password-step-label">Step 2:</h3>
-              <p
-                className="forgot-password-description"
-                class="text-muted fs-6 mb-4"
-              >
+              <h3 className="forgot-password-step-label mb-2">Step 2:</h3>
+              <p className="forgot-password-description text-muted mb-4">
                 Enter the OTP that we sent on your registered email and choose a
                 new password.
               </p>
@@ -203,10 +199,10 @@ const ForgotPassword = () => {
               </div>
               <div className="mt-4">
                 <CustomButton type="submit" child="Submit" />
-                <div className="d-flex justify-content-center mt-3 resend-otp">
+                <div className="d-flex justify-content-center mt-2 resend-otp">
                   {isResendOTPButton ? (
                     <p>
-                      Haven't received OTP?{" "}
+                      Haven't received OTP?{' '}
                       <span
                         onClick={handleResendOTP}
                         className="cursor-pointer orange-label"
@@ -224,7 +220,7 @@ const ForgotPassword = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ForgotPassword;
+export default ForgotPassword

@@ -1,223 +1,205 @@
-import React, { useState, useEffect } from "react";
-import API_ENDPOINTS from "../apiConfig";
-import toast from "react-hot-toast";
-import { IoMdClose } from "react-icons/io";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import DeleteModal from "../DeleteModal";
+import React, { useState, useEffect } from 'react'
+import API_ENDPOINTS from '../apiConfig'
+import toast from 'react-hot-toast'
+import { IoMdClose } from 'react-icons/io'
+import ButtonGroup from 'react-bootstrap/ButtonGroup'
+import Dropdown from 'react-bootstrap/Dropdown'
+import DropdownButton from 'react-bootstrap/DropdownButton'
+import DeleteModal from '../DeleteModal'
 const ChatGpt = ({ appendToBody, close }) => {
-  const [cgpt, setCgpt] = useState("");
-  const [prompt, setPrompt] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [loadingTime, setLoadingTime] = useState(0);
-  const [waitingMessage, setWaitingMessage] = useState("");
-  const [selectedOption, setSelectedOption] = useState("");
-  const [messageOptions, setMessageOptions] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [newPrompt, setNewPrompt] = useState({ heading: "", description: "" });
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingPrompt, setEditingPrompt] = useState(null);
-  const [titleError, setTitleError] = useState("");
-  const [descriptionError, setDescriptionError] = useState("");
-  const [responseGenerated, setResponseGenerated] = useState(false);
-  const [isDeleteModal, setIsDeleteModal] = useState(false);
-  const [deleteTemplate, setDeleteTemplate] = useState();
+  const [cgpt, setCgpt] = useState('')
+  const [prompt, setPrompt] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [loadingTime, setLoadingTime] = useState(0)
+  const [waitingMessage, setWaitingMessage] = useState('')
+  const [selectedOption, setSelectedOption] = useState('')
+  const [messageOptions, setMessageOptions] = useState([])
+  const [showModal, setShowModal] = useState(false)
+  const [newPrompt, setNewPrompt] = useState({ heading: '', description: '' })
+  const [isEditing, setIsEditing] = useState(false)
+  const [editingPrompt, setEditingPrompt] = useState(null)
+  const [titleError, setTitleError] = useState('')
+  const [descriptionError, setDescriptionError] = useState('')
+  const [responseGenerated, setResponseGenerated] = useState(false)
+  const [isDeleteModal, setIsDeleteModal] = useState(false)
+  const [deleteTemplate, setDeleteTemplate] = useState()
 
   const handleDropdownChange = (event) => {
-    const value = event;
-    console.log(event, "dropdown selection");
-    if (value === "AddPrompt") {
-      setShowModal(true);
-      setSelectedOption("Select prompt");
-      setIsEditing(false);
-      setEditingPrompt(null);
+    const value = event
+    if (value === 'AddPrompt') {
+      setShowModal(true)
+      setSelectedOption('Select prompt')
+      setIsEditing(false)
+      setEditingPrompt(null)
     } else {
       // setShowModal(false);
-      setSelectedOption(value);
+      setSelectedOption(value)
       const selectedPrompt = messageOptions.find(
         (option) => option.id === parseInt(value, 10)
-      );
+      )
 
       if (selectedPrompt) {
-        setCgpt(` ${selectedPrompt.description}`);
+        setCgpt(` ${selectedPrompt.description}`)
       } else {
-        console.error("Selected prompt not found");
+        console.error('Selected prompt not found')
       }
     }
-  };
+  }
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value } = event.target
 
-    if (name === "cgpt") {
-      setCgpt(value);
-    } else if (name === "prompt") {
-      setPrompt(value);
-    } else if (name === "title") {
-      setNewPrompt({ ...newPrompt, heading: value });
-      setTitleError(value ? "" : "Title is required");
-    } else if (name === "description") {
-      setNewPrompt({ ...newPrompt, description: value });
-      setDescriptionError(value ? "" : "Description is required");
+    if (name === 'cgpt') {
+      setCgpt(value)
+    } else if (name === 'prompt') {
+      setPrompt(value)
+    } else if (name === 'title') {
+      setNewPrompt({ ...newPrompt, heading: value })
+      setTitleError(value ? '' : 'Title is required')
+    } else if (name === 'description') {
+      setNewPrompt({ ...newPrompt, description: value })
+      setDescriptionError(value ? '' : 'Description is required')
     }
-  };
+  }
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setLoadingTime((prevLoadingTime) => prevLoadingTime + 1);
-    }, 1000);
+      setLoadingTime((prevLoadingTime) => prevLoadingTime + 1)
+    }, 1000)
 
     if (loadingTime > 5) {
-      setWaitingMessage("Generating a suitable response, please wait");
+      setWaitingMessage('Generating a suitable response, please wait')
     }
     if (loadingTime > 15) {
-      setWaitingMessage("Bigger text takes more time, please wait");
+      setWaitingMessage('Bigger text takes more time, please wait')
     }
 
     return () => {
-      clearInterval(intervalId);
-    };
-  }, [loading, loadingTime]);
+      clearInterval(intervalId)
+    }
+  }, [loading, loadingTime])
 
   useEffect(() => {
-    const responseText = prompt;
-    const lineCount = (responseText.match(/\n/g) || []).length + 1;
-    const lineHeight = 16; // same as font size of textarea
-    const newHeight = lineHeight * lineCount;
+    const responseText = prompt
+    const lineCount = (responseText.match(/\n/g) || []).length + 1
+    const lineHeight = 16 // same as font size of textarea
+    const newHeight = lineHeight * lineCount
 
-    const responseArea = document.getElementById("skoop_cgpt_response");
+    const responseArea = document.getElementById('skoop_cgpt_response')
     if (responseArea !== null) {
-      responseArea.style.height = `${newHeight}px`;
+      responseArea.style.height = `${newHeight}px`
     }
-    setNewPrompt(prompt);
-  }, [prompt]);
+    setNewPrompt(prompt)
+  }, [prompt])
 
   const sendPrompt = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
     try {
-      setLoading(true);
-      console.log(cgpt);
+      setLoading(true)
 
       const choices = await fetch(
         API_ENDPOINTS.cgpt + new URLSearchParams({ input: cgpt }),
         {
-          method: "GET",
+          method: 'GET',
           headers: {
             authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("accessToken")
+              localStorage.getItem('accessToken')
             )}`,
           },
         }
-      );
+      )
 
-      const response = await choices.json();
-      console.log(response);
-      setLoading(false);
-      setWaitingMessage("");
-      setPrompt(response.choices[0].message.content);
-      appendToBody(response.choices[0].message.content);
-      setResponseGenerated(true);
-      console.log();
+      const response = await choices.json()
+      setLoading(false)
+      setWaitingMessage('')
+      setPrompt(response.choices[0].message.content)
+      appendToBody(response.choices[0].message.content)
+      setResponseGenerated(true)
     } catch (err) {
-      toast.error("could not get chatGpt response", {
-        className: "custom-toast",
-      });
+      toast.error('could not get chatGpt response')
     }
-  };
+  }
 
   const fetchPrompts = async () => {
     try {
       const response = await fetch(API_ENDPOINTS.chatgptprompt, {
-        method: "GET",
+        method: 'GET',
         headers: {
           authorization: `Bearer ${JSON.parse(
-            localStorage.getItem("accessToken")
+            localStorage.getItem('accessToken')
           )}`,
-          "Content-type": "application/json; charset=UTF-8",
+          'Content-type': 'application/json; charset=UTF-8',
         },
-      });
-      const data = await response.json();
-      setMessageOptions(data);
+      })
+      const data = await response.json()
+      setMessageOptions(data)
     } catch (error) {
-      toast.error("Error fetching prompts", {
-        className: "custom-toast",
-      });
+      toast.error('Error fetching prompts')
     }
-  };
+  }
 
   useEffect(() => {
-    fetchPrompts();
-  }, []);
+    fetchPrompts()
+  }, [])
 
   const addNewPrompt = async () => {
     try {
       if (newPrompt.heading && newPrompt.description) {
         await fetch(API_ENDPOINTS.chatgptprompt, {
-          method: "POST",
+          method: 'POST',
           headers: {
             authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("accessToken")
+              localStorage.getItem('accessToken')
             )}`,
-            "Content-type": "application/json; charset=UTF-8",
+            'Content-type': 'application/json; charset=UTF-8',
           },
           body: JSON.stringify({
             heading: newPrompt.heading,
             description: newPrompt.description,
           }),
-        });
-        setShowModal(false);
-        setNewPrompt({ heading: "", description: "" });
-        fetchPrompts();
-        toast.success("New Prompt added successfully!", {
-          className: "custom-toast",
-        });
+        })
+        setShowModal(false)
+        setNewPrompt({ heading: '', description: '' })
+        fetchPrompts()
+        toast.success('New Prompt added successfully!')
       } else {
         // Set validation errors if the fields are empty
-        setTitleError(newPrompt.heading ? "" : "Title is required");
+        setTitleError(newPrompt.heading ? '' : 'Title is required')
         setDescriptionError(
-          newPrompt.description ? "" : "Description is required"
-        );
-        toast.error("Please fill in all required fields.", {
-          className: "custom-toast",
-        });
+          newPrompt.description ? '' : 'Description is required'
+        )
+        toast.error('Please fill in all required fields.')
       }
     } catch (error) {
-      toast.error("Error adding prompt", {
-        className: "custom-toast",
-      });
+      toast.error('Error adding prompt')
     }
-  };
+  }
 
   const deletePrompt = async (id) => {
     try {
       const response = await fetch(`${API_ENDPOINTS.chatgptprompt}/${id}`, {
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
           authorization: `Bearer ${JSON.parse(
-            localStorage.getItem("accessToken")
+            localStorage.getItem('accessToken')
           )}`,
-          "Content-type": "application/json; charset=UTF-8",
+          'Content-type': 'application/json; charset=UTF-8',
         },
-      });
+      })
 
       if (!response.ok) {
-        const errorMessage = await response.text();
+        const errorMessage = await response.text()
         throw new Error(
           `Failed to delete prompt. Server response: ${errorMessage}`
-        );
+        )
       }
 
-      fetchPrompts();
-      toast.success("Prompt deleted successfully!", {
-        className: "custom-toast",
-      });
+      fetchPrompts()
+      toast.success('Prompt deleted successfully!')
     } catch (error) {
-      toast.error("Error deleting prompt", {
-        className: "custom-toast",
-      });
+      toast.error('Error deleting prompt')
     }
-  };
+  }
 
   const updatePrompt = async () => {
     try {
@@ -228,66 +210,57 @@ const ChatGpt = ({ appendToBody, close }) => {
         newPrompt.description
       ) {
         await fetch(`${API_ENDPOINTS.chatgptprompt}/${editingPrompt.id}`, {
-          method: "PUT",
+          method: 'PUT',
           headers: {
             authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("accessToken")
+              localStorage.getItem('accessToken')
             )}`,
-            "Content-type": "application/json; charset=UTF-8",
+            'Content-type': 'application/json; charset=UTF-8',
           },
           body: JSON.stringify({
             heading: newPrompt.heading,
             description: newPrompt.description,
             id: editingPrompt.id,
           }),
-        });
+        })
 
-        setShowModal(false);
-        setNewPrompt({ heading: "", description: "" });
-        setIsEditing(false);
-        fetchPrompts();
-        toast.success("Prompt updated successfully!", {
-          className: "custom-toast",
-        });
-        setSelectedOption("Select prompt");
+        setShowModal(false)
+        setNewPrompt({ heading: '', description: '' })
+        setIsEditing(false)
+        fetchPrompts()
+        toast.success('Prompt updated successfully!')
+        setSelectedOption('Select prompt')
       } else {
         // Set validation errors if the fields are empty or editingPrompt is not available
-        setTitleError(newPrompt.heading ? "" : "Title is required");
+        setTitleError(newPrompt.heading ? '' : 'Title is required')
         setDescriptionError(
-          newPrompt.description ? "" : "Description is required"
-        );
+          newPrompt.description ? '' : 'Description is required'
+        )
         toast.error(
-          "Please fill in all required fields and ensure you are editing a valid prompt.",
-          {
-            className: "custom-toast",
-          }
-        );
+          'Please fill in all required fields and ensure you are editing a valid prompt.'
+        )
       }
     } catch (error) {
-      toast.error("Error updating prompt", {
-        className: "custom-toast",
-      });
+      toast.error('Error updating prompt')
     }
-  };
+  }
 
   const handleEditOption = (id) => {
-    console.log(id);
     const selectedPrompt = messageOptions.find(
       (option) => option.id === parseInt(id, 10)
-    );
-    console.log("handle edit");
+    )
     if (selectedPrompt) {
-      setEditingPrompt(selectedPrompt);
+      setEditingPrompt(selectedPrompt)
       setNewPrompt({
         heading: selectedPrompt.heading,
         description: selectedPrompt.description,
-      });
-      setShowModal(true);
-      setIsEditing(true);
+      })
+      setShowModal(true)
+      setIsEditing(true)
     } else {
-      console.error("Selected prompt not found");
+      console.error('Selected prompt not found')
     }
-  };
+  }
 
   //integration to template
 
@@ -302,7 +275,7 @@ const ChatGpt = ({ appendToBody, close }) => {
           </div>
           <div
             className="justify-content-end"
-            onClick={() => close("DefaultCard")}
+            onClick={() => close('DefaultCard')}
           >
             <svg
               stroke="currentColor"
@@ -377,8 +350,8 @@ const ChatGpt = ({ appendToBody, close }) => {
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                         onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditOption(option.id);
+                          e.stopPropagation()
+                          handleEditOption(option.id)
                         }}
                       >
                         <path
@@ -397,9 +370,9 @@ const ChatGpt = ({ appendToBody, close }) => {
                         onClick={(e) => {
                           // e.stopPropagation();
                           // deletePrompt(option.id);
-                          setIsDeleteModal(true);
-                          setDeleteTemplate(option);
-                          e.stopPropagation();
+                          setIsDeleteModal(true)
+                          setDeleteTemplate(option)
+                          e.stopPropagation()
                         }}
                       >
                         <path
@@ -417,7 +390,7 @@ const ChatGpt = ({ appendToBody, close }) => {
             <div className="col-12 mb-2">
               <textarea
                 id="chatgpt-msg-box"
-                className="form-control"
+                className="form-control custom-textarea-global"
                 placeholder="Ask ChatGPT..."
                 name="cgpt"
                 value={cgpt}
@@ -440,14 +413,14 @@ const ChatGpt = ({ appendToBody, close }) => {
           className="modal"
           tabIndex="-1"
           role="dialog"
-          style={{ display: showModal ? "block" : "none" }}
+          style={{ display: showModal ? 'block' : 'none' }}
         >
           <div className="modal-overlay  modal-dialog-centered" role="document">
             <div className="modal-content mx-2">
               <div className="modal-header d-flex flex-row justify-content-between px-3 pt-3 pb-2 border-0">
                 <h5 className="modal-title">
-                  {" "}
-                  {isEditing ? "Edit prompt" : "Add new prompt"}
+                  {' '}
+                  {isEditing ? 'Edit prompt' : 'Add new prompt'}
                 </h5>
                 <button
                   type="button"
@@ -462,12 +435,12 @@ const ChatGpt = ({ appendToBody, close }) => {
                 <input
                   type="text"
                   required
-                  className="form-control"
+                  className="form-control custom-input-global"
                   placeholder="Enter prompt title"
                   value={newPrompt.heading}
                   onChange={(e) =>
                     handleChange({
-                      target: { name: "title", value: e.target.value },
+                      target: { name: 'title', value: e.target.value },
                     })
                   }
                 />
@@ -477,12 +450,12 @@ const ChatGpt = ({ appendToBody, close }) => {
 
                 <textarea
                   rows="3"
-                  className="form-control mt-2"
+                  className="form-control mt-2 custom-textarea-global"
                   value={newPrompt.description}
                   placeholder="Enter description"
                   onChange={(e) =>
                     handleChange({
-                      target: { name: "description", value: e.target.value },
+                      target: { name: 'description', value: e.target.value },
                     })
                   }
                 />
@@ -497,14 +470,14 @@ const ChatGpt = ({ appendToBody, close }) => {
                   onClick={() => {
                     if (newPrompt.heading) {
                       if (isEditing) {
-                        updatePrompt();
+                        updatePrompt()
                       } else {
-                        addNewPrompt();
+                        addNewPrompt()
                       }
                     }
                   }}
                 >
-                  {isEditing ? "Update" : "Save"}
+                  {isEditing ? 'Update' : 'Save'}
                 </button>
               </div>
             </div>
@@ -519,7 +492,7 @@ const ChatGpt = ({ appendToBody, close }) => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ChatGpt;
+export default ChatGpt

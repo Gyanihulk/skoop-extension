@@ -1,16 +1,16 @@
-import React, { useState } from "react";
-import { IoIosLink } from "react-icons/io";
-import { FiTrash2 } from "react-icons/fi";
-import { FaStar, FaRegStar } from "react-icons/fa";
-import { MdMoveUp } from "react-icons/md";
-import { FaPencilAlt } from "react-icons/fa";
-import { toast } from "react-hot-toast";
-import MoveVideoPopup from "./MoveVideoPopup";
-import RenameVideoPopup from "./RenameVideoPopup";
-import API_ENDPOINTS from "../apiConfig";
-import VideoPreviewPopup from "./VideoPreviewPopup";
-import { sendMessageToBackgroundScript } from "../../lib/sendMessageToBackground";
-import DeleteModal from "../DeleteModal";
+import React, { useEffect, useState } from 'react'
+import { IoIosLink } from 'react-icons/io'
+import { FiTrash2 } from 'react-icons/fi'
+import { FaStar, FaRegStar } from 'react-icons/fa'
+import { MdMoveUp } from 'react-icons/md'
+import { FaPencilAlt } from 'react-icons/fa'
+import { toast } from 'react-hot-toast'
+import MoveVideoPopup from './MoveVideoPopup'
+import RenameVideoPopup from './RenameVideoPopup'
+import API_ENDPOINTS from '../apiConfig'
+import VideoPreviewPopup from './VideoPreviewPopup'
+import { sendMessageToBackgroundScript } from '../../lib/sendMessageToBackground'
+import DeleteModal from '../DeleteModal'
 
 const VideoCard = ({
   video,
@@ -19,123 +19,126 @@ const VideoCard = ({
   toggleFavourite,
   fetchVideos,
 }) => {
-  const [showMovePopup, setShowMovePopup] = useState(false);
-  const [showRenamePopup, setShowRenamePopup] = useState(false);
-  const [newTitle, setNewTitle] = useState(video.video_title);
-  const [showPreviewPopup, setShowPreviewPopup] = useState(false);
-  const [isDeleteModal, setIsDeleteModal] = useState(false);
+  const [showMovePopup, setShowMovePopup] = useState(false)
+  const [showRenamePopup, setShowRenamePopup] = useState(false)
+  const [newTitle, setNewTitle] = useState(video.video_title)
+  const [showPreviewPopup, setShowPreviewPopup] = useState(false)
+  const [isDeleteModal, setIsDeleteModal] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  const handleLoad = () => {
+    console.log('loading complete')
+    setIsLoaded(true)
+  }
 
   const handleMoveClick = () => {
-    setShowMovePopup(true);
-  };
+    setShowMovePopup(true)
+  }
 
   const handleCloseMovePopup = () => {
-    setShowMovePopup(false);
-  };
+    setShowMovePopup(false)
+  }
 
   const handleRenameClick = () => {
-    setShowRenamePopup(true);
-  };
+    setShowRenamePopup(true)
+  }
 
   const handleCloseRenamePopup = () => {
-    setShowRenamePopup(false);
-  };
+    setShowRenamePopup(false)
+  }
 
   const handleRenameSave = async () => {
     try {
       const response = await fetch(API_ENDPOINTS.renameVideo + `/${video.id}`, {
-        method: "PATCH",
+        method: 'PATCH',
         headers: {
           authorization: `Bearer ${JSON.parse(
-            localStorage.getItem("accessToken")
+            localStorage.getItem('accessToken')
           )}`,
-          "Content-type": "application/json; charset=UTF-8",
+          'Content-type': 'application/json; charset=UTF-8',
         },
         body: JSON.stringify({
           newTitle: newTitle,
         }),
-      });
+      })
 
       if (response.ok) {
-        video.video_title = newTitle;
-        handleCloseRenamePopup();
-        toast.success("Video renamed successfully", {
-          className: "custom-toast",
-        });
+        video.video_title = newTitle
+        handleCloseRenamePopup()
+        toast.success('Video renamed successfully')
       } else {
-        toast.error("Failed to rename video", {
-          className: "custom-toast",
-        });
+        toast.error('Failed to rename video')
       }
     } catch (error) {
-      toast.error("Failed to rename video", {
-        className: "custom-toast",
-      });
+      toast.error('Failed to rename video')
     }
-  };
+  }
 
   const handleDeleteClick = async () => {
-    setIsDeleteModal(true);
-  };
+    setIsDeleteModal(true)
+  }
 
   const onDeleteVideo = async () => {
-    console.log("delete video start");
+    console.log('delete video start')
     try {
-      await deleteVideo(video.id);
-      toast.success("Video deleted successfully", {
-        className: "custom-toast",
-      });
-      fetchVideos();
+      await deleteVideo(video.id)
+      toast.success('Video deleted successfully')
+      fetchVideos()
     } catch (error) {
-      toast.error("Failed to delete video", {
-        className: "custom-toast",
-      });
+      toast.error('Failed to delete video')
     }
-    console.log("delete video end");
-  };
+    console.log('delete video end')
+  }
 
   const handleToggleFavouriteClick = async () => {
     try {
-      await toggleFavourite(video.id);
+      await toggleFavourite(video.id)
       toast.success(
-        video.is_favourite ? "Removed from favorites" : "Added to favorites",
-        {
-          className: "custom-toast",
-        }
-      );
-      fetchVideos();
+        video.is_favourite ? 'Removed from favorites' : 'Added to favorites'
+      )
+      fetchVideos()
     } catch (error) {
-      toast.error("Failed to toggle favorite status", {
-        className: "custom-toast",
-      });
+      toast.error('Failed to toggle favorite status')
     }
-  };
+  }
   const openPopUp = (src, event) => {
     if (event) {
-      event.stopPropagation();
+      event.stopPropagation()
     }
-    const height = 322 * 1.5;
-    const width = 574 * 1.5;
+    const height = 322 * 1.5
+    const width = 574 * 1.5
 
     sendMessageToBackgroundScript({
-      action: "startPlayingVideo",
+      action: 'startPlayingVideo',
       height,
       width,
       src,
-    });
-  };
+    })
+  }
 
   return (
     <div className="col-6 my-1" key={video.id}>
-      <div className="card  video-card">
+      <div
+        className="video-loader justify-content-center align-items-center"
+        style={{ display: isLoaded ? 'none' : 'flex' }}
+      >
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      <div
+        className="card  video-card"
+        style={{ display: isLoaded ? 'block' : 'none' }}
+      >
         <iframe
           title={video.video_title}
           width="100%"
           height="100vw"
           src={video.link}
           allow="autoplay; fullscreen; picture-in-picture"
-          className="no-border"
+          onLoad={handleLoad}
         />
+
         <div
           className="overlay position-absolute bottom-0 start-0 w-100 h-100 "
           onClick={(e) => openPopUp(video.link, e)}
@@ -146,10 +149,8 @@ const VideoCard = ({
               title="Insert link to mail body"
               className="btn btn-link btn-sm video-card-footer-button"
               onClick={() => {
-                handleLinkInsertion(video.link, video.id);
-                toast.success("Link inserted", {
-                  className: "custom-toast",
-                });
+                handleLinkInsertion(video.link, video.id)
+                toast.success('Link inserted')
               }}
             >
               <IoIosLink size={10} />
@@ -158,8 +159,8 @@ const VideoCard = ({
             <button
               title={
                 video.is_favourite
-                  ? "Remove from favorites"
-                  : "Add to favorites"
+                  ? 'Remove from favorites'
+                  : 'Add to favorites'
               }
               className="btn btn-link btn-sm video-card-footer-button"
               onClick={handleToggleFavouriteClick}
@@ -213,11 +214,9 @@ const VideoCard = ({
             videoId={video.id}
             onClose={handleCloseMovePopup}
             onMove={() => {
-              handleCloseMovePopup();
-              toast.success("Video moved successfully", {
-                className: "custom-toast",
-              });
-              fetchVideos();
+              handleCloseMovePopup()
+              toast.success('Video moved successfully')
+              fetchVideos()
             }}
           />
         )}
@@ -241,7 +240,7 @@ const VideoCard = ({
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default VideoCard;
+export default VideoCard

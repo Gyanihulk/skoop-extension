@@ -1,25 +1,25 @@
-import React, { Component, useEffect, useState } from "react";
-import API_ENDPOINTS from "../apiConfig";
-import { MdOutlineDone } from "react-icons/md";
-import toast from "react-hot-toast";
+import React, { Component, useEffect, useState } from 'react'
+import API_ENDPOINTS from '../apiConfig'
+import { MdOutlineDone } from 'react-icons/md'
+import toast from 'react-hot-toast'
 
 export class UserInput extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      videoTitle: "",
-      directoryName: "",
+      videoTitle: '',
+      directoryName: '',
       listOfDirectories: [],
-      selectedOption: "none",
+      selectedOption: 'none',
       loading: true,
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    }
+    this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   async componentDidMount() {
     try {
-      const response = await this.getDirectories();
+      const response = await this.getDirectories()
       this.setState(
         {
           listOfDirectories: response,
@@ -27,41 +27,41 @@ export class UserInput extends Component {
         () => {
           this.setState({
             loading: false,
-          });
+          })
         }
-      );
+      )
     } catch (err) {
-      console.log("something went wrong");
+      console.log('something went wrong')
     }
   }
 
   async getDirectories() {
     var response = await fetch(API_ENDPOINTS.videoDirectories, {
-      method: "GET",
+      method: 'GET',
       headers: {
         authorization: `Bearer ${JSON.parse(
-          localStorage.getItem("accessToken")
+          localStorage.getItem('accessToken')
         )}`,
-        "Content-type": "application/json; charset=UTF-8",
+        'Content-type': 'application/json; charset=UTF-8',
       },
-    });
-    response = await response.json();
-    return response;
+    })
+    response = await response.json()
+    return response
   }
 
   handleChange(event) {
     this.setState({
       [event.target.name]: event.target.value,
-    });
+    })
   }
 
   handleSubmit(event) {
-    event.preventDefault();
+    event.preventDefault()
     var drName =
-      this.state.selectedOption == "none"
+      this.state.selectedOption == 'none'
         ? this.state.directoryName
-        : this.state.selectedOption;
-    this.props.sharingDetails(this.state.videoTitle, drName);
+        : this.state.selectedOption
+    this.props.sharingDetails(this.state.videoTitle, drName)
   }
   render() {
     if (this.state.loading == false) {
@@ -105,7 +105,7 @@ export class UserInput extends Component {
                 </select>
               </div>
 
-              {this.state.selectedOption === "none" && (
+              {this.state.selectedOption === 'none' && (
                 <div className="form-group">
                   <label htmlFor="directoryName">Enter New Folder Name</label>
                   <input
@@ -138,83 +138,79 @@ export class UserInput extends Component {
           <br />
           <br />
         </div>
-      );
+      )
     }
   }
 }
 
 export const NewFolderInput = (props) => {
   const [values, setValues] = useState({
-    directoryName: "",
-  });
+    directoryName: '',
+  })
 
   const handleChange = (event) => {
     setValues((prevState) => ({
       ...prevState,
       [event.target.name]: event.target.value,
-    }));
-  };
+    }))
+  }
   const CreateNewDirectory = async () => {
     try {
       const res = await fetch(API_ENDPOINTS.addNewDirectory, {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify({
           directory: values.directoryName,
         }),
         headers: {
           authorization: `Bearer ${JSON.parse(
-            localStorage.getItem("accessToken")
+            localStorage.getItem('accessToken')
           )}`,
-          "Content-type": "application/json; charset=UTF-8",
+          'Content-type': 'application/json; charset=UTF-8',
         },
-      });
+      })
       if (res.ok) {
-        props.closePopup();
+        props.closePopup()
         setValues({
-          directoryName: "",
-        });
-      } else throw "error in the database";
+          directoryName: '',
+        })
+      } else throw 'error in the database'
     } catch (err) {
-      toast.error("some error occured during update", {
-        className: "custom-toast",
-      });
+      toast.error('some error occured during update')
     }
-  };
+  }
   const renameDirectory = async () => {
     try {
       const res = await fetch(API_ENDPOINTS.renameFolder, {
-        method: "PATCH",
+        method: 'PATCH',
         body: JSON.stringify({
           oldDirectoryName: props.oldDirectoryName,
           newDirectoryName: values.directoryName,
         }),
         headers: {
           authorization: `Bearer ${JSON.parse(
-            localStorage.getItem("accessToken")
+            localStorage.getItem('accessToken')
           )}`,
-          "Content-type": "application/json; charset=UTF-8",
+          'Content-type': 'application/json; charset=UTF-8',
         },
-      });
+      })
       if (res.ok) {
-        props.closePopup();
+        props.closePopup()
         setValues({
-          directoryName: "",
-        });
+          directoryName: '',
+        })
       }
     } catch (err) {
-      toast.error("some error occurred", {
-        className: "custom-toast",
-      });
+      toast.error('some error occurred')
     }
-  };
+  }
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
     if (props.oldDirectoryName) {
-      await renameDirectory();
-      return;
+      await renameDirectory()
+      return
     }
-    await CreateNewDirectory();
-  };
+    await CreateNewDirectory()
+  }
 
   return (
     <div>
@@ -222,7 +218,7 @@ export const NewFolderInput = (props) => {
         <div className="d-flex align-items-center">
           <input
             type="text"
-            className="form-control w-75"
+            className="form-control w-75 custom-input-global"
             name="directoryName"
             onChange={handleChange}
             value={values.directoryName}
@@ -235,5 +231,5 @@ export const NewFolderInput = (props) => {
         </div>
       </form>
     </div>
-  );
-};
+  )
+}

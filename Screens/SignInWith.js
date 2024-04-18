@@ -12,9 +12,9 @@ function SignInWith() {
     deleteMyAllJwtSessionsBySocial(social);
   }
   return (
-    <div className="signin-background-image container-fluid h-100 px-4 d-flex flex-column justify-content-end">
-      <div className="pb-5">
-        <div className="signin-with-contente">
+    <div className="signin-background-image container-fluid h-100 px-4 d-flex flex-column">
+      <div className="pb-5 mt-5 pt-5">
+        <div className="signin-with-content mt-5 pt-3">
           <h3 className="text-white">Hi, Welcome Back!</h3>
           <p className="text-white">
             It's time to get more clients and connect again with old connections
@@ -39,25 +39,25 @@ function SignInWith() {
           type="button"
           id="sign-in-with-email"
           className="btn w-100 mt-3 mb-2 login-with-email-btn"
-          onClick={() => navigateToPage("SignIn")}
+          onClick={() => navigateToPage('SignIn')}
         >
-          Login with email{" "}
+          Login with email{' '}
         </button>
 
-        <div className="form-text text-center mb-2 text-light">
-          New to Skoop?{" "}
+        <div className="form-text text-center mb-2 text-light signin-with-footer">
+          New to Skoop?{' '}
           <a
             href="#"
-            onClick={() => navigateToPage("SignUp")}
+            onClick={() => navigateToPage('SignUp')}
             className="fw-bold footer-font"
           >
-            {" "}
+            {' '}
             Create Account
           </a>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default SignInWith;
+export default SignInWith

@@ -32,7 +32,6 @@ const SignInForm = () => {
     event.preventDefault();
 
     if (username !== "" && password !== "") {
-      console.log("form submitting: ", { username, password });
       handleSkoopLogin(username, password);
     } else {
       setIsUsernameEmpty(username.trip() === "");
@@ -86,7 +85,7 @@ toast.error("email or password can not be empty!")
                 Forgot Password?
               </span>
             </div>
-            <div className="mt-5">
+            <div className="mt-4">
               <CustomButton type="Submit" child="Sign in" />
             </div>
           </form>

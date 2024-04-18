@@ -1,49 +1,53 @@
-.signin-with-contente h3 {
-  font-size: 28px;
-  font-weight: 600;
+.signin-with-content h3 {
+  font-size: 20px;
+  font-weight: 500;
 }
 
-.signin-with-contente p {
-  font-size: 14px;
+.signin-with-content p {
+  font-size: 12px;
   font-weight: 400;
 }
 
+.signin-with-footer {
+  font-size: 12px !important;
+}
+
 #sign-in-with-email {
-  color: white;
-  border: 2px solid white;
-  border-radius: 8px;
-  font-size: 16px;
+  color: #fff;
+  border: 1px solid #fff;
+  border-radius: 4px;
+  font-size: 12px;
   font-weight: 600;
   background: transparent;
-  padding: 12px;
+  padding: 8px;
 }
 
 .auth-head-content {
-  font-family: "Lato", sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 
 .auth-head-content h1 {
   color: #2a2b39;
   font-weight: 600;
-  font-size: 24px;
+  font-size: 20px;
 }
 
 .auth-head-content p {
   color: #2c2d2e80;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 12px;
 }
 
 .sign-in-form {
-  margin-top: 3rem;
+  margin-top: 2rem;
 }
 
 #custom-input-box {
+  height: 36px;
   color: #2a2b39;
   border-color: #a9aaabcc;
-  font-family: "Montserrat", sans-serif;
-  padding: 12px;
-  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  border-radius: 4px;
 }
 
 .input-empty {
@@ -57,14 +61,14 @@
 
 #custom-input-box::placeholder {
   color: #a9aaabcc;
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 #custom-password-input-box {
+  height: 36px;
   color: #2a2b39;
   border-color: #a9aaabcc;
-  padding: 12px;
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 #custom-password-input-box:focus {
@@ -73,15 +77,15 @@
 }
 
 #custom-password-input-box::placeholder {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   color: #a9aaabcc;
 }
 
 #time-zone-dropdown {
+  height: 36px;
   color: #2a2b39;
   border-color: #a9aaabcc;
-  padding: 12px;
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 #time-zone-dropdown:focus {
@@ -90,34 +94,34 @@
 }
 
 #custom-btn {
+  height: 36px;
+  font-family: 'Montserrat', sans-serif;
   background-color: #2d68c4;
-  padding: 8px;
-  font-family: "Montserrat", sans-serif;
-  border-radius: 8px;
+  border-radius: 4px;
   font-weight: 600;
   letter-spacing: 1px;
   font-size: 12px;
 }
 
 .or-with-label {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   color: #2a2b39e5;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 400;
 }
 
 #sign-in-with-linkedIn {
-  font-family: "Poppins", sans-serif;
+  height: 40px;
+  font-family: 'Poppins', sans-serif;
   background-color: #007bb5;
-  border-radius: 8px;
-  padding: 12px;
+  border-radius: 4px;
 }
 
 #sign-in-with-google {
-  font-family: "Poppins", sans-serif;
+  height: 40px;
+  font-family: 'Poppins', sans-serif;
   border: 1px solid #a9aaabcc;
-  border-radius: 8px;
-  padding: 12px;
+  border-radius: 4px;
   color: #2a2b39;
 }
 
@@ -126,8 +130,9 @@
 }
 
 .auth-footer-label {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   color: #2a2b39;
+  font-size: 12px;
 }
 
 .orange-label {
@@ -136,10 +141,10 @@
 }
 
 .sign-up-privacy-policy {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   color: #2a2b39;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .sign-up-privacy-policy span {
@@ -147,12 +152,14 @@
 }
 
 .forgot-password-head div h6 {
-  font-family: "Lato", sans-serif;
+  font-family: 'Lato', sans-serif;
   color: #2c2d2e;
+  font-weight: 600;
+  font-size: 12px !important;
 }
 
 .forgot-password-head div img {
-  width: 8rem;
+  width: 6rem;
 }
 
 .forgot-password-content {
@@ -163,31 +170,34 @@
 }
 
 .forgot-password-title {
-  font-family: "Lato", sans-serif;
+  font-family: 'Lato', sans-serif;
   font-weight: 600;
-  font-size: 24px;
+  font-size: 18px;
 }
 
 .forgot-password-description {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 12px;
 }
 
 .forgot-password-step-label {
-  font-family: "Montserrat", sans-serif;
-  font-weight: 400;
-  font-size: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: -8px;
 }
 
 .resend-otp {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 400;
+  font-size: 12px;
 }
 
 .forgot-password-label {
   color: #2a2b39e5;
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
   font-weight: 500;
 }
 
@@ -197,38 +207,38 @@
 
 #password-tooltip {
   position: absolute;
-  top: 3.5rem;
-  left: 11rem;
+  top: 2.5rem;
+  left: 9.5rem;
   transform: translateX(-50%);
   background-color: rgba(0, 0, 0, 0.9);
   color: #fff;
-  padding: 10px;
-  border-radius: 5px;
-  width: 22rem;
+  padding: 12px 8px 0px 10px;
+  border-radius: 4px;
+  width: 100%;
   z-index: 999;
-  font-family: "Montserrat", sans-serif;
+  font-family: Montserrat, sans-serif;
 }
 
 #password-tooltip h5 {
   font-weight: 600;
-  font-size: 16px;
+  font-size: 14px;
   letter-spacing: 1px;
 }
 
 #password-tooltip ul li {
-  font-size: 14px;
+  font-size: 12px;
 }
 
 #time-zone-dropdown::placeholder {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   color: #a9aaabcc;
 }
 
 .time-zone-main {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
-.time-zone-head h2 {
+.timezone-head h2 {
   font-size: 16px !important;
   font-weight: 400 !important;
 }
@@ -238,7 +248,7 @@
   border-color: #a9aaabcc;
   font-family: Montserrat, sans-serif;
   padding: 8px 4px 8px 2.5rem;
-  border-radius: 8px;
+  border-radius: 4px;
 }
 
 #timezone-search-input-box:focus {
@@ -247,13 +257,14 @@
 }
 
 #timezone-list-container {
-  height: 200;
+  height: 67vh;
+  overflow: auto;
 }
 
 .timezone-item {
   font-weight: 400;
   font-size: 12px;
-  padding: 12px;
+  padding: 8px 0px;
   border-bottom: 1px solid #a9aaab99;
 }
 

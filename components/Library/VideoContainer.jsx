@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
-import API_ENDPOINTS from "../apiConfig";
-import VideoCard from "./VideoCard";
-import Pagination from "./Pagination";
-import GlobalStatesContext from "../../contexts/GlobalStates";
+import React, { useContext, useEffect, useState } from 'react'
+import API_ENDPOINTS from '../apiConfig'
+import VideoCard from './VideoCard'
+import Pagination from './Pagination'
+import GlobalStatesContext from '../../contexts/GlobalStates'
 
 const VideoContainer = ({
   folderName,
@@ -12,9 +12,9 @@ const VideoContainer = ({
   currentPage,
   handlePageChange,
 }) => {
-  const { setTotalMediaCount } = useContext(GlobalStatesContext);
-  const [totalPages, setTotalPages] = useState();
-  const [videos, setVideos] = useState([]);
+  const { setTotalMediaCount } = useContext(GlobalStatesContext)
+  const [totalPages, setTotalPages] = useState()
+  const [videos, setVideos] = useState([])
 
   const fetchVideos = async () => {
     try {
@@ -23,50 +23,50 @@ const VideoContainer = ({
           API_ENDPOINTS.linkData
         }directory=${folderName}&page=${currentPage}&limit=${4}`,
         {
-          method: "GET",
+          method: 'GET',
           headers: {
             authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("accessToken")
+              localStorage.getItem('accessToken')
             )}`,
-            "Content-type": "application/json; charset=UTF-8",
+            'Content-type': 'application/json; charset=UTF-8',
           },
         }
-      );
-      const data = await response.json();
-      console.log(data, "from video container");
-      setTotalMediaCount(data.totalItems);
-      setTotalPages(data.totalPages);
+      )
+      const data = await response.json()
+      setTotalMediaCount(data.totalItems)
+      setTotalPages(data.totalPages)
       data.links = data.links.map((item) => ({
         ...item,
         link: `https://play.vidyard.com/${item.link}`,
-      }));
+      }))
 
-      setVideos(data.links);
+      setVideos(data.links)
     } catch (error) {
-      console.error("Error fetching videos:", error);
+      console.error('Error fetching videos:', error)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchVideos();
-  }, [folderName, currentPage]);
-  console.log(videos);
+    fetchVideos()
+  }, [folderName, currentPage])
   return (
     <div className="container mt-1">
       <div className="row" id="media-list-container">
         {videos && videos.length > 0 ? (
-          videos.map((item) => (
-            <VideoCard
-              key={item.id}
-              video={item}
-              folderName={folderName}
-              handleLinkInsertion={handleLinkInsertion}
-              deleteVideo={deleteVideo}
-              toggleFavourite={toggleFavourite}
-              fetchVideos={fetchVideos}
-            />
-          ))
-        ) : folderName !== "favorites" ? (
+          videos.map((item) => {
+            return (
+              <VideoCard
+                key={item.id}
+                video={item}
+                folderName={folderName}
+                handleLinkInsertion={handleLinkInsertion}
+                deleteVideo={deleteVideo}
+                toggleFavourite={toggleFavourite}
+                fetchVideos={fetchVideos}
+              />
+            )
+          })
+        ) : folderName !== 'favorites' ? (
           <div className="col-12 text-center">
             <p>No videos available</p>
           </div>
@@ -80,7 +80,7 @@ const VideoContainer = ({
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default VideoContainer;
+export default VideoContainer

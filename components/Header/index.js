@@ -1,112 +1,121 @@
-import { useContext, useState, useEffect } from "react";
-import { BsArrowLeftCircle } from "react-icons/bs";
-import { MdAccountCircle, MdClose, MdSaveAlt } from "react-icons/md";
-import GlobalStatesContext from "../../contexts/GlobalStates";
-import { FaRegCalendarCheck } from "react-icons/fa";
-import ScreenContext from "../../contexts/ScreenContext";
-import API_ENDPOINTS from "../apiConfig";
-import AuthContext from "../../contexts/AuthContext.js";
-import MessageContext from "../../contexts/MessageContext.js";
+import { useContext, useState, useEffect } from 'react'
+import { BsArrowLeftCircle } from 'react-icons/bs'
+import { MdAccountCircle, MdClose, MdSaveAlt } from 'react-icons/md'
+import GlobalStatesContext from '../../contexts/GlobalStates'
+import { FaRegCalendarCheck } from 'react-icons/fa'
+import ScreenContext from '../../contexts/ScreenContext'
+import API_ENDPOINTS from '../apiConfig'
+import AuthContext from '../../contexts/AuthContext.js'
+import MessageContext from '../../contexts/MessageContext.js'
 
-import { IoMdDownload, IoMdPerson } from "react-icons/io";
-import { MdOutlineHelp } from "react-icons/md";
-import { FaRegCalendar } from "react-icons/fa";
-import { IoClose } from "react-icons/io5";
-import { HiMiniMinus } from "react-icons/hi2";
-import { TbArrowsDiagonalMinimize2 } from "react-icons/tb";
-import { TbArrowsDiagonal } from "react-icons/tb";
+import { IoMdDownload, IoMdPerson } from 'react-icons/io'
+import { MdOutlineHelp } from 'react-icons/md'
+import { FaRegCalendar } from 'react-icons/fa'
+import { IoClose } from 'react-icons/io5'
+import { HiMiniMinus } from 'react-icons/hi2'
+import { TbArrowsDiagonalMinimize2 } from 'react-icons/tb'
+import { TbArrowsDiagonal } from 'react-icons/tb'
 
 export default function Header() {
-  const { isAuthenticated, handleLogOut } = useContext(AuthContext);
-  const { navigateToPage, activePage } = useContext(ScreenContext);
+  const { isAuthenticated, handleLogOut } = useContext(AuthContext)
+  const { navigateToPage, activePage } = useContext(ScreenContext)
   const { setScraperPage, scraperPage, isProfilePage, expand, setExpand } =
-    useContext(GlobalStatesContext);
+    useContext(GlobalStatesContext)
 
-  const [profileOpen, setProfileOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false)
+  const [showHelpMenu, setShowHelpMenu] = useState(false)
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (profileOpen && !event.target.closest(".custom")) {
-        setProfileOpen(false);
+      if (profileOpen && !event.target.closest('.custom')) {
+        setProfileOpen(false)
+      } else if (showHelpMenu && !event.target.closest('.custom')) {
+        setShowHelpMenu(false)
       }
-    };
+    }
 
-    document.addEventListener("click", handleClickOutside);
+    document.addEventListener('click', handleClickOutside)
 
     return () => {
-      document.removeEventListener("click", handleClickOutside);
-      document.body.style.overflow = "auto";
-    };
-  }, [profileOpen]);
+      document.removeEventListener('click', handleClickOutside)
+      document.body.style.overflow = 'auto'
+    }
+  }, [profileOpen, showHelpMenu])
 
   const toggleProfileDropdown = () => {
-    setProfileOpen(!profileOpen);
-  };
+    setProfileOpen(!profileOpen)
+    setShowHelpMenu(false)
+  }
 
-  const { setMessage } = useContext(MessageContext);
+  const toggleHelpMenu = () => {
+    if (profileOpen) {
+      setProfileOpen(!profileOpen)
+    }
+    setShowHelpMenu(!showHelpMenu)
+  }
+
+  const { setMessage } = useContext(MessageContext)
   const executeClose = () => {
-    const container = document.getElementById("skoop-extension-container");
-    container.style.display = "none";
-  };
+    const container = document.getElementById('skoop-extension-container')
+    container.style.display = 'none'
+  }
   const getToggleButton = () => {
-    const toggleButton = document.getElementById(
-      "skoop-expand-minimize-button"
-    );
-    toggleButton.click();
-  };
+    const toggleButton = document.getElementById('skoop-expand-minimize-button')
+    toggleButton.click()
+  }
 
   const closeExtension = () => {
     try {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const targetTab = tabs[0];
+        const targetTab = tabs[0]
         if (targetTab) {
           try {
             chrome.scripting.executeScript({
               target: { tabId: targetTab.id },
               func: executeClose,
-            });
+            })
           } catch (err) {
-            console.log("some error occured in executing script", err);
+            console.log('some error occured in executing script', err)
           }
         } else {
-          console.log("the target tab is not accessible");
+          console.log('the target tab is not accessible')
         }
-      });
+      })
     } catch (err) {
-      console.log("some error occured while setting up initial array");
+      console.log('some error occured while setting up initial array')
     }
-  };
+  }
   const expandMinimizeExtension = () => {
     try {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const targetTab = tabs[0];
+        const targetTab = tabs[0]
         if (targetTab) {
           try {
             chrome.scripting.executeScript({
               target: { tabId: targetTab.id },
               func: getToggleButton,
-            });
+            })
           } catch (err) {
-            console.log("some error occured in executing script", err);
+            console.log('some error occured in executing script', err)
           }
         } else {
-          console.log("the target tab is not accessible");
+          console.log('the target tab is not accessible')
         }
-      });
+      })
       if (expand) {
-        document.body.style.overflow = "auto";
+        document.body.style.overflow = 'auto'
       } else {
-        document.body.style.overflow = "hidden";
+        document.body.style.overflow = 'hidden'
       }
-      setExpand(!expand);
+      setExpand(!expand)
     } catch (err) {
-      console.log("some error occured while setting up initial array");
+      console.log('some error occured while setting up initial array')
     }
-  };
+  }
   const openCalendarWindow = () => {
-    document.body.style.overflow = "auto";
-    window.open(API_ENDPOINTS.skoopCalendarUrl, "_blank");
-  };
+    document.body.style.overflow = 'auto'
+    window.open(API_ENDPOINTS.skoopCalendarUrl, '_blank')
+  }
 
   return (
     <>
@@ -136,25 +145,60 @@ export default function Header() {
                   data-mdb-placement="bottom"
                   title="Save Profile Info "
                   onClick={() => {
-                    navigateToPage("ContactPage");
-                    setScraperPage(!scraperPage);
+                    navigateToPage('ContactPage')
+                    setScraperPage(!scraperPage)
                   }}
                 >
                   <IoMdDownload size={14} />
                 </button>
               )}
-
-              <button
-                className="btn btn-link header-icon"
-                data-mdb-toggle="tooltip"
-                data-mdb-placement="bottom"
-                title="Helper Videos"
-                onClick={() => {
-                  navigateToPage("HelperVideos");
-                }}
-              >
-              <MdOutlineHelp size={16} />
-              </button>
+              <div className={`nav-item dropdown custom`}>
+                <button
+                  className="btn btn-link header-icon"
+                  data-mdb-toggle="tooltip"
+                  data-mdb-placement="bottom"
+                  title="Helper Videos"
+                  onClick={() => {
+                    toggleHelpMenu()
+                  }}
+                >
+                  <MdOutlineHelp size={16} />
+                </button>
+                <div
+                  className={`ddstyle dropdown-menu ${
+                    showHelpMenu ? 'show' : ''
+                  }`}
+                  style={{ marginLeft: '-120px' }}
+                >
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      toggleHelpMenu()
+                      navigateToPage('HelperVideos')
+                    }}
+                  >
+                    Helper Videos
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      toggleHelpMenu()
+                      navigateToPage('ContactUs')
+                    }}
+                  >
+                    Contact us
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      toggleHelpMenu()
+                      navigateToPage('ReportBug')
+                    }}
+                  >
+                    Report a bug
+                  </button>
+                </div>
+              </div>
 
               {/* Calendar Link */}
               <button
@@ -179,15 +223,15 @@ export default function Header() {
                 </button>
                 <div
                   className={`ddstyle dropdown-menu ${
-                    profileOpen ? "show" : ""
+                    profileOpen ? 'show' : ''
                   }`}
-                  style={{ marginLeft: "-120px" }}
+                  style={{ marginLeft: '-120px' }}
                 >
                   <button
                     className="dropdown-item"
                     onClick={() => {
-                      navigateToPage("AccountSettings");
-                      toggleProfileDropdown();
+                      navigateToPage('AccountSettings')
+                      toggleProfileDropdown()
                     }}
                   >
                     Account Settings
@@ -195,8 +239,8 @@ export default function Header() {
                   <button
                     className="dropdown-item"
                     onClick={() => {
-                      navigateToPage("DevicesList");
-                      toggleProfileDropdown();
+                      navigateToPage('DevicesList')
+                      toggleProfileDropdown()
                     }}
                   >
                     My Devices
@@ -204,9 +248,9 @@ export default function Header() {
                   <button
                     className="dropdown-item"
                     onClick={() => {
-                      setMessage();
-                      handleLogOut();
-                      toggleProfileDropdown();
+                      setMessage()
+                      handleLogOut()
+                      toggleProfileDropdown()
                     }}
                   >
                     Logout
@@ -228,5 +272,5 @@ export default function Header() {
         </div>
       </nav>
     </>
-  );
+  )
 }

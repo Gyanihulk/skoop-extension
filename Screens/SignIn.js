@@ -7,11 +7,11 @@ import AuthContext from "../contexts/AuthContext";
 import RemoveSessions from "../components/Auth/RemoveSessions";
 
 const SignIn = () => {
-  const { navigateToPage } = useContext(ScreenContext);
+  const { navigateToPage } = useContext(ScreenContext)
 
   return (
     <div className="sign-in-main container px-4 pt-5">
-      <div className="mb-3 auth-head-content">
+      <div className="auth-head-content">
         <h1>Welcome Back!</h1>
         <p>Sign in with email</p>
       </div>
@@ -19,16 +19,16 @@ const SignIn = () => {
     
         <SignInForm />
       </div>
-      <div className="mt-5">
-        <div className="text-center mb-4 or-with-label">
+      <div className="mt-4">
+        <div className="text-center mb-3 or-with-label">
           <span>or Sign in with</span>
         </div>
         <ContinueWithLinkedInButton />
         <ContinueWithGoogleButton />
         <div className="text-center mt-2 auth-footer-label">
-          New to Skoop?{" "}
+          New to Skoop?{' '}
           <span
-            onClick={() => navigateToPage("SignUp")}
+            onClick={() => navigateToPage('SignUp')}
             className="cursor-pointer orange-label"
           >
             Create account
@@ -36,7 +36,7 @@ const SignIn = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SignIn;
+export default SignIn
