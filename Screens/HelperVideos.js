@@ -48,12 +48,12 @@ const SmallVideoModule = ({ detail, openModal }) => {
           alt={detail.alt}
           onClick={(e) => openModal(detail.videoSrc, e)}
         />
-        <div id="video-play-icon" style={{ width: '18px', height: '18px' }}>
+        <div id="video-play-icon"  style={{ width: '18px', height: '18px' }}>
           <FaPlay color="white" size={6} />
         </div>
       </div>
       <p
-        className="title-para-sm ms-2 mb-0 text-wrap cursor-pointer"
+        className="para-md mt-1 text-wrap cursor-pointer"
         onClick={(e) => openModal(detail.videoSrc, e)}
       >
         {detail.text}
@@ -95,7 +95,7 @@ const HelperVideos = () => {
       videoSrc: "https://play.vidyard.com/UGEUwRVNppReqNcqthBrNh",
       imgSrc: "/screens/helperImages/2.png",
       alt: "This image is related to a video which says about how to record & send video",
-      text: "2.Creating a simple video on linkedIn",
+      text: "2.Create a video on linkedIn",
     },
     {
       videoSrc: "https://play.vidyard.com/Az8t22sqAuJeZytJwGekE4",
