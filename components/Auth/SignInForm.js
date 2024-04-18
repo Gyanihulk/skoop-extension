@@ -34,13 +34,13 @@ const SignInForm = () => {
     if (username !== "" && password !== "") {
       handleSkoopLogin(username, password);
     } else {
-      setIsUsernameEmpty(username.trip() === "");
-      setIsPasswordEmpty(password.trip() === "");
+      setIsUsernameEmpty(username.trim() === "");
+      setIsPasswordEmpty(password.trim() === "");
       console.log("username or password can not be empty!");
     }
   };
 function handleDeleteSessions(){
-  if(username.trip() === "" ||password.trip() === "" ){
+  if(username.trim() === "" ||password.trim() === "" ){
 toast.error("email or password can not be empty!")
   }else{
     deleteMyAllJwtSessions(username, password);

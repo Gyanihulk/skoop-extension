@@ -227,7 +227,7 @@ const MessageComposer = () => {
             const openChatWindow = await handleOpenMessageWindow();
             console.log(openChatWindow);
           } catch (err) {
-            console.log(err);
+            console.error(err);
           }
         }
       }

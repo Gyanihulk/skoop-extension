@@ -641,7 +641,7 @@ export const AuthProvider = ({ children }) => {
 
       if (res.ok) {
         setShowClearSessionDialog(false)
-        toast.success('Please retry login')
+        toast.success('Sessions deleted.Please login now')
         return res
       }
     } catch (err) {
@@ -720,8 +720,8 @@ export const AuthProvider = ({ children }) => {
           version: version,
         }),
       })
-      if (res.ok) {
-        toast.success('Sessions deleted.')
+      if (response.ok) {
+        toast.success('Sessions deleted.Please login now')
         setShowClearSessionDialog(false)
       }
     } catch (err) {

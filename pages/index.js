@@ -16,7 +16,6 @@ import HelperVideos from '../Screens/HelperVideos'
 import SignInWith from '../Screens/SignInWith'
 import SubscriptionScreen from '../Screens/SubscriptionScreen'
 import { useVisitorData } from '@fingerprintjs/fingerprintjs-pro-react'
-import FingerprintIframe from '../components/FingerPrint'
 import DevicesList from '../Screens/DevicesList'
 import { ThankYouScreen } from '../Screens/ThankYou'
 import RecordVideos from '../Screens/RecordVideos'
@@ -93,7 +92,6 @@ export default function Home() {
       {activePage === ' ' && <LoadingScreen />}
       {isAuthenticated & isPro ? (
         <>
-          <FingerprintIframe />
           {activePage === 'Home' && <Homepage />}
           {activePage === 'RecordVideos' && <RecordVideos />}
           {activePage === 'HelperVideos' && <HelperVideos />}
