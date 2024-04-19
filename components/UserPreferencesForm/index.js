@@ -102,6 +102,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
 
     values.timeZone = detectedTimezone
     setMyTimezone(detectedTimezone)
+    setSelectedTimezone(detectedTimezone)
     fetchUserPreferences()
   }, [])
 

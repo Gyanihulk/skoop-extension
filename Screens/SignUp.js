@@ -34,6 +34,7 @@ const SignUp = () => {
   useEffect(() => {
     const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     setMyTimezone(detectedTimezone)
+    setSelectedTimezone(detectedTimezone);
   }, [])
 
   const handleChange = (event) => {

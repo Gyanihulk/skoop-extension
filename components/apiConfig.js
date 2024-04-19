@@ -57,6 +57,8 @@ const API_ENDPOINTS = {
   deleteAllJwtSessions:`${backendUrl}/jwtsession/all`, // delete
   linkedInLogInDeleteSession: `${backendUrl}/linkedInDeleteSession`, //POST
   GoogleLogInDeleteSession: `${backendUrl}/SignInWithGoogleDeleteSession`, //POST
+  createContactUs: `${backendUrl}/contact-us`, //POST
+  createReportBugs: `${backendUrl}/report-bug`, //POST
 };
 
 // with POST or PATCH apis body is sent in JSON

@@ -425,6 +425,40 @@
   border-radius: 8px;
 }
 
+.select-box {
+    border-color: #a9aaabcc !important;
+    font-style: normal !important;
+    color: #a9aaabcc !important;
+    box-sizing: border-box;
+    padding: 9.7px 12px !important;
+    font-weight: 500;
+    font-size: 12px !important;
+    line-height: 15px !important;
+    opacity: .8;
+    border-color: #a9aaabcc !important;
+    font-family: Montserrat, sans-serif !important;
+    border-radius: 4px !important;
+    outline: none;
+    margin-top: 6px !important;
+}
+.select-box:focus-visible {
+    outline: none !important;
+    border-color: #ff8210 !important;
+    box-shadow: none !important; 
+}
+.select-box:focus {
+  outline: none !important;
+  border-color: #ff8210 !important;
+  box-shadow: none !important;
+}
+.select-box.active {
+  color: #2a2b39 !important;
+}
+
+.select-box-option {
+  color: #2a2b39;
+}
+
 .refresh-button {
   font-size: 14px;
   margin-left: 20px;
