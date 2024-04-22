@@ -3,6 +3,7 @@ import AuthContext from "../contexts/AuthContext";
 import ScreenContext from "../contexts/ScreenContext";
 import CustomButton from "../components/Auth/button/CustomButton";
 import RemoveSessions from "../components/Auth/RemoveSessions";
+import API_ENDPOINTS from "../components/apiConfig";
 
 function SignInWith() {
   const { handleSocialLogin, deleteMyAllJwtSessions,showClearSessionDialog ,deleteMyAllJwtSessionsBySocial} = useContext(AuthContext);
@@ -10,6 +11,10 @@ function SignInWith() {
   const { navigateToPage } = useContext(ScreenContext);
   function handleDeleteSessions(){
     deleteMyAllJwtSessionsBySocial(social);
+  }
+  const openNewWindow = (url) => {
+    document.body.style.overflow = 'auto'
+    window.open(url, '_blank')
   }
   return (
     <div className="signin-background-image container-fluid h-100 px-4 d-flex flex-column">
@@ -54,6 +59,23 @@ function SignInWith() {
             {' '}
             Create Account
           </a>
+        </div>
+        <div className="mt-2 cursor-pointer d-flex text-light flex-col auth-footer-label justify-content-center">
+          <div
+            onClick={()=>openNewWindow(
+              API_ENDPOINTS.skoopCalendarUrl + '/privacypolicy'
+            )}
+          >
+            Privacy Policy
+          </div>{' '}
+          &nbsp;|&nbsp;
+          <div
+            onClick={()=>openNewWindow(
+              API_ENDPOINTS.skoopCalendarUrl + '/termsofuse'
+            )}
+          >
+            Terms of Use
+          </div>
         </div>
       </div>
     </div>

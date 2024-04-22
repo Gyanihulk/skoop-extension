@@ -1,4 +1,4 @@
-const backendUrl = "http://localhost:4000"; //https://skoop.sumits.in http://localhost:4000 //
+const backendUrl = "https://skoop.sumits.in"; //https://skoop.sumits.in http://localhost:4000 //https://api.skoopapp.com
 
 const API_ENDPOINTS = {
   backendUrl,
@@ -59,6 +59,7 @@ const API_ENDPOINTS = {
   GoogleLogInDeleteSession: `${backendUrl}/SignInWithGoogleDeleteSession`, //POST
   createContactUs: `${backendUrl}/contact-us`, //POST
   createReportBugs: `${backendUrl}/report-bug`, //POST
+  getVideoDownloadLink:`${backendUrl}/getdownloadLink`
 };
 
 // with POST or PATCH apis body is sent in JSON

@@ -47,7 +47,6 @@ export default function Home() {
       // Get the manifest using the getManifest() method
       const manifest = chrome.runtime.getManifest()
       // Set the version from the manifest file
-      console.log(manifest)
       setVersion(manifest.version)
     }
   }, [])
@@ -56,7 +55,7 @@ export default function Home() {
     ;(async () => {
       const res = await verifyToken()
       const showWelcomePage = localStorage.getItem('welcomePageShown')
-      console.log(newUser)
+
       if (isAuthenticated && newUser && !isPro) {
         navigateToPage('Subscription')
       } else if (isAuthenticated && newUser && isPro) {

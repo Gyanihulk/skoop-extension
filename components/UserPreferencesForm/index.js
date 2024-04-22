@@ -67,7 +67,6 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
       const preferences = await getUserPreferences()
       if (preferences && preferences.length > 0) {
         setIsPreference(true)
-        console.log('preferences inside fetch', preferences)
 
         let startTime = timeToInt(preferences[0].preferred_start_time)
         let endTime = timeToInt(preferences[0].preferred_end_time)

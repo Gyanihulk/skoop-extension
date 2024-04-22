@@ -236,7 +236,7 @@ export default function Header() {
                   >
                     Account Settings
                   </button>
-                  <button
+                  {/* <button
                     className="dropdown-item"
                     onClick={() => {
                       navigateToPage('DevicesList')
@@ -244,7 +244,7 @@ export default function Header() {
                     }}
                   >
                     My Devices
-                  </button>
+                  </button> */}
                   <button
                     className="dropdown-item"
                     onClick={() => {

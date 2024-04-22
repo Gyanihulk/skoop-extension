@@ -1515,7 +1515,7 @@ ul.nav-button li svg path {
   width: 100%;
   max-height: 12rem !important;
   min-height: 11.5rem !important;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 3px;
 }
 
@@ -1610,6 +1610,7 @@ ul.nav-button li svg path {
 .title-video-parent {
   height: auto;
 }
+.helper-header-image{  border: 2px solid #2d68c4;  border-radius: 6px;}
 .title-video {
   min-width: 130px;
   width: 130px;
@@ -1643,17 +1644,20 @@ ul.nav-button li svg path {
   margin: 0;
 }
 
-.para-md {
+.para-small {
   font-family: 'Montserrat';
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
-  line-height: 12px;
-  text-align: center;
+  line-height: 17px;
   letter-spacing: 0.03em;
   color: #2a2b39;
   padding: 0;
-  text-align: center;
+  text-align: left;
+  padding-left: 5px;
+  margin-left: 10px;
+  text-indent: -10px;
+
 }
 
 .para-sm {
@@ -1957,7 +1961,7 @@ img.icon-style-normal {
   height: 2rem;
 }
 .video-card-footer-button {
-  padding: 1px 5.25px 1px 5.25px !important;
+  padding: 1px 4px 1px 5.25px !important;
   border-right: 2px solid #a9aaab !important;
   margin-bottom: 8px;
 }

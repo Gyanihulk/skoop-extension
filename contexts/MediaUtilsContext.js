@@ -25,7 +25,25 @@ export const MediaUtilsProvider = ({ children }) => {
       return null;
     }
   };
-
+  const getDownloadLink = async (id) => {
+    try {
+      var response = await fetch(API_ENDPOINTS.getVideoDownloadLink + "/"+id, {
+        method: "GET",
+        headers: {
+          authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("accessToken")
+          )}`,
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(response);
+      response = await response.json();
+      return response.downloadLink;
+    } catch (err) {
+      console.log("error while fetching thumbnails", err);
+      return null;
+    }
+  };
   const uploadVideo = async (
     file,
     videoTitle,
@@ -133,6 +151,7 @@ export const MediaUtilsProvider = ({ children }) => {
         deleteVideo,
         uploadVideo,
         updateBookingLinkOfVideo,
+        getDownloadLink
       }}
     >
       {children}

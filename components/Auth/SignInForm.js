@@ -36,7 +36,6 @@ const SignInForm = () => {
     } else {
       setIsUsernameEmpty(username.trim() === "");
       setIsPasswordEmpty(password.trim() === "");
-      console.log("username or password can not be empty!");
     }
   };
 function handleDeleteSessions(){

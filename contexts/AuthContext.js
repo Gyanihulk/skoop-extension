@@ -305,7 +305,6 @@ export const AuthProvider = ({ children }) => {
   }
   const verifyToken = async () => {
     try {
-      console.log(version)
       const res = await fetch(API_ENDPOINTS.tokenStatus + '/' + version, {
         method: 'GET',
         headers: {

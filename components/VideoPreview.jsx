@@ -37,7 +37,6 @@ export const VideoPreview = () => {
     }
   }, [latestVideo])
   useEffect(() => {
-    console.log(latestBlob, 'from video preview ')
   }, [latestBlob, thumbnailImage, , showRenamePopup, showVideoOptionsDialog])
   const UpdateThumbnail = async (event) => {
     const file = event.target.files[0]
@@ -173,7 +172,6 @@ export const VideoPreview = () => {
   }
 
   const handleIconClick = (eventKey) => {
-    console.log(eventKey)
     if (eventKey == 'Copy Link') {
       handleCopyToClipboard(
         'https://skoop.hubs.vidyard.com/watch/' +

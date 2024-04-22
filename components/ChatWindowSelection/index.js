@@ -75,14 +75,12 @@ const ChatWindowSelection = () => {
                     scrapedInfo = scrapedInfo.map((item) => {
                       return item.replace(/[^\x00-\x7F]/g, "");
                     });
-                    console.log(scrapedInfo);
                     if (scrapedInfo[0] !== "") {
                       combinedArray.push({
                         index: combinedArray.length,
                         name: scrapedInfo[0],
                         dataset: { type: "profileCheckbox" },
                       });
-                      console.log(combinedArray, "from chrome");
                     }
                   }
                   setInitialItems(combinedArray);

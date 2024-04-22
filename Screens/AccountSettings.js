@@ -11,6 +11,7 @@ import BackButton from '../components/BackButton'
 import Collapse from 'react-bootstrap/Collapse'
 import PasswordTooltip from '../components/PasswordTooltip'
 import GlobalStatesContext from '../contexts/GlobalStates'
+import Link from 'next/link'
 
 const AccountProfile = ({ userData }) => {
   // State for the profile image URL
@@ -624,6 +625,10 @@ function AccountSettings(props) {
   const { isTimezoneScreen, setIsTimezoneScreen } =
     useContext(GlobalStatesContext)
 
+  const openNewWindow = (url) => {
+    document.body.style.overflow = 'auto'
+    window.open(url, '_blank')
+  }
   return (
     <>
       <div id="account-settings">
@@ -651,6 +656,25 @@ function AccountSettings(props) {
             )}
             <div className="mt-3">
               <UserPreferencesForm />
+            </div>
+            <div className="fixed-bottom mt-2 cursor-pointer d-flex flex-col auth-footer-label justify-content-center">
+              <div
+                onClick={() =>
+                  openNewWindow(
+                    API_ENDPOINTS.skoopCalendarUrl + '/privacypolicy'
+                  )
+                }
+              >
+                Privacy Policy
+              </div>{' '}
+              &nbsp;|&nbsp;
+              <div
+                onClick={() =>
+                  openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/termsofuse')
+                }
+              >
+                Terms of Use
+              </div>
             </div>
           </div>
         </div>

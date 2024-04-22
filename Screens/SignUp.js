@@ -64,12 +64,6 @@ const SignUp = () => {
       password.trim() !== '' &&
       selectedTimezone !== ''
     ) {
-      console.log('form submitting: ', {
-        fullname,
-        email,
-        password,
-        selectedTimezone,
-      })
       handleRegister(fullname, email, password, selectedTimezone)
     } else {
       setIsFullnameEmpty(fullname.trim() === '')

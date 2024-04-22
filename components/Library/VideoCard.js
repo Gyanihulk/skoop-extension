@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { IoIosLink } from 'react-icons/io'
 import { FiTrash2 } from 'react-icons/fi'
 import { FaStar, FaRegStar } from 'react-icons/fa'
-import { MdMoveUp } from 'react-icons/md'
+import { MdDownload, MdMoveUp } from 'react-icons/md'
 import { FaPencilAlt } from 'react-icons/fa'
 import { toast } from 'react-hot-toast'
 import MoveVideoPopup from './MoveVideoPopup'
@@ -11,6 +11,7 @@ import API_ENDPOINTS from '../apiConfig'
 import VideoPreviewPopup from './VideoPreviewPopup'
 import { sendMessageToBackgroundScript } from '../../lib/sendMessageToBackground'
 import DeleteModal from '../DeleteModal'
+import MediaUtilsContext from '../../contexts/MediaUtilsContext'
 
 const VideoCard = ({
   video,
@@ -25,7 +26,7 @@ const VideoCard = ({
   const [showPreviewPopup, setShowPreviewPopup] = useState(false)
   const [isDeleteModal, setIsDeleteModal] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
-
+const {getDownloadLink}=useContext(MediaUtilsContext)
   const handleLoad = () => {
     console.log('loading complete')
     setIsLoaded(true)
@@ -105,8 +106,8 @@ const VideoCard = ({
     if (event) {
       event.stopPropagation()
     }
-    const height = 322 * 1.5
-    const width = 574 * 1.5
+    const height = video.height * 1.5
+    const width = video.width * 1.5
 
     sendMessageToBackgroundScript({
       action: 'startPlayingVideo',
@@ -115,7 +116,27 @@ const VideoCard = ({
       src,
     })
   }
+  async function downloadVideo() {
+   
+    const parts = video.link.split('/');
 
+    const id = parts.pop();
+    const url=await getDownloadLink(id)
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.target = '_blank'
+    anchor.download = 'video.mp4'
+  
+    // Append anchor to the body
+    document.body.appendChild(anchor);
+  
+    // Trigger the download by simulating a click
+    anchor.click();
+  
+    // Remove the anchor from the body
+    document.body.removeChild(anchor);
+  }
+console.log(video)
   return (
     <div className="col-6 my-1" key={video.id}>
       <div
@@ -150,7 +171,8 @@ const VideoCard = ({
               className="btn btn-link btn-sm video-card-footer-button"
               onClick={() => {
                 handleLinkInsertion(video.link, video.id)
-                toast.success('Link inserted')
+                navigator.clipboard.writeText(video.link)
+                toast.success('Link copied and inserted.');
               }}
             >
               <IoIosLink size={10} />
@@ -185,6 +207,13 @@ const VideoCard = ({
               onClick={handleMoveClick}
             >
               <MdMoveUp size={10} />
+            </button>
+            <button
+              title="Move video to another folder"
+              className="btn btn-link btn-sm video-card-footer-button"
+              onClick={downloadVideo}
+            >
+              <MdDownload size={10} />
             </button>
             <button
               title="Delete video"
