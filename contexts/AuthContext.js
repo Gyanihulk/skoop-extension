@@ -127,8 +127,10 @@ export const AuthProvider = ({ children }) => {
 
   const handleSocialLogin = async (type) => {
     try {
+      console.log(
+        chrome.identity.getRedirectURL(),"test")
       if (type === 2) {
-        const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=148000187265-8v7ggl7msakbtt5qbk1vddvtkjegkpf4.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
+        const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=232147382816-a6grr3l3366tp6kpaoran7fcctdmddij.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
           chrome.identity.getRedirectURL()
         )}&scope=profile%20email%20openid%20&access_type=offline`
         chrome.identity.launchWebAuthFlow(
@@ -185,7 +187,7 @@ export const AuthProvider = ({ children }) => {
   const calendarSync = async (type) => {
     navigateToPage(' ')
     if (type === 'google') {
-      const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=148000187265-8v7ggl7msakbtt5qbk1vddvtkjegkpf4.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
+      const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=232147382816-a6grr3l3366tp6kpaoran7fcctdmddij.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
         chrome.identity.getRedirectURL()
       )}&scope=https://www.googleapis.com/auth/calendar&access_type=offline&prompt=consent`
       chrome.identity.launchWebAuthFlow(
@@ -340,7 +342,7 @@ export const AuthProvider = ({ children }) => {
           },
         }
       )
-      if (responseCode.ok) return true
+      if (responseCode.ok) {toast.success('Otp for password reset sent.');return true}
       else return false
     } catch (err) {
       console.log('some error occured in getting the otp for password reset')
@@ -361,9 +363,8 @@ export const AuthProvider = ({ children }) => {
           newPassword: newPassword,
         }),
       })
-      console.log(`response status: ${responseCode.ok}`)
-      console.log(`response code: ${responseCode.status}`)
-      if (responseCode.ok) return true
+
+      if (responseCode.ok) {toast.success('Password reset successfully.');return true}
       else return false
     } catch (err) {
       console.log('could not make the call to reset password', err)

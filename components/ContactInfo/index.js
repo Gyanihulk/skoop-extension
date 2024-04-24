@@ -50,7 +50,7 @@ const ContactInfoCard = () => {
       });
 
       if (!response.ok) throw Error("");
-      toast.success("saved successfully", {
+      toast.success("Profile details saved.", {
         id: toastId,
       });
     } catch (err) {

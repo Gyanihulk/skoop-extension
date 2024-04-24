@@ -1,6 +1,6 @@
 {
   "name": "skoop-extension",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "skoop extension for video chatting ",
   "main": "index.js",
   "scripts": {

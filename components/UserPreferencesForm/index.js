@@ -207,7 +207,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
             },
           })
           const data = await res.json()
-          if (res.ok) {
+          if (res.ok) {  handleFormSubmit()
             toast.success('Preferences saved successfully')
             fetchUserPreferences()
           } else {
