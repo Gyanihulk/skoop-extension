@@ -76,7 +76,7 @@ const Scrape = async(commandType) => {
               }
             }
             else{
-              console.log("the target tab is not accessible");
+              // console.log("the target tab is not accessible");
               resolve(["","","","","",""]);
             }
         });

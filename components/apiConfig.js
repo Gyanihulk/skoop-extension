@@ -1,8 +1,8 @@
-const backendUrl = "https://skoop.sumits.in"; //https://skoop.sumits.in http://localhost:4000 //https://api.skoopapp.com
+const backendUrl = "https://api.skoopapp.com"; //https://skoop.sumits.in http://localhost:4000 //https://api.skoopapp.com
 
 const API_ENDPOINTS = {
   backendUrl,
-  skoopCalendarUrl: "https://skoopcrm.sumits.in",
+  skoopCalendarUrl: "https://crm.skoopapp.com", //https://skoopcrm.sumits.in
   changePassword: `${backendUrl}/changePassword`, // PATCH
   profileDetails: `${backendUrl}/userDetails`, // GET
   updateUserDetails: `${backendUrl}/updateUserDetails`, // PATCH

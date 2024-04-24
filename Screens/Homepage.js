@@ -70,7 +70,7 @@ const Homepage = (props) => {
               setIsProfilePage(true);
             }
           } else {
-            console.log("the target tab is not accessible");
+            // console.log("the target tab is not accessible");
           }
         });
       } catch (err) {

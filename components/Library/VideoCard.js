@@ -9,9 +9,11 @@ import MoveVideoPopup from './MoveVideoPopup'
 import RenameVideoPopup from './RenameVideoPopup'
 import API_ENDPOINTS from '../apiConfig'
 import VideoPreviewPopup from './VideoPreviewPopup'
-import { sendMessageToBackgroundScript } from '../../lib/sendMessageToBackground'
 import DeleteModal from '../DeleteModal'
 import MediaUtilsContext from '../../contexts/MediaUtilsContext'
+import { handleCopyToClipboard } from '../../utils'
+import GlobalStatesContext from '../../contexts/GlobalStates'
+import { sendMessageToBackgroundScript } from '../../lib/sendMessageToBackground'
 
 const VideoCard = ({
   video,
@@ -26,7 +28,8 @@ const VideoCard = ({
   const [showPreviewPopup, setShowPreviewPopup] = useState(false)
   const [isDeleteModal, setIsDeleteModal] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
-const {getDownloadLink}=useContext(MediaUtilsContext)
+  const { isLinkedin } = useContext(GlobalStatesContext)
+  const { getDownloadLink } = useContext(MediaUtilsContext)
   const handleLoad = () => {
     console.log('loading complete')
     setIsLoaded(true)
@@ -117,26 +120,25 @@ const {getDownloadLink}=useContext(MediaUtilsContext)
     })
   }
   async function downloadVideo() {
-   
-    const parts = video.link.split('/');
+    const parts = video.link.split('/')
 
-    const id = parts.pop();
-    const url=await getDownloadLink(id)
-    const anchor = document.createElement('a');
-    anchor.href = url;
+    const id = parts.pop()
+    const url = await getDownloadLink(id)
+    const anchor = document.createElement('a')
+    anchor.href = url
     anchor.target = '_blank'
     anchor.download = 'video.mp4'
-  
+
     // Append anchor to the body
-    document.body.appendChild(anchor);
-  
+    document.body.appendChild(anchor)
+
     // Trigger the download by simulating a click
-    anchor.click();
-  
+    anchor.click()
+
     // Remove the anchor from the body
-    document.body.removeChild(anchor);
+    document.body.removeChild(anchor)
   }
-console.log(video)
+ 
   return (
     <div className="col-6 my-1" key={video.id}>
       <div
@@ -170,8 +172,7 @@ console.log(video)
               title="Insert link to mail body"
               className="btn btn-link btn-sm video-card-footer-button"
               onClick={() => {
-                handleLinkInsertion(video.link, video.id)
-                navigator.clipboard.writeText(video.link)
+                handleLinkInsertion(video.link, video.id);
                 toast.success('Link copied and inserted.');
               }}
             >

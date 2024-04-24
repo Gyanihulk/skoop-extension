@@ -43,7 +43,6 @@ export const AuthProvider = ({ children }) => {
           'Content-type': 'application/json; charset=UTF-8',
         },
       })
-      console.log(response.status == 401)
       if (response.ok) {
         toast.success('Log In Successfull', {
           id: toastId,
@@ -313,7 +312,6 @@ export const AuthProvider = ({ children }) => {
           )}`,
         },
       })
-      console.log(res, 'test')
       if (res.ok) {
         const response = await res.json()
         if (response?.isPro) {

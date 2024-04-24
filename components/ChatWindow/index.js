@@ -81,7 +81,7 @@ const ChatComponent = (props) => {
             }
           }
           else{
-            console.log("the target tab is not accessible");
+            // console.log("the target tab is not accessible");
           }
       });
     }catch(err){

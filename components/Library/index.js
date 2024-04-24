@@ -9,6 +9,7 @@ import Tabs from "./Tabs.js";
 import VideoCard from "./VideoCard.js";
 import VideoContainer from "./VideoContainer.jsx";
 import { IoMdClose } from "react-icons/io";
+import { handleCopyToClipboard } from "../../utils/index.js";
 
 const Library = (props) => {
   const [links, setLinks] = useState([]);
@@ -186,12 +187,7 @@ const Library = (props) => {
     const url = `https://skoop.hubs.vidyard.com/watch/${facade_player_uuid}`;
 
     if (!isLinkedin) {
-      if (getThumbnail) {
-        console.log("get thumbnail is defined");
-      } else console.log("getthumbnail not defined");
-
       const thumbnail_link = await getThumbnail(id);
-      console.log("the thumbnail link provided");
       var ret;
       if (thumbnail_link != undefined && thumbnail_link != null) {
         ret = `<a href='${url}'>><img src='${thumbnail_link}' className="inline-block-width"/><br></a`;
@@ -202,6 +198,7 @@ const Library = (props) => {
     } else {
       props.appendToBody(url);
     }
+    handleCopyToClipboard(url)
   };
 
   const toggleFavourite = async (videoId) => {

@@ -108,7 +108,7 @@ const info = [
     text: '7.Manage Your Videos and Media',
   },
   {
-    videoSrc: 'https://play.vidyard.com/2M5LM4R2B3Zx31sJPBZBHB',
+    videoSrc: 'https://play.vidyard.com/7xAghki1sGdLDyNWVbE4sR',
     imgSrc: '/screens/helperImages/8.png',
     alt: 'This image is related to a video which says about how use skoop calendar',
     text: '8.Using Skoops Booking calendar',

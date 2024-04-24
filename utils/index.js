@@ -46,7 +46,7 @@ export const insertIntoLinkedInMessageWindow = async (
           console.log("some error occured in executing script", err);
         }
       } else {
-        console.log("the target tab is not accessible");
+        // console.log("the target tab is not accessible");
       }
     });
     return true;
@@ -139,7 +139,7 @@ export const insertHtmlAtPositionInMail = (textInput, elementId) => {
           reject(err);
         }
       } else {
-        console.log("the target tab is not accessible");
+        // console.log("the target tab is not accessible");
         reject(new Error("The target tab is not accessible"));
       }
     });
@@ -179,7 +179,7 @@ export const handleCopyToClipboard = (dataToCopy) => {
           console.log("some error occured in executing script", err);
         }
       } else {
-        console.log("the target tab is not accessible");
+        // console.log("the target tab is not accessible");
       }
     });
     return true;
