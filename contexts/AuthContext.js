@@ -127,8 +127,6 @@ export const AuthProvider = ({ children }) => {
 
   const handleSocialLogin = async (type) => {
     try {
-      console.log(
-        chrome.identity.getRedirectURL(),"test")
       if (type === 2) {
         const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=232147382816-a6grr3l3366tp6kpaoran7fcctdmddij.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
           chrome.identity.getRedirectURL()

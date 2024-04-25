@@ -12,10 +12,9 @@
   },
   "permissions": [
     "identity",         
-    "tabs" , "scripting",
-    "activeTab",
+    "tabs","scripting",
     "storage",
-    "clipboardWrite"
+    "clipboardWrite","*://mail.google.com/*","*://www.linkedin.com/*"
   ],
   "web_accessible_resources": [
     {
@@ -30,16 +29,16 @@
       "css": ["styles.css"]
     },
     {
-      "matches": ["*://skoopcrm.sumits.in/*","*://localhost/*"],
+      "matches": ["*://skoopcrm.sumits.in/*","*://crm.skoopapp.com/*"],
       "js": ["contentScriptCrm.js"]
     }
   ],
   "oauth2": {
-    "client_id": "148000187265-6rut37g649kj1tehe5o3mkpitdfhfk71.apps.googleusercontent.com",
-    "scopes": ["openid", "profile", "email","https://www.googleapis.com/auth/contacts.readonly"]
+    "client_id":"232147382816-a6grr3l3366tp6kpaoran7fcctdmddij.apps.googleusercontent.com",
+    "scopes": ["openid", "profile", "email","https://www.googleapis.com/auth/calendar"]
   },
-  "host_permissions": ["<all_urls>", "https://mail.google.com/"],
-  "action": {
+  "host_permissions": ["*://mail.google.com/*","*://www.linkedin.com/*"],
+    "action": {
     "default_popup": "index.html"
   },
   "background": {
@@ -49,8 +48,7 @@
     "extension_pages": "script-src 'self'; object-src 'self'; media-src *"
   },
   "externally_connectable": {
-  
-    "matches": ["https://skoopcrm.sumits.in/*"]
+    "matches": ["https://skoopcrm.sumits.in/*","https://crm.skoopapp.com/*"]
   },
   "key":"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApLS9BVBfb+UYbn3JeylNlZa5IpBbD9IUCd3k85A5KBEHDqSQ7Fo2jGzBJs8AI3ywzRECDuy4mA8Soj2YvvNbcRCBcl9vut3eWAHNs/3JK2Ys8qntDS7XycEN94MuT6I003L80HZobcb2oCXMYcL6c3c5NQUPYbV309m2QLR7a5ArYtwYU4WW6DGH8zDFZTvyrXtDSgTl1Wa9jmok0sTbsv33agZeiRqqbOK1BQ7qFMWGpKezzwkX+QAbPbiG6Of3G3/+IEEiwmpt6OW+NqsNtOBk8zAKbhLiMYybJEUgp4Rbh/R4eVg+BuD2Y9vC5lePGf1gQMtavNy4nYUFMKTjCwIDAQAB"
 }

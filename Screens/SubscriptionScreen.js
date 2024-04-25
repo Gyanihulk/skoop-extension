@@ -175,9 +175,6 @@ const SubscriptionScreen = () => {
             <p className='small-bold-text'>Credit Card/Debit Card  information is required.</p>
             {/* <br/> */}
             <p className='small-bold-text'><LockIcon/>Guaranteed safe & secure checkout <img src="/images/stripe.png"/></p>
-            <div className="subscription-footer">
-                <a href="#">Privacy policy</a> <a href="#">Terms of use</a>
-            </div>
         </div>
     );
 };
