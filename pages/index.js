@@ -21,6 +21,7 @@ import { ThankYouScreen } from '../Screens/ThankYou'
 import RecordVideos from '../Screens/RecordVideos'
 import ContactUs from '../Screens/ContactUs'
 import ReportBug from '../Screens/ReportBug'
+import { PaymentScreen } from '../Screens/PaymentScreen'
 export default function Home() {
   const {
     verifyToken,
@@ -84,9 +85,7 @@ export default function Home() {
         'SignIn',
         'SignUp',
         ' ',
-        'CalendarSync',
         'ForgotPassword',
-        'Subscription',
       ].includes(activePage) && <Header />}
       {activePage === ' ' && <LoadingScreen />}
       {isAuthenticated & isPro ? (
@@ -105,7 +104,8 @@ export default function Home() {
           {activePage == 'ThankYouScreen' && <ThankYouScreen />}
         </>
       ) : isAuthenticated ? (
-        <>{activePage === 'Subscription' && <SubscriptionScreen />}</>
+        <>{activePage === 'Subscription' && <SubscriptionScreen />}
+        {activePage == 'PaymentScreen' && <PaymentScreen />}</>
       ) : (
         <>
           {activePage === 'SignIn' && <SignIn />}

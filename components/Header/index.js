@@ -199,17 +199,18 @@ export default function Header() {
                   </button>
                 </div>
               </div>
+              {!['Subscription','PaymentScreen'].includes(activePage) && (
+                <button
+                  className="btn btn-link header-icon"
+                  onClick={openCalendarWindow}
+                  data-mdb-toggle="tooltip"
+                  data-mdb-placement="bottom"
+                  title="Go to your Meeting Calendar Schedular"
+                >
+                  <FaRegCalendar size={14} />
+                </button>
+              )}
 
-              {/* Calendar Link */}
-              <button
-                className="btn btn-link header-icon"
-                onClick={openCalendarWindow}
-                data-mdb-toggle="tooltip"
-                data-mdb-placement="bottom"
-                title="Go to your Meeting Calendar Schedular"
-              >
-                <FaRegCalendar size={14} />
-              </button>
               {/* Profile Dropdown */}
               <div className={`nav-item dropdown custom`}>
                 <button
@@ -227,15 +228,18 @@ export default function Header() {
                   }`}
                   style={{ marginLeft: '-120px' }}
                 >
-                  <button
-                    className="dropdown-item"
-                    onClick={() => {
-                      navigateToPage('AccountSettings')
-                      toggleProfileDropdown()
-                    }}
-                  >
-                    Account Settings
-                  </button>
+                  {!['Subscription','PaymentScreen'].includes(activePage) && (
+                    <button
+                      className="dropdown-item"
+                      onClick={() => {
+                        navigateToPage('AccountSettings')
+                        toggleProfileDropdown()
+                      }}
+                    >
+                      Account Settings
+                    </button>
+                  )}
+
                   {/* <button
                     className="dropdown-item"
                     onClick={() => {

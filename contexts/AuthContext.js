@@ -261,7 +261,6 @@ export const AuthProvider = ({ children }) => {
         )
         return
       }
-
       const toastId = toast.loading('Signing Up ...')
       const res = await fetch(API_ENDPOINTS.signUp, {
         method: 'POST',
@@ -278,21 +277,10 @@ export const AuthProvider = ({ children }) => {
       })
       if (res.ok) {
         const resjson = await res.json()
-        localStorage.setItem('accessToken', JSON.stringify(resjson.accessToken))
-        localStorage.setItem(
-          'skoopUsername',
-          JSON.stringify(resjson.skoopUsername)
-        )
-        sendMessageToBackgroundScript({
-          action: 'storeToken',
-          token: resjson.accessToken,
-        })
-        toast.success('Sign up was complete', {
+        toast.success('Success! A verification email has been sent to your inbox. Please confirm your email address to complete the login process.', {
           id: toastId,
         })
-        setNewUser(true)
-        setIsAuthenticated(true)
-        navigateToPage('CalendarSync')
+        navigateToPage('SignInIntro')
       } else
         toast.error('Email already exists ', {
           id: toastId,
@@ -312,18 +300,22 @@ export const AuthProvider = ({ children }) => {
           )}`,
         },
       })
+      const response = await res.json()
       if (res.ok) {
-        const response = await res.json()
         if (response?.isPro) {
           setIsPro(response.isPro)
         }
         setIsAuthenticated(true)
       } else {
         setIsAuthenticated(false)
+        if(response.error){
+          toast.error(response.error)
+        }
       }
       setLoadingAuthState(false)
       return res
     } catch (err) {
+      console.log(err,"verifytoken")
       return { ok: false }
     }
   }
@@ -418,7 +410,7 @@ export const AuthProvider = ({ children }) => {
   }
   const createSubscription = async (subscriptionData) => {
     const toastId = toast.loading('Processing Subscription...')
-    navigateToPage(' ')
+    navigateToPage('PaymentScreen')
     try {
       let res = await fetch(API_ENDPOINTS.createSubscription, {
         method: 'POST',
@@ -435,14 +427,26 @@ export const AuthProvider = ({ children }) => {
       if (res.ok) {
         chrome.identity.launchWebAuthFlow(
           { url: response.url, interactive: true },
-          function (redirectUrl) {
+          async function (redirectUrl) {
             if (chrome.runtime.lastError || !redirectUrl) {
               // Handle errors or user cancellation here
               console.error(
                 chrome.runtime.lastError
-                  ? chrome.runtime.lastError.message
+                  ? chrome.runtime.lastError.message + "test"
                   : 'No redirect URL'
               )
+              let res = await fetch(API_ENDPOINTS.createSubscription, {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json; charset=UTF-8',
+                  authorization: `Bearer ${JSON.parse(
+                    localStorage.getItem('accessToken')
+                  )}`,
+                },
+              })
+              localStorage.setItem('accessToken', JSON.stringify('none'))
+              setIsAuthenticated(false)
+              navigateToPage('SignInIntro')
               return
             }
             const sessionId = new URL(redirectUrl).searchParams.get(
@@ -450,10 +454,12 @@ export const AuthProvider = ({ children }) => {
             )
             if (sessionId) {
               setIsPro(true)
+              navigateToPage('Home')
             }
+           
           }
         )
-        navigateToPage('Home')
+        
         toast.success('Subscription Created Successfully', {
           id: toastId,
         })
@@ -647,7 +653,7 @@ export const AuthProvider = ({ children }) => {
   const deleteMyAllJwtSessionsBySocial = async (type) => {
     try {
       if (type === 2) {
-        const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=148000187265-8v7ggl7msakbtt5qbk1vddvtkjegkpf4.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
+        const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=232147382816-a6grr3l3366tp6kpaoran7fcctdmddij.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
           chrome.identity.getRedirectURL()
         )}&scope=profile%20email%20openid%20&access_type=offline`
         chrome.identity.launchWebAuthFlow(

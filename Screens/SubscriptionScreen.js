@@ -22,11 +22,9 @@ const SubscriptionScreen = () => {
             start_date: startDate,
             plan_type: subscriptionType,
         };
-        console.log(couponCode >= 3, couponValid);
         if (couponCode.length >= 3 && couponValid) {
             subsData.coupon = couponCode;
         }
-        console.log(subsData);
         const session = await createSubscription(subsData);
         setSessionUrl(session.url);
     };
@@ -150,7 +148,7 @@ const SubscriptionScreen = () => {
                         onChange={handleInputChange}
                     />
                     <span
-                        class="input-group-text"
+                        class="input-group-text cursor-pointer"
                         id="basic-addon2"
                         onClick={handleCouponValidation}
                     >
@@ -159,7 +157,7 @@ const SubscriptionScreen = () => {
                     </span>
                 </div>
                 {couponInfo && couponValid && (
-                    <span className="badge rounded-pill bg-warning text-dark">Coupon Applied.</span>
+                    <span className="badge rounded-pill bg-warning text-dark ">Coupon Applied.</span>
                 )}
             </div>
 

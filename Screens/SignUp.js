@@ -34,7 +34,7 @@ const SignUp = () => {
   useEffect(() => {
     const detectedTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     setMyTimezone(detectedTimezone)
-    setSelectedTimezone(detectedTimezone);
+    setSelectedTimezone(detectedTimezone)
   }, [])
 
   const handleChange = (event) => {
@@ -208,8 +208,25 @@ const SignUp = () => {
           <div>
             <p className="mt-2 sign-up-privacy-policy">
               By clicking submit you are agreeing to{' '}
-              <span className="cursor-pointer">privacy policies</span> &{' '}
-              <span className="cursor-pointer">Terms of use</span>
+              <span
+                className="cursor-pointer"
+                onClick={() =>
+                  openNewWindow(
+                    API_ENDPOINTS.skoopCalendarUrl + '/privacypolicy'
+                  )
+                }
+              >
+                Privacy policies
+              </span>{' '}
+              &{' '}
+              <span
+                className="cursor-pointer"
+                onClick={() =>
+                  openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/termsofuse')
+                }
+              >
+                Terms of use
+              </span>
             </p>
           </div>
           <div className="mt-4">
