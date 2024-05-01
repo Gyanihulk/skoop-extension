@@ -4,15 +4,15 @@ import AuthContext from '../../contexts/AuthContext'
 const RemoveSessions = ({onDelete}) => {
   
   return (
-    <div class="alert alert-danger .font-8 text-center p-2">
-      You have reached the limit of concurrent sessions.
-      <button
-        type="button"
-        class="btn btn-success btn-sm"
+    <div class="alert alert-danger .font-8 text-center p-2 ">
+      Session limit reached. Max 2 sessions allowed. {" "}
+      <a
+        class="cursor-pointer alert-link footer-font text-decoration-underline"
         onClick={() => onDelete()}
       >
-        Log Out Everywhere
-      </button>
+       Logout all sessions 
+      </a>
+      {" "} and log in again.
     </div>
   )
 }

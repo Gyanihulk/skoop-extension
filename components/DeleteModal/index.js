@@ -17,7 +17,7 @@ const DeleteModal = ({ middleContent, show, onHide, onDelete }) => {
       <div className="modal-overlay  modal-dialog-centered" role="document">
         <div className="modal-content mx-2">
           <div className="modal-header d-flex flex-row justify-content-between px-3 pt-3 pb-2 border-0">
-            <h5 className="modal-title">Are you sure you want to detele?</h5>
+            <h5 className="modal-title">Are you sure you want to delete?</h5>
             <button
               type="button"
               className="custom-close-button"

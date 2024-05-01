@@ -14,9 +14,11 @@ import { IoSearchOutline } from 'react-icons/io5'
 import { IoCheckmark } from 'react-icons/io5'
 import { timezones } from '../lib/timezones'
 import PasswordTooltip from '../components/PasswordTooltip'
+import API_ENDPOINTS from '../components/apiConfig'
+import RemoveSessions from '../components/Auth/RemoveSessions'
 
 const SignUp = () => {
-  const { handleRegister, validatePassword } = useContext(AuthContext)
+  const { handleRegister, validatePassword,showClearSessionDialog ,deleteMyAllJwtSessionsBySocial,social,setSocial } = useContext(AuthContext)
   const { navigateToPage } = useContext(ScreenContext)
   const [fullname, setFullname] = useState('')
   const [email, setEmail] = useState('')
@@ -110,7 +112,14 @@ const SignUp = () => {
     )
     setFilteredTimezones(filtered)
   }
-
+  const openNewWindow = (url) => {
+    document.body.style.overflow = 'auto'
+    window.open(url, '_blank')
+  }
+ 
+  function handleDeleteSessions(){
+    deleteMyAllJwtSessionsBySocial(social);
+  }
   return (
     <div>
       {!isTimezoneScreen ? (
@@ -209,7 +218,7 @@ const SignUp = () => {
             <p className="mt-2 sign-up-privacy-policy">
               By clicking submit you are agreeing to{' '}
               <span
-                className="cursor-pointer"
+                className="cursor-pointer fw-bold footer-font"
                 onClick={() =>
                   openNewWindow(
                     API_ENDPOINTS.skoopCalendarUrl + '/privacypolicy'
@@ -220,7 +229,7 @@ const SignUp = () => {
               </span>{' '}
               &{' '}
               <span
-                className="cursor-pointer"
+                className="cursor-pointer fw-bold footer-font"
                 onClick={() =>
                   openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/termsofuse')
                 }
@@ -233,17 +242,28 @@ const SignUp = () => {
             <div className="text-center mb-3 or-with-label">
               <span>or Sign up with</span>
             </div>
-            <ContinueWithLinkedInButton />
-            <ContinueWithGoogleButton />
+            {showClearSessionDialog && social!=null && <RemoveSessions onDelete={handleDeleteSessions}/>}
+            <ContinueWithLinkedInButton setSocial={setSocial}/>
+            <ContinueWithGoogleButton setSocial={setSocial}/>
             <div className="text-center mt-2 auth-footer-label">
               Already have an account?{' '}
               <span
                 onClick={() => navigateToPage('SignIn')}
-                className="cursor-pointer orange-label"
+                className="cursor-pointer fw-bold footer-font"
               >
                 Login
               </span>
             </div>
+            <div className="text-center mt-2 auth-footer-label">
+          <span
+            onClick={()=>openNewWindow(
+              API_ENDPOINTS.skoopCalendarUrl + '/affiliate/sign-up'
+            )}
+            className="cursor-pointer fw-bold footer-font"
+          >
+            Become an affiliate.
+          </span>
+        </div>
           </div>
         </div>
       ) : (

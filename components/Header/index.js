@@ -17,7 +17,7 @@ import { TbArrowsDiagonalMinimize2 } from 'react-icons/tb'
 import { TbArrowsDiagonal } from 'react-icons/tb'
 
 export default function Header() {
-  const { isAuthenticated, handleLogOut } = useContext(AuthContext)
+  const { isAuthenticated, handleLogOut ,isPro} = useContext(AuthContext)
   const { navigateToPage, activePage } = useContext(ScreenContext)
   const { setScraperPage, scraperPage, isProfilePage, expand, setExpand } =
     useContext(GlobalStatesContext)
@@ -116,7 +116,10 @@ export default function Header() {
     document.body.style.overflow = 'auto'
     window.open(API_ENDPOINTS.skoopCalendarUrl, '_blank')
   }
-
+  const openNewWindow = (url) => {
+    document.body.style.overflow = 'auto'
+    window.open(url, '_blank')
+  }
   return (
     <>
       <nav className="navbar pe-2 py-2 d-flex align-items-center" id="Header">
@@ -197,6 +200,14 @@ export default function Header() {
                   >
                     Report a bug
                   </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={()=>openNewWindow(
+                      API_ENDPOINTS.skoopCalendarUrl + '/affiliate/sign-up'
+                    )}
+                  >
+                    Become an affiliate.
+                  </button>
                 </div>
               </div>
               {!['Subscription','PaymentScreen'].includes(activePage) && (
@@ -228,7 +239,7 @@ export default function Header() {
                   }`}
                   style={{ marginLeft: '-120px' }}
                 >
-                  {!['Subscription','PaymentScreen'].includes(activePage) && (
+                  {isAuthenticated && isPro && (
                     <button
                       className="dropdown-item"
                       onClick={() => {

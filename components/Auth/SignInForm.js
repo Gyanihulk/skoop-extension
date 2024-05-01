@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 
 const SignInForm = () => {
   const { navigateToPage } = useContext(ScreenContext);
-  const { handleSkoopLogin, deleteMyAllJwtSessions,showClearSessionDialog} = useContext(AuthContext);
+  const { handleSkoopLogin, deleteMyAllJwtSessions,social,showClearSessionDialog} = useContext(AuthContext);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -48,7 +48,7 @@ toast.error("email or password can not be empty!")
 }
   return (
       <div className="row justify-content-center">
-          {showClearSessionDialog && <RemoveSessions onDelete={handleDeleteSessions}/>}
+          {showClearSessionDialog && social==null && <RemoveSessions onDelete={handleDeleteSessions}/>}
         <div className="col-md-6">
           <form onSubmit={handleSubmit}>
             <div className="form-group">

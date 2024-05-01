@@ -92,9 +92,9 @@ export default function Home() {
         <>
           {activePage === 'Home' && <Homepage />}
           {activePage === 'RecordVideos' && <RecordVideos />}
-          {activePage === 'HelperVideos' && <HelperVideos />}
-          {activePage === 'ContactUs' && <ContactUs />}
-          {activePage === 'ReportBug' && <ReportBug />}
+          {activePage === 'HelperVideos' && <HelperVideos navigateTo={"Home"}/>}
+          {activePage === 'ContactUs' && <ContactUs navigateTo={"Home"}/>}
+          {activePage === 'ReportBug' && <ReportBug navigateTo={"Home"}/>}
           {activePage === 'AccountSettings' && <AccountSettings />}
           {activePage == 'ContactPage' && <ContactPage />}
           {activePage == 'ProfileScraper' && <ProfileScraper />}
@@ -105,7 +105,10 @@ export default function Home() {
         </>
       ) : isAuthenticated ? (
         <>{activePage === 'Subscription' && <SubscriptionScreen />}
-        {activePage == 'PaymentScreen' && <PaymentScreen />}</>
+        {activePage == 'PaymentScreen' && <PaymentScreen />}
+        {activePage === 'ContactUs' && <ContactUs navigateTo={"Subscription"}/>}
+        {activePage === 'ReportBug' && <ReportBug navigateTo={"Subscription"}/>}
+        {activePage === 'HelperVideos' && <HelperVideos navigateTo={"Subscription"} />}</>
       ) : (
         <>
           {activePage === 'SignIn' && <SignIn />}

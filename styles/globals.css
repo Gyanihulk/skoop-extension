@@ -1137,7 +1137,7 @@ select.form-control {
 }
 
 .footer-font {
-  color: #ff8210;
+  color: #ff8210 !important;
   text-decoration: none;
 }
 

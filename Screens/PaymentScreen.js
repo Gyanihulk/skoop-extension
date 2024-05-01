@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
+import AuthContext from '../contexts/AuthContext'
+import ScreenContext from '../contexts/ScreenContext'
 
 export const PaymentScreen = () => {
+ 
   return (
     <div class="container">
       <div class="row justify-content-center">

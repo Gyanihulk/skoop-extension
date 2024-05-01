@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
   const [operatingSystem, setOperatingSystem] = useState('')
   const [fingerPrint, setFingerPrint] = useState()
   const [userDevices, setUserDevices] = useState()
+  const [social,setSocial]=useState(null)
   const [showClearSessionDialog, setShowClearSessionDialog] = useState(false)
   const validatePassword = (password) => {
     if (!password) {
@@ -30,6 +31,7 @@ export const AuthProvider = ({ children }) => {
   }
   const handleSkoopLogin = async (username, password) => {
     const toastId = toast.loading('Signing In...')
+    setSocial(null)
     try {
       const response = await fetch(API_ENDPOINTS.signIn, {
         method: 'POST',
@@ -44,7 +46,7 @@ export const AuthProvider = ({ children }) => {
         },
       })
       if (response.ok) {
-        toast.success('Log In Successfull', {
+        toast.success('Log In Successful', {
           id: toastId,
         })
         const resjson = await response.json()
@@ -62,7 +64,7 @@ export const AuthProvider = ({ children }) => {
       } else if (response.status == 401) {
         setShowClearSessionDialog(true)
       } else {
-        toast.error('incorrect username or password', {
+        toast.error('Incorrect username or password', {
           id: toastId,
         })
       }
@@ -139,7 +141,7 @@ export const AuthProvider = ({ children }) => {
           }
         )
       } else {
-        const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77au9mtqfad5jq&redirect_uri=${encodeURIComponent(
+        const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77tjwbzu3cxt7m&redirect_uri=${encodeURIComponent(
           chrome.identity.getRedirectURL()
         )}&scope=openid%20profile%20email`
         chrome.identity.launchWebAuthFlow(
@@ -460,7 +462,7 @@ export const AuthProvider = ({ children }) => {
           }
         )
         
-        toast.success('Subscription Created Successfully', {
+        toast.success('Please complete payment.', {
           id: toastId,
         })
         return response
@@ -600,7 +602,8 @@ export const AuthProvider = ({ children }) => {
       })
 
       if (res.ok) {
-        return res
+        const subs = await res.json()
+        return subs
       }
     } catch (err) {
       return { ok: false }
@@ -664,7 +667,7 @@ export const AuthProvider = ({ children }) => {
           }
         )
       } else {
-        const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77au9mtqfad5jq&redirect_uri=${encodeURIComponent(
+        const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77tjwbzu3cxt7m&redirect_uri=${encodeURIComponent(
           chrome.identity.getRedirectURL()
         )}&scope=openid%20profile%20email`
         chrome.identity.launchWebAuthFlow(
@@ -774,6 +777,7 @@ export const AuthProvider = ({ children }) => {
         setShowClearSessionDialog,
         deleteMyAllJwtSessions,
         deleteMyAllJwtSessionsBySocial,
+        social,setSocial
       }}
     >
       {children}

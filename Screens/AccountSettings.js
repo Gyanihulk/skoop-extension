@@ -504,9 +504,7 @@ const UserSubscriptions = () => {
   const [subsriptionInfo, setSubscriptionInfo] = useState()
   async function setup() {
     const response = await getMySubscription()
-    const subs = await response.json()
-    console.log(subs, 'from subs ')
-    setSubscriptionInfo(subs)
+    setSubscriptionInfo(response)
   }
   useEffect(() => {
     setup()

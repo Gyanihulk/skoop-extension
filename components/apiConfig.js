@@ -1,4 +1,4 @@
-const backendUrl = "http://localhost:4000"; //https://skoop.sumits.in http://localhost:4000 //https://api.skoopapp.com
+const backendUrl = "https://skoop.sumits.in"; //https://skoop.sumits.in http://localhost:4000 //https://api.skoopapp.com
 
 const API_ENDPOINTS = {
   backendUrl,
@@ -55,7 +55,7 @@ const API_ENDPOINTS = {
   mySubscriptions: `${backendUrl}/subscription`, // GET
   logout: `${backendUrl}/logout`, // delete
   deleteAllJwtSessions:`${backendUrl}/jwtsession/all`, // delete
-  linkedInLogInDeleteSession: `${backendUrl}/linkedInDeleteSession`, //POST
+  linkedInLogInDeleteSession: `${backendUrl}/linkedInLogInDeleteSession`, //POST
   GoogleLogInDeleteSession: `${backendUrl}/SignInWithGoogleDeleteSession`, //POST
   createContactUs: `${backendUrl}/contact-us`, //POST
   createReportBugs: `${backendUrl}/report-bug`, //POST

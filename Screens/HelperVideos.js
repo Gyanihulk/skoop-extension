@@ -120,7 +120,7 @@ const info = [
     text: '9.Sending a video via Gmail',
   },
 ]
-const HelperVideos = () => {
+const HelperVideos = ({navigateTo}) => {
   const [playingVideo, setPlayingVideo] = useState(false)
   const { navigateToPage } = useContext(ScreenContext)
 
@@ -162,7 +162,7 @@ const HelperVideos = () => {
         <div className="lighter-pink">
           <div>
             <div className="pt-3 mb-4">
-              <BackButton navigateTo="Home" />
+            <BackButton navigateTo={navigateTo} />
             </div>
           </div>
           <div className="px-4-2">

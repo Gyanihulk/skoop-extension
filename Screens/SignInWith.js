@@ -6,8 +6,7 @@ import RemoveSessions from "../components/Auth/RemoveSessions";
 import API_ENDPOINTS from "../components/apiConfig";
 
 function SignInWith() {
-  const { handleSocialLogin, deleteMyAllJwtSessions,showClearSessionDialog ,deleteMyAllJwtSessionsBySocial} = useContext(AuthContext);
-  const [social,setSocial]=useState()
+  const { handleSocialLogin, showClearSessionDialog ,deleteMyAllJwtSessionsBySocial,social,setSocial} = useContext(AuthContext);
   const { navigateToPage } = useContext(ScreenContext);
   function handleDeleteSessions(){
     deleteMyAllJwtSessionsBySocial(social);
@@ -54,11 +53,21 @@ function SignInWith() {
           <a
             href="#"
             onClick={() => navigateToPage('SignUp')}
-            className="fw-bold footer-font"
+            className="cursor-pointer  fw-bold footer-font"
           >
             {' '}
             Create Account
           </a>
+        </div>
+        <div className="text-center mt-2 auth-footer-label">
+          <span
+            onClick={()=>openNewWindow(
+              API_ENDPOINTS.skoopCalendarUrl + '/affiliate/sign-up'
+            )}
+            className="cursor-pointer fw-bold footer-font"
+          >
+            Become an affiliate.
+          </span>
         </div>
         <div className="mt-2 cursor-pointer d-flex text-light flex-col auth-footer-label justify-content-center">
           <div
