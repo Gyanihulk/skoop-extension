@@ -135,6 +135,7 @@ const ChatGpt = ({ appendToBody, close }) => {
       const data = await response.json()
       setMessageOptions(data)
     } catch (error) {
+      console.log(  error,"fetching error")
       toast.error('Error fetching prompts')
     }
   }

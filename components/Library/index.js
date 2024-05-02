@@ -212,7 +212,6 @@ const Library = (props) => {
               ...favorite,
               is_favourite: !favorite.is_favourite,
             };
-            console.log("Updated Favorite:", updatedFavorite);
             return updatedFavorite;
           }
           return favorite;

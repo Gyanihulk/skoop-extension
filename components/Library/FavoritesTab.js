@@ -18,15 +18,15 @@ const FavoritesTab = ({ favorites, currentDirectory, handleLinkInsertion, delete
         <div className='row'>
           {favorites.map((favorite) => (
             <>
-             <VideoCard
+             {favorite.is_favourite && <VideoCard
                 key={favorite.id}
                 video={favorite}
                 folderName={"Favourite"}
                 handleLinkInsertion={handleLinkInsertion}
                 deleteVideo={deleteVideo}
                 toggleFavourite={toggleFavourite}
-                fetchVideos={()=>{console.log("fetch videos")}}
-              />
+                fetchVideos={()=>{return }}
+              />}
             </>))}
         </div>
       ) : (
