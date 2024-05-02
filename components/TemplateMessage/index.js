@@ -108,7 +108,7 @@ const SavedMessages = ({ appendToBody, close }) => {
       const data = await response.json()
       setMessageOptions(data)
     } catch (error) {
-      toast.error('Error fetching prompts')
+      toast.error('Error fetching Messages')
     }
   }
 
@@ -135,7 +135,7 @@ const SavedMessages = ({ appendToBody, close }) => {
         setShowModal(false)
         setNewPrompt({ heading: '', description: '' })
         fetchPrompts()
-        toast.success('New Prompt added successfully!')
+        toast.success('New Message added successfully!')
       } else {
         // Set validation errors if the fields are empty
         setTitleError(newPrompt.heading ? '' : 'Title is required')
@@ -145,7 +145,7 @@ const SavedMessages = ({ appendToBody, close }) => {
         toast.error('Please fill in all required fields.')
       }
     } catch (error) {
-      toast.error('Error adding prompt')
+      toast.error('Error adding Message')
     }
   }
 
@@ -167,14 +167,14 @@ const SavedMessages = ({ appendToBody, close }) => {
       if (!response.ok) {
         const errorMessage = await response.text()
         throw new Error(
-          `Failed to delete prompt. Server response: ${errorMessage}`
+          `Failed to delete Message. Server response: ${errorMessage}`
         )
       }
 
       fetchPrompts()
-      toast.success('Prompt deleted successfully!')
+      toast.success('Message deleted successfully!')
     } catch (error) {
-      toast.error('Error deleting prompt')
+      toast.error('Error deleting Message')
     }
   }
 
@@ -205,7 +205,7 @@ const SavedMessages = ({ appendToBody, close }) => {
         setNewPrompt({ heading: '', description: '' })
         setIsEditing(false)
         fetchPrompts()
-        toast.success('Prompt updated successfully!')
+        toast.success('Message updated successfully!')
         setSelectedOption('Select prompt')
       } else {
         // Set validation errors if the fields are empty or editingPrompt is not available

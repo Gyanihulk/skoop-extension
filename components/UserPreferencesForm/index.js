@@ -224,7 +224,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
         toast.error('Preferences not saved. Please try again.')
       }
     } else {
-      toast.error('Preffered Start time OR Break time is greater than End Time')
+      toast.error('Preferred Start time OR Break time is greater than End Time')
     }
   }
   return (

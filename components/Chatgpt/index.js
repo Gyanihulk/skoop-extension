@@ -114,6 +114,7 @@ const ChatGpt = ({ appendToBody, close }) => {
       setWaitingMessage('')
       setPrompt(response.choices[0].message.content)
       appendToBody(response.choices[0].message.content)
+      toast.success("Response generated & added to sendbox.")
       setResponseGenerated(true)
     } catch (err) {
       toast.error('could not get chatGpt response')

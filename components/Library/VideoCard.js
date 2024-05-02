@@ -169,7 +169,7 @@ const VideoCard = ({
         <div className="overlay position-absolute bottom-0 start-0 w-100 video-card-footer">
           <div className="d-flex flex-wrap ">
             <button
-              title="Insert link to mail body"
+              title="Insert link to send box."
               className="btn btn-link btn-sm video-card-footer-button"
               onClick={() => {
                 handleLinkInsertion(video.link, video.id);
@@ -210,7 +210,7 @@ const VideoCard = ({
               <MdMoveUp size={10} />
             </button>
             <button
-              title="Move video to another folder"
+              title="Download video"
               className="btn btn-link btn-sm video-card-footer-button"
               onClick={downloadVideo}
             >

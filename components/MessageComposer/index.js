@@ -218,7 +218,7 @@ const MessageComposer = () => {
     }
     if (isLinkedin) {
       if (selectedChatWindows?.length === 0) {
-        toast.error("Please select a recipitent");
+        toast.error("Please select a recipient");
         return;
       }
       for (const item of selectedChatWindows) {

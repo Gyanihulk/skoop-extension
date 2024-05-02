@@ -236,7 +236,6 @@ const Library = (props) => {
 
       // Handle errors if any
       if (!response.ok) {
-        console.error("Toggle Favorite Error:", response.statusText);
         // If there's an error, revert the state change
         setFavorites((prevFavorites) => {
           const revertedFavorites = prevFavorites.map((favorite) => {
