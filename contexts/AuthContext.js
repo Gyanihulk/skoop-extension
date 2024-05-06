@@ -36,8 +36,8 @@ export const AuthProvider = ({ children }) => {
       const response = await fetch(API_ENDPOINTS.signIn, {
         method: 'POST',
         body: JSON.stringify({
-          username: username,
-          password: password,
+          username: username.trim(),
+          password: password.trim(),
           rememberMe: rememberMe,
           version: version,
         }),
@@ -68,7 +68,6 @@ export const AuthProvider = ({ children }) => {
           id: toastId,
         })
       }
-      toast.dismiss()
     } catch (err) {
       toast.dismiss()
       console.log(err)

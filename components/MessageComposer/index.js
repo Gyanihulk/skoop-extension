@@ -86,7 +86,6 @@ const MessageComposer = () => {
   };
 
   const handleIconClick = async (eventKey) => {
-    console.log(eventKey, displayComp, displayComp == eventKey);
     setLatestBlob();
     setLatestVideo();
     if (eventKey === "Calender Link") {

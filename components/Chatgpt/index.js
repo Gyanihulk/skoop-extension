@@ -229,9 +229,9 @@ const ChatGpt = ({ appendToBody, close }) => {
         setShowModal(false)
         setNewPrompt({ heading: '', description: '' })
         setIsEditing(false)
-        fetchPrompts()
         toast.success('Prompt updated successfully!')
         setSelectedOption('Select prompt')
+        fetchPrompts()
       } else {
         // Set validation errors if the fields are empty or editingPrompt is not available
         setTitleError(newPrompt.heading ? '' : 'Title is required')
@@ -243,6 +243,7 @@ const ChatGpt = ({ appendToBody, close }) => {
         )
       }
     } catch (error) {
+      console.log(error)
       toast.error('Error updating prompt')
     }
   }
