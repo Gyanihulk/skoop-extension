@@ -33,7 +33,9 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
     setShowModal,
     continuousCanvasRef,
     isRecordStart,
-    setIsRecordStart
+    setIsRecordStart,
+    stopAudioRecording
+
   } = useRecording()
 
   const { setGlobalRefresh, setLatestVideo, setLatestBlob } =
@@ -149,14 +151,6 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
     }
   }
 
-  const stopRecording = () => {
-    mediaRecorder.stop()
-    setIsRecordStart(false)
-    setIsRecording(false)
-    setShowModal(false)
-    setDuration(time)
-    setTime(0)
-  }
 
   const sharingDetails = (audioTitle, directoryName) => {
     setIsTakingInput(false)
@@ -175,7 +169,7 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
   }
 
   const stopRecordingAndCloseModal = () => {
-    stopRecording()
+    stopAudioRecording()
     setShowModal(false)
   }
 
@@ -219,30 +213,6 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
         <span className="record-button-bottom-text">Voice Memo</span>
       </div>}
       <div>
-        <div
-          className="modal"
-          style={{ display: showModal ? 'block' : 'none' }}
-        >
-          <div className=" modal-sm modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-body" style={{ maxHeight: '150px' }}>
-                
-              </div>
-              <div className="modal-footer d-flex justify-content-between">
-                <div>
-                  {isRecording && <h6>Time Remaining: {60 - time} Sec</h6>}
-                </div>
-                <button
-                  type="button"
-                  className="btn btn-danger btn-sm"
-                  onClick={stopRecordingAndCloseModal}
-                >
-                  Stop Recording
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   )

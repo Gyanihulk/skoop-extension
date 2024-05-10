@@ -24,7 +24,7 @@ import VoiceVisualization from '../AudioRecording/index.js'
 
 import { IoLink } from 'react-icons/io5'
 import MessageContext from '../../contexts/MessageContext.js'
-import RenameVideoPopup from '../Library/RenameVideoPopup.js'
+
 
 import { IoMdClose } from 'react-icons/io'
 import Vertical from '../SVG/Vertical.jsx'
@@ -38,16 +38,12 @@ const RecordingButton = () => {
   const {
     capturing,
     setCapturing,
-    prev,
-    setPrev,
     countdown,
-    setCountdown,
     time,setTime,
     countTimer,
     setCountTimer,
     isUploading,
     setIsUploading,
-    bloburl,
     setBlobUrl,
     height,
     setHeight,
@@ -61,7 +57,8 @@ const RecordingButton = () => {
     setIsRecordStart,
     isVideo,
     setIsVideo,
-    videoResizeConstant
+    videoResizeConstant,
+    stopAudioRecording
   } = useRecording()
   const { setGlobalRefresh, setLatestVideo, setLatestBlob } =
     useContext(GlobalStatesContext)
@@ -104,17 +101,7 @@ const RecordingButton = () => {
     toggleVideoSettings()
   }
 
-  const preview = () => {
-    if (prev != '') {
-      setPrev('')
-      toggleIcon()
-      return
-    }
-    if (bloburl) {
-      setPrev(bloburl)
-    }
-    toggleIcon()
-  }
+
 
   useEffect(() => {
     let intervalId
@@ -209,10 +196,28 @@ const RecordingButton = () => {
   }
 
   const toggleRestart = () => {
-    console.log(isVideo ? 'video' : 'AUdio')
-    setIsRecordStart(!isRecordStart)
+    if(isVideo){
+      sendMessageToBackgroundScript(
+        {
+          action: 'restartRecording'
+        },
+        handleVideoBlob
+      )
+    }else{
+
+    }
   }
   const toggleStop = () => {
+    if(isVideo){
+      sendMessageToBackgroundScript(
+        {
+          action: 'stopRecording'
+        },
+        handleVideoBlob
+      )
+    }else{
+      stopAudioRecording()
+    }
     setIsRecordStart(!isRecordStart)
   }
 

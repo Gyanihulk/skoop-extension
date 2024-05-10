@@ -17,11 +17,11 @@ const RecordStart = ({ onRestart,onStop }) => {
             <div className="start-rec-circle d-flex justify-content-center align-items-center ">
               <div className="fill-circle"></div>
             </div>
-            <div class="loading-text my-1">Loading</div>
-          </div>
+            <div class="loading-text my-1">Recording</div>
           {isRecording && (
                   <canvas id="continuous" ref={continuousCanvasRef}></canvas>
                 )}
+          </div>
           <div className="d-flex flex-nowrap">
             <button
               className="record-start-btn rec-restart-btn me-2"

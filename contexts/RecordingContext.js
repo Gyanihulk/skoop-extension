@@ -34,6 +34,14 @@ export const RecordingProvider = ({ children }) => {
     const [isRecordStart, setIsRecordStart] = useState(false)
     const [isVideo, setIsVideo] = useState(false)
 
+    const stopAudioRecording = () => {
+      mediaRecorder.stop()
+      setIsRecordStart(false)
+      setIsRecording(false)
+      setShowModal(false)
+      setDuration(time)
+      setTime(0)
+    }
     const contextValue = {
         mediaRecorder,
         setMediaRecorder,
@@ -74,7 +82,8 @@ export const RecordingProvider = ({ children }) => {
         setIsRecordStart,
         isVideo,
         setIsVideo,
-        videoResizeConstant
+        videoResizeConstant,
+        stopAudioRecording
       };
   return (
     <RecordingContext.Provider value={contextValue}>

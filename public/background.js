@@ -1,8 +1,7 @@
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   const senderTabId = sender.tab.id;
   if (
-    request.action === "startRecording" ||
-    request.action === "stopRecording"
+    request.action === "startRecording" || request.action === "stopRecording" || request.action === "restartRecording"
   ) {
     // Relay message to the active tab
     console.log("background screen recording");
@@ -21,7 +20,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (targetTab) {
         chrome.tabs.sendMessage(targetTab.id, request, (response) => {
           if (response) {
-            console.log(response, "background script");
             sendResponse(response);
           }
           return true;
@@ -39,7 +37,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     );
   }
   if (request.message === "ChatPage") {
-    console.log("SignIn");
     chrome.tabs.query({}, (tabs) => {
       const urlToFindGoogle = "https://mail.google.com/mail";
       const urlToFindLinkedIn = "https://www.linkedin.com/";
@@ -58,7 +55,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           { action: "collectClasses" },
           (response) => {
             if (response) {
-              console.log(response);
               chrome.tabs.sendMessage(senderTabId, {
                 action: "returnClasses",
                 response,
@@ -76,7 +72,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           },
           (response) => {
             if (response) {
-              console.log(response.result);
             } else {
               console.error("Error resizing iframe:", chrome.runtime.lastError);
             }
@@ -87,7 +82,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.message === "ContactPage") {
-    console.log("SignIn");
     chrome.tabs.query({}, (tabs) => {
       const urlToFindGoogle = "https://mail.google.com/mail";
       const urlToFindLinkedIn = "https://www.linkedin.com/";
@@ -106,7 +100,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           { action: "collectClasses" },
           (response) => {
             if (response) {
-              console.log(response);
               chrome.tabs.sendMessage(senderTabId, {
                 action: "returnClasses",
                 response,
@@ -124,7 +117,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           },
           (response) => {
             if (response) {
-              console.log(response.result);
             } else {
               console.error("Error resizing iframe:", chrome.runtime.lastError);
             }
@@ -134,7 +126,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
   }
   if (request.message === "Welcome") {
-    console.log("SignIn");
     chrome.tabs.query({}, (tabs) => {
       const urlToFindGoogle = "https://mail.google.com/mail";
       const urlToFindLinkedIn = "https://www.linkedin.com/";
@@ -167,7 +158,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
   }
   if (request.action === "startPlayingVideo") {
-    console.log("Helper video start playing");
     chrome.tabs.query({}, (tabs) => {
       const urlToFindGoogle = "https://mail.google.com/mail";
       const urlToFindLinkedIn = "https://www.linkedin.com/";
