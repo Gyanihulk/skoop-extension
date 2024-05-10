@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
-import API_ENDPOINTS from "../apiConfig.js";
-import { FaDownload } from "react-icons/fa6";
-import { FaTimesCircle } from "react-icons/fa";
-import { FaRegCirclePlay } from "react-icons/fa6";
+import React, { useState, useEffect, useContext, useRef } from 'react'
+import API_ENDPOINTS from '../apiConfig.js'
+import { FaDownload } from 'react-icons/fa6'
+import { FaTimesCircle } from 'react-icons/fa'
+import { FaRegCirclePlay } from 'react-icons/fa6'
 import {
   MdDeleteForever,
   MdOutlineVideoSettings,
   MdOutlineSendTimeExtension,
-} from "react-icons/md";
-import { AiOutlineClose } from "react-icons/ai";
+} from 'react-icons/md'
+import { AiOutlineClose } from 'react-icons/ai'
 
 import {
   getCurrentDateTimeString,
@@ -16,188 +16,221 @@ import {
   insertHtmlAtPositionInMail,
   insertIntoLinkedInMessageWindow,
   replaceInvalidCharacters,
-} from "../../utils/index.js";
-import GlobalStatesContext from "../../contexts/GlobalStates.js";
-import toast from "react-hot-toast";
-import MediaUtilsContext from "../../contexts/MediaUtilsContext.js";
-import VoiceVisualization from "../AudioRecording/index.js";
+} from '../../utils/index.js'
+import GlobalStatesContext from '../../contexts/GlobalStates.js'
+import toast from 'react-hot-toast'
+import MediaUtilsContext from '../../contexts/MediaUtilsContext.js'
+import VoiceVisualization from '../AudioRecording/index.js'
 
-import { IoLink } from "react-icons/io5";
-import MessageContext from "../../contexts/MessageContext.js";
-import RenameVideoPopup from "../Library/RenameVideoPopup.js";
+import { IoLink } from 'react-icons/io5'
+import MessageContext from '../../contexts/MessageContext.js'
+import RenameVideoPopup from '../Library/RenameVideoPopup.js'
 
-import { IoMdClose } from "react-icons/io";
-import Vertical from "../SVG/Vertical.jsx";
-import Horizontal from "../SVG/Horizontal.jsx";
-import Square from "../SVG/Square.jsx";
+import { IoMdClose } from 'react-icons/io'
+import Vertical from '../SVG/Vertical.jsx'
+import Horizontal from '../SVG/Horizontal.jsx'
+import Square from '../SVG/Square.jsx'
+import RecordStart from '../RecordStart/index.js'
+import { useRecording } from '../../contexts/RecordingContext.js'
 
-const videoResizeConstant = 32;
+
 const RecordingButton = () => {
-  const [capturing, setCapturing] = useState(false);
-  const [prev, setPrev] = useState("");
-  const [time, setTime] = useState(0);
-  const [countdown, setCountdown] = useState(false);
-  const [countTimer, setCountTimer] = useState(0);
-  const [isUploading, setIsUploading] = useState(false);
-
-  const [bloburl, setBlobUrl] = useState(null);
-  const [height, setHeight] = useState(16 * videoResizeConstant);
-  const [width, setWidth] = useState(9 * videoResizeConstant);
-  const [videoSettingsOpen, setVideoSettingsOpen] = useState(false);
-  const [selectedVideoStyle, setSelectedVideoStyle] = useState("Vertical Mode");
-
+  const {
+    capturing,
+    setCapturing,
+    prev,
+    setPrev,
+    countdown,
+    setCountdown,
+    time,setTime,
+    countTimer,
+    setCountTimer,
+    isUploading,
+    setIsUploading,
+    bloburl,
+    setBlobUrl,
+    height,
+    setHeight,
+    width,
+    setWidth,
+    videoSettingsOpen,
+    setVideoSettingsOpen,
+    selectedVideoStyle,
+    setSelectedVideoStyle,
+    isRecordStart,
+    setIsRecordStart,
+    isVideo,
+    setIsVideo,
+    videoResizeConstant
+  } = useRecording()
   const { setGlobalRefresh, setLatestVideo, setLatestBlob } =
-    useContext(GlobalStatesContext);
-  const { uploadVideo } = useContext(MediaUtilsContext);
-  const { addToMessage } = useContext(MessageContext);
+    useContext(GlobalStatesContext)
+  const { uploadVideo } = useContext(MediaUtilsContext)
+  const { addToMessage } = useContext(MessageContext)
   const handleVideoStyleSelect = (style) => {
-    setSelectedVideoStyle(style);
-    if (style === "Square") {
-      setHeight(10 * videoResizeConstant);
-      setWidth(10 * videoResizeConstant);
-    } else if (style === "Vertical Mode") {
-      setHeight(16 * videoResizeConstant);
-      setWidth(9 * videoResizeConstant);
+    setSelectedVideoStyle(style)
+    if (style === 'Square') {
+      setHeight(10 * videoResizeConstant)
+      setWidth(10 * videoResizeConstant)
+    } else if (style === 'Vertical Mode') {
+      setHeight(16 * videoResizeConstant)
+      setWidth(9 * videoResizeConstant)
     } else {
-      setWidth(16 * videoResizeConstant);
-      setHeight(9 * videoResizeConstant);
+      setWidth(16 * videoResizeConstant)
+      setHeight(9 * videoResizeConstant)
     }
-    toggleVideoSettings();
-  };
+    toggleVideoSettings()
+  }
   const toggleVideoSettings = () => {
-    setVideoSettingsOpen(!videoSettingsOpen);
-  };
+    setVideoSettingsOpen(!videoSettingsOpen)
+  }
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (videoSettingsOpen && !event.target.closest(".dropdown-menu")) {
-        setVideoSettingsOpen(false);
+      if (videoSettingsOpen && !event.target.closest('.dropdown-menu')) {
+        setVideoSettingsOpen(false)
       }
-    };
+    }
 
-    document.addEventListener("click", handleClickOutside);
+    document.addEventListener('click', handleClickOutside)
 
     return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [videoSettingsOpen]);
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, [videoSettingsOpen])
 
   const handleIconClick = (event) => {
-    event.stopPropagation();
-    toggleVideoSettings();
-  };
+    event.stopPropagation()
+    toggleVideoSettings()
+  }
 
   const preview = () => {
-    if (prev != "") {
-      setPrev("");
-      toggleIcon();
-      return;
+    if (prev != '') {
+      setPrev('')
+      toggleIcon()
+      return
     }
     if (bloburl) {
-      setPrev(bloburl);
+      setPrev(bloburl)
     }
-    toggleIcon();
-  };
+    toggleIcon()
+  }
 
   useEffect(() => {
-    let intervalId;
+    let intervalId
     if (capturing) {
-      intervalId = setInterval(() => setTime(time + 1), 1000);
+      intervalId = setInterval(() => setTime(time + 1), 1000)
     }
-    return () => clearInterval(intervalId);
-  }, [capturing, time]);
+    return () => clearInterval(intervalId)
+  }, [capturing, time])
 
   useEffect(() => {
-    let intervalId;
+    let intervalId
     if (countdown) {
-      intervalId = setInterval(() => setCountTimer(countTimer + 1), 1000);
+      intervalId = setInterval(() => setCountTimer(countTimer + 1), 1000)
     }
-    return () => clearInterval(intervalId);
-  }, [countdown, countTimer]);
+    return () => clearInterval(intervalId)
+  }, [countdown, countTimer])
 
   //useable functions
 
   function sendMessageToBackgroundScript(request, callback) {
     chrome.runtime.sendMessage(request, (response) => {
       if (callback && response) {
-        callback(response);
+        callback(response)
       }
-    });
+    })
   }
   async function getBlobFromUrl(url) {
     try {
-      const response = await fetch(url);
+      const response = await fetch(url)
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`)
       }
-      const blob = await response.blob();
-      url = URL.createObjectURL(blob);
-      setBlobUrl(url);
-      return blob;
+      const blob = await response.blob()
+      url = URL.createObjectURL(blob)
+      setBlobUrl(url)
+      return blob
     } catch (error) {
-      console.error("Error fetching blob:", error);
+      console.error('Error fetching blob:', error)
     }
   }
 
   function handleVideoBlob(response) {
     if (response.error) {
-      setIsUploading(false);
-      setCapturing(false);
+      setIsUploading(false)
+      setCapturing(false)
     }
     if (response.videoBlob) {
       getBlobFromUrl(response.url).then(async (blob) => {
-        setLatestBlob(blob);
-        setIsUploading(true);
+        setLatestBlob(blob)
+        setIsUploading(true)
         const response = await uploadVideo(
           blob,
           getCurrentDateTimeString(),
-          "New",
+          'New',
           height,
           width
-        );
-        setIsUploading(false);
-        setLatestVideo(response);
+        )
+        setIsUploading(false)
+        setIsRecordStart(false)
+        setLatestVideo(response)
         addToMessage(
           response.facade_player_uuid,
           response?.urlForThumbnail,
           response?.name
-        );
-        setGlobalRefresh(true);
-        setCapturing(false);
-      });
+        )
+        setGlobalRefresh(true)
+        setCapturing(false)
+        setIsVideo(false)
+      })
     }
   }
 
   const startVideoCapture = async (restart = false, event) => {
+    setIsRecordStart(true)
+    setIsVideo(true)
     if (event) {
-      event.stopPropagation();
+      event.stopPropagation()
     }
     if (capturing) {
-      return;
+      return
     }
-    setLatestVideo(null);
-    setLatestBlob(null);
+    setLatestVideo(null)
+    setLatestBlob(null)
     sendMessageToBackgroundScript(
       {
-        action: "startRecording",
+        action: 'startRecording',
         height,
         width,
       },
       handleVideoBlob
-    );
-    setCapturing(true);
-  };
+    )
+  }
+
+  const toggleRestart = () => {
+    console.log(isVideo ? 'video' : 'AUdio')
+    setIsRecordStart(!isRecordStart)
+  }
+  const toggleStop = () => {
+    setIsRecordStart(!isRecordStart)
+  }
+
+  
   return (
     <>
       <div id="recording-container">
         <div class="container">
+          {isRecordStart && (
+            <RecordStart onRestart={toggleRestart} onStop={toggleStop} />
+          )}
           <div class="row justify-content-center px-3">
-            <div class="col-auto">
+           {!isRecordStart &&  <div class="col-auto">
               <div className="d-flex flex-column align-items-center">
                 <div
                   className="d-flex flex-column"
                   variant="outlined"
-                  color={capturing ? "secondary" : "primary"}
+                  color={capturing ? 'secondary' : 'primary'}
                   onClick={(e) => startVideoCapture(false, e)}
                   size="small"
                   disabled={isUploading}
@@ -235,12 +268,12 @@ const RecordingButton = () => {
                 </div>
 
                 <span className="d-flex flex-row record-button-bottom-text">
-                  {" "}
+                  {' '}
                   {capturing
                     ? isUploading
-                      ? "Uploading..."
-                      : "Recording..."
-                    : "Record Video"}{" "}
+                      ? 'Uploading...'
+                      : 'Recording...'
+                    : 'Record Video'}{' '}
                   <div
                     className="d-flex flex-column justify-content-center ps-1 cursor-pointer"
                     onClick={handleIconClick}
@@ -260,21 +293,20 @@ const RecordingButton = () => {
                   </div>
                 </span>
               </div>
-            </div>
+            </div>}
             <div class="col-auto">
               <VoiceVisualization
                 setBlobUrl={setBlobUrl}
                 setIsUploading={setIsUploading}
-                setCapturing={setCapturing}
-                addToMessage={addToMessage}
-              />
+                setIsRecordStart={setIsRecordStart}
+                addToMessage={addToMessage}              />
             </div>
           </div>
         </div>
       </div>
       <div
         className="modal"
-        style={{ display: videoSettingsOpen ? "block" : "none" }}
+        style={{ display: videoSettingsOpen ? 'block' : 'none' }}
       >
         <div className="modal-overlay modal-dialog-centered" role="document">
           <div className="modal-content mx-4 justify-content-center align-items-center">
@@ -293,11 +325,11 @@ const RecordingButton = () => {
               <div className="text-center">
                 <div
                   className={` mx-3 p-2 border-video-selector ${
-                    selectedVideoStyle == "Vertical Mode"
-                      ? "bg-selected-videoMode"
-                      : ""
+                    selectedVideoStyle == 'Vertical Mode'
+                      ? 'bg-selected-videoMode'
+                      : ''
                   }`}
-                  onClick={() => handleVideoStyleSelect("Vertical Mode")}
+                  onClick={() => handleVideoStyleSelect('Vertical Mode')}
                 >
                   <Vertical />
                 </div>
@@ -308,26 +340,26 @@ const RecordingButton = () => {
               <div className="text-center">
                 <div
                   className={` mx-3 p-2 border-video-selector ${
-                    selectedVideoStyle == "Horizontal"
-                      ? "bg-selected-videoMode"
-                      : ""
+                    selectedVideoStyle == 'Horizontal'
+                      ? 'bg-selected-videoMode'
+                      : ''
                   }`}
-                  onClick={() => handleVideoStyleSelect("Horizontal")}
+                  onClick={() => handleVideoStyleSelect('Horizontal')}
                 >
                   <Horizontal />
                 </div>
                 <span className="record-button-bottom-text">
-                  Horizontal (9:16){" "}
+                  Horizontal (9:16){' '}
                 </span>
               </div>
               <div className="text-center">
                 <div
                   className={` mx-3 p-2 border-video-selector ${
-                    selectedVideoStyle == "Square"
-                      ? "bg-selected-videoMode"
-                      : ""
+                    selectedVideoStyle == 'Square'
+                      ? 'bg-selected-videoMode'
+                      : ''
                   }`}
-                  onClick={() => handleVideoStyleSelect("Square")}
+                  onClick={() => handleVideoStyleSelect('Square')}
                 >
                   <Square />
                 </div>
@@ -338,7 +370,7 @@ const RecordingButton = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default RecordingButton;
+export default RecordingButton

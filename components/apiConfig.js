@@ -1,5 +1,6 @@
-const backendUrl = "http://localhost:4000"; //https://skoop.sumits.in http://localhost:4000 //https://api.skoopapp.com
-
+const backendUrl = "https://skoop.sumits.in"; //test
+// const backendUrl = "http://localhost:4000"; //local
+// const backendUrl = "https://api.skoopapp.com"; //prod
 const API_ENDPOINTS = {
   backendUrl,
   skoopCalendarUrl: "https://crm.skoopapp.com", //https://skoopcrm.sumits.in

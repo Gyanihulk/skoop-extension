@@ -12,6 +12,7 @@ import { FpjsProvider } from "@fingerprintjs/fingerprintjs-pro-react";
 import { AppProps } from "next/app";
 
 import Script from "next/script";
+import { RecordingProvider } from "../contexts/RecordingContext";
 export default function App({ Component, pageProps }) {
   return (
     <>
@@ -29,14 +30,17 @@ export default function App({ Component, pageProps }) {
             <ScreenProvider>
               <AuthProvider>
                 <MessageProvider>
+                  <RecordingProvider>
+
                   <Toaster
                     position="top-right"
                     toastOptions={{
                       className: "custom-toast",
                     }}
-                  />
+                    />
 
                   <Component {...pageProps} />
+                    </RecordingProvider>
                 </MessageProvider>
               </AuthProvider>
             </ScreenProvider>
