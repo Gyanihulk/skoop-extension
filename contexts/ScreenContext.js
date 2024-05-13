@@ -20,7 +20,6 @@ export const ScreenProvider = ({ children }) => {
       responseHeight = "399px";
     }
     else if (activePage === 'SignIn' ||
-      activePage === 'SignUp' ||
       activePage === 'ForgotPassword' ||
       activePage === 'Welcome' ||
       activePage === 'SignInIntro' ||
@@ -36,6 +35,9 @@ export const ScreenProvider = ({ children }) => {
       activePage === 'ContactPage'
     ) {
       responseHeight = "600px";
+    }
+    else if(activePage === 'SignUp') {
+      responseHeight = "660px";
     }
     if(responseHeight) {
         skoopExtensionBody.style.height = responseHeight;

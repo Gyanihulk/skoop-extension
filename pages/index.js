@@ -22,6 +22,7 @@ import RecordVideos from '../Screens/RecordVideos'
 import ContactUs from '../Screens/ContactUs'
 import ReportBug from '../Screens/ReportBug'
 import { PaymentScreen } from '../Screens/PaymentScreen'
+import CantUseScreen from '../Screens/CantUseScreen'
 export default function Home() {
   const {
     verifyToken,
@@ -50,25 +51,47 @@ export default function Home() {
       // Set the version from the manifest file
       setVersion(manifest.version)
     }
+    
   }, [])
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
+      
       const res = await verifyToken()
       const showWelcomePage = localStorage.getItem('welcomePageShown')
 
-      if (isAuthenticated && newUser && !isPro) {
-        navigateToPage('Subscription')
-      } else if (isAuthenticated && newUser && isPro) {
-        navigateToPage('ThankYouScreen')
-      } else if (isAuthenticated && !isPro) {
-        navigateToPage('Subscription')
-      } else if (isAuthenticated && isPro) {
-        navigateToPage('Home')
-      } else if (!showWelcomePage) {
-        navigateToPage('Welcome')
-      } else if (!isAuthenticated) {
-        navigateToPage('SignInIntro')
+      
+
+      if (chrome.tabs) {
+        // Query the tabs
+        chrome.tabs.query({}, function (tabs) {
+          // Set the retrieved tabs to state
+          const targetTab = tabs.find((tab) => tab.active)
+          console.log(targetTab.url)
+          if (targetTab.url) {
+            if (
+              targetTab.url.includes('https://www.linkedin.com') ||
+              targetTab.url.includes('https://mail.google.com/')
+            ) {
+              if (isAuthenticated && newUser && !isPro) {
+                navigateToPage('Subscription')
+              } else if (isAuthenticated && newUser && isPro) {
+                navigateToPage('ThankYouScreen')
+              } else if (isAuthenticated && !isPro) {
+                navigateToPage('Subscription')
+              } else if (isAuthenticated && isPro) {
+                navigateToPage('Home')
+              } else if (!showWelcomePage) {
+                navigateToPage('Welcome')
+              } else if (!isAuthenticated) {
+                navigateToPage('SignInIntro')
+              }
+            }else{
+              
+              navigateToPage('CantUseScreen')
+            }
+          }
+        })
       }
     })()
   }, [isAuthenticated, newUser, isPro])
@@ -80,45 +103,56 @@ export default function Home() {
   return (
     <>
       <div id="skoop-extension-body">
-      {![
-        'Welcome',
-        'SignInIntro',
-        'SignIn',
-        'SignUp',
-        ' ',
-        'ForgotPassword',
-      ].includes(activePage) && <Header />}
-      {activePage === ' ' && <LoadingScreen />}
-      {isAuthenticated & isPro ? (
-        <>
-          {activePage === 'Home' && <Homepage />}
-          {activePage === 'RecordVideos' && <RecordVideos />}
-          {activePage === 'HelperVideos' && <HelperVideos navigateTo={"Home"}/>}
-          {activePage === 'ContactUs' && <ContactUs navigateTo={"Home"}/>}
-          {activePage === 'ReportBug' && <ReportBug navigateTo={"Home"}/>}
-          {activePage === 'AccountSettings' && <AccountSettings />}
-          {activePage == 'ContactPage' && <ContactPage />}
-          {activePage == 'ProfileScraper' && <ProfileScraper />}
-          {activePage == 'ForgotPassword' && <ForgotPassword />}
-          {activePage == 'CalendarSync' && <CalendarSync />}
-          {activePage == 'DevicesList' && <DevicesList />}
-          {activePage == 'ThankYouScreen' && <ThankYouScreen />}
-        </>
-      ) : isAuthenticated ? (
-        <>{activePage === 'Subscription' && <SubscriptionScreen />}
-        {activePage == 'PaymentScreen' && <PaymentScreen />}
-        {activePage === 'ContactUs' && <ContactUs navigateTo={"Subscription"}/>}
-        {activePage === 'ReportBug' && <ReportBug navigateTo={"Subscription"}/>}
-        {activePage === 'HelperVideos' && <HelperVideos navigateTo={"Subscription"} />}</>
-      ) : (
-        <>
-          {activePage === 'SignIn' && <SignIn />}
-          {activePage === 'SignUp' && <SignUp />}
-          {activePage == 'ForgotPassword' && <ForgotPassword />}
-          {activePage == 'Welcome' && <Welcome />}
-          {activePage == 'SignInIntro' && <SignInWith />}
-        </>
-      )}
+        {![
+          'Welcome',
+          'SignInIntro',
+          'SignIn',
+          'SignUp',
+          ' ',
+          'ForgotPassword',
+        ].includes(activePage) && <Header />}
+        {activePage === ' ' && <LoadingScreen />}
+        {isAuthenticated & isPro ? (
+          <>
+            {activePage === 'Home' && <Homepage />}
+            {activePage === 'RecordVideos' && <RecordVideos />}
+            {activePage === 'HelperVideos' && (
+              <HelperVideos navigateTo={'Home'} />
+            )}
+            {activePage === 'ContactUs' && <ContactUs navigateTo={'Home'} />}
+            {activePage === 'ReportBug' && <ReportBug navigateTo={'Home'} />}
+            {activePage === 'AccountSettings' && <AccountSettings />}
+            {activePage == 'ContactPage' && <ContactPage />}
+            {activePage == 'ProfileScraper' && <ProfileScraper />}
+            {activePage == 'ForgotPassword' && <ForgotPassword />}
+            {activePage == 'CalendarSync' && <CalendarSync />}
+            {activePage == 'DevicesList' && <DevicesList />}
+            {activePage == 'ThankYouScreen' && <ThankYouScreen />}
+          </>
+        ) : isAuthenticated ? (
+          <>
+            {activePage === 'Subscription' && <SubscriptionScreen />}
+            {activePage == 'PaymentScreen' && <PaymentScreen />}
+            {activePage === 'ContactUs' && (
+              <ContactUs navigateTo={'Subscription'} />
+            )}
+            {activePage === 'ReportBug' && (
+              <ReportBug navigateTo={'Subscription'} />
+            )}
+            {activePage === 'HelperVideos' && (
+              <HelperVideos navigateTo={'Subscription'} />
+            )}
+          </>
+        ) : (
+          <>
+            {activePage === 'SignIn' && <SignIn />}
+            {activePage === 'SignUp' && <SignUp />}
+            {activePage == 'ForgotPassword' && <ForgotPassword />}
+            {activePage == 'Welcome' && <Welcome />}
+            {activePage == 'SignInIntro' && <SignInWith />}
+          </>
+        )}
+        {activePage === 'CantUseScreen' && <CantUseScreen />}
       </div>
     </>
   )

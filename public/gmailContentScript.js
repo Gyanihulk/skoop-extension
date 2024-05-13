@@ -198,7 +198,7 @@ function createButton() {
   buttonContainer.style.backgroundSize = 'cover'
   buttonContainer.style.backgroundPosition = 'center'
   buttonContainer.style.backgroundRepeat = 'no-repeat'
-  buttonContainer.style.zIndex = '9998'
+  buttonContainer.style.zIndex = '10000000000000'
   buttonContainer.style.display = 'flex'
   buttonContainer.style.alignItems = 'center'
   buttonContainer.style.justifyContent = 'center'

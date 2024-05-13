@@ -42,10 +42,10 @@ export const VideoPreview = ({displayComp}) => {
   useEffect(() => {
     let responseHeight;
     const skoopExtensionBody = document.getElementById("skoop-extension-body");
-    if(activePage == 'Home' && displayComp === "DefaultCard" && !latestVideo ) {
+    if(activePage == 'Home' && displayComp === "DefaultCard" && !latestBlob ) {
       responseHeight = "383px";
     }
-    else if(activePage == 'Home' && displayComp === "DefaultCard" && latestVideo ) {
+    else if(activePage == 'Home' && displayComp === "DefaultCard" && latestBlob ) {
       responseHeight = "600px";
     }
 
@@ -57,7 +57,7 @@ export const VideoPreview = ({displayComp}) => {
         height: responseHeight,
       });
     }
-  }, [latestVideo, displayComp])
+  }, [latestBlob, displayComp])
   useEffect(() => {
   }, [latestBlob, thumbnailImage, , showRenamePopup, showVideoOptionsDialog])
   const UpdateThumbnail = async (event) => {
@@ -244,7 +244,7 @@ export const VideoPreview = ({displayComp}) => {
         accept="image/*"
       />
 
-      <div className="container" id="video-Preview">
+      {latestBlob && (<div className="container" id="video-Preview">
         <div className="card d-flex flex-row align-items-center">
           <div
             className="d-flex justify-content-between px-2"
@@ -326,7 +326,7 @@ export const VideoPreview = ({displayComp}) => {
             </div>
           </div>
         </div>
-      </div>
+      </div>)}
 
       <DeleteModal
         middleContent={newTitle}

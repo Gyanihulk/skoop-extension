@@ -119,7 +119,14 @@ const info = [
     alt: 'This image is related to a video which says about how to send GIF',
     text: '9.Sending a video via Gmail',
   },
+  {
+    videoSrc: 'https://play.vidyard.com/eWtJcmCpnHurtbBfhu8YJ4',
+    imgSrc: '/screens/helperImages/10.png',
+    alt: 'This image is related to a video which says about how to become affialite',
+    text: '10.Become an affiliate.',
+  },
 ]
+
 const HelperVideos = ({navigateTo}) => {
   const [playingVideo, setPlayingVideo] = useState(false)
   const { navigateToPage } = useContext(ScreenContext)

@@ -21,6 +21,7 @@ import MediaUtilsContext from "../../contexts/MediaUtilsContext.js";
 import { VideoPreview } from "../VideoPreview.jsx";
 import ScreenContext from "../../contexts/ScreenContext.js";
 import { MdOutlineFileUpload } from "react-icons/md";
+import { useRecording } from "../../contexts/RecordingContext.js"
 
 const MessageComposer = () => {
   const [displayComp, setDisplayComp] = useState("");
@@ -43,6 +44,7 @@ const MessageComposer = () => {
   const { uploadVideo } = useContext(MediaUtilsContext);
   const { addToMessage } = useContext(MessageContext);
   const { navigateToPage, activePage } = useContext(ScreenContext);
+  const {isRecordStart} = useRecording();
 
   const handleInsertion = (text) => {
     const newText = text + " \n ";
@@ -85,11 +87,17 @@ const MessageComposer = () => {
     const skoopExtensionBody = document.getElementById("skoop-extension-body");
     let responseHeight;
     if(displayComp || activePage) {
-        if ( activePage == 'Home' && displayComp === "Message") {
+        if ( activePage == 'Home' && displayComp === "Message" && !isRecordStart) {
           responseHeight = "470px";
         }
-        else if(activePage == 'Home' && displayComp === "ChatGpt") {
+        else if(activePage == 'Home' && displayComp === "Message" && isRecordStart) {
           responseHeight = "600px";
+        }
+        else if(activePage == 'Home' && displayComp === "ChatGpt" && !isRecordStart ) {
+          responseHeight = "600px";
+        }
+        else if(activePage == 'Home' && displayComp === "ChatGpt" && isRecordStart ) {
+          responseHeight = "700px";
         }
         else if(activePage == 'Home' && displayComp === "Videos" && isVideoContainer ) {
           responseHeight = "600px";
@@ -97,8 +105,17 @@ const MessageComposer = () => {
         else if(activePage == 'Home' && displayComp === "Videos" && !isVideoContainer ) {
           responseHeight = "383px";
         }
-        else if(activePage == 'Home' && displayComp === "Calender Link") {
+        else if(activePage == 'Home' && displayComp === "Videos" && !isVideoContainer && isRecordStart ) {
+          responseHeight = "600px";
+        }
+        else if(activePage == 'Home' && isRecordStart){
+          responseHeight = "600px";
+        }
+        else if(activePage == 'Home' && displayComp === "Calender Link" && !isRecordStart) {
           responseHeight = "383px";
+        }
+        else if(activePage == 'Home' && displayComp === "Calender Link" && isRecordStart) {
+          responseHeight = "600px";
         }
         else if(activePage == 'Home' && displayComp === "Giphy" ) {
           responseHeight = "470px";
@@ -117,7 +134,7 @@ const MessageComposer = () => {
     }
 
 
-  }, [displayComp, activePage, isVideoContainer]);
+  }, [displayComp, activePage, isVideoContainer, isRecordStart]);
 
   const checkForUserPreferences = async () => {
     const userPreferences = await getUserPreferences();

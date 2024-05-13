@@ -652,7 +652,7 @@ function AccountSettings(props) {
                 </div>
               </>
             )}
-            <div className="mt-3">
+            <div className="mt-3 mb-3-0">
               <UserPreferencesForm />
             </div>
             <div className="fixed-bottom mt-2 cursor-pointer d-flex flex-col auth-footer-label justify-content-center">

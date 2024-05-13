@@ -83,6 +83,10 @@ const Homepage = (props) => {
     }
   }, []);
 
+  useEffect(() => {
+     console.log("isVideoContainer is ", isVideoContainer)
+  }, [isVideoContainer]);
+
   return (
     <div className="mt-2">
       {isVideoContainer ? <VideosListContainer /> : <RecordingButton />}
