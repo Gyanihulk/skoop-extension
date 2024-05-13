@@ -584,11 +584,6 @@
   cursor: pointer;
 }
 
-.custom-Cards {
-  max-height: 250px;
-  overflow-y: auto;
-}
-
 .LinkContainer {
   display: inline-block;
   margin-top: 10px;
@@ -1226,6 +1221,8 @@ select.form-control {
   align-items: center;
   background-repeat: no-repeat;
   font-family: 'Montserrat', sans-serif;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
 }
 
 .form-control-sign-in::placeholder {
@@ -1301,10 +1298,6 @@ select.form-control {
   bottom: 0px;
   width: 100% !important;
   z-index: 9;
-}
-.max-height-500 {
-  max-height: 300px;
-  overflow-y: auto; /* Make content scrollable if it exceeds max height */
 }
 /* .card {
     min-width: 165px !important;
@@ -2373,6 +2366,21 @@ img.icon-style-normal {
 .font-8 {
   font-size: 6px;
 }
+
+#skoop-extension-body {
+  position: relative;
+  min-width: 355px;
+  overflow-x: hidden;
+}
+
+.h-min-100 {
+  min-height: 80vh;
+}
+
+.signin-background-image {
+  border-radius:6px;
+}
+
 #continuous{
   height:70px;
 }

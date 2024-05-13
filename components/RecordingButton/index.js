@@ -58,7 +58,8 @@ const RecordingButton = () => {
     isVideo,
     setIsVideo,
     videoResizeConstant,
-    stopAudioRecording
+    stopAudioRecording,
+    restartRecordingAudio
   } = useRecording()
   const { setGlobalRefresh, setLatestVideo, setLatestBlob } =
     useContext(GlobalStatesContext)
@@ -204,7 +205,7 @@ const RecordingButton = () => {
         handleVideoBlob
       )
     }else{
-
+      restartRecordingAudio()
     }
   }
   const toggleStop = () => {

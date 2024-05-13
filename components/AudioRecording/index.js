@@ -34,28 +34,18 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
     continuousCanvasRef,
     isRecordStart,
     setIsRecordStart,
-    stopAudioRecording
-
+    stopAudioRecording,
+    startRecordingAudio,
+    handleShareAudio
   } = useRecording()
 
-  const { setGlobalRefresh, setLatestVideo, setLatestBlob } =
-    useContext(GlobalStatesContext)
+  
+
+
 
   useEffect(() => {
-    let intervalId
-    if (isRecording) {
-      setShowModal(true)
-      intervalId = setInterval(() => setTime(time + 1), 1000)
-      if (time == 60) {
-        stopRecording()
-      }
-    }
-    return () => clearInterval(intervalId)
-  }, [isRecording, time])
-
-  useEffect(() => {
-    if (visualizationUrl != '') {
-      handleShare(getCurrentDateTimeString(), 'Media')
+    if (visualizationUrl != '' & !isRecording) {
+      handleShareAudio(getCurrentDateTimeString(), 'Media')
     }
   }, [visualizationUrl])
 
@@ -78,79 +68,7 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
     }
   }, [isRecording, mediaRecorder])
 
-  const handleShare = async (audioTitle, directoryName) => {
-    try {
-      setIsUploading(true)
-      var title1 = audioTitle
-      audioTitle = replaceInvalidCharacters(audioTitle + `_${Date.now()}`)
-      const blobres = await fetch(visualizationUrl)
-      const blob = await blobres.blob()
-      setLatestBlob(blob)
-
-      const formData = new FormData()
-      let file = new File([blob], 'recording')
-      formData.append('data', file, `${audioTitle}.wav`)
-      const customHeaders = new Headers()
-      formData.append('height', 500)
-      formData.append('width', 500)
-      customHeaders.append('title', audioTitle)
-      customHeaders.append('directory_name', directoryName)
-      customHeaders.append('duration', duration)
-      customHeaders.append('type', 'wav')
-      customHeaders.append(
-        'authorization',
-        `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`
-      )
-      customHeaders.append('title1', title1)
-
-      const loadingObj = toast.loading('Uploading Voice Memo...')
-      var response = await fetch(API_ENDPOINTS.vidyardUploadAudio, {
-        method: 'POST',
-        headers: customHeaders,
-        body: formData,
-      })
-      response = await response.json()
-      console.log(response)
-      toast.success('Voice Memo uploaded,encoding in progress', {
-        id: loadingObj,
-      })
-      setIsUploading(false)
-      addToMessage(response.facade_player_uuid)
-      setGlobalRefresh(true)
-      setLatestVideo(response)
-    } catch (err) {
-      console.log(err,"hello")
-      toast.dismiss()
-      toast.error('could not upload')
-    }
-  }
-
-  const startRecording = async () => {
-    try {
-      const micStream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: false,
-      })
-      const chunks = []
-      const recorder = new MediaRecorder(micStream)
-      recorder.ondataavailable = (event) => {
-        chunks.push(event.data)
-      }
-      recorder.onstop = () => {
-        const audioBlob = new Blob(chunks, { type: 'audio/wav' })
-        const audioUrl = URL.createObjectURL(audioBlob)
-        setVisualizationUrl(audioUrl)
-      }
-      recorder.start()
-      setMediaRecorder(recorder)
-      setIsRecording(true)
-      setIsRecordStart(true)
-    } catch (error) {
-      toast.error('please provide the permission to access your microphone')
-      return
-    }
-  }
-
+  
 
   const sharingDetails = (audioTitle, directoryName) => {
     setIsTakingInput(false)
@@ -177,7 +95,7 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
     <div id="homeDiv">
      {!isRecordStart && <div className="d-flex flex-column align-items-center">
         <button
-          onClick={isRecording ? stopRecordingAndCloseModal : startRecording}
+          onClick={isRecording ? stopRecordingAndCloseModal : startRecordingAudio}
           id="skoop_record_button"
           data-mdb-toggle="tooltip"
           data-mdb-placement="bottom"
