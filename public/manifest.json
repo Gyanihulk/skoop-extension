@@ -14,7 +14,9 @@
     "identity",         
     "tabs","scripting",
     "storage",
-    "clipboardWrite","https://mail.google.com/","https://www.linkedin.com/"
+    "clipboardWrite","https://mail.google.com/","https://www.linkedin.com/",
+    "audioCapture",
+    "videoCapture"
   ],
   "web_accessible_resources": [
     {

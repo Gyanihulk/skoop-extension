@@ -79,6 +79,7 @@ export default function Home() {
 
   return (
     <>
+      <div id="skoop-extension-body">
       {![
         'Welcome',
         'SignInIntro',
@@ -118,6 +119,7 @@ export default function Home() {
           {activePage == 'SignInIntro' && <SignInWith />}
         </>
       )}
+      </div>
     </>
   )
 }

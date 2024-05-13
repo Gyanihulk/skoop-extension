@@ -265,7 +265,6 @@ function resizeIframe(newWidth, newHeight) {
     skoopExtensionContainer.style.width = newWidth
     skoopExtensionContainer.style.height = newHeight
     skoopExtensionContainer.style.top = '66px'
-    console.log(newWidth)
     if (newWidth == '450px') {
       skoopExtensionContainer.style.borderRadius = '0px'
     }

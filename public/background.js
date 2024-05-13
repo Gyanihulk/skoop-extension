@@ -245,5 +245,37 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } catch (err) {
     console.log(err, 'backgeound error')
   }
-  return true
-})
+  if (request.message === "resizeIframe") {
+    chrome.tabs.query({}, (tabs) => {
+      const urlToFindGoogle = "https://mail.google.com/mail";
+      const urlToFindLinkedIn = "https://www.linkedin.com/";
+
+      // Find the tab with either the Google Mail URL or the LinkedIn URL
+      const targetTab = tabs.find(
+        (tab) =>
+          tab.active &&
+          (tab.url.startsWith(urlToFindGoogle) ||
+            tab.url.startsWith(urlToFindLinkedIn))
+      );
+
+      if (targetTab) {
+        chrome.tabs.sendMessage(
+          targetTab.id,
+          {
+            action: "resizeIframe",
+            width: request.width ? request.width : "375px",
+            height: request.height ? request.height : "812px",
+          },
+          (response) => {
+            if (response) {
+              console.log(response.result);
+            } else {
+              console.error("Error resizing iframe:", chrome.runtime.lastError);
+            }
+          }
+        );
+      }
+    });
+  }
+  return true;
+});

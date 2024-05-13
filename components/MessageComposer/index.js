@@ -23,7 +23,7 @@ import ScreenContext from "../../contexts/ScreenContext.js";
 import { MdOutlineFileUpload } from "react-icons/md";
 
 const MessageComposer = () => {
-  const [displayComp, setDisplayComp] = useState("DefaultCard");
+  const [displayComp, setDisplayComp] = useState("");
   const [activateCalenderLink, setActivateCalenderLink] = useState(false);
 
   const {
@@ -42,7 +42,7 @@ const MessageComposer = () => {
   const { getCalendarUrl, getUserPreferences } = useContext(AuthContext);
   const { uploadVideo } = useContext(MediaUtilsContext);
   const { addToMessage } = useContext(MessageContext);
-  const { navigateToPage } = useContext(ScreenContext);
+  const { navigateToPage, activePage } = useContext(ScreenContext);
 
   const handleInsertion = (text) => {
     const newText = text + " \n ";
@@ -70,6 +70,55 @@ const MessageComposer = () => {
     }
   };
 
+  
+  async function sendMessageToBackgroundScript(height) {
+    const request = {
+      message: "resizeIframe",
+      width: "355px",
+      height,
+
+    }
+    await chrome.runtime.sendMessage(request);
+  }
+
+  useEffect(() => {
+    const skoopExtensionBody = document.getElementById("skoop-extension-body");
+    let responseHeight;
+    if(displayComp || activePage) {
+        if ( activePage == 'Home' && displayComp === "Message") {
+          responseHeight = "470px";
+        }
+        else if(activePage == 'Home' && displayComp === "ChatGpt") {
+          responseHeight = "600px";
+        }
+        else if(activePage == 'Home' && displayComp === "Videos" && isVideoContainer ) {
+          responseHeight = "600px";
+        }
+        else if(activePage == 'Home' && displayComp === "Videos" && !isVideoContainer ) {
+          responseHeight = "383px";
+        }
+        else if(activePage == 'Home' && displayComp === "Calender Link") {
+          responseHeight = "383px";
+        }
+        else if(activePage == 'Home' && displayComp === "Giphy" ) {
+          responseHeight = "470px";
+        }
+        else if(activePage == 'Home' && displayComp === "Emoji" ) {
+          responseHeight = "600px";
+        }
+        else if(activePage == 'Home' && displayComp === ""){
+          responseHeight = "383px";
+        }
+  
+        if(responseHeight) {
+          skoopExtensionBody.style.height = responseHeight;
+          sendMessageToBackgroundScript(responseHeight);
+        }
+    }
+
+
+  }, [displayComp, activePage, isVideoContainer]);
+
   const checkForUserPreferences = async () => {
     const userPreferences = await getUserPreferences();
     const url = await getCalendarUrl();
@@ -90,6 +139,7 @@ const MessageComposer = () => {
     setLatestVideo();
     if (eventKey === "Calender Link") {
       if (await checkForUserPreferences()) {
+        setDisplayComp(eventKey);
         addMeetSchedulingLink();
         return;
       }
@@ -224,7 +274,6 @@ const MessageComposer = () => {
         if (hasDatasetProperty(item)) {
           try {
             const openChatWindow = await handleOpenMessageWindow();
-            console.log(openChatWindow);
           } catch (err) {
             console.error(err);
           }
@@ -236,7 +285,7 @@ const MessageComposer = () => {
       );
       setTimeout(() => {
         handleSend();
-      }, 500);
+      }, 900);
       toast.success("Message Sent Successfully!!");
     } else {
       const gmailInsertion = await insertHtmlAtPositionInMail(
@@ -478,7 +527,7 @@ const MessageComposer = () => {
         {displayComp === "ChatGpt" && (
           <ChatGpt appendToBody={handleInsertion} close={setDisplayComp} />
         )}
-        <VideoPreview />
+        <VideoPreview displayComp={displayComp}/>
       </div>
       {!expand && (
         <div id="footermessage" className=" w-full">

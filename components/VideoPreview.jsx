@@ -11,8 +11,9 @@ import { FaPencilAlt } from 'react-icons/fa'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import MessageContext from '../contexts/MessageContext'
 import DeleteModal from './DeleteModal'
+import ScreenContext from "../contexts/ScreenContext"
 
-export const VideoPreview = () => {
+export const VideoPreview = ({displayComp}) => {
   const [thumbnailImage, setThumbnailImage] = useState(
     '/images/videoProcessing.png'
   )
@@ -26,6 +27,7 @@ export const VideoPreview = () => {
     useContext(MediaUtilsContext)
   const { message, setMessage } = useContext(MessageContext)
   const [isDeleteModal, setIsDeleteModal] = useState(false)
+  const { activePage } = useContext(ScreenContext);
 
   useEffect(() => {
     if (latestVideo?.urlForThumbnail) {
@@ -36,6 +38,26 @@ export const VideoPreview = () => {
       setThumbnailImage('/images/videoProcessing.png')
     }
   }, [latestVideo])
+
+  useEffect(() => {
+    let responseHeight;
+    const skoopExtensionBody = document.getElementById("skoop-extension-body");
+    if(activePage == 'Home' && displayComp === "DefaultCard" && !latestVideo ) {
+      responseHeight = "383px";
+    }
+    else if(activePage == 'Home' && displayComp === "DefaultCard" && latestVideo ) {
+      responseHeight = "600px";
+    }
+
+    if(responseHeight) {
+      skoopExtensionBody.style.height = responseHeight;
+      sendMessageToBackgroundScript({
+        message: "resizeIframe",
+        width: "355px",
+        height: responseHeight,
+      });
+    }
+  }, [latestVideo, displayComp])
   useEffect(() => {
   }, [latestBlob, thumbnailImage, , showRenamePopup, showVideoOptionsDialog])
   const UpdateThumbnail = async (event) => {
@@ -94,7 +116,6 @@ export const VideoPreview = () => {
 
   const handleRenameSave = async () => {
     try {
-      console.log(latestVideo?.name, newTitle, message)
       const response = await fetch(
         API_ENDPOINTS.renameVideo + `/${latestVideo?.id}`,
         {

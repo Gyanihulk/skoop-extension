@@ -15,27 +15,29 @@ export const insertIntoLinkedInMessageWindow = async (
   selectedChatWindows
 ) => {
   const executeInsertionIntoWindow = (arr, htmlToInsert) => {
-    const messageWindows = Array.from(
-      document.getElementsByClassName("msg-form__contenteditable")
-    );
-    arr.forEach((item) => {
-      const contentEditableDiv = messageWindows[item.index];
-      contentEditableDiv.removeAttribute("aria-label");
-      contentEditableDiv.innerHTML = htmlToInsert;
-      const dummyInput = new Event("input", {
-        bubbles: true,
-        cancelable: true,
+    setTimeout(() => { 
+      const messageWindows = Array.from(
+        document.getElementsByClassName("msg-form__contenteditable")
+      );
+
+      arr.forEach((item) => {
+        const contentEditableDiv = messageWindows[item.index];
+        contentEditableDiv.removeAttribute("aria-label");
+        contentEditableDiv.innerHTML = htmlToInsert;
+        const dummyInput = new Event("input", {
+          bubbles: true,
+          cancelable: true,
+        });
+        contentEditableDiv.dispatchEvent(dummyInput);
       });
-      contentEditableDiv.dispatchEvent(dummyInput);
-    });
+
+    }, 600); 
   };
 
   try {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       const targetTab = tabs[0];
-      console.log("the target tab", targetTab);
       if (targetTab && targetTab.status === "complete") {
-        console.log("the tab exists");
         try {
           chrome.scripting.executeScript({
             target: { tabId: targetTab.id },
