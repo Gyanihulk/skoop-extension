@@ -19,6 +19,9 @@ export const ScreenProvider = ({ children }) => {
     else if (activePage === 'ReportBug') {
       responseHeight = "399px";
     }
+    else if (  activePage === 'CantUseScreen') {
+      responseHeight = "500px";
+    }
     else if (activePage === 'SignIn' ||
       activePage === 'ForgotPassword' ||
       activePage === 'Welcome' ||
@@ -32,8 +35,8 @@ export const ScreenProvider = ({ children }) => {
       activePage === 'RecordVideos'||
       activePage === 'ProfileScraper'||
       activePage === 'CalendarSync'||
-      activePage === 'ContactPage'||
-      activePage === 'CantUseScreen'
+      activePage === 'ContactPage'
+    
     ) {
       responseHeight = "600px";
     }

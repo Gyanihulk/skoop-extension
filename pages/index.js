@@ -84,8 +84,7 @@ export default function Home() {
               } else if (!isAuthenticated) {
                 navigateToPage('SignInIntro')
               }
-            }else{
-              
+            }else{   
               navigateToPage('CantUseScreen')
             }
           }

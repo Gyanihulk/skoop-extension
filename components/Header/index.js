@@ -199,7 +199,7 @@ export default function Header() {
                   <button
                     className="dropdown-item"
                     onClick={()=>openNewWindow(
-                      API_ENDPOINTS.skoopCalendarUrl + '/affiliate/sign-up'
+                      API_ENDPOINTS.skoopCalendarUrl + '/affiliate'
                     )}
                   >
                     Become an affiliate.

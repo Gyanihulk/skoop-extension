@@ -20,7 +20,7 @@ const ChatWindowSelection = () => {
     return element.querySelector(".msg-form__contenteditable") != null;
   }
 
-  const setUpInitialArray = () => {
+  const setUpInitialArray = async() => {
     const allChatWindows = Array.from(
       document.getElementsByClassName("msg-convo-wrapper")
     );
@@ -51,7 +51,8 @@ const ChatWindowSelection = () => {
     const windowUrl = window.location.href;
     // check if the messaging tab is open
     if (windowUrl.includes("messaging")) {
-      combinedArray[0].name = "Messaging Tab";
+      const name = document.querySelector('#thread-detail-jump-target').innerText;
+      combinedArray[0].name = name;
     }
     return combinedArray;
   };

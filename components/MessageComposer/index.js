@@ -102,7 +102,7 @@ const MessageComposer = () => {
         else if(activePage == 'Home' && displayComp === "Videos" && isVideoContainer ) {
           responseHeight = "600px";
         }
-        else if(activePage == 'Home' && displayComp === "Videos" && !isVideoContainer && !isRecordStart ) {
+        else if(activePage == 'Home' && displayComp === "Videos" && !isVideoContainer && !isRecordStart) {
           responseHeight = "383px";
         }
         else if(activePage == 'Home' && displayComp === "Videos" && !isVideoContainer && isRecordStart ) {
