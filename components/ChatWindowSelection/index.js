@@ -83,7 +83,9 @@ const ChatWindowSelection = () => {
                       });
                     }
                   }
-                  setInitialItems(combinedArray);
+                  if(combinedArray && combinedArray.length > 0) {
+                    setInitialItems(combinedArray);
+                  }
                   const filteredArray = combinedArray.filter((item) =>
                     selectedChatWindows.some(
                       (secondItem) => secondItem.name === item.name
@@ -98,14 +100,12 @@ const ChatWindowSelection = () => {
                 }
               });
           } catch (err) {
-            console.log("some error occured in executing script", err);
+            console.error("some error occured in executing script", err);
           }
-        } else {
-          // console.log("the target tab is not accessible");
         }
       });
     } catch (err) {
-      console.log("some error occured while setting up initial array");
+      console.error("some error occured while setting up initial array");
     }
   }, [resetInitialItems, isProfilePage]);
 
@@ -128,7 +128,6 @@ const ChatWindowSelection = () => {
 
   const handleCheckboxChange = (event) => {
     const { value, checked, dataset } = event.target;
-    console.log(dataset, initialItems);
     if (checked) {
       const selectedItem = initialItems.find((item) => item.name === value);
       const newChatWindows = selectedChatWindows;

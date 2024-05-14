@@ -17,7 +17,6 @@ export const MessageProvider = ({ children }) => {
             addMessage(`https://skoop.hubs.vidyard.com/watch/${videoPlayerId}?`);
         } else {
             const videoInfo = await getVideoInfo(videoPlayerId);
-            console.log(videoInfo, 'test');
             let ret = `<a href=https://skoop.hubs.vidyard.com/watch/${videoPlayerId}><img src='${thumbnailLink}' class="inline-block-width"/><br>Watch Video - ${name}</a>`;
             addMessage(ret);
         }

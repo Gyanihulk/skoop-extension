@@ -17,11 +17,10 @@ export const MediaUtilsProvider = ({ children }) => {
           "Content-Type": "application/json",
         },
       });
-      console.log(response);
       response = await response.json();
       return response.url;
     } catch (err) {
-      console.log("error while fetching thumbnails", err);
+      console.error("error while fetching thumbnails", err);
       return null;
     }
   };
@@ -36,11 +35,10 @@ export const MediaUtilsProvider = ({ children }) => {
           "Content-Type": "application/json",
         },
       });
-      console.log(response);
       response = await response.json();
       return response.downloadLink;
     } catch (err) {
-      console.log("error while fetching thumbnails", err);
+      console.error("error while fetching thumbnails", err);
       return null;
     }
   };
@@ -80,7 +78,7 @@ export const MediaUtilsProvider = ({ children }) => {
       });
       return response;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       toast.dismiss();
       toast.error("could not upload");
     }
@@ -117,7 +115,6 @@ export const MediaUtilsProvider = ({ children }) => {
     const toastId = toast.loading("Updating booking link");
     try {
       const body = { booking_link };
-      console.log(body);
       const response = await fetch(`${API_ENDPOINTS.updateVideoInfo}${id}`, {
         method: "PUT",
         body: JSON.stringify(body),
@@ -128,7 +125,6 @@ export const MediaUtilsProvider = ({ children }) => {
           "Content-Type": "application/json",
         },
       });
-      console.log(response);
       if (!response.ok) {
         throw Error;
       }

@@ -82,7 +82,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
         setSelectedTimezone(preferences[0].time_zone)
       }
     } catch (err) {
-      console.log(err?.message)
+      console.error(err?.message)
     }
   }
 
@@ -192,7 +192,6 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
             handleFormSubmit()
             fetchUserPreferences()
           } else {
-            console.log(data)
             throw new Error(data.message || 'Error saving preferences')
           }
         } else {
@@ -211,7 +210,6 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
             toast.success('Preferences saved successfully')
             fetchUserPreferences()
           } else {
-            console.log(data)
             throw new Error(data.message || 'Error saving preferences')
           }
         }
@@ -220,7 +218,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
           setNewUser(false)
         }
       } catch (err) {
-        console.log(err)
+        console.error(err);
         toast.error('Preferences not saved. Please try again.')
       }
     } else {

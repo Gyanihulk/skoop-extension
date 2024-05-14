@@ -43,7 +43,6 @@ export default function Home() {
 
   // Using useEffect to call getData on component mount
   useEffect(() => {
-    // console.log("Component mounted. Calling getData...");
 
     if (chrome && chrome.runtime && chrome.runtime.getManifest) {
       // Get the manifest using the getManifest() method
@@ -67,7 +66,6 @@ export default function Home() {
         chrome.tabs.query({}, function (tabs) {
           // Set the retrieved tabs to state
           const targetTab = tabs.find((tab) => tab.active)
-          console.log(targetTab.url)
           if (targetTab.url) {
             if (
               targetTab.url.includes('https://www.linkedin.com') ||

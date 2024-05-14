@@ -69,12 +69,10 @@ const Homepage = (props) => {
             if (targetTab.url.includes("www.linkedin.com/in")) {
               setIsProfilePage(true);
             }
-          } else {
-            // console.log("the target tab is not accessible");
           }
         });
       } catch (err) {
-        console.log("some error occured while setting up initial array");
+        console.error("some error occured while setting up initial array");
       }
       chrome.runtime.onMessage.addListener(messageHandler);
       return () => {
@@ -82,10 +80,6 @@ const Homepage = (props) => {
       };
     }
   }, []);
-
-  useEffect(() => {
-     console.log("isVideoContainer is ", isVideoContainer)
-  }, [isVideoContainer]);
 
   return (
     <div className="mt-2">

@@ -122,7 +122,6 @@ export const RecordingProvider = ({ children }) => {
         body: formData,
       })
       response = await response.json()
-      console.log(response)
       toast.success('Voice Memo uploaded,encoding in progress', {
         id: loadingObj,
       })
@@ -131,7 +130,6 @@ export const RecordingProvider = ({ children }) => {
       setGlobalRefresh(true)
       setLatestVideo(response)
     } catch (err) {
-      console.log(err,"hello")
       toast.dismiss()
       toast.error('Could not upload.')
     }

@@ -338,7 +338,7 @@ const CalendarUrlForm = ({ userProfileData }) => {
         setshowResetButton(false)
       }
     } else {
-      console.log('userdata not found')
+      console.error('userdata not found')
     }
   }
 
@@ -610,7 +610,7 @@ function AccountSettings(props) {
       setProfileData(response)
       return response
     } catch (err) {
-      console.log('could not get profile details', err)
+      console.error('could not get profile details', err)
     }
   }
 

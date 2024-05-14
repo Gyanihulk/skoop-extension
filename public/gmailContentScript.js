@@ -127,10 +127,6 @@ function injectIframe() {
     window.addEventListener('mouseup', stopResize, false)
   }
 
-  function isResizingArea(element) {
-    console.log(element, resizer, 'test')
-  }
-
   function resize(e) {
     const dimensions = container.getBoundingClientRect()
     let newWidth = e.clientX - dimensions.left
@@ -160,7 +156,7 @@ function requestCameraAndMicrophonePermissions() {
     navigator.mediaDevices
       .getUserMedia({ audio: false, video: { width: 1280, height: 720 } })
       .then((stream) => {
-        console.log('Camera and microphone access granted')
+        console.info('Camera and microphone access granted')
 
         // Handle the stream here (e.g., display it in a video element)
       })
@@ -169,7 +165,7 @@ function requestCameraAndMicrophonePermissions() {
         // Handle the error here (e.g., show a message to the user)
       })
   } else {
-    console.log('getUserMedia not supported')
+    console.error('getUserMedia not supported')
   }
 }
 
@@ -269,7 +265,7 @@ function resizeIframe(newWidth, newHeight) {
       skoopExtensionContainer.style.borderRadius = '0px'
     }
   } else {
-    console.log('Iframe with id "skoop-extension-iframe" not found.')
+    console.error('Iframe with id "skoop-extension-iframe" not found.')
   }
 }
 
@@ -522,7 +518,6 @@ function createWebcamContainer(title, height, width) {
   stopButton.style.fontSize = '24px'
   stopButton.style.cursor = 'pointer'
   stopButton.onclick = function () {
-    console.log('Record button clicked')
     // Add your record button functionality here
   }
   stopButton.style.display = 'flex'
@@ -547,7 +542,6 @@ function createWebcamContainer(title, height, width) {
   pauseButton.style.borderRadius = '50%'
   pauseButton.style.cursor = 'pointer'
   pauseButton.onclick = function () {
-    console.log('Pause button clicked')
     // Add your pause button functionality here
   }
   pauseButton.style.width = '40px'
@@ -727,7 +721,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
               // If the mediaRecorder is recording, pause it
               if (mediaRecorder.state === 'recording') {
                 mediaRecorder.pause()
-                console.log('Media recording paused')
                 skoopVideoContainer.pauseTimer()
                 playingIcon.style.display = 'none'
                 pausedIcon.style.display = 'block'
@@ -735,18 +728,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
               // If the mediaRecorder is paused, resume it
               else if (mediaRecorder.state === 'paused') {
                 mediaRecorder.resume()
-                console.log('Media recording resumed')
                 skoopVideoContainer.resumeFromPause()
                 pausedIcon.style.display = 'none'
                 playingIcon.style.display = 'block'
               } else {
-                console.log(
+                console.error(
                   'MediaRecorder is in an unexpected state:',
                   mediaRecorder.state
                 )
               }
             } else {
-              console.log('MediaRecorder is not initialized or does not exist')
+              console.error('MediaRecorder is not initialized or does not exist')
             }
           }
 
@@ -787,8 +779,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             )
           }
         })
-    } else {
-      console.log('getUserMedia not supported')
     }
     return true
   }

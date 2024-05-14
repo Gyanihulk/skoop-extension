@@ -102,7 +102,7 @@ const MessageComposer = () => {
         else if(activePage == 'Home' && displayComp === "Videos" && isVideoContainer ) {
           responseHeight = "600px";
         }
-        else if(activePage == 'Home' && displayComp === "Videos" && !isVideoContainer ) {
+        else if(activePage == 'Home' && displayComp === "Videos" && !isVideoContainer && !isRecordStart ) {
           responseHeight = "383px";
         }
         else if(activePage == 'Home' && displayComp === "Videos" && !isVideoContainer && isRecordStart ) {
@@ -213,14 +213,12 @@ const MessageComposer = () => {
               args: [selectedChatWindows],
             });
           } catch (err) {
-            console.log("some error occured in executing script", err);
+            console.error("some error occured in executing script", err);
           }
-        } else {
-          // console.log("the target tab is not accessible");
         }
       });
     } catch (err) {
-      console.log("some error occured while setting up initial array");
+      console.error("some error occured while setting up initial array");
     }
   };
   function hasDatasetProperty(item) {
@@ -263,7 +261,6 @@ const MessageComposer = () => {
               }
             );
           } else {
-            // console.log("the target tab is not accessible");
             reject("Target tab is not accessible");
           }
         });
@@ -404,8 +401,6 @@ const MessageComposer = () => {
         // Now you have access to video dimensions
         const width = videoElement.videoWidth;
         const height = videoElement.videoHeight;
-
-        console.log(`Video Dimensions: ${width}x${height}`);
 
         // Proceed with your upload function, now including dimensions
         try {

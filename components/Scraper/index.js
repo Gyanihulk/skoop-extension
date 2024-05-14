@@ -29,7 +29,7 @@ const Scrape = async(commandType) => {
         }
         contactLink.click()
       }catch(err){
-        console.log("could not open contact info overlay")
+        console.error("could not open contact info overlay")
       }
       var email='';
       var website='';
@@ -71,12 +71,11 @@ const Scrape = async(commandType) => {
                 })
                 resolve(result);
               }catch(err){
-                console.log("some error occured in executing script",err)
+                console.error("some error occured in executing script",err)
                 resolve(["","","","","",""]);
               }
             }
             else{
-              // console.log("the target tab is not accessible");
               resolve(["","","","","",""]);
             }
         });

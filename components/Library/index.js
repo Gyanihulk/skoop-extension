@@ -67,7 +67,7 @@ const Library = (props) => {
         );
       }
     } catch (err) {
-      console.log("Error updating favorites state", err);
+      console.error("Error updating favorites state", err);
     }
   };
 
@@ -83,10 +83,9 @@ const Library = (props) => {
         },
       });
       response = await response.json();
-      console.log("get dirs call was a success");
       setFolders(response);
     } catch (err) {
-      console.log("could not fetch library folders", err);
+      console.error("could not fetch library folders", err);
     }
   };
 
@@ -145,12 +144,11 @@ const Library = (props) => {
       await updateFavoritesState();
       fetchVideos();
     } catch (err) {
-      console.log("could not delete", err);
+      console.error("could not delete", err);
     }
   };
 
   const deleteDirectory = async (dirName) => {
-    console.log("delete directory called");
     try {
       const response = await fetch(
         API_ENDPOINTS.deleteDirectory + `/${dirName}`,
@@ -166,7 +164,7 @@ const Library = (props) => {
       );
       await getDirs();
     } catch (err) {
-      console.log("could not delete directory", err);
+      console.error("could not delete directory", err);
     }
   };
 
@@ -254,7 +252,7 @@ const Library = (props) => {
       // Update the favorites state again to ensure consistency
       await updateFavoritesState();
     } catch (err) {
-      console.log("Toggle Favorite Error:", err);
+      console.error("Toggle Favorite Error:", err);
     }
   };
 
@@ -289,7 +287,7 @@ const Library = (props) => {
 
         updateFavoritesState(linksData);
       } catch (err) {
-        console.log("Error fetching data", err);
+        console.error("Error fetching data", err);
       }
     };
 

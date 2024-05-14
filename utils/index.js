@@ -45,21 +45,18 @@ export const insertIntoLinkedInMessageWindow = async (
             args: [selectedChatWindows, html],
           });
         } catch (err) {
-          console.log("some error occured in executing script", err);
+          console.error("some error occured in executing script", err);
         }
-      } else {
-        // console.log("the target tab is not accessible");
       }
     });
     return true;
   } catch (err) {
-    console.log("error during insertion to chat", err);
+    console.error("error during insertion to chat", err);
   }
   return;
 };
 
 export const insertHtmlAtPositionInMail = (textInput, elementId) => {
-  console.log(elementId);
   return new Promise((resolve, reject) => {
     const executeInsertion = (text, Id) => {
       var element = document.getElementById(Id);
@@ -137,11 +134,10 @@ export const insertHtmlAtPositionInMail = (textInput, elementId) => {
             }
           );
         } catch (err) {
-          console.log("some error occurred in executing script");
+          console.error("some error occurred in executing script");
           reject(err);
         }
       } else {
-        // console.log("the target tab is not accessible");
         reject(new Error("The target tab is not accessible"));
       }
     });
@@ -178,15 +174,13 @@ export const handleCopyToClipboard = (dataToCopy) => {
             args: [dataToCopy],
           });
         } catch (err) {
-          console.log("some error occured in executing script", err);
+          console.error("some error occured in executing script", err);
         }
-      } else {
-        // console.log("the target tab is not accessible");
       }
     });
     return true;
   } catch (err) {
-    console.log("some error occured while setting up initial array");
+    console.error("some error occured while setting up initial array");
     return false;
   }
 };

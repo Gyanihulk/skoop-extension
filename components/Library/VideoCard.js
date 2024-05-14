@@ -31,7 +31,6 @@ const VideoCard = ({
   const { isLinkedin } = useContext(GlobalStatesContext)
   const { getDownloadLink } = useContext(MediaUtilsContext)
   const handleLoad = () => {
-    console.log('loading complete')
     setIsLoaded(true)
   }
 
@@ -83,7 +82,6 @@ const VideoCard = ({
   }
 
   const onDeleteVideo = async () => {
-    console.log('delete video start')
     try {
       await deleteVideo(video.id)
       toast.success('Video deleted successfully')
@@ -91,7 +89,6 @@ const VideoCard = ({
     } catch (error) {
       toast.error('Failed to delete video')
     }
-    console.log('delete video end')
   }
 
   const handleToggleFavouriteClick = async () => {

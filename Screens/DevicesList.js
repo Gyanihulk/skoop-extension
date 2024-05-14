@@ -10,7 +10,6 @@ const DevicesList = () => {
   useEffect(() => {
     async function setup() {
       const devices = await getUserDevice();
-      console.log(devices, "devices screen");
       setDevices(devices);
     }
     setup();

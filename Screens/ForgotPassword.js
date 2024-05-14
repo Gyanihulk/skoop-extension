@@ -92,7 +92,6 @@ const ForgotPassword = () => {
       setIsOTPEmpty(otp.trim() === '')
       setIsPasswordEmpty(password.trim() === '')
       setIsConfirmPasswordEmpty(confirmPassword.trim() === '')
-      console.log('username or password can not be empty!')
     }
   }
 

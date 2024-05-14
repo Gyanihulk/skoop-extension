@@ -31,7 +31,7 @@ export class UserInput extends Component {
         }
       )
     } catch (err) {
-      console.log('something went wrong')
+      console.error('something went wrong')
     }
   }
 

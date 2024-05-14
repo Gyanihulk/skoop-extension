@@ -72,8 +72,6 @@ const SignUp = () => {
       setIsEmailEmpty(email.trim() === '')
       setIsPasswordEmpty(password.trim() === '')
       setIsTimezoneEmpty(selectedTimezone === '')
-
-      console.log('fullname, email, password, or timezone cannot be empty!')
     }
   }
 

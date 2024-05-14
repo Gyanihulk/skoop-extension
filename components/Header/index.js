@@ -75,14 +75,12 @@ export default function Header() {
               func: executeClose,
             })
           } catch (err) {
-            console.log('some error occured in executing script', err)
+            console.error('some error occured in executing script', err)
           }
-        } else {
-          // console.log('the target tab is not accessible')
         }
       })
     } catch (err) {
-      console.log('some error occured while setting up initial array')
+      console.error('some error occured while setting up initial array')
     }
   }
   const expandMinimizeExtension = () => {
@@ -96,10 +94,8 @@ export default function Header() {
               func: getToggleButton,
             })
           } catch (err) {
-            console.log('some error occured in executing script', err)
+            console.error('some error occured in executing script', err)
           }
-        } else {
-          // console.log('the target tab is not accessible')
         }
       })
       if (expand) {
@@ -109,7 +105,7 @@ export default function Header() {
       }
       setExpand(!expand)
     } catch (err) {
-      console.log('some error occured while setting up initial array')
+      console.error('some error occured while setting up initial array')
     }
   }
   const openCalendarWindow = () => {

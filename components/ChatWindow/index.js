@@ -77,15 +77,12 @@ const ChatComponent = (props) => {
                 func: clickMessageButton
               });
             }catch(err){
-              console.log("some error occured in executing script",err)
+              console.error("some error occured in executing script",err)
             }
-          }
-          else{
-            // console.log("the target tab is not accessible");
           }
       });
     }catch(err){
-      console.log("some error occured while setting up initial array")
+      console.error("some error occured while setting up initial array")
     }
   }
 

@@ -10,7 +10,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       request.action === 'restartRecording'
     ) {
       // Relay message to the active tab
-      console.log('background screen recording')
       chrome.tabs.query({}, (tabs) => {
         const urlToFindGoogle = 'https://mail.google.com/mail'
         const urlToFindLinkedIn = 'https://www.linkedin.com/'
@@ -36,7 +35,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       chrome.storage.local.set(
         { skoopCrmAccessToken: request.token },
         function () {
-          console.log('Token stored in extension local storage.')
+          console.info('Token stored in extension local storage.')
         }
       )
     }
@@ -157,9 +156,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
               height: request.height ? request.height : '812px',
             },
             (response) => {
-              if (response) {
-                console.log(response.result)
-              } else {
+              if (!response) {
                 console.error(
                   'Error resizing iframe:',
                   chrome.runtime.lastError
@@ -193,9 +190,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
               src: request.src ? request.src : '',
             },
             (response) => {
-              if (response) {
-                console.log(response.result)
-              } else {
+              if (!response) {
                 console.error(
                   'Error resizing iframe:',
                   chrome.runtime.lastError
@@ -220,7 +215,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         )
 
         if (targetTab) {
-          console.log('resizeIframe', request)
           chrome.tabs.sendMessage(
             targetTab.id,
             {
@@ -229,9 +223,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
               height: request.height ? request.height : '812px',
             },
             (response) => {
-              if (response) {
-                console.log(response.result)
-              } else {
+              if (!response) {
                 console.error(
                   'Error resizing iframe:',
                   chrome.runtime.lastError
@@ -243,7 +235,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       })
     }
   } catch (err) {
-    console.log(err, 'backgeound error')
+    console.error(err, 'backgeound error')
   }
   if (request.message === "resizeIframe") {
     chrome.tabs.query({}, (tabs) => {
@@ -267,9 +259,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             height: request.height ? request.height : "812px",
           },
           (response) => {
-            if (response) {
-              console.log(response.result);
-            } else {
+            if (!response) {
               console.error("Error resizing iframe:", chrome.runtime.lastError);
             }
           }

@@ -69,8 +69,8 @@ export const AuthProvider = ({ children }) => {
         })
       }
     } catch (err) {
-      toast.dismiss()
-      console.log(err)
+      toast.dismiss();
+      console.error(err);
       toast.error('Something went wrong, please try again', {
         className: 'custom-toast',
       })
@@ -120,7 +120,7 @@ export const AuthProvider = ({ children }) => {
         })
       }
     } catch (err) {
-      console.log(err)
+      console.error(err);
       toast.error('Could not sign in')
       navigateToPage('SignInIntro')
     }
@@ -171,14 +171,13 @@ export const AuthProvider = ({ children }) => {
           type,
         }),
       })
-      console.log(response)
       if (Number(response.status) === 200) {
         navigateToPage('Home')
       } else {
         toast.error('Could not sign in.')
       }
     } catch (err) {
-      console.log(err)
+      console.error(err)
       toast.error('Could not sign in')
     }
   }
@@ -230,7 +229,6 @@ export const AuthProvider = ({ children }) => {
         }
       )
     } else if (type == 'microsoft') {
-      console.log(type)
       const microsoftAuthUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=bf6b5ce3-919e-4a92-819f-b9147926e3d0&response_type=code&redirect_uri=${encodeURIComponent(
         chrome.identity.getRedirectURL()
       )}&scope=User.Read%20Calendars.ReadWrite%20offline_access&response_mode=query&state=12345&nonce=678910`
@@ -247,7 +245,6 @@ export const AuthProvider = ({ children }) => {
             return
           }
           const code = new URL(redirectUrl).searchParams.get('code')
-          console.log(code, type)
           handleCalendarAuthCode(code, type)
         }
       )
@@ -316,7 +313,7 @@ export const AuthProvider = ({ children }) => {
       setLoadingAuthState(false)
       return res
     } catch (err) {
-      console.log(err,"verifytoken")
+      console.error(err,"verifytoken");
       return { ok: false }
     }
   }
@@ -336,7 +333,7 @@ export const AuthProvider = ({ children }) => {
       if (responseCode.ok) {toast.success('Otp for password reset sent.');return true}
       else return false
     } catch (err) {
-      console.log('some error occured in getting the otp for password reset')
+      console.error('some error occured in getting the otp for password reset')
       return false
     }
   }
@@ -358,7 +355,7 @@ export const AuthProvider = ({ children }) => {
       if (responseCode.ok) {toast.success('Password reset successfully.');return true}
       else return false
     } catch (err) {
-      console.log('could not make the call to reset password', err)
+      console.error('could not make the call to reset password', err)
       return false
     }
   }
@@ -375,14 +372,13 @@ export const AuthProvider = ({ children }) => {
         },
       })
       if (Number(response.status) === 200) {
-        console.log(response)
         const data = await response.text()
         return data
       } else {
         toast.error('Could not get calendar url.')
       }
     } catch (err) {
-      console.log(err)
+      console.error(err)
       toast.error('Could not get calendar url')
     }
   }
@@ -405,7 +401,7 @@ export const AuthProvider = ({ children }) => {
         toast.error('Could not get calendar url.')
       }
     } catch (err) {
-      console.log(err)
+      console.error(err)
       toast.error('Could not get calendar url')
     }
   }
@@ -492,7 +488,6 @@ export const AuthProvider = ({ children }) => {
         toast.error(response.error)
         handleLogOut()
       }
-      console.log(res, response, response?.devices, 'test')
     } catch (err) {
       console.error('API call failed:', err)
     }
@@ -510,7 +505,6 @@ export const AuthProvider = ({ children }) => {
         },
       })
       let response = await res.json()
-      console.log(response)
       setUserDevices(response?.devices)
       return response
     } catch (err) {
@@ -518,7 +512,6 @@ export const AuthProvider = ({ children }) => {
     }
   }
   const deleteUserDevice = async (id, deviceId) => {
-    console.log(deviceId, fingerPrint.data.visitorId)
     try {
       let res = await fetch(API_ENDPOINTS.createUserDevice + '/' + id, {
         method: 'DELETE',
@@ -538,7 +531,6 @@ export const AuthProvider = ({ children }) => {
       } else {
         console.error('Failed to delete device:', response.message)
       }
-      console.log(userDevices)
     } catch (err) {
       console.error('API call failed:', err)
     }
@@ -548,7 +540,6 @@ export const AuthProvider = ({ children }) => {
       const res = await fetch(API_ENDPOINTS.validateCoupon + '/' + coupon, {
         method: 'GET',
       })
-      console.log(res, 'rcoupon')
       if (!res.ok) {
         toast.error('Coupon not valid')
       }
@@ -729,7 +720,7 @@ export const AuthProvider = ({ children }) => {
         setShowClearSessionDialog(false)
       }
     } catch (err) {
-      console.log(err)
+      console.error(err)
       toast.error('Could not sign in', {
         className: 'custom-toast',
       })

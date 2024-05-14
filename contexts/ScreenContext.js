@@ -32,7 +32,8 @@ export const ScreenProvider = ({ children }) => {
       activePage === 'RecordVideos'||
       activePage === 'ProfileScraper'||
       activePage === 'CalendarSync'||
-      activePage === 'ContactPage'
+      activePage === 'ContactPage'||
+      activePage === 'CantUseScreen'
     ) {
       responseHeight = "600px";
     }

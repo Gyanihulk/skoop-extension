@@ -83,7 +83,7 @@ const ContactInfoCard = () => {
         return item.replace(/[^\x00-\x7F]/g, "");
       });
     } catch (err) {
-      console.log("error fetching scraped info from profile page");
+      console.error("error fetching scraped info from profile page");
     }
     try {
       scrapedInfo2 = await Scrape("ContactInfoOverlay");
@@ -91,7 +91,7 @@ const ContactInfoCard = () => {
         return item.replace(/[^\x00-\x7F]/g, "");
       });
     } catch (err) {
-      console.log("could not scrape from overlay", err);
+      console.error("could not scrape from overlay", err);
     }
 
     linkedIn_url = scrapedInfo1[3] || scrapedInfo2[4];
@@ -124,7 +124,7 @@ const ContactInfoCard = () => {
           setProfileId(person.id);
         }
       } catch (err) {
-        console.log("could not fetch contact info details", err);
+        console.error("could not fetch contact info details", err);
       }
     }
 

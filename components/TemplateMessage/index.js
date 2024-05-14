@@ -27,7 +27,6 @@ const SavedMessages = ({ appendToBody, close }) => {
 
   const handleDropdownChange = (event) => {
     const value = event
-    console.log(event, 'dropdown selection')
     if (value === 'AddPrompt') {
       setShowModal(true)
       setSelectedOption('Select prompt')
@@ -223,11 +222,9 @@ const SavedMessages = ({ appendToBody, close }) => {
   }
 
   const handleEditOption = (id) => {
-    console.log(id)
     const selectedPrompt = messageOptions.find(
       (option) => option.id === parseInt(id, 10)
     )
-    console.log('handle edit')
     if (selectedPrompt) {
       setEditingPrompt(selectedPrompt)
       setNewPrompt({
@@ -329,7 +326,6 @@ const SavedMessages = ({ appendToBody, close }) => {
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                         onClick={(e) => {
-                          console.log('Edit')
                           e.stopPropagation()
                           handleEditOption(option.id)
                         }}
