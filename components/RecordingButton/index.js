@@ -256,8 +256,8 @@ const RecordingButton = () => {
                       </svg>
                     ) : (
                       <svg
-                        width="24"
-                        height="24"
+                      width="35"
+                      height="35"
                         viewBox="0 0 40 40"
                         fill="currentcolor"
                         xmlns="http://www.w3.org/2000/svg"

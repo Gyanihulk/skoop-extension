@@ -83,58 +83,58 @@ const MessageComposer = () => {
     await chrome.runtime.sendMessage(request);
   }
 
-  useEffect(() => {
-    const skoopExtensionBody = document.getElementById("skoop-extension-body");
-    let responseHeight;
-    if(displayComp || activePage) {
-        if ( activePage == 'Home' && displayComp === "Message" && !isRecordStart) {
-          responseHeight = "470px";
-        }
-        else if(activePage == 'Home' && displayComp === "Message" && isRecordStart) {
-          responseHeight = "600px";
-        }
-        else if(activePage == 'Home' && displayComp === "ChatGpt" && !isRecordStart ) {
-          responseHeight = "600px";
-        }
-        else if(activePage == 'Home' && displayComp === "ChatGpt" && isRecordStart ) {
-          responseHeight = "700px";
-        }
-        else if(activePage == 'Home' && displayComp === "Videos" && isVideoContainer ) {
-          responseHeight = "600px";
-        }
-        else if(activePage == 'Home' && displayComp === "Videos" && !isVideoContainer && !isRecordStart) {
-          responseHeight = "383px";
-        }
-        else if(activePage == 'Home' && displayComp === "Videos" && !isVideoContainer && isRecordStart ) {
-          responseHeight = "600px";
-        }
-        else if(activePage == 'Home' && isRecordStart){
-          responseHeight = "600px";
-        }
-        else if(activePage == 'Home' && displayComp === "Calender Link" && !isRecordStart) {
-          responseHeight = "383px";
-        }
-        else if(activePage == 'Home' && displayComp === "Calender Link" && isRecordStart) {
-          responseHeight = "600px";
-        }
-        else if(activePage == 'Home' && displayComp === "Giphy" ) {
-          responseHeight = "470px";
-        }
-        else if(activePage == 'Home' && displayComp === "Emoji" ) {
-          responseHeight = "600px";
-        }
-        else if(activePage == 'Home' && displayComp === ""){
-          responseHeight = "383px";
-        }
+  // useEffect(() => {
+  //   const skoopExtensionBody = document.getElementById("skoop-extension-body");
+  //   let responseHeight;
+  //   if(displayComp || activePage) {
+  //       if ( activePage == 'Home' && displayComp === "Message" && !isRecordStart) {
+  //         responseHeight = "500px";
+  //       }
+  //       else if(activePage == 'Home' && displayComp === "Message" && isRecordStart) {
+  //         responseHeight = "600px";
+  //       }
+  //       else if(activePage == 'Home' && displayComp === "ChatGpt" && !isRecordStart ) {
+  //         responseHeight = "600px";
+  //       }
+  //       else if(activePage == 'Home' && displayComp === "ChatGpt" && isRecordStart ) {
+  //         responseHeight = "700px";
+  //       }
+  //       else if(activePage == 'Home' && displayComp === "Videos" && isVideoContainer ) {
+  //         responseHeight = "600px";
+  //       }
+  //       else if(activePage == 'Home' && displayComp === "Videos" && !isVideoContainer && !isRecordStart) {
+  //         responseHeight = "383px";
+  //       }
+  //       else if(activePage == 'Home' && displayComp === "Videos" && !isVideoContainer && isRecordStart ) {
+  //         responseHeight = "600px";
+  //       }
+  //       else if(activePage == 'Home' && isRecordStart){
+  //         responseHeight = "600px";
+  //       }
+  //       else if(activePage == 'Home' && displayComp === "Calender Link" && !isRecordStart) {
+  //         responseHeight = "383px";
+  //       }
+  //       else if(activePage == 'Home' && displayComp === "Calender Link" && isRecordStart) {
+  //         responseHeight = "600px";
+  //       }
+  //       else if(activePage == 'Home' && displayComp === "Giphy" ) {
+  //         responseHeight = "470px";
+  //       }
+  //       else if(activePage == 'Home' && displayComp === "Emoji" ) {
+  //         responseHeight = "600px";
+  //       }
+  //       else if(activePage == 'Home' && displayComp === ""){
+  //         responseHeight = "383px";
+  //       }
   
-        if(responseHeight) {
-          skoopExtensionBody.style.height = responseHeight;
-          sendMessageToBackgroundScript(responseHeight);
-        }
-    }
+  //       if(responseHeight) {
+  //         skoopExtensionBody.style.height = responseHeight;
+  //         sendMessageToBackgroundScript(responseHeight);
+  //       }
+  //   }
 
 
-  }, [displayComp, activePage, isVideoContainer, isRecordStart]);
+  // }, [displayComp, activePage, isVideoContainer, isRecordStart]);
 
   const checkForUserPreferences = async () => {
     const userPreferences = await getUserPreferences();

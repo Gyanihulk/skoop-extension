@@ -16,6 +16,9 @@ export const ScreenProvider = ({ children }) => {
     if (activePage === 'ContactUs') {
       responseHeight = "400px";
     }
+    else if (activePage === 'Home') {
+      responseHeight = "650px";
+    }
     else if (activePage === 'ReportBug') {
       responseHeight = "399px";
     }
