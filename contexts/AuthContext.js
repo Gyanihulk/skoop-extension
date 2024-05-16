@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
     return passwordRegex.test(password)
   }
   const handleSkoopLogin = async (username, password) => {
-    const toastId = toast.loading('Signing In...')
+    const toastId = toast.success('Signing In...')    
     setSocial(null)
     try {
       const response = await fetch(API_ENDPOINTS.signIn, {
@@ -46,9 +46,7 @@ export const AuthProvider = ({ children }) => {
         },
       })
       if (response.ok) {
-        toast.success('Log In Successful', {
-          id: toastId,
-        })
+        toast.success('Log In Successful')
         const resjson = await response.json()
         localStorage.setItem('accessToken', JSON.stringify(resjson.accessToken))
         localStorage.setItem(
@@ -64,16 +62,12 @@ export const AuthProvider = ({ children }) => {
       } else if (response.status == 401) {
         setShowClearSessionDialog(true)
       } else {
-        toast.error('Incorrect username or password', {
-          id: toastId,
-        })
+        toast.error('Incorrect username or password')
       }
     } catch (err) {
       toast.dismiss();
       console.error(err);
-      toast.error('Something went wrong, please try again', {
-        className: 'custom-toast',
-      })
+      toast.error('Something went wrong, please try again')
     }
   }
 
@@ -259,7 +253,7 @@ export const AuthProvider = ({ children }) => {
         )
         return
       }
-      const toastId = toast.loading('Signing Up ...')
+      const toastId = toast.loading('Signing Up ')
       const res = await fetch(API_ENDPOINTS.signUp, {
         method: 'POST',
         body: JSON.stringify({

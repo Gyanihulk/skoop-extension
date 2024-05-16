@@ -96,7 +96,7 @@ const ChatGpt = ({ appendToBody, close }) => {
     event.preventDefault()
     try {
       setLoading(true)
-
+      toast.success("Generating response...")
       const choices = await fetch(
         API_ENDPOINTS.cgpt + new URLSearchParams({ input: cgpt }),
         {
