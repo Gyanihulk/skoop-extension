@@ -66,7 +66,7 @@ const SubscriptionScreen = () => {
   return (
     <div className="subscription-container">
       <div className="subscription-header">
-        <h1>Start your 3-day free trial.</h1>
+        <h1>Start your 10-day free trial.</h1>
         <span>Unlock all the premium benfits now.</span>
         <ul className="feature-list">
           <li>🔓 Accessibility to all features</li>
@@ -97,7 +97,7 @@ const SubscriptionScreen = () => {
           <div className="ps-4 pt-2">
             <h5>Monthly</h5>
             <p>
-              First 3 days free, then $
+              First 10 days free, then $
               {couponInfo && subscriptionType === 'monthly'
                 ? couponInfo?.discount?.percent_off
                   ? (
@@ -132,7 +132,7 @@ const SubscriptionScreen = () => {
               </span>
             </h5>
             <p>
-              First 3 days free, then $
+              First 10 days free, then $
               {couponInfo && subscriptionType === 'yearly'
                 ? couponInfo?.discount?.percent_off
                   ? (
@@ -181,7 +181,7 @@ const SubscriptionScreen = () => {
           type="button"
           onClick={handleCreateSubscription}
         >
-          START 3-DAY FREE TRIAL
+          START 10-DAY FREE TRIAL
         </button>
       </div>
       <p className="small-bold-text">
