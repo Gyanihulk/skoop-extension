@@ -13,7 +13,7 @@ import MessageContext from '../contexts/MessageContext'
 import DeleteModal from './DeleteModal'
 import ScreenContext from "../contexts/ScreenContext"
 
-export const VideoPreview = ({displayComp}) => {
+export const VideoPreview = () => {
   const [thumbnailImage, setThumbnailImage] = useState(
     '/images/videoProcessing.png'
   )
@@ -39,25 +39,6 @@ export const VideoPreview = ({displayComp}) => {
     }
   }, [latestVideo])
 
-  useEffect(() => {
-    let responseHeight;
-    const skoopExtensionBody = document.getElementById("skoop-extension-body");
-    if(activePage == 'Home' && displayComp === "DefaultCard" && !latestBlob ) {
-      responseHeight = "383px";
-    }
-    else if(activePage == 'Home' && displayComp === "DefaultCard" && latestBlob ) {
-      responseHeight = "600px";
-    }
-
-    if(responseHeight) {
-      skoopExtensionBody.style.height = responseHeight;
-      sendMessageToBackgroundScript({
-        message: "resizeIframe",
-        width: "355px",
-        height: responseHeight,
-      });
-    }
-  }, [latestBlob, displayComp])
   useEffect(() => {
   }, [latestBlob, thumbnailImage, , showRenamePopup, showVideoOptionsDialog])
   const UpdateThumbnail = async (event) => {

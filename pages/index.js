@@ -55,7 +55,14 @@ export default function Home() {
 
   useEffect(() => {
     (async () => {
-      
+      const globalWindowObject = window;
+      let skoopExtensionBody = document.getElementById("skoop-extension-body");
+      if (skoopExtensionBody && globalWindowObject?.location.ancestorOrigins?.length > 0) {
+        skoopExtensionBody.style.height = "100vh";
+      }
+      else {
+        skoopExtensionBody.style.height = "600px";
+      }
       const res = await verifyToken()
       const showWelcomePage = localStorage.getItem('welcomePageShown')
 

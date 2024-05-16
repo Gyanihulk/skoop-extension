@@ -1751,13 +1751,8 @@ img.icon-style-normal {
   background: white;
   position: relative;
 }
-.subscription-options {
-  margin-top: 35px;
-}
-.subscription-header {
-  padding-left: 20px;
-  border-radius: 5px;
-}
+
+
 .subscription-header .close {
   position: absolute;
   top: 10px;
@@ -2086,12 +2081,14 @@ img.icon-style-normal {
   max-width: 400px;
   margin: auto;
 }
+.subscription-options {
+  margin-top: 30px;
+}
 .subscription-header {
   background-color: #fff;
-  padding: 10px;
   border-radius: 15px;
-  margin-bottom: 20px;
   position: relative;
+  padding-left: 20px;
 }
 .subscription-header h3 {
   font-weight: bold;
@@ -2381,7 +2378,7 @@ img.icon-style-normal {
   position: relative;
   min-width: 355px;
   overflow-x: hidden;
-  height:600px;
+  height:100vh;
 }
 
 .h-min-100 {
@@ -2398,4 +2395,13 @@ img.icon-style-normal {
 .work-in-progress{
   height: 150px;
   width: 200px;
+}
+
+.message-container #gpt-dropdown + div {
+  max-height: 215px;
+  overflow-y: auto;
+}
+.chatgpt-container #gpt-dropdown + div {
+  max-height: 220px;
+  overflow-y: auto;
 }

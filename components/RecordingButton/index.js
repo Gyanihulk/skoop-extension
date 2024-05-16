@@ -77,11 +77,29 @@ const RecordingButton = () => {
       setWidth(16 * videoResizeConstant)
       setHeight(9 * videoResizeConstant)
     }
-    toggleVideoSettings()
+    toggleVideoSettings();
+    localStorage.setItem("videoStyleSelect", style);
   }
   const toggleVideoSettings = () => {
     setVideoSettingsOpen(!videoSettingsOpen)
   }
+
+  useEffect(()=> {
+     let currentVideoStyleSelect = localStorage.getItem("videoStyleSelect");
+     if(currentVideoStyleSelect) {
+      setSelectedVideoStyle(currentVideoStyleSelect);
+      if (currentVideoStyleSelect === 'Square') {
+        setHeight(10 * videoResizeConstant)
+        setWidth(10 * videoResizeConstant)
+      } else if (currentVideoStyleSelect === 'Vertical Mode') {
+        setHeight(16 * videoResizeConstant)
+        setWidth(9 * videoResizeConstant)
+      } else {
+        setWidth(16 * videoResizeConstant)
+        setHeight(9 * videoResizeConstant)
+      }
+     }
+  }, [])
 
   useEffect(() => {
     const handleClickOutside = (event) => {

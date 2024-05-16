@@ -62,6 +62,7 @@ const Homepage = (props) => {
   useEffect(() => {
     if (chrome.runtime.onMessage) {
       try {
+      
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
           const targetTab = tabs[0];
           if (targetTab.url.includes("linkedin")) {
