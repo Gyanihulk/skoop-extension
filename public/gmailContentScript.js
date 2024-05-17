@@ -75,7 +75,7 @@ function injectIframe() {
   let isMinimized = false
   toggleButton.onclick = function () {
     if (isMinimized) {
-      container.style.height = '98vh'
+      container.style.height = '93vh'
     } else {
       container.style.height = '44px'
     }

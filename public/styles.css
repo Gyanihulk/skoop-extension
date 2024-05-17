@@ -10,10 +10,10 @@
 
 #skoop-extension-container {
   position: fixed;
-  top: 4px;
+  top: 48px;
   right: 0;
   width: 12.2vw;
-  height: 98vh;
+  height: 93vh;
   z-index: 10000;
   display: block;
   border-radius: 6px;
