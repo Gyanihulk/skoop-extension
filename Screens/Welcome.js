@@ -6,7 +6,7 @@ const Welcome = () => {
   const { navigateToPage } = useContext(ScreenContext);
 
   const handleGetStarted = () => {
-    navigateToPage("SignInIntro");
+    navigateToPage("SignUp");
     localStorage.setItem("welcomePageShown", true);
   };
 

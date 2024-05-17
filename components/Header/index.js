@@ -15,6 +15,7 @@ import { IoClose } from 'react-icons/io5'
 import { HiMiniMinus } from 'react-icons/hi2'
 import { TbArrowsDiagonalMinimize2 } from 'react-icons/tb'
 import { TbArrowsDiagonal } from 'react-icons/tb'
+import { RiDashboard2Line } from "react-icons/ri";
 
 export default function Header() {
   const { isAuthenticated, handleLogOut ,isPro} = useContext(AuthContext)
@@ -121,11 +122,11 @@ export default function Header() {
       <nav className="navbar pe-2 py-2 d-flex align-items-center" id="Header">
         <div className="header-text">Skoop App</div>
 
-        <div className="d-flex ml-auto">
+        <div className="d-flex ml-auto align-items-center">
           {isAuthenticated && (
             <>
               <button
-                className="btn btn-link header-icon"
+                className="btn btn-link header-icon d-flex align-items-center justify-content-center"
                 data-mdb-toggle="tooltip"
                 data-mdb-placement="bottom"
                 title="Expand/Shrink"
@@ -139,7 +140,7 @@ export default function Header() {
               </button>
               {isProfilePage && (
                 <button
-                  className="btn btn-link header-icon"
+                  className="btn btn-link header-icon d-flex align-items-center justify-content-center"
                   data-mdb-toggle="tooltip"
                   data-mdb-placement="bottom"
                   title="Save Profile Info "
@@ -153,7 +154,7 @@ export default function Header() {
               )}
               <div className={`nav-item dropdown custom`}>
                 <button
-                  className="btn btn-link header-icon"
+                  className="btn btn-link header-icon d-flex align-items-center justify-content-center"
                   data-mdb-toggle="tooltip"
                   data-mdb-placement="bottom"
                   title="Helper Videos"
@@ -208,20 +209,20 @@ export default function Header() {
               </div>
               {!['Subscription','PaymentScreen'].includes(activePage) && (
                 <button
-                  className="btn btn-link header-icon"
+                  className="btn btn-link header-icon d-flex align-items-center justify-content-center"
                   onClick={openCalendarWindow}
                   data-mdb-toggle="tooltip"
                   data-mdb-placement="bottom"
                   title="Go to your Meeting Calendar Schedular"
                 >
-                  <FaRegCalendar size={14} />
+                  <RiDashboard2Line size={16} />
                 </button>
               )}
 
               {/* Profile Dropdown */}
               <div className={`nav-item dropdown custom`}>
                 <button
-                  className="btn btn-link header-icon dropstart"
+                  className="btn btn-link header-icon dropstart d-flex align-items-center justify-content-center"
                   onClick={toggleProfileDropdown}
                   data-mdb-toggle="tooltip"
                   data-mdb-placement="bottom"
@@ -272,7 +273,7 @@ export default function Header() {
           )}
 
           <button
-            className="btn btn-link header-icon"
+            className="btn btn-link header-icon d-flex align-items-center justify-content-center"
             data-mdb-toggle="tooltip"
             data-mdb-placement="bottom"
             title="Close"

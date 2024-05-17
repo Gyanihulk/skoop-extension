@@ -106,8 +106,8 @@ const VideoCard = ({
     if (event) {
       event.stopPropagation()
     }
-    const height = video.height * 1.5
-    const width = video.width * 1.5
+    const height = video.height * 1.3
+    const width = video.width * 1.3
 
     sendMessageToBackgroundScript({
       action: 'startPlayingVideo',

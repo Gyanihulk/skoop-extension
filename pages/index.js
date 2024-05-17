@@ -45,7 +45,7 @@ const [isWebPage,setIsWebPage]=useState(false)
       const globalWindowObject = window;
       let skoopExtensionBody = document.getElementById("skoop-extension-body");
       if (skoopExtensionBody && globalWindowObject?.location.ancestorOrigins?.length > 0) {
-        skoopExtensionBody.style.height = "92vh";
+        skoopExtensionBody.style.height = "100vh";
         setIsWebPage(true)
       }
       else {

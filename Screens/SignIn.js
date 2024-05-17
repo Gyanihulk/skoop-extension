@@ -32,8 +32,8 @@ const SignIn = () => {
           <span>or Sign in with</span>
         </div>
         {showClearSessionDialog && social!=null && <RemoveSessions onDelete={handleDeleteSessions}/>}
-          <ContinueWithLinkedInButton setSocial={setSocial}/>
-          <ContinueWithGoogleButton setSocial={setSocial}/>
+          <ContinueWithLinkedInButton setSocial={setSocial} message="Continue with LinkedIn" />
+          <ContinueWithGoogleButton setSocial={setSocial} message="Continue with Google"/>
 
         
         <div className="text-center mt-2 auth-footer-label">

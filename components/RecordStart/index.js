@@ -12,7 +12,10 @@ const RecordStart = ({ onRestart, onStop }) => {
       <div className="start-rec-main">
         <div className="start-rec-container">
           <div className="start-rec-top">
-            <div className="start-rec-circle d-flex justify-content-center align-items-center " onClick={onStop}>
+            <div
+              className="start-rec-circle d-flex justify-content-center align-items-center "
+              onClick={onStop}
+            >
               <div className="fill-circle"></div>
             </div>
             <div class="loading-text my-1">Recording</div>

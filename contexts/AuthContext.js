@@ -567,6 +567,9 @@ export const AuthProvider = ({ children }) => {
         )}`,
       },
     })
+    sendMessageToBackgroundScript({
+      message: 'initializeExtensionDimension'
+    })
     localStorage.setItem('accessToken', JSON.stringify('none'))
     setIsAuthenticated(false)
     setIsPro(false)

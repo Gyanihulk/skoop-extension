@@ -11,6 +11,13 @@ function injectIframe() {
   const container = document.createElement('div')
   container.id = 'skoop-extension-container'
 
+  const extensionDimension = localStorage.getItem('skoopExtensionDimension');
+  if (extensionDimension) {
+    const { width, height } = JSON.parse(extensionDimension);
+    container.style.width = width + 'px';
+    container.style.height = height + 'px';
+  }
+
   container.ondragstart = function () {
     return false
   }
@@ -75,7 +82,15 @@ function injectIframe() {
   let isMinimized = false
   toggleButton.onclick = function () {
     if (isMinimized) {
-      container.style.height = '93vh'
+      const extensionDimension = localStorage.getItem('skoopExtensionDimension');
+      if (extensionDimension) {
+        const { width, height } = JSON.parse(extensionDimension);
+        container.style.width = width + 'px';
+        container.style.height = height + 'px';
+      }
+      else{
+        container.style.height = '98vh'
+      }
     } else {
       container.style.height = '44px'
     }
@@ -86,8 +101,8 @@ function injectIframe() {
   container.appendChild(toggleButton)
   container.appendChild(iframe)
 
-  const minWidth = 400
-  const maxWidth = 800
+  const minWidth = 355
+  const maxWidth = 575
   const minHeight = 230
   const maxHeight = 750
   const resizer = document.createElement('div')
@@ -103,7 +118,7 @@ function injectIframe() {
   resizer.style.backgroundRepeat = 'no-repeat'
   resizer.style.backgroundPosition = 'center'
   resizer.style.transform = 'rotate(-90deg)'
-  // container.appendChild(resizer);
+  container.appendChild(resizer);
 
   resizer.addEventListener('mousedown', initResize, false)
 
@@ -135,6 +150,9 @@ function injectIframe() {
     // Constrain newWidth and newHeight within min/max bounds
     newWidth = Math.max(minWidth, Math.min(newWidth, maxWidth))
     newHeight = Math.max(minHeight, Math.min(newHeight, maxHeight))
+
+    // update the container's size
+    localStorage.setItem("skoopExtensionDimension", JSON.stringify({ width: newWidth, height: newHeight }));
 
     container.style.width = newWidth + 'px'
     container.style.height = newHeight + 'px'
@@ -918,6 +936,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     container.appendChild(modal)
     document.body.appendChild(overlay)
     document.body.appendChild(container)
+  }
+
+  if (request.action === 'initializeExtensionDimension') {
+    const extensionDimension = localStorage.getItem('skoopExtensionDimension');
+    if (extensionDimension) {
+      localStorage.setItem('skoopExtensionDimension', JSON.stringify({}));
+      const container = document.getElementById('skoop-extension-container');
+      container.style.width = "12.2vw";
+      container.style.height = "98vh";
+    }
+    return true;
   }
 
   return true

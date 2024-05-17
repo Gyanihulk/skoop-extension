@@ -93,7 +93,7 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
 
   return (
     <div id="homeDiv">
-     {!isRecordStart && <div className="d-flex flex-column align-items-center">
+     {!isRecordStart && <div className="d-flex flex-column align-items-center px-11 ms-2">
         <button
           onClick={isRecording ? stopRecordingAndCloseModal : startRecordingAudio}
           id="skoop_record_button"
@@ -128,7 +128,7 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
             </svg>
           )}
         </button>
-        <span className="record-button-bottom-text">Voice Memo</span>
+        <span className="record-button-bottom-text">Voice Memos</span>
       </div>}
       <div>
       </div>

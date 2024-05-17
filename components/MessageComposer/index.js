@@ -552,9 +552,9 @@ const MessageComposer = () => {
                 )}
               </ul>
             </div>
-            <div className="d-flex flex-row  align-items-right ">
+            <div className="d-flex flex-row  align-items-right me-4">
               <button
-                className="btn send-button d-flex  align-items-center justify-content-center"
+                className="btn send-button d-flex me-2 align-items-center justify-content-center"
                 type="button"
                 onClick={handleInsertionToWebsite}
               >

@@ -52,10 +52,27 @@ export const MediaUtilsProvider = ({ children }) => {
     try {
       videoTitle = replaceInvalidCharacters(videoTitle + `_${Date.now()}`);
       const formData = new FormData();
+      // check for the width and height
+      let actualWidth = parseInt(width);
+      let actualHeight = parseInt(height);
+
+      if(width == height && width > 320) {
+        actualWidth = 320;
+        actualHeight = 320;
+      }
+      else if(width > height && width > 640) {
+        actualWidth = 640;
+        actualHeight = 360;
+      }
+      else if (height > width && height > 512) {
+        actualWidth = 288;
+        actualHeight = 512;
+      }
+
       formData.append("data", file, `${videoTitle}.mp4`);
-      formData.append("height", parseInt(height));
-      formData.append("width", parseInt(width));
-      formData.append("booking_link", parseInt(width));
+      formData.append("height", actualHeight);
+      formData.append("width", actualWidth);
+      formData.append("booking_link", actualWidth);
       const customHeaders = new Headers();
       customHeaders.append("title", videoTitle);
       customHeaders.append("directory_name", directoryName);

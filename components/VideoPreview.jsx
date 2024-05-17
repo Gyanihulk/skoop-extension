@@ -225,7 +225,7 @@ export const VideoPreview = () => {
         accept="image/*"
       />
 
-      {latestBlob && (<div className="container" id="video-Preview">
+      {(latestVideo || latestBlob) && (<div className="container" id="video-Preview">
         <div className="card d-flex flex-row align-items-center">
           <div
             className="d-flex justify-content-between px-2"

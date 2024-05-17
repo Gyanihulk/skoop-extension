@@ -267,5 +267,33 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
     });
   }
+  if(request.message === "initializeExtensionDimension") {
+    chrome.tabs.query({}, (tabs) => {
+      const urlToFindGoogle = "https://mail.google.com/mail";
+      const urlToFindLinkedIn = "https://www.linkedin.com/";
+
+      // Find the tab with either the Google Mail URL or the LinkedIn URL
+      const targetTab = tabs.find(
+        (tab) =>
+          tab.active &&
+          (tab.url.startsWith(urlToFindGoogle) ||
+            tab.url.startsWith(urlToFindLinkedIn))
+      );
+
+      if (targetTab) {
+        chrome.tabs.sendMessage(
+          targetTab.id,
+          {
+            action: "initializeExtensionDimension",
+          },
+          (response) => {
+            if (!response) {
+              console.error("Error while initializing extension dimension:", chrome.runtime.lastError);
+            }
+          }
+        );
+      }
+    });
+  }
   return true;
 });

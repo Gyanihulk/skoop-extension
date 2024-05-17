@@ -241,8 +241,8 @@ const SignUp = () => {
               <span>or Sign up with</span>
             </div>
             {showClearSessionDialog && social!=null && <RemoveSessions onDelete={handleDeleteSessions}/>}
-            <ContinueWithLinkedInButton setSocial={setSocial}/>
-            <ContinueWithGoogleButton setSocial={setSocial}/>
+            <ContinueWithLinkedInButton setSocial={setSocial} message="Sign up with LinkedIn" />
+            <ContinueWithGoogleButton setSocial={setSocial} message="Sign up with Google"/>
             <div className="text-center mt-2 auth-footer-label">
               Already have an account?{' '}
               <span
