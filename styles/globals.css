@@ -63,6 +63,9 @@
   margin-right: 16px;
   margin-left: 16px;
 }
+.px-11 {
+  padding: 0px 11px;
+}
 .p-0-5 {
   padding: 8px;
 }
@@ -1393,7 +1396,6 @@ select.form-control {
 ul.nav-button li {
   display: grid;
   place-items: center;
-  min-width: calc(25% - 1.5rem);
   cursor: pointer;
 }
 ul.nav-button li svg {
@@ -2393,15 +2395,10 @@ img.icon-style-normal {
   height:70px;
 }
 .work-in-progress{
-  height: 150px;
-  width: 200px;
+  height:200px;
+  width:350px;
 }
-
-.message-container #gpt-dropdown + div {
-  max-height: 215px;
-  overflow-y: auto;
-}
-.chatgpt-container #gpt-dropdown + div {
-  max-height: 220px;
-  overflow-y: auto;
+.chatgpt-container .row [role="group"].dropdown.btn-group,
+.message-container .row [role="group"].dropdown.btn-group {
+  width: 100%;
 }

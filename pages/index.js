@@ -36,15 +36,22 @@ export default function Home() {
     fingerPrint,
   } = useContext(AuthContext)
   const { activePage, navigateToPage } = useContext(ScreenContext)
-  const { isLoading, error, data, getData } = useVisitorData(
-    { extendedResult: true },
-    { immediate: true }
-  )
+const [isWebPage,setIsWebPage]=useState(false)
 
   // Using useEffect to call getData on component mount
   useEffect(() => {
 
     if (chrome && chrome.runtime && chrome.runtime.getManifest) {
+      const globalWindowObject = window;
+      let skoopExtensionBody = document.getElementById("skoop-extension-body");
+      if (skoopExtensionBody && globalWindowObject?.location.ancestorOrigins?.length > 0) {
+        skoopExtensionBody.style.height = "100vh";
+        setIsWebPage(true)
+      }
+      else {
+        skoopExtensionBody.style.height = "450px";
+        navigateToPage("CantUseScreen")
+      }
       // Get the manifest using the getManifest() method
       const manifest = chrome.runtime.getManifest()
       // Set the version from the manifest file
@@ -55,20 +62,12 @@ export default function Home() {
 
   useEffect(() => {
     (async () => {
-      const globalWindowObject = window;
-      let skoopExtensionBody = document.getElementById("skoop-extension-body");
-      if (skoopExtensionBody && globalWindowObject?.location.ancestorOrigins?.length > 0) {
-        skoopExtensionBody.style.height = "100vh";
-      }
-      else {
-        skoopExtensionBody.style.height = "600px";
-      }
       const res = await verifyToken()
       const showWelcomePage = localStorage.getItem('welcomePageShown')
 
       
 
-      if (chrome.tabs) {
+      if (isWebPage && chrome.tabs) {
         // Query the tabs
         chrome.tabs.query({}, function (tabs) {
           // Set the retrieved tabs to state
@@ -98,7 +97,7 @@ export default function Home() {
         })
       }
     })()
-  }, [isAuthenticated, newUser, isPro])
+  }, [isAuthenticated, newUser, isPro,isWebPage])
   // let isAuthenticated = true;
   // let activePage = 'ThankYouScreen';
   // let isPro = true;
@@ -113,9 +112,10 @@ export default function Home() {
           'SignIn',
           'SignUp',
           ' ',
-          'ForgotPassword',
+          'ForgotPassword','CantUseScreen'
         ].includes(activePage) && <Header />}
         {activePage === ' ' && <LoadingScreen />}
+        {activePage === 'CantUseScreen' && <CantUseScreen />}
         {isAuthenticated & isPro ? (
           <>
             {activePage === 'Home' && <Homepage />}
@@ -156,7 +156,6 @@ export default function Home() {
             {activePage == 'SignInIntro' && <SignInWith />}
           </>
         )}
-        {activePage === 'CantUseScreen' && <CantUseScreen />}
       </div>
     </>
   )
