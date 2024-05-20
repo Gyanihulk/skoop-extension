@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
 import ScreenContext from "../contexts/ScreenContext";
 import CustomButton from "../components/Auth/button/CustomButton";
+import AuthContext from "../contexts/AuthContext";
 
 const Welcome = () => {
   const { navigateToPage } = useContext(ScreenContext);
-
+ const {version}=useContext(AuthContext)
   const handleGetStarted = () => {
     navigateToPage("SignUp");
     localStorage.setItem("welcomePageShown", true);
@@ -32,7 +33,7 @@ const Welcome = () => {
         </div>
 
         <div className="app-version">
-          <p>Version 1.0</p>
+          <p>Version 1.0.2</p>
         </div>
       </div>
     </div>

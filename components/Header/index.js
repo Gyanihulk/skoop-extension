@@ -43,6 +43,16 @@ export default function Header() {
     }
   }, [profileOpen, showHelpMenu])
 
+  useEffect(() => {
+    let skoopExtensionBody = document.getElementById("skoop-extension-body");
+    if (expand) {
+      skoopExtensionBody.style.overflowY = 'hidden';
+    } 
+    else {
+      skoopExtensionBody.style.overflowY = 'auto';
+    }
+  }, [expand])
+
   const toggleProfileDropdown = () => {
     setProfileOpen(!profileOpen)
     setShowHelpMenu(false)

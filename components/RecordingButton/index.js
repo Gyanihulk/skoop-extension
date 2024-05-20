@@ -248,7 +248,7 @@ const RecordingButton = () => {
           {isRecordStart && (
             <RecordStart onRestart={toggleRestart} onStop={toggleStop} />
           )}
-          <div class="row justify-content-center px-3 gx-5">
+          <div class="row justify-content-center px-3 gx-3">
            {!isRecordStart &&  <div class="col-auto">
               <div className="d-flex flex-column align-items-center">
                 <div
