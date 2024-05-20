@@ -106,6 +106,7 @@ function injectIframe() {
   const minHeight = 230
   const maxHeight = 750
   const resizer = document.createElement('div')
+ 
   resizer.style.width = '30px'
   resizer.style.height = '30px'
   resizer.style.position = 'absolute'

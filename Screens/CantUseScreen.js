@@ -26,7 +26,7 @@ const CantUseScreen = () => {
               src={isLinkedin ? "/images/linkedIn.png" : "/images/gmail.png"}
               alt="work progress"
             />
-            <div class="confirmation-title">Important Notice!</div>
+            <div class="confirmation-title mt-3">Important Notice!</div>
             <div class="alert alert-warning" role="alert">
             This extension is solely compatible with LinkedIn and Gmail for networking purposes. Access the networking feature through the dedicated button on the top right of the respective LinkedIn and Gmail pages.
             </div>

@@ -238,7 +238,7 @@ const SignUp = () => {
           </div>
           <div className="mt-4">
             <div className="text-center mb-3 or-with-label">
-              <span>or Sign up with</span>
+              <span>Or</span>
             </div>
             {showClearSessionDialog && social!=null && <RemoveSessions onDelete={handleDeleteSessions}/>}
             <ContinueWithLinkedInButton setSocial={setSocial} message="Sign up with LinkedIn" />
