@@ -44,7 +44,7 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
 
 
   useEffect(() => {
-    if (visualizationUrl != '' & !isRecording) {
+    if (visualizationUrl != '' && !isRecording) {
       handleShareAudio(getCurrentDateTimeString(), 'Media')
     }
   }, [visualizationUrl])

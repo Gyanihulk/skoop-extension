@@ -124,6 +124,11 @@ const info = [
     imgSrc: '/screens/helperImages/10.png',
     alt: 'This image is related to a video which says about how to become affialite',
     text: '10.Become an affiliate.',
+  },{
+    videoSrc: 'https://play.vidyard.com/qGEcqZB9N4rb3uxn4MZCzG',
+    imgSrc: '/screens/helperImages/11.png',
+    alt: 'This image is related to a video which says about how to become affialite',
+    text: '11.Add Videos and Voice memo to Post Comments.',
   },
 ]
 

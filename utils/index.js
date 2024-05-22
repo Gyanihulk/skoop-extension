@@ -19,25 +19,33 @@ export const insertIntoLinkedInMessageWindow = async (
       const fullMessageWindows = Array.from(
         document.getElementsByClassName('msg-convo-wrapper')
       );
+      console.log(fullMessageWindows, "all chat windows");
   
       // Map over the fullMessageWindows to create a lookup for names and their corresponding contenteditable element and send button
       const nameToElementsMap = fullMessageWindows.reduce((acc, convoWrapper) => {
         const h2Element = convoWrapper.querySelector('h2');
+        const nameFromH2 = h2Element ? h2Element.textContent.replace(/\s+/g, ' ').trim() : '';
+        const spanInsideButton = convoWrapper.querySelector('.artdeco-pill__text');
+        
+        const nameFromSpan = spanInsideButton ? spanInsideButton.textContent.replace(/\s+/g, ' ').trim() : '';
         const contentEditableDiv = convoWrapper.querySelector('.msg-form__contenteditable');
         const sendButton = convoWrapper.querySelector('.msg-form__send-button');
-        const name = h2Element ? h2Element.textContent.replace(/\s+/g, ' ').trim() : '';
+        const name = nameFromSpan || nameFromH2 ;
+  
         if (name && contentEditableDiv && sendButton) {
           acc[name] = { contentEditableDiv, sendButton };
         }
+        console.log(acc)
         return acc;
       }, {});
   
       arr.forEach((item) => {
-        console.log(item, 'test');
+        console.log(item, 'test',htmlToInsert);
         const elements = nameToElementsMap[item.name];
         if (elements) {
           const { contentEditableDiv, sendButton } = elements;
           contentEditableDiv.removeAttribute('aria-label');
+          const messageHtml = `<p>${htmlToInsert}</p>`;
           contentEditableDiv.innerHTML = htmlToInsert;
           const dummyInput = new Event('input', {
             bubbles: true,
@@ -45,13 +53,13 @@ export const insertIntoLinkedInMessageWindow = async (
           });
           contentEditableDiv.dispatchEvent(dummyInput);
           setTimeout(() => {
-          // Click the send button
-          sendButton.click();
-        }, 1000)
+            // Click the send button
+            sendButton.click();
+          }, 1000);
         }
       });
-    }, 600)
-  }
+    }, 600);
+  };
 
   try {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {

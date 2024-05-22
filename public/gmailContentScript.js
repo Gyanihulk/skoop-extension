@@ -106,17 +106,16 @@ function injectIframe() {
   container.appendChild(iframe)
 
   const minWidth = 355
-  const maxWidth = 575
+  const maxWidth = 355
   const minHeight = 550
-  const maxHeight = 750
   const resizer = document.createElement('div')
  
   resizer.id = 'skoop-resizer-buttom';
-  resizer.style.width = '30px'
-  resizer.style.height = '30px'
+  resizer.style.width = '20px'
+  resizer.style.height = '20px'
   resizer.style.position = 'absolute'
-  resizer.style.bottom = '0'
-  resizer.style.right = '0'
+  resizer.style.bottom = '3px'
+  resizer.style.right = '3px'
   resizer.style.cursor = 'se-resize'
   resizer.style.backgroundImage =
     'url("' + chrome.runtime.getURL('/icons/resize.png') + '")'
@@ -155,7 +154,7 @@ function injectIframe() {
     const dimensions = container.getBoundingClientRect()
     let newWidth = e.clientX - dimensions.left
     let newHeight = e.clientY - dimensions.top
-
+    const maxHeight = window.innerHeight * 0.98;
     // Constrain newWidth and newHeight within min/max bounds
     newWidth = Math.max(minWidth, Math.min(newWidth, maxWidth))
     newHeight = Math.max(minHeight, Math.min(newHeight, maxHeight))
@@ -958,7 +957,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'initializeExtensionDimension') {
     const extensionDimension = localStorage.getItem('skoopExtensionDimension');
     if (extensionDimension) {
-      localStorage.setItem('skoopExtensionDimension', JSON.stringify({}));
+      localStorage.removeItem('skoopExtensionDimension');
       const container = document.getElementById('skoop-extension-container');
       container.style.width = "12.2vw";
       container.style.height = "98vh";

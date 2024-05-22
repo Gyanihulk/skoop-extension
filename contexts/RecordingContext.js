@@ -122,6 +122,7 @@ export const RecordingProvider = ({ children }) => {
         body: formData,
       })
       response = await response.json()
+      setVisualizationUrl('')
       toast.success('Voice Memo uploaded,encoding in progress', {
         id: loadingObj,
       })
