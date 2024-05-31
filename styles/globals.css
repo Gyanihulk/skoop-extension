@@ -2402,3 +2402,26 @@ img.icon-style-normal {
 .message-container .row [role="group"].dropdown.btn-group {
   width: 100%;
 }
+
+.notification-container {
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center content horizontally */
+  width: 100%; /* Full width of the container */
+}
+
+.notification-div {
+  background-color: #fff3cd;
+  color: #f40606;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Center text vertically and horizontally */
+  flex-grow: 1; /* Allow the div to grow to fit its content */
+  min-height: 20px; /* Minimum height of 20px */
+  max-height: 36px; /* Maximum height of 36px to limit excessive growth */
+  transition: max-height 0.3s ease; /* Smooth transition for height */
+  overflow: hidden; /* Ensure no overflow */
+  text-align: center;
+  width: 100%;
+}

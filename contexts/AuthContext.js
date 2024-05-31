@@ -20,6 +20,8 @@ export const AuthProvider = ({ children }) => {
   const [userDevices, setUserDevices] = useState()
   const [social,setSocial]=useState(null)
   const [showClearSessionDialog, setShowClearSessionDialog] = useState(false)
+  const [gracePeriodCompletion , setGracePeriodCompletion] = useState(false);
+  const [gracePeriod , setGracePeriod] = useState(0);
   const validatePassword = (password) => {
     if (!password) {
       return false
@@ -58,6 +60,7 @@ export const AuthProvider = ({ children }) => {
           token: resjson.accessToken,
         })
         setIsAuthenticated(true)
+        setGracePeriod(resjson.gracePeriod)
         navigateToPage('Home')
       } else if (response.status == 401) {
         setShowClearSessionDialog(true)
@@ -269,10 +272,20 @@ export const AuthProvider = ({ children }) => {
       })
       if (res.ok) {
         const resjson = await res.json()
+        localStorage.setItem('accessToken', JSON.stringify(resjson.accessToken));
         toast.success('Success! A verification email has been sent to your inbox. Please confirm your email address to complete the login process.', {
           id: toastId,
         })
-        navigateToPage('SignInIntro')
+        localStorage.setItem(
+          'skoopUsername',
+          JSON.stringify(resjson.skoopUsername)
+        )
+        sendMessageToBackgroundScript({
+          action: 'storeToken',
+          token: resjson.accessToken,
+        })
+        setIsAuthenticated(true);
+        navigateToPage('Home')
       } else
         toast.error('Email already exists ', {
           id: toastId,
@@ -297,6 +310,8 @@ export const AuthProvider = ({ children }) => {
         if (response?.isPro) {
           setIsPro(response.isPro)
         }
+      setGracePeriodCompletion(response.gracePeriodCompleted);
+      setGracePeriod(response.gracePeriod);
         setIsAuthenticated(true)
       } else {
         setIsAuthenticated(false)
@@ -764,7 +779,11 @@ export const AuthProvider = ({ children }) => {
         setShowClearSessionDialog,
         deleteMyAllJwtSessions,
         deleteMyAllJwtSessionsBySocial,
-        social,setSocial
+        social,setSocial,
+        gracePeriod,
+        setGracePeriod,
+        gracePeriodCompletion,
+        setGracePeriodCompletion
       }}
     >
       {children}

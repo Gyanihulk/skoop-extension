@@ -18,7 +18,7 @@ import { TbArrowsDiagonal } from 'react-icons/tb'
 import { RiDashboard2Line } from "react-icons/ri";
 
 export default function Header() {
-  const { isAuthenticated, handleLogOut ,isPro} = useContext(AuthContext)
+  const { isAuthenticated, handleLogOut, isPro, gracePeriodCompletion, gracePeriod } = useContext(AuthContext)
   const { navigateToPage, activePage } = useContext(ScreenContext)
   const { setScraperPage, scraperPage, isProfilePage, expand, setExpand } =
     useContext(GlobalStatesContext)
@@ -293,6 +293,13 @@ export default function Header() {
           </button>
         </div>
       </nav>
+      {isAuthenticated && gracePeriod > 0 && (
+        <div class="notification-container">
+          <div class="notification-div">
+            Please verify your email in next {gracePeriod} days to continue using the app
+          </div>
+        </div>
+      )}
     </>
   )
 }
