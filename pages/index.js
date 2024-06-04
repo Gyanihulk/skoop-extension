@@ -69,17 +69,9 @@ export default function Home() {
 
       if (isWebPage && chrome.tabs) {
         // Query the tabs
-        chrome.tabs.query({}, function (tabs) {
-          const currentUrl = window.location.href;
-          const isCurrentUrlLinkedInOrGmail = currentUrl.includes('https://www.linkedin.com') || currentUrl.includes('https://mail.google.com');
-          let targetTab;
-          if (isCurrentUrlLinkedInOrGmail) {
-            targetTab = tabs.find((tab) =>
-              tab.active && (tab.url.includes('https://www.linkedin.com') || tab.url.includes('https://mail.google.com'))
-            );
-          } else {
-            targetTab = tabs.find((tab) => tab.active);
-          }
+        chrome.tabs.query({ active: true, lastFocusedWindow: true}, function (tabs) {
+
+          const targetTab = tabs.find((tab) => tab.active);
           if (targetTab && targetTab.url) {
             if (
               targetTab.url.includes('https://www.linkedin.com') ||
