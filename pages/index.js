@@ -71,7 +71,9 @@ const [isWebPage,setIsWebPage]=useState(false)
         // Query the tabs
         chrome.tabs.query({}, function (tabs) {
           // Set the retrieved tabs to state
-          const targetTab = tabs.find((tab) => tab.active)
+          const targetTab = tabs.find((tab) => 
+            tab.active && (tab.url === 'https://www.linkedin.com' || tab.url === 'https://mail.google.com/')
+        );
           if (targetTab.url) {
             if (
               targetTab.url.includes('https://www.linkedin.com') ||
