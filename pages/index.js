@@ -71,7 +71,7 @@ export default function Home() {
         // Query the tabs
         chrome.tabs.query({ active: true, lastFocusedWindow: true}, function (tabs) {
 
-          const targetTab = tabs.find((tab) => tab.active);
+          const targetTab = tabs.find((tab) => tab.active && (tabs.url.includes("https://www.linkedin.com") || tabs.includes('https://mail.google.com/')));
           if (targetTab && targetTab.url) {
             if (
               targetTab.url.includes('https://www.linkedin.com') ||
