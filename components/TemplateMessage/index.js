@@ -5,8 +5,62 @@ import { IoMdClose } from 'react-icons/io'
 import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
+import { TbArrowsDiagonal } from 'react-icons/tb'
+import { RiDragMove2Fill } from "react-icons/ri";
 import DeleteModal from '../DeleteModal'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+import {closestCenter, DndContext, DragOverlay, KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors} from '@dnd-kit/core'
+import {arrayMove, SortableContext, useSortable, verticalListSortingStrategy, sortableKeyboardCoordinates} from '@dnd-kit/sortable'
+import {CSS} from '@dnd-kit/utilities'
 
+const renderTooltip = (props) => (
+  <Tooltip id="button-tooltip" {...props}>
+    Organize your messages
+  </Tooltip>
+);
+
+const SortableMessages = ({ message, orderId, heading, children }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition
+  } = useSortable({
+    id: orderId,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition
+  };
+
+  return (
+    <Dropdown.Item ref={setNodeRef} style={style} eventKey={message.id}
+    className="dropdown-item-hover">
+      <div className='dropdown-child'>
+      <OverlayTrigger
+        placement="bottom"
+        delay={{ show: 250, hide: 400 }}
+        overlay={renderTooltip}>
+          <button  {...attributes} {...listeners}
+            type="button"
+            className="custom-close-button"
+            aria-label="Close"
+            >
+              <RiDragMove2Fill className='drag-drop-icon' size={16} />
+          </button>
+        </OverlayTrigger>
+        {heading}
+      </div>
+       {children}
+    </Dropdown.Item>
+  )
+}
 const SavedMessages = ({ appendToBody, close }) => {
   const [cgpt, setCgpt] = useState('')
   const [prompt, setPrompt] = useState('')
@@ -24,6 +78,13 @@ const SavedMessages = ({ appendToBody, close }) => {
   const [responseGenerated, setResponseGenerated] = useState(false)
   const [isDeleteModal, setIsDeleteModal] = useState(false)
   const [deleteTemplate, setDeleteTemplate] = useState()
+  const [isDragging, setIsDragging] = useState(false);
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates
+    })
+  );
 
   const handleDropdownChange = (event) => {
     const value = event
@@ -238,7 +299,86 @@ const SavedMessages = ({ appendToBody, close }) => {
     }
   }
 
+  const updateOrder = async (oldindex, newIndex, oldMessageOptions) => {
+    if (!messageOptions || messageOptions.length === 0) {
+      return;
+    }
+  
+    let orderData = [...oldMessageOptions];
+    let startIndex = oldindex;
+    let endIndex = newIndex;
+    
+    if(startIndex > endIndex) {
+      let temp = startIndex;
+      startIndex = endIndex;
+      endIndex = temp;
+    }
+    
+    orderData.splice(oldindex, 1);
+    orderData.splice(newIndex, 0, oldMessageOptions[oldindex]);
+  
+    let splitedOrderData = orderData.slice(startIndex, endIndex + 1);
+    
+    const updatedOrderDetails = [];
+    let updatedSplitedOrder = splitedOrderData.map((item, index) => {
+      updatedOrderDetails.push({
+        id: item.id,
+        orderId: startIndex + index + 1,
+      });
+      return {
+        ...item,
+        order_id: startIndex + index + 1,
+      };
+    });
+  
+    orderData.splice(startIndex, endIndex - startIndex + 1, ...updatedSplitedOrder);
+    setMessageOptions(orderData);
+    try {
+      let response = await fetch(`${API_ENDPOINTS.skoopCrmAddPreloadedResponsesOrderIdUpdate}`, {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify({
+          orderData: updatedOrderDetails,
+        }),
+      });
+      if(response.ok){
+        toast.success("Message preferences updated successfully")
+      }
+      if (!response.ok) {
+        const errorMessage = await response.json();
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const handleClose = () => {
+    setShowModal(false);
+    setNewPrompt({ heading: '', description: '' });
+  }
   //integration to template
+  const handleDragStart = () => {
+    setIsDragging(true);
+  };
+
+  const handleDragEnd = (event) => {
+    setIsDragging(false);
+
+    const {active, over} = event;
+    if(active.id === over.id) {
+       return;
+    }
+    const oldMessageData = [...messageOptions];
+    setMessageOptions((message)=>{
+      const oldIndex = message.findIndex((item) => item.id == active.id);
+      const newIndex = message.findIndex((item) => item.id == over.id);
+      updateOrder(oldIndex, newIndex, oldMessageData);
+      return arrayMove(message, oldIndex, newIndex);
+    })
+  }
 
   return (
     <div>
@@ -293,13 +433,14 @@ const SavedMessages = ({ appendToBody, close }) => {
                 onSelect={handleDropdownChange}
               >
                 <Dropdown.Item eventKey="AddPrompt">
+                {/* <TbArrowsDiagonal size={16} className='expand-icon' onClick= /> */}
                   <svg
                     width="12"
                     height="13"
                     viewBox="0 0 12 13"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                    className="me-1"
+                    className="me-2 ml-0-7"
                   >
                     <path
                       fill-rule="evenodd"
@@ -311,13 +452,15 @@ const SavedMessages = ({ appendToBody, close }) => {
                   Add New Message
                 </Dropdown.Item>
                 <Dropdown.Divider />
-                {messageOptions.map((option) => (
-                  <Dropdown.Item
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+              <SortableContext items={messageOptions} strategy={verticalListSortingStrategy} >
+                {messageOptions.map((option, index) => (
+                  <SortableMessages
                     key={option.id}
-                    eventKey={option.id}
-                    className="dropdown-item-hover"
+                    message={option}
+                    orderId = {option?.id}
+                    heading={option.heading}
                   >
-                    {option.heading.slice(0, 15)}...
                     <div>
                       <svg
                         width="20"
@@ -325,7 +468,7 @@ const SavedMessages = ({ appendToBody, close }) => {
                         viewBox="0 0 20 20"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        onClick={(e) => {
+                        onMouseDown={(e) => {
                           e.stopPropagation()
                           handleEditOption(option.id)
                         }}
@@ -343,7 +486,7 @@ const SavedMessages = ({ appendToBody, close }) => {
                         viewBox="0 0 20 20"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
-                        onClick={(e) => {
+                        onMouseDown={(e) => {
                           setIsDeleteModal(true)
                           setDeleteTemplate(option)
                           e.stopPropagation()
@@ -356,9 +499,12 @@ const SavedMessages = ({ appendToBody, close }) => {
                           fill="white"
                         />
                       </svg>
-                    </div>
-                  </Dropdown.Item>
+                      </div>
+                  </SortableMessages>
                 ))}
+                </SortableContext>
+                </DndContext>
+                {isDragging && <DragOverlay />}
               </DropdownButton>
             </div>
           </div>
@@ -379,7 +525,7 @@ const SavedMessages = ({ appendToBody, close }) => {
                 <button
                   type="button"
                   className="custom-close-button"
-                  onClick={() => setShowModal(false)}
+                  onClick={handleClose}
                   aria-label="Close"
                 >
                   <IoMdClose size={16} />

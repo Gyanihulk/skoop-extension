@@ -45,6 +45,10 @@
   margin-bottom: 30px;
 }
 
+.ml-0-7 {
+  margin-left: 7px;
+}
+
 .ml-0-4 {
   margin-left: 4px;
 }
@@ -1885,6 +1889,19 @@ img.icon-style-normal {
   display: flex !important;
   justify-content: space-between;
   align-items: center;
+}
+.dropdown-child {
+  width: 86%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.drag-drop-icon {
+  fill:#8b8787;
+}
+
+.dropdown-item-hover:hover .drag-drop-icon {
+  fill:#ffffff;
 }
 
 #gpt-dropdown {

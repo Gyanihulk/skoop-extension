@@ -545,23 +545,18 @@ const UserSubscriptions = () => {
                   <li class="d-flex justify-content-start align-items-center mt-2 mysubscription-info bold-600">
                     Plan details
                   </li>
-                  <li class="d-flex justify-content-between align-items-center mysubscription-info">
+                  {subsriptionInfo?.subscription_id && <li class="d-flex justify-content-between align-items-center mysubscription-info">
                     Subscription ID
                     <span>{subsriptionInfo?.subscription_id}</span>
-                  </li>
-                  <li class="d-flex justify-content-between align-items-center mysubscription-info">
-                    Plan
-                    <span>{subsriptionInfo?.plan_type}</span>
-                  </li>
-
+                  </li>}
                   <li class="d-flex justify-content-between align-items-center mysubscription-info">
                     Start date
                     <span>{subsriptionInfo?.start_date}</span>
                   </li>
-                  <li class="d-flex justify-content-between align-items-center mysubscription-info">
-                    Expiration date
-                    <span>{subsriptionInfo?.expiration_date}</span>
-                  </li>
+                  {subsriptionInfo?.period_end_date&& <li class="d-flex justify-content-between align-items-center mysubscription-info">
+                    Period End
+                    <span>{subsriptionInfo?.period_end_date}</span>
+                  </li>}
                   <li class="d-flex justify-content-end align-items-center mt-1">
                     {/* <div className="cancel-subscription">View Payment</div> */}
                     <div

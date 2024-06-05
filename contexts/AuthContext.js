@@ -450,7 +450,7 @@ export const AuthProvider = ({ children }) => {
                   )}`,
                 },
               })
-              localStorage.setItem('accessToken', JSON.stringify('none'))
+              
               setIsAuthenticated(false)
               navigateToPage('SignInIntro')
               return
@@ -625,6 +625,7 @@ export const AuthProvider = ({ children }) => {
 
       if (res.ok) {
         return res
+        toast.success("Subscription cancelled.")
       }
     } catch (err) {
       return { ok: false }
@@ -738,6 +739,7 @@ export const AuthProvider = ({ children }) => {
       })
     }
   }
+  
   return (
     <AuthContext.Provider
       value={{

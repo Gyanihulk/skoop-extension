@@ -1,6 +1,6 @@
 // const backendUrl = "https://skoop.sumits.in"; //test
-// const backendUrl = "http://localhost:4001"; //local
-const backendUrl = "https://api.skoopapp.com"; //prod
+const backendUrl = "http://localhost:4000"; //local
+// const backendUrl = "https://api.skoopapp.com"; //prod
 const API_ENDPOINTS = {
   backendUrl,
   skoopCalendarUrl: "https://crm.skoopapp.com", //https://skoopcrm.sumits.in
@@ -60,7 +60,9 @@ const API_ENDPOINTS = {
   GoogleLogInDeleteSession: `${backendUrl}/SignInWithGoogleDeleteSession`, //POST
   createContactUs: `${backendUrl}/contact-us`, //POST
   createReportBugs: `${backendUrl}/report-bug`, //POST
-  getVideoDownloadLink:`${backendUrl}/getdownloadLink`
+  getVideoDownloadLink:`${backendUrl}/getdownloadLink`,
+  skoopCrmAddPreloadedResponsesOrderIdUpdate: `${backendUrl}/skoopCrmAddPreloadedResponsesOrderIdUpdate`, //POST
+  chatgptpromptorderidupdate: `${backendUrl}/chatgptpromptorderidupdate`, //Post
 };
 
 // with POST or PATCH apis body is sent in JSON

@@ -6,6 +6,74 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup'
 import Dropdown from 'react-bootstrap/Dropdown'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import DeleteModal from '../DeleteModal'
+import { RiDragMove2Fill } from 'react-icons/ri'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
+import {
+  closestCenter,
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+  sortableKeyboardCoordinates,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+
+const renderTooltip = (props) => (
+  <Tooltip id="button-tooltip" {...props}>
+    Organize your prompts
+  </Tooltip>
+)
+
+const SortableGpts = ({ gptPrompt, orderId, heading, children }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: orderId,
+    })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
+
+  return (
+    <Dropdown.Item
+      ref={setNodeRef}
+      style={style}
+      eventKey={gptPrompt.id}
+      className="dropdown-item-hover"
+    >
+      <div className="dropdown-child">
+        <OverlayTrigger
+          placement="bottom"
+          delay={{ show: 250, hide: 400 }}
+          overlay={renderTooltip}
+        >
+          <button
+            {...attributes}
+            {...listeners}
+            type="button"
+            className="custom-close-button"
+            aria-label="Close"
+          >
+            <RiDragMove2Fill className="drag-drop-icon" size={16} />
+          </button>
+        </OverlayTrigger>
+        {heading}
+      </div>
+      {children}
+    </Dropdown.Item>
+  )
+}
+
 const ChatGpt = ({ appendToBody, close }) => {
   const [cgpt, setCgpt] = useState('')
   const [prompt, setPrompt] = useState('')
@@ -23,6 +91,13 @@ const ChatGpt = ({ appendToBody, close }) => {
   const [responseGenerated, setResponseGenerated] = useState(false)
   const [isDeleteModal, setIsDeleteModal] = useState(false)
   const [deleteTemplate, setDeleteTemplate] = useState()
+  const [isDragging, setIsDragging] = useState(false)
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
 
   const handleDropdownChange = (event) => {
     const value = event
@@ -96,7 +171,7 @@ const ChatGpt = ({ appendToBody, close }) => {
     event.preventDefault()
     try {
       setLoading(true)
-      toast.success("Generating response...")
+      toast.success('Generating response...')
       const choices = await fetch(
         API_ENDPOINTS.cgpt + new URLSearchParams({ input: cgpt }),
         {
@@ -114,7 +189,7 @@ const ChatGpt = ({ appendToBody, close }) => {
       setWaitingMessage('')
       setPrompt(response.choices[0].message.content)
       appendToBody(response.choices[0].message.content)
-      toast.success("Response generated & added to sendbox.")
+      toast.success('Response generated & added to sendbox.')
       setResponseGenerated(true)
     } catch (err) {
       toast.error('could not get chatGpt response')
@@ -135,7 +210,7 @@ const ChatGpt = ({ appendToBody, close }) => {
       const data = await response.json()
       setMessageOptions(data)
     } catch (error) {
-      console.error(  error,"fetching error")
+      console.error(error, 'fetching error')
       toast.error('Error fetching prompts')
     }
   }
@@ -248,6 +323,11 @@ const ChatGpt = ({ appendToBody, close }) => {
     }
   }
 
+  const handleClose = () => {
+    setShowModal(false)
+    setNewPrompt({ heading: '', description: '' })
+  }
+
   const handleEditOption = (id) => {
     const selectedPrompt = messageOptions.find(
       (option) => option.id === parseInt(id, 10)
@@ -263,6 +343,92 @@ const ChatGpt = ({ appendToBody, close }) => {
     } else {
       console.error('Selected prompt not found')
     }
+  }
+
+  const updateOrder = async (oldindex, newIndex, oldMessageOptions) => {
+    if (!messageOptions || messageOptions.length === 0) {
+      return
+    }
+
+    let orderData = [...oldMessageOptions]
+    let startIndex = oldindex
+    let endIndex = newIndex
+
+    if (startIndex > endIndex) {
+      let temp = startIndex
+      startIndex = endIndex
+      endIndex = temp
+    }
+
+    orderData.splice(oldindex, 1)
+    orderData.splice(newIndex, 0, oldMessageOptions[oldindex])
+
+    let splitedOrderData = orderData.slice(startIndex, endIndex + 1)
+
+    const updatedOrderDetails = []
+    let updatedSplitedOrder = splitedOrderData.map((item, index) => {
+      updatedOrderDetails.push({
+        id: item.id,
+        orderId: startIndex + index + 1,
+      })
+      return {
+        ...item,
+        order_id: startIndex + index + 1,
+      }
+    })
+
+    orderData.splice(
+      startIndex,
+      endIndex - startIndex + 1,
+      ...updatedSplitedOrder
+    )
+    setMessageOptions(orderData)
+    try {
+      let response = await fetch(
+        `${API_ENDPOINTS.chatgptpromptorderidupdate}`,
+        {
+          method: 'POST',
+          headers: {
+            authorization: `Bearer ${JSON.parse(
+              localStorage.getItem('accessToken')
+            )}`,
+            'Content-type': 'application/json; charset=UTF-8',
+          },
+          body: JSON.stringify({
+            orderData: updatedOrderDetails,
+          }),
+        }
+      )
+      if (response.ok) {
+        toast.success('Prompt preferences updated successfully')
+      }
+      if (!response.ok) {
+        const errorMessage = await response.json()
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const handleDragStart = () => {
+    setIsDragging(true)
+  }
+
+  const handleDragEnd = (event) => {
+    setIsDragging(false)
+
+    const { active, over } = event
+    if (active.id === over.id) {
+      return
+    }
+
+    const oldMessageData = [...messageOptions]
+    setMessageOptions((message) => {
+      const oldIndex = message.findIndex((item) => item.id == active.id)
+      const newIndex = message.findIndex((item) => item.id == over.id)
+      updateOrder(oldIndex, newIndex, oldMessageData)
+      return arrayMove(message, oldIndex, newIndex)
+    })
   }
 
   //integration to template
@@ -326,7 +492,7 @@ const ChatGpt = ({ appendToBody, close }) => {
                     viewBox="0 0 12 13"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
-                    className="me-1"
+                    className="me-2 ml-0-7"
                   >
                     <path
                       fill-rule="evenodd"
@@ -338,56 +504,69 @@ const ChatGpt = ({ appendToBody, close }) => {
                   Add new prompt
                 </Dropdown.Item>
                 <Dropdown.Divider />
-                {messageOptions.map((option) => (
-                  <Dropdown.Item
-                    key={option.id}
-                    eventKey={option.id}
-                    className="dropdown-item-hover"
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragStart={handleDragStart}
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext
+                    items={messageOptions}
+                    strategy={verticalListSortingStrategy}
                   >
-                    {option.heading}
-                    <div>
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleEditOption(option.id)
-                        }}
+                    {messageOptions.map((option) => (
+                      <SortableGpts
+                        key={option.id}
+                        gptPrompt={option}
+                        orderId={option.id}
+                        heading={option.heading}
                       >
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M4 13.6417V15.6683C4 15.855 4.14667 16.0017 4.33333 16.0017H6.36C6.44667 16.0017 6.53333 15.9683 6.59333 15.9017L13.8733 8.62832L11.3733 6.12832L4.1 13.4017C4.03333 13.4683 4 13.5483 4 13.6417ZM15.8067 6.69499C16.0667 6.43499 16.0667 6.01499 15.8067 5.75499L14.2467 4.19499C14.1221 4.07016 13.953 4 13.7767 4C13.6003 4 13.4312 4.07016 13.3067 4.19499L12.0867 5.41499L14.5867 7.91499L15.8067 6.69499V6.69499Z"
-                          fill="white"
-                        />
-                      </svg>
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        onClick={(e) => {
-                          // e.stopPropagation();
-                          // deletePrompt(option.id);
-                          setIsDeleteModal(true)
-                          setDeleteTemplate(option)
-                          e.stopPropagation()
-                        }}
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          clip-rule="evenodd"
-                          d="M5.99967 14.6667C5.99967 15.4 6.59967 16 7.33301 16H12.6663C13.3997 16 13.9997 15.4 13.9997 14.6667V8C13.9997 7.26667 13.3997 6.66667 12.6663 6.66667H7.33301C6.59967 6.66667 5.99967 7.26667 5.99967 8V14.6667ZM13.9997 4.66667H12.333L11.8597 4.19333C11.7397 4.07333 11.5663 4 11.393 4H8.60634C8.43301 4 8.25967 4.07333 8.13967 4.19333L7.66634 4.66667H5.99967C5.63301 4.66667 5.33301 4.96667 5.33301 5.33333C5.33301 5.7 5.63301 6 5.99967 6H13.9997C14.3663 6 14.6663 5.7 14.6663 5.33333C14.6663 4.96667 14.3663 4.66667 13.9997 4.66667Z"
-                          fill="white"
-                        />
-                      </svg>
-                    </div>
-                  </Dropdown.Item>
-                ))}
+                        <div>
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            onMouseDown={(e) => {
+                              e.stopPropagation()
+                              handleEditOption(option.id)
+                            }}
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              clip-rule="evenodd"
+                              d="M4 13.6417V15.6683C4 15.855 4.14667 16.0017 4.33333 16.0017H6.36C6.44667 16.0017 6.53333 15.9683 6.59333 15.9017L13.8733 8.62832L11.3733 6.12832L4.1 13.4017C4.03333 13.4683 4 13.5483 4 13.6417ZM15.8067 6.69499C16.0667 6.43499 16.0667 6.01499 15.8067 5.75499L14.2467 4.19499C14.1221 4.07016 13.953 4 13.7767 4C13.6003 4 13.4312 4.07016 13.3067 4.19499L12.0867 5.41499L14.5867 7.91499L15.8067 6.69499V6.69499Z"
+                              fill="white"
+                            />
+                          </svg>
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            onMouseDown={(e) => {
+                              // e.stopPropagation();
+                              // deletePrompt(option.id);
+                              setIsDeleteModal(true)
+                              setDeleteTemplate(option)
+                              e.stopPropagation()
+                            }}
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              clip-rule="evenodd"
+                              d="M5.99967 14.6667C5.99967 15.4 6.59967 16 7.33301 16H12.6663C13.3997 16 13.9997 15.4 13.9997 14.6667V8C13.9997 7.26667 13.3997 6.66667 12.6663 6.66667H7.33301C6.59967 6.66667 5.99967 7.26667 5.99967 8V14.6667ZM13.9997 4.66667H12.333L11.8597 4.19333C11.7397 4.07333 11.5663 4 11.393 4H8.60634C8.43301 4 8.25967 4.07333 8.13967 4.19333L7.66634 4.66667H5.99967C5.63301 4.66667 5.33301 4.96667 5.33301 5.33333C5.33301 5.7 5.63301 6 5.99967 6H13.9997C14.3663 6 14.6663 5.7 14.6663 5.33333C14.6663 4.96667 14.3663 4.66667 13.9997 4.66667Z"
+                              fill="white"
+                            />
+                          </svg>
+                        </div>
+                      </SortableGpts>
+                    ))}
+                  </SortableContext>
+                </DndContext>
+                {isDragging && <DragOverlay />}
               </DropdownButton>
             </div>
             <div className="col-12 mb-2">
@@ -428,7 +607,7 @@ const ChatGpt = ({ appendToBody, close }) => {
                 <button
                   type="button"
                   className="custom-close-button"
-                  onClick={() => setShowModal(false)}
+                  onClick={handleClose}
                   aria-label="Close"
                 >
                   <IoMdClose size={16} />
