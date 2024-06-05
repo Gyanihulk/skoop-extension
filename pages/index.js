@@ -36,7 +36,7 @@ export default function Home() {
     fingerPrint,
   } = useContext(AuthContext)
   const { activePage, navigateToPage } = useContext(ScreenContext)
-const [isWebPage,setIsWebPage]=useState(false)
+  const [isWebPage, setIsWebPage] = useState(false)
 
   // Using useEffect to call getData on component mount
   useEffect(() => {
@@ -57,7 +57,7 @@ const [isWebPage,setIsWebPage]=useState(false)
       // Set the version from the manifest file
       setVersion(manifest.version)
     }
-    
+
   }, [])
 
   useEffect(() => {
@@ -65,14 +65,15 @@ const [isWebPage,setIsWebPage]=useState(false)
       const res = await verifyToken()
       const showWelcomePage = localStorage.getItem('welcomePageShown')
 
-      
+
 
       if (isWebPage && chrome.tabs) {
         // Query the tabs
-        chrome.tabs.query({}, function (tabs) {
-          // Set the retrieved tabs to state
-          const targetTab = tabs.find((tab) => tab.active)
-          if (targetTab.url) {
+        chrome.tabs.query({ active: true, lastFocusedWindow: true}, function (tabs) {
+
+          const targetTab = tabs.find((tab) => tab.active && (tab.url.includes("https://www.linkedin.com") || tab.url.includes('https://mail.google.com')));
+          console.log("targetTab", targetTab)
+          if (targetTab && targetTab.url) {
             if (
               targetTab.url.includes('https://www.linkedin.com') ||
               targetTab.url.includes('https://mail.google.com/')
@@ -90,14 +91,14 @@ const [isWebPage,setIsWebPage]=useState(false)
               } else if (!isAuthenticated) {
                 navigateToPage('SignInIntro')
               }
-            }else{   
+            } else {
               navigateToPage('CantUseScreen')
             }
           }
         })
       }
     })()
-  }, [isAuthenticated, newUser, isPro,isWebPage])
+  }, [isAuthenticated, newUser, isPro, isWebPage])
   // let isAuthenticated = true;
   // let activePage = 'ThankYouScreen';
   // let isPro = true;
@@ -112,7 +113,7 @@ const [isWebPage,setIsWebPage]=useState(false)
           'SignIn',
           'SignUp',
           ' ',
-          'ForgotPassword','CantUseScreen'
+          'ForgotPassword', 'CantUseScreen'
         ].includes(activePage) && <Header />}
         {activePage === ' ' && <LoadingScreen />}
         {activePage === 'CantUseScreen' && <CantUseScreen />}
