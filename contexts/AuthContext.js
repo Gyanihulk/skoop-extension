@@ -624,8 +624,8 @@ export const AuthProvider = ({ children }) => {
       })
 
       if (res.ok) {
-        return res
         toast.success("Subscription cancelled.")
+        return res
       }
     } catch (err) {
       return { ok: false }
