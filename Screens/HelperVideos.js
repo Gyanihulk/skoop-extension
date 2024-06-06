@@ -130,6 +130,12 @@ const info = [
     alt: 'This image is related to a video which says about how to become affialite',
     text: '11.Add Videos and Voice memo to Post Comments.',
   },
+  {
+    videoSrc: 'https://play.vidyard.com/XwRWJUdBLApPCyGgeJvU26',
+    imgSrc: '/screens/helperImages/12.png',
+    alt: 'This image is related to a video which says about how to get skoop',
+    text: '12.Get Skoop Application and Subscriptions',
+  },
 ]
 
 const HelperVideos = ({navigateTo}) => {
