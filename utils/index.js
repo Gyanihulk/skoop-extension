@@ -18,48 +18,80 @@ export const insertIntoLinkedInMessageWindow = async (
     setTimeout(() => {
       const fullMessageWindows = Array.from(
         document.getElementsByClassName('msg-convo-wrapper')
-      );
-      console.log(fullMessageWindows, "all chat windows");
-  
+      )
+      console.log(fullMessageWindows, 'all chat windows')
+
       // Map over the fullMessageWindows to create a lookup for names and their corresponding contenteditable element and send button
-      const nameToElementsMap = fullMessageWindows.reduce((acc, convoWrapper) => {
-        const h2Element = convoWrapper.querySelector('h2');
-        const nameFromH2 = h2Element ? h2Element.textContent.replace(/\s+/g, ' ').trim() : '';
-        const spanInsideButton = convoWrapper.querySelector('.artdeco-pill__text');
-        
-        const nameFromSpan = spanInsideButton ? spanInsideButton.textContent.replace(/\s+/g, ' ').trim() : '';
-        const contentEditableDiv = convoWrapper.querySelector('.msg-form__contenteditable');
-        const sendButton = convoWrapper.querySelector('.msg-form__send-button');
-        const name = nameFromSpan || nameFromH2 ;
-  
-        if (name && contentEditableDiv && sendButton) {
-          acc[name] = { contentEditableDiv, sendButton };
-        }
-        console.log(acc)
-        return acc;
-      }, {});
-  
+      const nameToElementsMap = fullMessageWindows.reduce(
+        (acc, convoWrapper) => {
+          console.log(convoWrapper, 'convowrapper')
+          const h2Element = convoWrapper.querySelector('h2')
+          const nameFromH2 = h2Element
+            ? h2Element.textContent.replace(/\s+/g, ' ').trim()
+            : ''
+          const spanInsideButton = convoWrapper.querySelector(
+            '.artdeco-pill__text'
+          )
+
+          const nameFromSpan = spanInsideButton
+            ? spanInsideButton.textContent.replace(/\s+/g, ' ').trim()
+            : ''
+          const contentEditableDiv = convoWrapper.querySelector(
+            '.msg-form__contenteditable'
+          )
+          const sendButton = convoWrapper.querySelector(
+            '.msg-form__send-button'
+          )
+          const name = nameFromSpan || nameFromH2
+          if (name && contentEditableDiv) {
+            acc[name] = { contentEditableDiv, sendButton }
+          }
+
+          return acc
+        },
+        {}
+      )
+
       arr.forEach((item) => {
-        console.log(item, 'test',htmlToInsert);
-        const elements = nameToElementsMap[item.name];
+        console.log(nameToElementsMap, item, 'item')
+        const elements = nameToElementsMap[item.name]
         if (elements) {
-          const { contentEditableDiv, sendButton } = elements;
-          contentEditableDiv.removeAttribute('aria-label');
-          const messageHtml = `<p>${htmlToInsert}</p>`;
-          contentEditableDiv.innerHTML = htmlToInsert;
+          const { contentEditableDiv, sendButton } = elements
+          contentEditableDiv.removeAttribute('aria-label')
+          const messageHtml = `<p>${htmlToInsert}</p>`
+          contentEditableDiv.innerHTML = htmlToInsert
           const dummyInput = new Event('input', {
             bubbles: true,
             cancelable: true,
-          });
-          contentEditableDiv.dispatchEvent(dummyInput);
-          setTimeout(() => {
-            // Click the send button
-            sendButton.click();
-          }, 1000);
+          })
+          contentEditableDiv.dispatchEvent(dummyInput)
+          if (sendButton) {
+            // If send button is available, click it after a timeout
+            setTimeout(() => {
+              sendButton.click()
+            }, 1000)
+          } else {
+            contentEditableDiv.focus()
+      
+
+            // Wait a moment for the text event to be processed
+            setTimeout(() => {
+              // Now create and dispatch the Enter key event
+              const enterKeyEvent = new KeyboardEvent('keydown', {
+                code: 'Enter',
+                key: 'Enter',
+                charCode: 13,
+                keyCode: 13,
+                view: window,
+                bubbles: true
+            });
+              contentEditableDiv.dispatchEvent(enterKeyEvent)
+            }, 500)
+          }
         }
-      });
-    }, 600);
-  };
+      })
+    }, 600)
+  }
 
   try {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
