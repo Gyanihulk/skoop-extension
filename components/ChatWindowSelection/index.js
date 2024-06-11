@@ -65,6 +65,7 @@ const ChatWindowSelection = () => {
           name: profileUserName,
           index: 0,
           dataset: { type: "profileCheckbox" },
+          link: windowUrl
         })
       }
       return combinedArray;
@@ -100,6 +101,10 @@ const ChatWindowSelection = () => {
                   var combinedArray = response[0].result;
                   const seen = new Set();
                   const filteredArray = combinedArray.filter(element => {
+                    if (element.hasOwnProperty('dataset')) {
+                      const userName = deriveMatchingName(element.name, getNameFromLinkedInUrl(element.link));
+                      element.name = userName;
+                    }
                     if (seen.has(element.name)) {
                       return false;
                     } else {
@@ -146,24 +151,116 @@ const ChatWindowSelection = () => {
     }
   }, []);
 
-  const handleCheckboxChange = (event) => {
+  const handleCheckboxChange = async (event) => {
     const { value, checked, dataset } = event.target;
     if (checked) {
       const selectedItem = initialItems.find((item) => item.name === value);
-      const newChatWindows = selectedChatWindows;
-      newChatWindows.push(selectedItem);
-      setSelectedChatWindows(newChatWindows);
-      setCheckedItemCount(checkedItemCount + 1);
+      if (selectedItem.hasOwnProperty('dataset')) {
+        const openChatWindow = await handleOpenMessageWindow();
+        const newChatWindows = selectedChatWindows;
+        newChatWindows.push(selectedItem);
+        setSelectedChatWindows(newChatWindows);
+        setCheckedItemCount(checkedItemCount + 1);
+        setIsProfileChatSelected(true)
+      } else {
+        const newChatWindows = selectedChatWindows;
+        newChatWindows.push(selectedItem);
+        setSelectedChatWindows(newChatWindows);
+        setCheckedItemCount(checkedItemCount + 1);
+      }
     } else {
       const newChatWindows = selectedChatWindows.filter(
         (item) => item.name !== value
       );
       setSelectedChatWindows(newChatWindows);
       setCheckedItemCount(checkedItemCount - 1);
+
     }
 
     setLocalRefresh(!localRefresh);
   };
+
+  //----------------------------------------------------------------------------------
+
+  const handleOpenMessageWindow = () => {
+    const clickMessageButton = () => {
+      const btns = Array.from(document.querySelectorAll("div>div>div>button"));
+      let selectedButton = btns.find(
+        (btn) => btn.ariaLabel && btn.ariaLabel.includes("Message")
+      );
+      if (selectedButton) {
+        selectedButton.click();
+      } else {
+        throw new Error("Message button not found.");
+      }
+    };
+
+    return new Promise((resolve, reject) => {
+      try {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+          const targetTab = tabs[0];
+          if (targetTab) {
+            chrome.scripting.executeScript(
+              {
+                target: { tabId: targetTab.id },
+                func: clickMessageButton,
+              },
+              (injectionResults) => {
+                if (chrome.runtime.lastError) {
+                  console.error(
+                    "Error executing script:",
+                    chrome.runtime.lastError
+                  );
+                  reject("Failed to execute script on tab");
+                } else {
+                  resolve("Message button clicked successfully");
+                }
+              }
+            );
+          } else {
+            reject("Target tab is not accessible");
+          }
+        });
+      } catch (err) {
+        console.error(
+          "some error occurred while trying to open message window",
+          err
+        );
+        reject("Unexpected error occurred");
+      }
+    });
+  };
+  function deriveMatchingName(profileName, urlName) {
+    // Extract words from the profile name
+    const profileWords = profileName.split(/[\s,()]+/).filter(Boolean);
+
+    // Convert the URL name to words
+    const urlWords = urlName.split(' ');
+
+    // Find matching words in the profile name
+    const matchingName = profileWords.filter(word => {
+      return urlWords.includes(word);
+    });
+
+    return matchingName.join(' ');
+  }
+
+  function getNameFromLinkedInUrl(url) {
+    // Define a regular expression to match the LinkedIn profile URL pattern
+    const regex = /https:\/\/www\.linkedin\.com\/in\/([a-zA-Z-]+)/;
+
+    // Execute the regex on the provided URL
+    const match = url.match(regex);
+
+    // Check if there is a match and return the captured group
+    if (match && match[1]) {
+      // Replace hyphens with spaces and capitalize the first letter of each word
+      return match[1].replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+    } else {
+      return null;
+    }
+  }
+  //-----------------------------------------------------------------------------------
 
   const updateUrl = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
