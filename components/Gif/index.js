@@ -103,7 +103,7 @@ function GiphyWindow(props) {
         )}
 
         {results.length>0 && !isLinkedin &&
-          <div>
+          <div className='gif-input-content'>
             <label>
               <input
                 type="radio"

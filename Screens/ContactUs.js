@@ -95,7 +95,7 @@ const ContactUs = ({ navigateTo }) => {
                 onChange={(e) => setInquiryType(e.target.value)}
               >
                 <option value="select" disabled>
-                  Select the Inquery Type
+                  Select the Enquery Type
                 </option>
                 {inqueryOptions?.map((option) => (
                   <option

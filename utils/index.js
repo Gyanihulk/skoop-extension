@@ -19,12 +19,10 @@ export const insertIntoLinkedInMessageWindow = async (
       const fullMessageWindows = Array.from(
         document.getElementsByClassName('msg-convo-wrapper')
       )
-      console.log(fullMessageWindows, 'all chat windows')
 
       // Map over the fullMessageWindows to create a lookup for names and their corresponding contenteditable element and send button
       const nameToElementsMap = fullMessageWindows.reduce(
         (acc, convoWrapper) => {
-          console.log(convoWrapper, 'convowrapper')
           const h2Element = convoWrapper.querySelector('h2')
           const nameFromH2 = h2Element
             ? h2Element.textContent.replace(/\s+/g, ' ').trim()
@@ -42,9 +40,13 @@ export const insertIntoLinkedInMessageWindow = async (
           const sendButton = convoWrapper.querySelector(
             '.msg-form__send-button'
           )
+          
+          const sendButton1 = convoWrapper.querySelector(
+            '.msg-form__send-btn'
+          )
           const name = nameFromSpan || nameFromH2
           if (name && contentEditableDiv) {
-            acc[name] = { contentEditableDiv, sendButton }
+            acc[name] = { contentEditableDiv, sendButton:sendButton?sendButton:sendButton1 }
           }
 
           return acc
@@ -53,7 +55,6 @@ export const insertIntoLinkedInMessageWindow = async (
       )
 
       arr.forEach((item) => {
-        console.log(nameToElementsMap, item, 'item')
         const elements = nameToElementsMap[item.name]
         if (elements) {
           const { contentEditableDiv, sendButton } = elements

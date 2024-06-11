@@ -579,6 +579,7 @@ const UserSubscriptions = () => {
 }
 function AccountSettings(props) {
   const [profileData, setProfileData] = useState({})
+  const {setUserProfileDetail} = useContext(AuthContext)
 
   const handleProfileUpdate = (newProfileData) => {
     setProfileData((prevData) => ({
@@ -603,6 +604,7 @@ function AccountSettings(props) {
       response.firstName = fullName[0]
       response.lastName = fullName[1]
       setProfileData(response)
+      setUserProfileDetail(response);
       return response
     } catch (err) {
       console.error('could not get profile details', err)

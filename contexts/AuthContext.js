@@ -22,6 +22,33 @@ export const AuthProvider = ({ children }) => {
   const [showClearSessionDialog, setShowClearSessionDialog] = useState(false)
   const [gracePeriodCompletion , setGracePeriodCompletion] = useState(false);
   const [gracePeriod , setGracePeriod] = useState(0);
+  const [userProfileDetail, setUserProfileDetail] = useState(null);
+
+  const getProfileDetails = async () => {
+    try {
+      const response = await fetch(API_ENDPOINTS.profileDetails, {
+        method: 'GET',
+        headers: {
+          authorization: `Bearer ${JSON.parse(
+            localStorage.getItem('accessToken')
+          )}`,
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+      })
+      const responseData = await response.json()
+      if(response.ok){
+        setUserProfileDetail(responseData);
+        return responseData;
+      }
+      else{
+        return null;
+      }
+
+    } catch (err) {
+      console.error('could not get profile details', err)
+    }
+  }
+
   const validatePassword = (password) => {
     if (!password) {
       return false
@@ -180,6 +207,16 @@ export const AuthProvider = ({ children }) => {
   }
 
   const calendarSync = async (type) => {
+    if(!userProfileDetail ) {
+       let res = await getProfileDetails();
+       if(res!== null && res?.calendar_info === type) {
+          return;
+       }
+    }
+    else if(userProfileDetail?.calendar_info === type) {
+      return;
+    }
+
     navigateToPage(' ')
     if (type === 'google') {
       const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=232147382816-a6grr3l3366tp6kpaoran7fcctdmddij.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
@@ -785,7 +822,10 @@ export const AuthProvider = ({ children }) => {
         gracePeriod,
         setGracePeriod,
         gracePeriodCompletion,
-        setGracePeriodCompletion
+        setGracePeriodCompletion,
+        userProfileDetail,
+        setUserProfileDetail,
+        getProfileDetails
       }}
     >
       {children}

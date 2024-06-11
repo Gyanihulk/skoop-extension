@@ -55,7 +55,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
   const [additionalDetails, setAdditionalDetails] = useState('')
   const [myTimezone, setMyTimezone] = useState('')
   const [filteredTimezones, setFilteredTimezones] = useState(timezones)
-  const { getUserPreferences, calendarSync, setNewUser } =
+  const { getUserPreferences, calendarSync, setNewUser, userProfileDetail, getUserProfileDetail } =
     useContext(AuthContext)
   const inputRef = useRef()
 
@@ -79,7 +79,10 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
         setBreakEndTime(breakTimeEnd)
         setTimeZone(preferences[0].time_zone)
         setAdditionalDetails(preferences[0].additional_details)
-        setSelectedTimezone(preferences[0].time_zone)
+        if (preferences[0]?.time_zone) {
+          setMyTimezone(preferences[0].time_zone);
+          setSelectedTimezone(preferences[0].time_zone);
+        }
       }
     } catch (err) {
       console.error(err?.message)
@@ -102,8 +105,19 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
     values.timeZone = detectedTimezone
     setMyTimezone(detectedTimezone)
     setSelectedTimezone(detectedTimezone)
-    fetchUserPreferences()
+    fetchUserPreferences() 
   }, [])
+
+  useEffect(() => {
+    if (userProfileDetail?.calendar_info) {
+      if (userProfileDetail.calendar_info == 'google') {
+        setGoogle(true)
+      }
+      if (userProfileDetail.calendar_info == 'microsoft') {
+        setMicrosoft(true)
+      }
+    }
+  }, [userProfileDetail])
 
   const handleFocus = () => {
     // Programmatically click on the input to trigger the time picker
@@ -370,7 +384,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
                       </p>
 
                       <div class="d-flex flex-column align-items-center justify-content-start mt-3">
-                        <div class="d-flex align-items-center w-100">
+                        <div class="d-flex align-items-center w-100 justify-content-between">
                           <div class="d-flex align-items-center">
                             <input
                               class="form-check-input mt-0 pt-0 ml-0-4"
@@ -393,6 +407,9 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
                               </h5>
                             </label>
                           </div>
+                          {userProfileDetail?.calendar_info && (<div className='d-flex justify-content-end align-items-center'>
+                            <span className="badge badge-pill badge-primary">Synced</span>
+                          </div>)}
                         </div>
                         <div class="d-flex align-items-center w-100 mt-3">
                           <div class="d-flex align-items-center">
