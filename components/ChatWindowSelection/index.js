@@ -241,8 +241,10 @@ const ChatWindowSelection = () => {
 
     const linkNamePart = link.split('/').slice(-2, -1)[0];
     const linkNameArray = linkNamePart.split('-');
+    const updated = linkNameArray.map(item=> item.replace(/[^a-zA-Z]/g, ''));
 
-    const matches = linkNameArray.map((item) => {
+    const matches = updated.map((item) => {
+
       if(lowerCaseNameArray.includes(item)){
         const index = lowerCaseNameArray.indexOf(item);
         user.push(nameArray[index]);
