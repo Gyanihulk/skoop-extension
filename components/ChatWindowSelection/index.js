@@ -230,6 +230,13 @@ const ChatWindowSelection = () => {
       }
     });
   };
+  function extractWordsFromString(inputString) {
+    let cleanedString = inputString.replace(/[^a-zA-Z0-9\s\/.-]/g, " ").toLowerCase();
+    cleanedString = cleanedString.replace(/\s+/g, " ");
+    let wordsArray = cleanedString.split(/[\/\s-]+/);
+    wordsArray = wordsArray.filter(word => word.length > 0);
+    return wordsArray;
+  }
 
   function getNameFromLinkedInUrl(element) {
     const link = element.link;
@@ -238,14 +245,10 @@ const ChatWindowSelection = () => {
     const nameArray = name.match(/\b\w+\b/g);
     let user = [];
     const lowerCaseNameArray = nameArray.map(word => word.toLowerCase());
-
-    const linkNamePart = link.split('/').slice(-2, -1)[0];
-    const linkNameArray = linkNamePart.split('-');
-    const updated = linkNameArray.map(item=> item.replace(/[^a-zA-Z]/g, ''));
-
+    const linkNameArray = extractWordsFromString(link);
+    const updated = linkNameArray.map(item => item.replace(/[^a-zA-Z]/g, ''));
     const matches = updated.map((item) => {
-
-      if(lowerCaseNameArray.includes(item)){
+      if (lowerCaseNameArray.includes(item)) {
         const index = lowerCaseNameArray.indexOf(item);
         user.push(nameArray[index]);
       }
