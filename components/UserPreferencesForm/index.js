@@ -239,6 +239,15 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
       toast.error('Preferred Start time OR Break time is greater than End Time')
     }
   }
+  const handleAdditionalDetailsChange = (e) => {
+    const value = e.target.value;
+    if (value.length <= 230) {
+      setAdditionalDetails(value);
+    } else {
+      setAdditionalDetails(value.slice(0, 230));
+      toast.error('Character limit exceeded (Max: 230 characters)');
+    }
+  };
   return (
     <>
       {!isTimezoneScreen && (
@@ -369,7 +378,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
                         name="additionalDetails"
                         placeholder="Additional Info"
                         value={additionalDetails}
-                        onChange={(e) => setAdditionalDetails(e.target.value)}
+                        onChange={handleAdditionalDetailsChange}
                         rows="3"
                       ></textarea>
                     </div>
