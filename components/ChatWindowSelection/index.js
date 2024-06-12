@@ -102,7 +102,7 @@ const ChatWindowSelection = () => {
                   const seen = new Set();
                   const filteredArray = combinedArray.filter(element => {
                     if (element.hasOwnProperty('dataset')) {
-                      const userName = deriveMatchingName(element.name, getNameFromLinkedInUrl(element.link));
+                      const userName = getNameFromLinkedInUrl(element);
                       element.name = userName;
                     }
                     if (seen.has(element.name)) {
@@ -230,35 +230,26 @@ const ChatWindowSelection = () => {
       }
     });
   };
-  function deriveMatchingName(profileName, urlName) {
-    // Extract words from the profile name
-    const profileWords = profileName.split(/[\s,()]+/).filter(Boolean);
 
-    // Convert the URL name to words
-    const urlWords = urlName.split(' ');
+  function getNameFromLinkedInUrl(element) {
+    const link = element.link;
+    const name = element.name;
 
-    // Find matching words in the profile name
-    const matchingName = profileWords.filter(word => {
-      return urlWords.includes(word);
-    });
+    const nameArray = name.match(/\b\w+\b/g);
+    let user = [];
+    const lowerCaseNameArray = nameArray.map(word => word.toLowerCase());
 
-    return matchingName.join(' ');
-  }
+    const linkNamePart = link.split('/').slice(-2, -1)[0];
+    const linkNameArray = linkNamePart.split('-');
 
-  function getNameFromLinkedInUrl(url) {
-    // Define a regular expression to match the LinkedIn profile URL pattern
-    const regex = /https:\/\/www\.linkedin\.com\/in\/([a-zA-Z-]+)/;
-
-    // Execute the regex on the provided URL
-    const match = url.match(regex);
-
-    // Check if there is a match and return the captured group
-    if (match && match[1]) {
-      // Replace hyphens with spaces and capitalize the first letter of each word
-      return match[1].replace(/-/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
-    } else {
-      return null;
-    }
+    const matches = linkNameArray.map((item) => {
+      if(lowerCaseNameArray.includes(item)){
+        const index = lowerCaseNameArray.indexOf(item);
+        user.push(nameArray[index]);
+      }
+    })
+    const result = user.join(' ');
+    return result;
   }
   //-----------------------------------------------------------------------------------
 
