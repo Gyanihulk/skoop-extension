@@ -180,7 +180,7 @@ const Library = (props) => {
     }
   }, [globalRefresh]);
 
-  const handleLinkInsertion = async (link, id) => {
+  const handleLinkInsertion = async (link, id, name = '') => {
     const facade_player_uuid = link?.substring(link.lastIndexOf("/") + 1);
     const url = `https://skoop.hubs.vidyard.com/watch/${facade_player_uuid}`;
 
@@ -188,7 +188,7 @@ const Library = (props) => {
       const thumbnail_link = await getThumbnail(id);
       var ret;
       if (thumbnail_link != undefined && thumbnail_link != null) {
-        ret = `<a href='${url}'>><img src='${thumbnail_link}' className="inline-block-width"/><br></a`;
+        ret = `<a href='${url}'> <p class = "inline-video-title"> Watch Video - ${name} </p> <br> <img src='${thumbnail_link}' className="inline-block-width"/></a>`;
       } else {
         ret += `<a href='${url}'>video link</a>`;
       }

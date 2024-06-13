@@ -13,6 +13,7 @@ import DeleteModal from '../DeleteModal'
 import MediaUtilsContext from '../../contexts/MediaUtilsContext'
 import { handleCopyToClipboard } from '../../utils'
 import GlobalStatesContext from '../../contexts/GlobalStates'
+import MessageContext from '../../contexts/MessageContext'
 import { sendMessageToBackgroundScript } from '../../lib/sendMessageToBackground'
 
 const VideoCard = ({
@@ -29,7 +30,8 @@ const VideoCard = ({
   const [isDeleteModal, setIsDeleteModal] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
   const { isLinkedin } = useContext(GlobalStatesContext)
-  const { getDownloadLink } = useContext(MediaUtilsContext)
+  const { message, setMessage } = useContext(MessageContext)
+  const { getDownloadLink , getThumbnail} = useContext(MediaUtilsContext)
   const handleLoad = () => {
     setIsLoaded(true)
   }
@@ -64,10 +66,13 @@ const VideoCard = ({
           newTitle: newTitle,
         }),
       })
-
       if (response.ok) {
         video.video_title = newTitle
         handleCloseRenamePopup()
+        console.log(video.link, video.id, video.video_title)
+        if (message !== undefined && containsInlineVideoTitle(message)) {
+          updateInsertedLink(video.link, video.id, newTitle);
+        }
         toast.success('Video renamed successfully')
       } else {
         toast.error('Failed to rename video')
@@ -76,7 +81,33 @@ const VideoCard = ({
       toast.error('Failed to rename video')
     }
   }
+//---------------------------------------------------------------------------------------------------
+  const updateInsertedLink = async (link, id, name = '') => {
+    const facade_player_uuid = link?.substring(link.lastIndexOf("/") + 1);
+    const url = `https://skoop.hubs.vidyard.com/watch/${facade_player_uuid}`;
 
+    if (!isLinkedin) {
+      const thumbnail_link = await getThumbnail(id);
+      var ret;
+      if (thumbnail_link != undefined && thumbnail_link != null) {
+        ret = `<a href='${url}'> <p class = "inline-video-title"> Watch Video - ${name} </p> <br> <img src='${thumbnail_link}' className="inline-block-width"/></a>`;
+      } else {
+        ret += `<a href='${url}'>video link</a>`;
+      }
+      setMessage(ret);
+    } else {
+      setMessage(url);
+    }
+    handleCopyToClipboard(url)
+  };
+
+  const containsInlineVideoTitle = (htmlString) => {
+    const regex = /<p class\s*=\s*"inline-video-title">/;
+
+    return regex.test(htmlString);
+  }
+  //-----------------------------------------------------------------------------------------------------
+ 
   const handleDeleteClick = async () => {
     setIsDeleteModal(true)
   }
@@ -169,7 +200,7 @@ const VideoCard = ({
               title="Insert link to send box."
               className="btn btn-link btn-sm video-card-footer-button"
               onClick={() => {
-                handleLinkInsertion(video.link, video.id);
+                handleLinkInsertion(video.link, video.id, video.video_title);
                 toast.success('Link copied and inserted.');
               }}
             >
