@@ -43,15 +43,18 @@ const ChatWindowSelection = () => {
             if (profileLink?.length) {
               nameOfRecipient = profileLink[0].innerText;
             } else {
-              nameOfRecipient = item.querySelectorAll("span")[2].innerText;
+              nameOfRecipient = item.getElementsByClassName('artdeco-pill__text')[0].innerText;
             }
           } catch (err) {
             nameOfRecipient = "New Message";
           }
-        } else nameOfRecipient = item.querySelector("h2").innerText;
+        } else {
+          nameOfRecipient = item.querySelector("h2").innerText;
+        }
+
         return {
           name: nameOfRecipient,
-          index: profileUserName? index+1: index,
+          index: profileUserName ? index + 1 : index,
         };
       });
       const windowUrl = window.location.href;
@@ -230,6 +233,14 @@ const ChatWindowSelection = () => {
       }
     });
   };
+  function extractWordsFromString(inputString) {
+    let cleanedString = inputString.replace(/[^a-zA-Z0-9\s\/.-]/g, " ").toLowerCase();
+    cleanedString = cleanedString.replace(/\s+/g, " ");
+    let wordsArray = cleanedString.split(/[\/\s-]+/);
+    wordsArray = wordsArray.filter(word => word.length > 0);
+    return wordsArray;
+  }
+
   function extractWordsFromString(inputString) {
     let cleanedString = inputString.replace(/[^a-zA-Z0-9\s\/.-]/g, " ").toLowerCase();
     cleanedString = cleanedString.replace(/\s+/g, " ");
