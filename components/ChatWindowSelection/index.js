@@ -1,83 +1,89 @@
-import React, { useContext, useEffect, useState } from "react";
-import GlobalStatesContext from "../../contexts/GlobalStates";
-import Scrape from "../Scraper";
+import React, { useContext, useEffect, useState } from 'react'
+import GlobalStatesContext from '../../contexts/GlobalStates'
+import Scrape from '../Scraper'
 
 const ChatWindowSelection = () => {
-  const [initialItems, setInitialItems] = useState([]);
-  const [checkedItemCount, setCheckedItemCount] = useState(0);
-  const [profilePageName, setProfilePageName] = useState();
+  const [initialItems, setInitialItems] = useState([])
+  const [checkedItemCount, setCheckedItemCount] = useState(0)
+  const [profilePageName, setProfilePageName] = useState()
   const {
     selectedChatWindows,
     setSelectedChatWindows,
     isLinkedin,
     focusedElementId,
     isProfilePage,
-  } = useContext(GlobalStatesContext);
-  const [localRefresh, setLocalRefresh] = useState(0);
-  const [resetInitialItems, setResetInitialItems] = useState(0);
-  const [currentUrl, setCurrentUrl] = useState('');
+    isPostCommentAvailable,
+    setIsPostCommentAvailable,
+    postCommentSelected,
+    setPostCommentSelected,
+    setPostCommentElement,
+    postCommentElement,
+  } = useContext(GlobalStatesContext)
+  const [localRefresh, setLocalRefresh] = useState(0)
+  const [resetInitialItems, setResetInitialItems] = useState(0)
+  const [currentUrl, setCurrentUrl] = useState('')
 
   function checkForExistenceOfMessageWindow(element) {
-    return element.querySelector(".msg-form__contenteditable") != null;
+    return element.querySelector('.msg-form__contenteditable') != null
   }
 
-  const setUpInitialArray = async() => {
-    try{
-
+  const setUpInitialArray = async () => {
+    try {
       const allChatWindows = Array.from(
-        document.getElementsByClassName("msg-convo-wrapper")
-      );
+        document.getElementsByClassName('msg-convo-wrapper')
+      )
       const validChatWindows = allChatWindows.filter((element) =>
         checkForExistenceOfMessageWindow(element)
-      );
-      
-      const profileUserName = document.querySelector('a>h1')?.innerText;
-  
+      )
+
+      const profileUserName = document.querySelector('a>h1')?.innerText
+
       var combinedArray = validChatWindows?.map((item, index) => {
-        var nameOfRecipient;
-        if (item.querySelector("h2").innerText == "New message") {
+        var nameOfRecipient
+        if (item.querySelector('h2').innerText == 'New message') {
           try {
             const profileLink = item.getElementsByClassName(
-              "msg-compose__profile-link"
-            );
+              'msg-compose__profile-link'
+            )
             if (profileLink?.length) {
-              nameOfRecipient = profileLink[0].innerText;
+              nameOfRecipient = profileLink[0].innerText
             } else {
-              nameOfRecipient = item.getElementsByClassName('artdeco-pill__text')[0].innerText;
+              nameOfRecipient =
+                item.getElementsByClassName('artdeco-pill__text')[0].innerText
             }
           } catch (err) {
-            nameOfRecipient = "New Message";
+            nameOfRecipient = 'New Message'
           }
         } else {
-          nameOfRecipient = item.querySelector("h2").innerText;
+          nameOfRecipient = item.querySelector('h2').innerText
         }
 
         return {
           name: nameOfRecipient,
           index: profileUserName ? index + 1 : index,
-        };
-      });
-      const windowUrl = window.location.href;
+        }
+      })
+      const windowUrl = window.location.href
       // check if the messaging tab is open
-      if (windowUrl.includes("messaging")) {
-        const name = document.querySelector('#thread-detail-jump-target').innerText;
-        combinedArray[0].name = name;
+      if (windowUrl.includes('messaging')) {
+        const name = document.querySelector(
+          '#thread-detail-jump-target'
+        ).innerText
+        combinedArray[0].name = name
       }
-      if(profileUserName) {
+      if (profileUserName) {
         combinedArray.unshift({
           name: profileUserName,
           index: 0,
-          dataset: { type: "profileCheckbox" },
-          link: windowUrl
+          dataset: { type: 'profileCheckbox' },
+          link: windowUrl,
         })
       }
-      return combinedArray;
-
-    } catch(error) {
-      console.error("error while setting up initial array " + error)
+      return combinedArray
+    } catch (error) {
+      console.error('error while setting up initial array ' + error)
     }
-    
-  };
+  }
 
   useEffect(() => {
     try {
@@ -85,7 +91,7 @@ const ChatWindowSelection = () => {
         const urlToFindGoogle = 'https://mail.google.com/mail'
         const urlToFindLinkedIn = 'https://www.linkedin.com/'
 
-        const targetTab = tabs[0];
+        const targetTab = tabs[0]
         tabs.find(
           (tab) =>
             tab.active &&
@@ -101,107 +107,123 @@ const ChatWindowSelection = () => {
               })
               .then(async (response) => {
                 if (!chrome.runtime.lastError) {
-                  var combinedArray = response[0].result;
-                  const seen = new Set();
-                  const filteredArray = combinedArray.filter(element => {
+                  var combinedArray = response[0].result
+                  const seen = new Set()
+                  const filteredArray = combinedArray.filter((element) => {
                     if (element.hasOwnProperty('dataset')) {
-                      const userName = getNameFromLinkedInUrl(element);
-                      element.name = userName;
+                      const userName = getNameFromLinkedInUrl(element)
+                      element.name = userName
                     }
                     if (seen.has(element.name)) {
-                      return false;
+                      return false
                     } else {
-                      seen.add(element.name);
-                      return true;
+                      seen.add(element.name)
+                      return true
                     }
-                  });
-                  setInitialItems(filteredArray);
+                  })
+                  setInitialItems(filteredArray)
                   const filtered = filteredArray.filter((item) =>
-                    selectedChatWindows.some(secondItems => secondItems.name === item.name)
-                  );
-                  setSelectedChatWindows(filtered);
+                    selectedChatWindows.some(
+                      (secondItems) => secondItems.name === item.name
+                    )
+                  )
+                  setSelectedChatWindows(filtered)
                 } else {
                   console.error(
-                    "Error retrieving combinedArray:",
+                    'Error retrieving combinedArray:',
                     chrome.runtime.lastError
-                  );
+                  )
                 }
-              });
+              })
           } catch (err) {
-            console.error("some error occured in executing script", err);
+            console.error('some error occured in executing script', err)
           }
         }
-      });
+      })
     } catch (err) {
-      console.error("some error occured while setting up initial array");
+      console.error('some error occured while setting up initial array')
     }
-  }, [resetInitialItems, isProfilePage, currentUrl]);
+  }, [resetInitialItems, isProfilePage, currentUrl])
 
   const messageHandler = (message) => {
-    if (message.action === "elementAdded") {
-      setResetInitialItems(Math.random());
-    } else if (message.action === "elementRemoved") {
-      setResetInitialItems(Math.random());
+    if (message.action === 'elementAdded') {
+      setResetInitialItems(Math.random())
+    } else if (message.action === 'elementRemoved') {
+      setResetInitialItems(Math.random())
+    } else if (message.action === 'skoopFocusedElementLinkedin') {
+      console.log(message, 'message chat widow selection')
+      if (
+        message?.element &&
+        message.element.placeholder != null &&
+        message.element.placeholder.startsWith('Add a comment')
+      ) {
+        setIsPostCommentAvailable(true)
+        setPostCommentElement({ ...message.element })
+      } else {
+        setIsPostCommentAvailable(false)
+        setPostCommentSelected(false)
+      }
     }
-  };
+  }
+  // useEffect(() => {
 
+  // }, [isPostCommentAvailable,postCommentElement])
   useEffect(() => {
     if (chrome.runtime.onMessage) {
-      chrome.runtime.onMessage.addListener(messageHandler);
+      chrome.runtime.onMessage.addListener(messageHandler)
       return () => {
-        chrome.runtime.onMessage.removeListener(messageHandler);
-      };
+        chrome.runtime.onMessage.removeListener(messageHandler)
+      }
     }
-  }, []);
+  }, [])
 
   const handleCheckboxChange = async (event) => {
-    const { value, checked, dataset } = event.target;
+    const { value, checked, dataset } = event.target
     if (checked) {
-      const selectedItem = initialItems.find((item) => item.name === value);
+      const selectedItem = initialItems.find((item) => item.name === value)
       if (selectedItem.hasOwnProperty('dataset')) {
-        const openChatWindow = await handleOpenMessageWindow();
-        const newChatWindows = selectedChatWindows;
-        newChatWindows.push(selectedItem);
-        setSelectedChatWindows(newChatWindows);
-        setCheckedItemCount(checkedItemCount + 1);
+        const openChatWindow = await handleOpenMessageWindow()
+        const newChatWindows = selectedChatWindows
+        newChatWindows.push(selectedItem)
+        setSelectedChatWindows(newChatWindows)
+        setCheckedItemCount(checkedItemCount + 1)
         setIsProfileChatSelected(true)
       } else {
-        const newChatWindows = selectedChatWindows;
-        newChatWindows.push(selectedItem);
-        setSelectedChatWindows(newChatWindows);
-        setCheckedItemCount(checkedItemCount + 1);
+        const newChatWindows = selectedChatWindows
+        newChatWindows.push(selectedItem)
+        setSelectedChatWindows(newChatWindows)
+        setCheckedItemCount(checkedItemCount + 1)
       }
     } else {
       const newChatWindows = selectedChatWindows.filter(
         (item) => item.name !== value
-      );
-      setSelectedChatWindows(newChatWindows);
-      setCheckedItemCount(checkedItemCount - 1);
-
+      )
+      setSelectedChatWindows(newChatWindows)
+      setCheckedItemCount(checkedItemCount - 1)
     }
 
-    setLocalRefresh(!localRefresh);
-  };
+    setLocalRefresh(!localRefresh)
+  }
 
   //----------------------------------------------------------------------------------
 
   const handleOpenMessageWindow = () => {
     const clickMessageButton = () => {
-      const btns = Array.from(document.querySelectorAll("div>div>div>button"));
+      const btns = Array.from(document.querySelectorAll('div>div>div>button'))
       let selectedButton = btns.find(
-        (btn) => btn.ariaLabel && btn.ariaLabel.includes("Message")
-      );
+        (btn) => btn.ariaLabel && btn.ariaLabel.includes('Message')
+      )
       if (selectedButton) {
-        selectedButton.click();
+        selectedButton.click()
       } else {
-        throw new Error("Message button not found.");
+        throw new Error('Message button not found.')
       }
-    };
+    }
 
     return new Promise((resolve, reject) => {
       try {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          const targetTab = tabs[0];
+          const targetTab = tabs[0]
           if (targetTab) {
             chrome.scripting.executeScript(
               {
@@ -211,89 +233,94 @@ const ChatWindowSelection = () => {
               (injectionResults) => {
                 if (chrome.runtime.lastError) {
                   console.error(
-                    "Error executing script:",
+                    'Error executing script:',
                     chrome.runtime.lastError
-                  );
-                  reject("Failed to execute script on tab");
+                  )
+                  reject('Failed to execute script on tab')
                 } else {
-                  resolve("Message button clicked successfully");
+                  resolve('Message button clicked successfully')
                 }
               }
-            );
+            )
           } else {
-            reject("Target tab is not accessible");
+            reject('Target tab is not accessible')
           }
-        });
+        })
       } catch (err) {
         console.error(
-          "some error occurred while trying to open message window",
+          'some error occurred while trying to open message window',
           err
-        );
-        reject("Unexpected error occurred");
+        )
+        reject('Unexpected error occurred')
       }
-    });
-  };
+    })
+  }
   function extractWordsFromString(inputString) {
-    let cleanedString = inputString.replace(/[^a-zA-Z0-9\s\/.-]/g, " ").toLowerCase();
-    cleanedString = cleanedString.replace(/\s+/g, " ");
-    let wordsArray = cleanedString.split(/[\/\s-]+/);
-    wordsArray = wordsArray.filter(word => word.length > 0);
-    return wordsArray;
+    let cleanedString = inputString
+      .replace(/[^a-zA-Z0-9\s\/.-]/g, ' ')
+      .toLowerCase()
+    cleanedString = cleanedString.replace(/\s+/g, ' ')
+    let wordsArray = cleanedString.split(/[\/\s-]+/)
+    wordsArray = wordsArray.filter((word) => word.length > 0)
+    return wordsArray
   }
 
   function extractWordsFromString(inputString) {
-    let cleanedString = inputString.replace(/[^a-zA-Z0-9\s\/.-]/g, " ").toLowerCase();
-    cleanedString = cleanedString.replace(/\s+/g, " ");
-    let wordsArray = cleanedString.split(/[\/\s-]+/);
-    wordsArray = wordsArray.filter(word => word.length > 0);
-    return wordsArray;
+    let cleanedString = inputString
+      .replace(/[^a-zA-Z0-9\s\/.-]/g, ' ')
+      .toLowerCase()
+    cleanedString = cleanedString.replace(/\s+/g, ' ')
+    let wordsArray = cleanedString.split(/[\/\s-]+/)
+    wordsArray = wordsArray.filter((word) => word.length > 0)
+    return wordsArray
   }
 
   function getNameFromLinkedInUrl(element) {
-    const link = element.link;
-    const name = element.name;
+    const link = element.link
+    const name = element.name
 
-    const nameArray = name.match(/\b\w+\b/g);
-    let user = [];
-    const lowerCaseNameArray = nameArray.map(word => word.toLowerCase());
-    const linkNameArray = extractWordsFromString(link);
-    const updated = linkNameArray.map(item => item.replace(/[^a-zA-Z]/g, ''));
+    const nameArray = name.match(/\b\w+\b/g)
+    let user = []
+    const lowerCaseNameArray = nameArray.map((word) => word.toLowerCase())
+    const linkNameArray = extractWordsFromString(link)
+    const updated = linkNameArray.map((item) => item.replace(/[^a-zA-Z]/g, ''))
     const matches = updated.map((item) => {
       if (lowerCaseNameArray.includes(item)) {
-        const index = lowerCaseNameArray.indexOf(item);
-        user.push(nameArray[index]);
+        const index = lowerCaseNameArray.indexOf(item)
+        user.push(nameArray[index])
       }
     })
-    const result = user.join(' ');
-    return result;
+    const result = user.join(' ')
+    return result
   }
   //-----------------------------------------------------------------------------------
 
   const updateUrl = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const url = tabs[0].url;
-      setCurrentUrl(url);
-    });
-  };
+      const url = tabs[0].url
+      setCurrentUrl(url)
+    })
+  }
 
   useEffect(() => {
-    updateUrl();
-    
+    updateUrl()
+
     chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       if (changeInfo.url) {
-        updateUrl();
+        updateUrl()
       }
-    });
+    })
 
     return () => {
-      chrome.tabs.onUpdated.removeListener(updateUrl);
-    };
-  }, []);
+      chrome.tabs.onUpdated.removeListener(updateUrl)
+    }
+  }, [])
 
   useEffect(() => {
-     setCheckedItemCount(selectedChatWindows?.length || 0);
+    setCheckedItemCount(selectedChatWindows?.length || 0)
   }, [selectedChatWindows])
-  const uniqueNamesSet = new Set();
+
+  const uniqueNamesSet = new Set()
 
   return (
     <div
@@ -302,41 +329,57 @@ const ChatWindowSelection = () => {
     >
       {isLinkedin && (
         <>
-          {initialItems?.length > 0 ? (
+          {initialItems?.length > 0 || isPostCommentAvailable ? (
             <div>
               <div id="select-recipients-title">
-                Select Recipients{" "}
+                Select Recipients{' '}
                 <span>
                   ({checkedItemCount} out of {initialItems.length})
                 </span>
               </div>
               <div className="mt-1 select-recipient-list">
-                {initialItems?.map((item, index) => {
-                  if (!uniqueNamesSet.has(item.name)) {
-                    uniqueNamesSet.add(item.name);
-                    return (
-                      <div
-                        key={index}
-                        id="select-recipient-item"
-                        className="d-flex"
-                      >
-                        <input
-                          id="recipient-checkbox"
-                          type="checkbox"
-                          className="form-check-input"
-                          value={item.name}
-                          checked={selectedChatWindows.some(
-                            (checkedItem) => checkedItem.name === item.name
-                          )}
-                          onChange={handleCheckboxChange}
-                        />
-                        <label className="form-check-label">{item.name}</label>
-                      </div>
-                    );
-                  } else {
-                    return null;
-                  }
-                })}
+                {isPostCommentAvailable && (
+                  <div id="post-comment" className="d-flex">
+                    <input
+                      id="recipient-checkbox"
+                      type="checkbox"
+                      className="form-check-input"
+                      value="Post Comment"
+                      checked={postCommentSelected}
+                      onChange={(e) => setPostCommentSelected(e.target.checked)}
+                    />
+                    <label className="form-check-label">Post Comment</label>
+                  </div>
+                )}
+                {initialItems?.length > 0 &&
+                  initialItems?.map((item, index) => {
+                    if (!uniqueNamesSet.has(item.name)) {
+                      uniqueNamesSet.add(item.name)
+                      return (
+                        <div
+                          key={index + 1}
+                          id="select-recipient-item"
+                          className="d-flex"
+                        >
+                          <input
+                            id="recipient-checkbox"
+                            type="checkbox"
+                            className="form-check-input"
+                            value={item.name}
+                            checked={selectedChatWindows.some(
+                              (checkedItem) => checkedItem.name === item.name
+                            )}
+                            onChange={handleCheckboxChange}
+                          />
+                          <label className="form-check-label">
+                            {item.name}
+                          </label>
+                        </div>
+                      )
+                    } else {
+                      return null
+                    }
+                  })}
               </div>
             </div>
           ) : (
@@ -345,7 +388,7 @@ const ChatWindowSelection = () => {
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ChatWindowSelection;
+export default ChatWindowSelection

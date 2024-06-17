@@ -12,10 +12,41 @@ export const replaceInvalidCharacters = (inputString) => {
 
 export const insertIntoLinkedInMessageWindow = async (
   html,
-  selectedChatWindows
+  selectedChatWindows,
+  postCommentSelected = false,
+  postCommentElement = null
 ) => {
-  const executeInsertionIntoWindow = (arr, htmlToInsert) => {
+  const executeInsertionIntoWindow = (
+    arr,
+    htmlToInsert,
+    postCommentSelected = false,
+    postCommentElement = null
+  ) => {
     setTimeout(() => {
+      if (
+        postCommentSelected &&
+        postCommentElement &&
+        postCommentElement?.className
+      ) {
+        const postId = postCommentElement.postId
+        const postElement = document.querySelector(`[data-id="${postId}"]`)
+        const classNames = Object.values(postCommentElement.className)
+
+        const commentElement = postElement.querySelector(`.${classNames[0]}`)
+        setTimeout(() => {
+          let button = postElement.querySelector(
+            '.comments-comment-box__submit-button'
+          )
+          if (button) {
+            console.log('Button found:', button)
+            button.click()
+          } else {
+            console.error('Button not found')
+          }
+        }, 500)
+
+        commentElement.innerHTML = htmlToInsert
+      }
       const fullMessageWindows = Array.from(
         document.getElementsByClassName('msg-convo-wrapper')
       )
@@ -40,13 +71,14 @@ export const insertIntoLinkedInMessageWindow = async (
           const sendButton = convoWrapper.querySelector(
             '.msg-form__send-button'
           )
-          
-          const sendButton1 = convoWrapper.querySelector(
-            '.msg-form__send-btn'
-          )
+
+          const sendButton1 = convoWrapper.querySelector('.msg-form__send-btn')
           const name = nameFromSpan || nameFromH2
           if (name && contentEditableDiv) {
-            acc[name] = { contentEditableDiv, sendButton:sendButton?sendButton:sendButton1 }
+            acc[name] = {
+              contentEditableDiv,
+              sendButton: sendButton ? sendButton : sendButton1,
+            }
           }
 
           return acc
@@ -73,7 +105,6 @@ export const insertIntoLinkedInMessageWindow = async (
             }, 1000)
           } else {
             contentEditableDiv.focus()
-      
 
             // Wait a moment for the text event to be processed
             setTimeout(() => {
@@ -84,8 +115,8 @@ export const insertIntoLinkedInMessageWindow = async (
                 charCode: 13,
                 keyCode: 13,
                 view: window,
-                bubbles: true
-            });
+                bubbles: true,
+              })
               contentEditableDiv.dispatchEvent(enterKeyEvent)
             }, 500)
           }
@@ -102,7 +133,12 @@ export const insertIntoLinkedInMessageWindow = async (
           chrome.scripting.executeScript({
             target: { tabId: targetTab.id },
             func: executeInsertionIntoWindow,
-            args: [selectedChatWindows, html],
+            args: [
+              selectedChatWindows,
+              html,
+              postCommentSelected,
+              postCommentElement,
+            ],
           })
         } catch (err) {
           console.error('some error occured in executing script', err)

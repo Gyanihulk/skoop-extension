@@ -11,11 +11,11 @@ function injectIframe() {
   const container = document.createElement('div')
   container.id = 'skoop-extension-container'
 
-  const extensionDimension = localStorage.getItem('skoopExtensionDimension');
+  const extensionDimension = localStorage.getItem('skoopExtensionDimension')
   if (extensionDimension) {
-    const { width, height } = JSON.parse(extensionDimension);
-    container.style.width = width + 'px';
-    container.style.height = height + 'px';
+    const { width, height } = JSON.parse(extensionDimension)
+    container.style.width = width + 'px'
+    container.style.height = height + 'px'
   }
 
   container.ondragstart = function () {
@@ -81,22 +81,20 @@ function injectIframe() {
   // Toggle button functionality
   let isMinimized = false
   toggleButton.onclick = function () {
-    const resizer = document.getElementById('skoop-resizer-buttom');
+    const resizer = document.getElementById('skoop-resizer-buttom')
     if (isMinimized) {
-      resizer.style.display = 'block';
-      const extensionDimension = localStorage.getItem('skoopExtensionDimension');
+      resizer.style.display = 'block'
+      const extensionDimension = localStorage.getItem('skoopExtensionDimension')
       if (extensionDimension) {
-        const { width, height } = JSON.parse(extensionDimension);
-        container.style.width = width + 'px';
-        container.style.height = height + 'px';
-      }
-      else{
+        const { width, height } = JSON.parse(extensionDimension)
+        container.style.width = width + 'px'
+        container.style.height = height + 'px'
+      } else {
         container.style.height = '98vh'
       }
     } else {
       container.style.height = '44px'
       resizer.style.display = 'none'
-
     }
     isMinimized = !isMinimized
   }
@@ -109,8 +107,8 @@ function injectIframe() {
   const maxWidth = 355
   const minHeight = 550
   const resizer = document.createElement('div')
- 
-  resizer.id = 'skoop-resizer-buttom';
+
+  resizer.id = 'skoop-resizer-buttom'
   resizer.style.width = '20px'
   resizer.style.height = '20px'
   resizer.style.position = 'absolute'
@@ -123,9 +121,8 @@ function injectIframe() {
   resizer.style.backgroundRepeat = 'no-repeat'
   resizer.style.backgroundPosition = 'center'
   resizer.style.transform = 'rotate(-90deg)'
-  
 
-  resizer.addEventListener('pointerdown', initResize, false);
+  resizer.addEventListener('pointerdown', initResize, false)
 
   function disableTextSelection() {
     document.body.style.userSelect = 'none' // for most browsers
@@ -142,45 +139,48 @@ function injectIframe() {
   }
 
   function initResize(e) {
-    disableTextSelection();
+    disableTextSelection()
     // Set pointer capture to ensure all pointer events go to the resizer
-    resizer.setPointerCapture(e.pointerId);
-    window.addEventListener('pointermove', resize, false);
-    window.addEventListener('pointerup', stopResize, false);
-    window.addEventListener('pointerleave', stopResize, false); // Handle pointer leaving the window
+    resizer.setPointerCapture(e.pointerId)
+    window.addEventListener('pointermove', resize, false)
+    window.addEventListener('pointerup', stopResize, false)
+    window.addEventListener('pointerleave', stopResize, false) // Handle pointer leaving the window
   }
 
   function resize(e) {
     const dimensions = container.getBoundingClientRect()
     let newWidth = e.clientX - dimensions.left
     let newHeight = e.clientY - dimensions.top
-    const maxHeight = window.innerHeight * 0.98;
+    const maxHeight = window.innerHeight * 0.98
     // Constrain newWidth and newHeight within min/max bounds
     newWidth = Math.max(minWidth, Math.min(newWidth, maxWidth))
     newHeight = Math.max(minHeight, Math.min(newHeight, maxHeight))
 
     // update the container's size
-    localStorage.setItem("skoopExtensionDimension", JSON.stringify({ width: newWidth, height: newHeight }));
+    localStorage.setItem(
+      'skoopExtensionDimension',
+      JSON.stringify({ width: newWidth, height: newHeight })
+    )
 
     container.style.width = newWidth + 'px'
     container.style.height = newHeight + 'px'
     if (!resizer.contains(e.target)) {
-      stopResize(e);
+      stopResize(e)
     }
   }
 
   function stopResize(e) {
-    enableTextSelection();
+    enableTextSelection()
     // Release pointer capture
     if (resizer.releasePointerCapture) {
-      resizer.releasePointerCapture(e.pointerId);
+      resizer.releasePointerCapture(e.pointerId)
     }
-    window.removeEventListener('pointermove', resize, false);
-    window.removeEventListener('pointerup', stopResize, false);
-    window.removeEventListener('pointerleave', stopResize, false); // Clean up this listener as well
+    window.removeEventListener('pointermove', resize, false)
+    window.removeEventListener('pointerup', stopResize, false)
+    window.removeEventListener('pointerleave', stopResize, false) // Clean up this listener as well
   }
   // Append the container to the body of the document
-  container.appendChild(resizer);
+  container.appendChild(resizer)
   document.body.appendChild(container)
 }
 
@@ -772,7 +772,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 )
               }
             } else {
-              console.error('MediaRecorder is not initialized or does not exist')
+              console.error(
+                'MediaRecorder is not initialized or does not exist'
+              )
             }
           }
 
@@ -955,14 +957,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === 'initializeExtensionDimension') {
-    const extensionDimension = localStorage.getItem('skoopExtensionDimension');
+    const extensionDimension = localStorage.getItem('skoopExtensionDimension')
     if (extensionDimension) {
-      localStorage.removeItem('skoopExtensionDimension');
-      const container = document.getElementById('skoop-extension-container');
-      container.style.width = "12.2vw";
-      container.style.height = "98vh";
+      localStorage.removeItem('skoopExtensionDimension')
+      const container = document.getElementById('skoop-extension-container')
+      container.style.width = '12.2vw'
+      container.style.height = '98vh'
     }
-    return true;
+    return true
   }
 
   return true
@@ -1064,4 +1066,24 @@ document.addEventListener('focusin', (event) => {
   })
 })
 
-// .............................................................................//
+document.addEventListener('focusin', (event) => {
+
+  let parent = event.target
+  while (parent && !parent.hasAttribute('data-id')) {
+    parent = parent.parentElement
+  }
+  if (parent && parent.hasAttribute('data-id')) {
+    const postId = parent.getAttribute('data-id')
+
+    const elementInfo = {
+      className: event.target.classList,
+      placeholder: event.target.ariaPlaceholder,
+      postId: postId, 
+    }
+    console.log(elementInfo)
+    chrome.runtime.sendMessage({
+      action: 'skoopFocusedElementLinkedin',
+      element: elementInfo,
+    })
+  }
+})

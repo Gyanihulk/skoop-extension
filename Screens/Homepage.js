@@ -13,6 +13,8 @@ const Homepage = (props) => {
     setIsProfilePage,
     setFocusedElementId,
     isVideoContainer,
+    setFocusedElementLinkedin,
+    setIsPostCommentAvailable,postCommentStatus,setPostComment
   } = useContext(GlobalStatesContext);
 
   function convertArrayOfObjectsToCSV(data) {

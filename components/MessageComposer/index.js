@@ -37,7 +37,7 @@ const MessageComposer = () => {
     expand,
     setLatestBlob,
     setLatestVideo,
-    latestBlob,
+    latestBlob,postCommentSelected,postCommentElement
   } = useContext(GlobalStatesContext);
   const { message, addMessage, setMessage } = useContext(MessageContext);
   const { getCalendarUrl, getUserPreferences } = useContext(AuthContext);
@@ -216,7 +216,8 @@ const MessageComposer = () => {
       return;
     }
     if (isLinkedin) {
-      if (selectedChatWindows?.length === 0) {
+      console.log(postCommentSelected,"inseting post comment selected")
+      if (!postCommentSelected && selectedChatWindows?.length === 0) {
         toast.error("Please select a recipient");
         return;
       }
@@ -231,7 +232,8 @@ const MessageComposer = () => {
       }
       await insertIntoLinkedInMessageWindow(
         `<p>${message}</p>`,
-        selectedChatWindows
+        selectedChatWindows,postCommentSelected,postCommentElement
+        
       );
       setTimeout(() => {
         handleSend();
