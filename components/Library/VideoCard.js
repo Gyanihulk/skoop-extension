@@ -69,7 +69,6 @@ const VideoCard = ({
       if (response.ok) {
         video.video_title = newTitle
         handleCloseRenamePopup()
-        console.log(video.link, video.id, video.video_title)
         if (message !== undefined && containsInlineVideoTitle(message)) {
           updateInsertedLink(video.link, video.id, newTitle);
         }

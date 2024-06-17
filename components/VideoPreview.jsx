@@ -121,9 +121,9 @@ export const VideoPreview = () => {
         if (latestVideo?.name !== newTitle) {
           // Update the message with the new video title
           const updatedMessage = message.replace(
-            /Watch Video - .*?<\/a>/,
-            `Watch Video - ${newTitle}</a>`
-          )
+            /(Watch Video - )[^<]*/,
+            `$1${newTitle}`
+        );
           latestVideo.name = newTitle
           setMessage(updatedMessage)
         }
