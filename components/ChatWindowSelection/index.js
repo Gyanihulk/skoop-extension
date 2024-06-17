@@ -24,8 +24,53 @@ const ChatWindowSelection = () => {
   const [currentUrl, setCurrentUrl] = useState('')
 
   function checkForExistenceOfMessageWindow(element) {
-    return element.querySelector('.msg-form__contenteditable') != null
+    return element.querySelector(".msg-form__contenteditable") != null;
   }
+
+  function addNumberToDuplicates(combinedArray, validChatWindows) {
+    const nameCount = {};
+    combinedArray.forEach((obj) => {
+      const name = obj.name;
+      nameCount[name] = (nameCount[name] || 0) + 1;
+    });
+  
+    const nameOccurrences = {};
+  
+    const result = combinedArray.map((obj) => {
+      const name = obj.name;
+      if (nameCount[name] > 1) {
+        nameOccurrences[name] = (nameOccurrences[name] || 0) + 1;
+        let item = validChatWindows[obj.index];
+        if(item) {
+          if (item.querySelector("h2").innerText == "New message") {
+            try {
+              const profileLink = item.getElementsByClassName(
+                "msg-compose__profile-link"
+              );
+              if (profileLink?.length) {
+                profileLink[0].innerText = `${nameOccurrences[name]}.${name}`;
+              } else {
+                item.getElementsByClassName('artdeco-pill__text')[0].innerText = `${nameOccurrences[name]}.${name}`;
+              }
+            } catch (err) {
+              item.querySelector("h2").innerText = `${nameOccurrences[name]}.${name}`;
+            }
+          } else {
+            item.querySelector("h2").innerText = `${nameOccurrences[name]}.${name}`;
+          }
+        }
+
+        return {
+          ...obj,
+          name: `${nameOccurrences[name]}.${name}`,
+        };
+      }
+      return obj;
+    });
+  
+    return result;
+  }
+
 
   const setUpInitialArray = async () => {
     try {
@@ -71,7 +116,12 @@ const ChatWindowSelection = () => {
         ).innerText
         combinedArray[0].name = name
       }
-      if (profileUserName) {
+
+      if(combinedArray.length > 0) {
+        combinedArray = addNumberToDuplicates(combinedArray, validChatWindows);
+      }
+
+      if(profileUserName) {
         combinedArray.unshift({
           name: profileUserName,
           index: 0,
