@@ -1067,23 +1067,33 @@ document.addEventListener('focusin', (event) => {
 })
 
 document.addEventListener('focusin', (event) => {
+  let targetElement = event.target; // The element that triggered the focus event
+  let parentElement = targetElement.closest('[data-id], [data-urn]'); 
 
-  let parent = event.target
-  while (parent && !parent.hasAttribute('data-id')) {
-    parent = parent.parentElement
-  }
-  if (parent && parent.hasAttribute('data-id')) {
-    const postId = parent.getAttribute('data-id')
+  if (parentElement && targetElement.ariaPlaceholder) {
+    // Determine which identifier is present on the parentElement
+    const identifierType = parentElement.hasAttribute('data-id') ? 'data-id' : 'data-urn';
+    const identifierValue = parentElement.getAttribute(identifierType);
 
+    // Collect element information
     const elementInfo = {
-      className: event.target.classList,
-      placeholder: event.target.ariaPlaceholder,
-      postId: postId, 
-    }
-    console.log(elementInfo)
+      className: targetElement.classList,
+      placeholder: targetElement.ariaPlaceholder,
+      postId: identifierValue, // Use the value of the found identifier
+      identifierType: identifierType, // Specify which identifier was found
+    };
+
+
+
+    // Send the message with the element information
     chrome.runtime.sendMessage({
       action: 'skoopFocusedElementLinkedin',
       element: elementInfo,
-    })
+    });
+  }else{
+    chrome.runtime.sendMessage({
+      action: 'skoopFocusedElementLinkedin',
+      element: false,
+    });
   }
-})
+});

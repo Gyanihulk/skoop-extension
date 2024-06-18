@@ -201,7 +201,6 @@ const ChatWindowSelection = () => {
     } else if (message.action === 'elementRemoved') {
       setResetInitialItems(Math.random())
     } else if (message.action === 'skoopFocusedElementLinkedin') {
-      console.log(message, 'message chat widow selection')
       if (
         message?.element &&
         message.element.placeholder != null &&
@@ -384,7 +383,7 @@ const ChatWindowSelection = () => {
               <div id="select-recipients-title">
                 Select Recipients{' '}
                 <span>
-                  ({checkedItemCount} out of {initialItems.length})
+                  ({postCommentSelected?checkedItemCount+1:checkedItemCount} out of {isPostCommentAvailable?initialItems.length+1:initialItems.length})
                 </span>
               </div>
               <div className="mt-1 select-recipient-list">

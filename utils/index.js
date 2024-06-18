@@ -29,7 +29,7 @@ export const insertIntoLinkedInMessageWindow = async (
         postCommentElement?.className
       ) {
         const postId = postCommentElement.postId
-        const postElement = document.querySelector(`[data-id="${postId}"]`)
+        const postElement = document.querySelector(`[${postCommentElement.identifierType}="${postId}"]`)
         const classNames = Object.values(postCommentElement.className)
 
         const commentElement = postElement.querySelector(`.${classNames[0]}`)

@@ -216,7 +216,6 @@ const MessageComposer = () => {
       return;
     }
     if (isLinkedin) {
-      console.log(postCommentSelected,"inseting post comment selected")
       if (!postCommentSelected && selectedChatWindows?.length === 0) {
         toast.error("Please select a recipient");
         return;
