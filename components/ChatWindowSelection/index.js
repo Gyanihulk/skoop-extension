@@ -345,7 +345,7 @@ const ChatWindowSelection = () => {
                 {isPostCommentAvailable && (
                   <div id="post-comment" className="d-flex">
                     <input
-                      id="recipient-checkbox"
+                      id="post-checkbox"
                       type="checkbox"
                       className="form-check-input"
                       value="Post Comment"

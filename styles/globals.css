@@ -1504,6 +1504,38 @@ ul.nav-button li svg path {
   box-shadow: none !important;
 }
 
+#post-checkbox {
+  border-color: #2a2b39;
+  margin-top: 3px;
+  transform: scale(1.5);
+}
+#post-checkbox:checked {
+  background-color: green; /* Green background color for checked state */
+}
+#post-checkbox:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.textarea-container {
+  position: relative;
+}
+
+.copy-icon {
+  position: absolute;
+  top: 7px; /* Adjust as needed */
+  right: 7px; /* Adjust as needed */
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #646464; /* Adjust color as needed */
+}
+
+
+.copy-icon svg {
+  font-size: 15px; /* Adjust as needed */
+}
+
 .form-check-label {
   white-space: nowrap;
   overflow: hidden;
@@ -2459,3 +2491,4 @@ img.icon-style-normal {
   margin-top: 2px;
   margin-right: 2px;
 }
+

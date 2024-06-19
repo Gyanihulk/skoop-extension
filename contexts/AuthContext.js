@@ -428,7 +428,28 @@ export const AuthProvider = ({ children }) => {
       toast.error('Could not get calendar url')
     }
   }
-
+  const getCtaInfo = async (authCode, type) => {
+    try {
+      var response = await fetch(API_ENDPOINTS.getCtaInfo, {
+        method: 'GET',
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+          authorization: `Bearer ${JSON.parse(
+            localStorage.getItem('accessToken')
+          )}`,
+        },
+      })
+      if (Number(response.status) === 200) {
+        const data = await response.json()
+        return data
+      } else {
+        toast.error('Could not cta info.')
+      }
+    } catch (err) {
+      console.error(err)
+      toast.error('Could not cta info')
+    }
+  }
   const getUserPreferences = async () => {
     try {
       var response = await fetch(API_ENDPOINTS.getUserPreferences, {
@@ -825,7 +846,8 @@ export const AuthProvider = ({ children }) => {
         setGracePeriodCompletion,
         userProfileDetail,
         setUserProfileDetail,
-        getProfileDetails
+        getProfileDetails,
+        getCtaInfo
       }}
     >
       {children}

@@ -321,17 +321,16 @@ const SettingsPassword = () => {
 
 const CalendarUrlForm = ({ userProfileData }) => {
   const [calendarUrl, setCalendarUrl] = useState('')
+  const [ctaText, setCTAText] = useState('')
   const [toggleInfo, setToggleInfo] = useState(false)
   const [preferences, setPreferences] = useState([])
   const [showResetButton, setshowResetButton] = useState(false)
-  const { getCalendarUrl, getUserPreferences } = useContext(AuthContext)
+  const { getCalendarUrl, getUserPreferences ,getCtaInfo} = useContext(AuthContext)
 
   const checkForDefaultUrl = async (url) => {
     if (userProfileData && userProfileData.email && url) {
       const userEmail = userProfileData.email.split('@')
-      const defaultUrl = `https://skoopcrm.sumits.in/booking?email=${encodeURIComponent(
-        userEmail[0]
-      )}%40${encodeURIComponent(userEmail[1])}`
+      const defaultUrl = API_ENDPOINTS.skoopCalendarUrl
       if (!url.startsWith(defaultUrl)) {
         setshowResetButton(true)
       } else {
@@ -345,9 +344,11 @@ const CalendarUrlForm = ({ userProfileData }) => {
   const getData = async () => {
     const preference = await getUserPreferences()
     setPreferences(preference)
-    const url = await getCalendarUrl()
-    setCalendarUrl(url)
-    checkForDefaultUrl(url)
+    const info = await getCtaInfo()
+    console.log(info)
+    setCalendarUrl(info.url)
+    setCTAText(info.text)
+    checkForDefaultUrl(info.url)
   }
 
   useEffect(() => {
@@ -357,14 +358,15 @@ const CalendarUrlForm = ({ userProfileData }) => {
   const handleChange = (event) => {
     setCalendarUrl(event.target.value)
   }
-
+  const handleCtaTextChange = (event) => {
+    setCTAText(event.target.value)
+  }
   const handleSubmit = async (event) => {
     event.preventDefault()
     try {
       const res = await fetch(API_ENDPOINTS.updateCalendarUrl, {
-        // Replace with your API endpoint
         method: 'POST',
-        body: JSON.stringify({ calendarUrl }),
+        body: JSON.stringify({ calendarUrl ,ctaText}),
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
           Authorization: `Bearer ${JSON.parse(
@@ -374,7 +376,7 @@ const CalendarUrlForm = ({ userProfileData }) => {
       })
       const data = await res.text()
       if (res.ok) {
-        toast.success('Calendar link updated successfully')
+        toast.success('Call to action information updated successfully')
         const url = await getCalendarUrl()
         setCalendarUrl(url)
         checkForDefaultUrl(url)
@@ -424,7 +426,7 @@ const CalendarUrlForm = ({ userProfileData }) => {
         aria-expanded={toggleInfo}
         aria-controls="appointment-collapse"
       >
-        <h6 className="mb-0 card-title">Appointment booking link</h6>
+        <h6 className="mb-0 card-title">Call To Action</h6>
         <div>
           <FaAngleDown
             style={
@@ -440,13 +442,30 @@ const CalendarUrlForm = ({ userProfileData }) => {
           <form onSubmit={handleSubmit}>
             <div className="card-body p-0">
               <div className="container my-3">
-                <div>
-                  <div className="d-flex justify-content-between align-items-center">
+                
+                  <div className="d-flex justify-content-between align-items-center mt-3 mt-1">
+                    <label className="form-label profile-text">
+                      Call To Action Text
+                    </label>
+                  </div>
+                  <input
+                    type="text"
+                    className="form-control custom-input-global"
+                    id="calendarUrl"
+                    name="calendarUrl"
+                    value={ctaText}
+                    onChange={handleCtaTextChange}
+                    placeholder="Enter Text For Button."
+                    required
+                  />
+               
+                
+                  <div className="d-flex justify-content-between align-items-center mt-2 mt-1">
                     <label
                       htmlFor="calendarUrl"
-                      className="form-label profile-text"
+                      className="form-label profile-text "
                     >
-                      Your Appointment Booking Link
+                      Call To Action Link
                     </label>
                     {showResetButton && (
                       <GrPowerReset
@@ -457,7 +476,7 @@ const CalendarUrlForm = ({ userProfileData }) => {
                   </div>
                   <input
                     type="text"
-                    className="form-control mt-3 custom-input-global"
+                    className="form-control  custom-input-global"
                     id="calendarUrl"
                     name="calendarUrl"
                     value={calendarUrl}
@@ -465,7 +484,7 @@ const CalendarUrlForm = ({ userProfileData }) => {
                     placeholder="Enter your calendar link"
                     required
                   />
-                </div>
+                
                 <div
                   className={`mt-1 d-flex ${
                     preferences?.length == 0
@@ -545,18 +564,22 @@ const UserSubscriptions = () => {
                   <li class="d-flex justify-content-start align-items-center mt-2 mysubscription-info bold-600">
                     Plan details
                   </li>
-                  {subsriptionInfo?.subscription_id && <li class="d-flex justify-content-between align-items-center mysubscription-info">
-                    Subscription ID
-                    <span>{subsriptionInfo?.subscription_id}</span>
-                  </li>}
+                  {subsriptionInfo?.subscription_id && (
+                    <li class="d-flex justify-content-between align-items-center mysubscription-info">
+                      Subscription ID
+                      <span>{subsriptionInfo?.subscription_id}</span>
+                    </li>
+                  )}
                   <li class="d-flex justify-content-between align-items-center mysubscription-info">
                     Start date
                     <span>{subsriptionInfo?.start_date}</span>
                   </li>
-                  {subsriptionInfo?.period_end_date&& <li class="d-flex justify-content-between align-items-center mysubscription-info">
-                    Period End
-                    <span>{subsriptionInfo?.period_end_date}</span>
-                  </li>}
+                  {subsriptionInfo?.period_end_date && (
+                    <li class="d-flex justify-content-between align-items-center mysubscription-info">
+                      Period End
+                      <span>{subsriptionInfo?.period_end_date}</span>
+                    </li>
+                  )}
                   <li class="d-flex justify-content-end align-items-center mt-1">
                     {/* <div className="cancel-subscription">View Payment</div> */}
                     <div
@@ -579,7 +602,7 @@ const UserSubscriptions = () => {
 }
 function AccountSettings(props) {
   const [profileData, setProfileData] = useState({})
-  const {setUserProfileDetail} = useContext(AuthContext)
+  const { setUserProfileDetail } = useContext(AuthContext)
 
   const handleProfileUpdate = (newProfileData) => {
     setProfileData((prevData) => ({
@@ -604,7 +627,7 @@ function AccountSettings(props) {
       response.firstName = fullName[0]
       response.lastName = fullName[1]
       setProfileData(response)
-      setUserProfileDetail(response);
+      setUserProfileDetail(response)
       return response
     } catch (err) {
       console.error('could not get profile details', err)

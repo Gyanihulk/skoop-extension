@@ -323,6 +323,12 @@ const MessageComposer = () => {
     const file = event.target.files[0];
 
     if (file) {
+      let fileSizeInMB = file.size / (1024 * 1024);
+      fileSizeInMB = fileSizeInMB.toFixed(2);
+      if(fileSizeInMB > 80) {
+        toast.error("Video size should not be more than 80 mb.");
+        return;
+      }
       const videoTitle = "MyVideoTitle";
       const directoryName = "New";
 
@@ -518,7 +524,7 @@ const MessageComposer = () => {
                 {renderNavItem(
                   "Upload Video",
                   <MdOutlineFileUpload color="white" />,
-                  "Upload video from your device"
+                  "Upload video from your device (80mb max limit)"
                 )}
 
                 {message && (
@@ -546,7 +552,7 @@ const MessageComposer = () => {
                         />
                       </svg>
                       <span className="d-none d-sm-inline">
-                        Save custome message
+                        Save custom message
                       </span>
                     </a>
                   </li>

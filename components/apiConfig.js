@@ -43,6 +43,7 @@ const API_ENDPOINTS = {
   userPreferences: `${backendUrl}/user-appointment-preferences`, // POST
   syncCalendar: `${backendUrl}/sync-calendar`, // POST
   getCalendarUrl: `${backendUrl}/getcalendarurl`, //GET
+  getCtaInfo: `${backendUrl}/getctainfo`, //GET
   updateCalendarUrl: `${backendUrl}/update-calendar-url`, // POST,
   updateThumbnailImage: `${backendUrl}/updateThumbnail`, // POST,
   updateVideoInfo: `${backendUrl}/updatevideoinfobyvideoid/`, // PUT,

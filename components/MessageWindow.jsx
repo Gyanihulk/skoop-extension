@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useRef } from 'react'
 import MessageContext from '../contexts/MessageContext'
-
+import { FaRegClipboard } from 'react-icons/fa';
+import { handleCopyToClipboard } from '../utils';
+import toast from 'react-hot-toast';
 const MessageWindow = () => {
   const { message, setMessage } = useContext(MessageContext)
   const textareaRef = useRef(null)
@@ -20,16 +22,21 @@ const MessageWindow = () => {
     setMessage(event.target.value)
   }
   return (
-    <textarea
-      ref={textareaRef}
-      rows="4"
-      id="floatingTextarea"
-      className="form-control auto-height-textarea"
-      placeholder="Type your message..."
-      aria-label="With textarea"
-      value={message == null ? '' : message}
-      onChange={handleTextChange}
-    ></textarea>
+    <div className="textarea-container">
+      <textarea
+        ref={textareaRef}
+        rows="4"
+        id="floatingTextarea"
+        className="form-control auto-height-textarea"
+        placeholder="Type your message..."
+        aria-label="With textarea"
+        value={message}
+        onChange={handleTextChange}
+      ></textarea>
+      <button className="copy-icon" onClick={()=>{handleCopyToClipboard(message);toast.success("Message copied.")}}>
+        <FaRegClipboard />
+      </button>
+    </div>
   )
 }
 
