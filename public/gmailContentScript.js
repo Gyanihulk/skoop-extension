@@ -57,11 +57,29 @@ function injectIframe() {
     document.addEventListener('mousemove', dragMove)
     document.addEventListener('mouseup', dragEnd)
   }
-
   const dragMove = (e) => {
     if (isDragging) {
-      container.style.left = `${e.clientX - dragStartX}px`
-      container.style.top = `${e.clientY - dragStartY}px`
+      // Get the viewport dimensions
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      
+      // Get the dimensions of the container
+      const containerWidth = container.offsetWidth;
+      const containerHeight = container.offsetHeight;
+      
+      // Calculate the new position
+      let newX = e.clientX - dragStartX;
+      let newY = e.clientY - dragStartY;
+      
+      // Set boundaries for the new position
+      newX = Math.max(newX, 0); // Left boundary
+      newY = Math.max(newY, 0); // Top boundary
+      newX = Math.min(newX, viewportWidth - containerWidth); // Right boundary
+      newY = Math.min(newY, viewportHeight - containerHeight); // Bottom boundary
+  
+      // Set the new position, respecting the boundaries
+      container.style.left = `${newX}px`;
+      container.style.top = `${newY}px`;
     }
   }
 
@@ -1068,29 +1086,44 @@ document.addEventListener('focusin', (event) => {
 
 document.addEventListener('focusin', (event) => {
   let targetElement = event.target; // The element that triggered the focus event
-  let parentElement = targetElement.closest('[data-id], [data-urn]'); 
+  let parentElement = targetElement.closest('[data-id], [data-urn], [data-chameleon-result-urn]');
 
   if (parentElement && targetElement.ariaPlaceholder) {
     // Determine which identifier is present on the parentElement
-    const identifierType = parentElement.hasAttribute('data-id') ? 'data-id' : 'data-urn';
-    const identifierValue = parentElement.getAttribute(identifierType);
+    let identifierType;
+    let identifierValue;
 
-    // Collect element information
-    const elementInfo = {
-      className: targetElement.classList,
-      placeholder: targetElement.ariaPlaceholder,
-      postId: identifierValue, // Use the value of the found identifier
-      identifierType: identifierType, // Specify which identifier was found
-    };
+    if (parentElement.hasAttribute('data-id')) {
+      identifierType = 'data-id';
+      identifierValue = parentElement.getAttribute('data-id');
+    } else if (parentElement.hasAttribute('data-urn')) {
+      identifierType = 'data-urn';
+      identifierValue = parentElement.getAttribute('data-urn');
+    } else if (parentElement.hasAttribute('data-chameleon-result-urn')) {
+      identifierType = 'data-chameleon-result-urn';
+      identifierValue = parentElement.getAttribute('data-chameleon-result-urn');
+    }
 
-
-
-    // Send the message with the element information
-    chrome.runtime.sendMessage({
-      action: 'skoopFocusedElementLinkedin',
-      element: elementInfo,
-    });
-  }else{
+    // If an identifier was found, collect element information
+    if (identifierType && identifierValue) {
+      const elementInfo = {
+        className: targetElement.classList,
+        placeholder: targetElement.ariaPlaceholder,
+        postId: identifierValue, // Use the value of the found identifier
+        identifierType: identifierType, // Specify which identifier was found
+      };
+      chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
+        console.log(response);
+        if (response.tabId) {
+          chrome.runtime.sendMessage({
+            action: 'skoopFocusedElementLinkedin',
+            element: elementInfo,
+            tabId: response.tabId,
+          });
+        }
+      });
+    }
+  } else {
     chrome.runtime.sendMessage({
       action: 'skoopFocusedElementLinkedin',
       element: false,

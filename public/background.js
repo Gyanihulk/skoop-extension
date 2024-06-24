@@ -4,6 +4,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (sender && sender.tab && sender.tab.id) {
       senderTabId = sender.tab.id
     }
+    if (request.action === 'getTabId' && sender.tab) {
+      sendResponse({ tabId: senderTabId });
+    }
     if (
       request.action === 'startRecording' ||
       request.action === 'stopRecording' ||

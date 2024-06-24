@@ -67,6 +67,7 @@ const Homepage = (props) => {
       
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
           const targetTab = tabs[0];
+          console.log("extension tab",tabs,targetTab)
           if (targetTab.url.includes("linkedin")) {
             setIsLinkedin(true);
             if (targetTab.url.includes("www.linkedin.com/in")) {

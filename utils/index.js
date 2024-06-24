@@ -38,8 +38,8 @@ export const insertIntoLinkedInMessageWindow = async (
             '.comments-comment-box__submit-button'
           )
           if (button) {
-            console.log('Button found:', button)
-            button.click()
+            setTimeout(() => {
+            button.click()}, 5000)
           } else {
             console.error('Button not found')
           }

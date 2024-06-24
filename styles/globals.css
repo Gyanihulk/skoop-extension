@@ -1303,6 +1303,23 @@ select.form-control {
   font-weight: 400;
   font-size: 12px;
 }
+.copy-button {
+  border-radius: 20px !important;
+  box-shadow: 0 4px 6px rgba(255, 255, 255, 0.2);
+  position: relative;
+  border: 2px solid #fff !important; /* Changed to solid white border */
+  background-color: transparent !important;
+  width: 80px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Lato, sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  color: #fff !important;
+  }
+
 
 #footermessage {
   position: fixed;
@@ -1504,15 +1521,15 @@ ul.nav-button li svg path {
   box-shadow: none !important;
 }
 
-#post-checkbox {
-  border-color: #2a2b39;
+#post-comment-checkbox {
+  border-color: green;
   margin-top: 3px;
   transform: scale(1.5);
 }
-#post-checkbox:checked {
+#post-comment-checkbox:checked {
   background-color: green; /* Green background color for checked state */
 }
-#post-checkbox:focus-visible {
+#post-comment-checkbox:focus-visible {
   outline: none !important;
   box-shadow: none !important;
 }
@@ -1522,18 +1539,27 @@ ul.nav-button li svg path {
 }
 
 .copy-icon {
-  position: absolute;
-  top: 7px; /* Adjust as needed */
-  right: 7px; /* Adjust as needed */
-  border: none;
+  border: none; 
+  border-radius: 50%; /* Circle shape */
   background: none;
   cursor: pointer;
-  color: #646464; /* Adjust color as needed */
+  color: #fff; /* Adjust color as needed */
+  width: 27px; /* Adjust size as needed */
+  height: 27px; /* Adjust size as needed */
+  display: flex;
+  margin-right: 5px;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  transition: border-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
 }
 
-
 .copy-icon svg {
-  font-size: 15px; /* Adjust as needed */
+  font-size: 18px; /* Adjust as needed */
+}
+
+.copy-icon:hover {
+  color: #aaa; /* Change icon color on hover */
 }
 
 .form-check-label {
@@ -2080,7 +2106,12 @@ img.icon-style-normal {
 #select-recipients-title span {
   font-size: 12px;
 }
+#select-recipients-title .danger{
+  background-color: yellow;
+  color: red;
+  font-size: 12px;
 
+}
 #none-recipients-title {
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;

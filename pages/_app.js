@@ -36,6 +36,7 @@ export default function App({ Component, pageProps }) {
                     position="top-right"
                     toastOptions={{
                       className: "custom-toast",
+                      duration: 3000
                     }}
                     />
 

@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import GlobalStatesContext from '../../contexts/GlobalStates'
 import Scrape from '../Scraper'
-
+import { CgDanger } from "react-icons/cg";
+import { removeNestedParentheses } from '../../lib/helpers';
 const ChatWindowSelection = () => {
   const [initialItems, setInitialItems] = useState([])
   const [checkedItemCount, setCheckedItemCount] = useState(0)
-  const [profilePageName, setProfilePageName] = useState()
+  const [duplicateName, setDuplicateName] = useState(false)
+  const [uniqueNamesSet, setUniqueNamesSet] = useState(new Set())
   const {
     selectedChatWindows,
     setSelectedChatWindows,
@@ -24,10 +26,8 @@ const ChatWindowSelection = () => {
   const [currentUrl, setCurrentUrl] = useState('')
 
   function checkForExistenceOfMessageWindow(element) {
-    return element.querySelector(".msg-form__contenteditable") != null;
+    return element.querySelector('.msg-form__contenteditable') != null
   }
-
-
 
   const setUpInitialArray = async () => {
     try {
@@ -39,7 +39,6 @@ const ChatWindowSelection = () => {
       )
 
       const profileUserName = document.querySelector('a>h1')?.innerText
-
       var combinedArray = validChatWindows?.map((item, index) => {
         var nameOfRecipient
         if (item.querySelector('h2').innerText == 'New message') {
@@ -74,9 +73,7 @@ const ChatWindowSelection = () => {
         combinedArray[0].name = name
       }
 
-   
-
-      if(profileUserName) {
+      if (profileUserName) {
         combinedArray.unshift({
           name: profileUserName,
           index: 0,
@@ -84,6 +81,7 @@ const ChatWindowSelection = () => {
           link: windowUrl,
         })
       }
+
       return combinedArray
     } catch (error) {
       console.error('error while setting up initial array ' + error)
@@ -126,7 +124,8 @@ const ChatWindowSelection = () => {
                       return true
                     }
                   })
-                  setInitialItems(filteredArray)
+                  setInitialItems(combinedArray)
+
                   const filtered = filteredArray.filter((item) =>
                     selectedChatWindows.some(
                       (secondItems) => secondItems.name === item.name
@@ -280,22 +279,16 @@ const ChatWindowSelection = () => {
   }
 
   function getNameFromLinkedInUrl(element) {
-    const link = element.link
-    const name = element.name
-
-    const nameArray = name.match(/\b\w+\b/g)
-    let user = []
-    const lowerCaseNameArray = nameArray.map((word) => word.toLowerCase())
-    const linkNameArray = extractWordsFromString(link)
-    const updated = linkNameArray.map((item) => item.replace(/[^a-zA-Z]/g, ''))
-    const matches = updated.map((item) => {
-      if (lowerCaseNameArray.includes(item)) {
-        const index = lowerCaseNameArray.indexOf(item)
-        user.push(nameArray[index])
-      }
-    })
-    const result = user.join(' ')
-    return result
+    const name = element.name;
+  
+    // Use a non-greedy match to remove only the first set of parentheses
+    // and everything inside them.
+    const nameWithoutFirstParentheses = removeNestedParentheses(name);
+  
+    // Trim the resulting string to remove any leading or trailing spaces
+    const trimmedName = nameWithoutFirstParentheses.trim();
+  
+    return trimmedName;
   }
   //-----------------------------------------------------------------------------------
 
@@ -319,12 +312,55 @@ const ChatWindowSelection = () => {
       chrome.tabs.onUpdated.removeListener(updateUrl)
     }
   }, [])
+  useEffect(() => {
+    // Create a new Set for names
+    const newSet = new Set()
+    const nameMap = {}
+    let duplicateWithoutDataset = false
+    // Iterate over the initialItems to populate the map
 
+    initialItems.forEach((item) => {
+      const { name, dataset } = item
+      if (!nameMap[name]) {
+        // Initialize the entry for this name
+        nameMap[name] = {
+          count: 1,
+          hasDataset: !!dataset,
+        }
+      } else {
+        // Increment the count and update the hasDataset flag if necessary
+        nameMap[name].count++
+        nameMap[name].hasDataset = nameMap[name].hasDataset || !!dataset
+      }
+    })
+
+    // Check for duplicates where neither item has a dataset
+    const hasDuplicateWithoutDataset = Object.values(nameMap).some(
+      (item) => item.count > 1 && !item.hasDataset
+    )
+    setDuplicateName(hasDuplicateWithoutDataset)
+
+    // Track if a duplicate name without a dataset is found
+
+    // Iterate over the initialItems
+    initialItems.forEach((item) => {
+      // Check if the item's name is already in the set
+      if (newSet.has(item.name)) {
+        // If the item's name is in the set and it does not have a dataset, set the flag to true
+      } else {
+        // If the item's name is not in the set, add it to the set
+        newSet.add(item.name)
+      }
+    })
+
+    // Update the state with the new Set
+    setUniqueNamesSet(newSet)
+
+    // Set the duplicateName state based on the flag
+  }, [initialItems])
   useEffect(() => {
     setCheckedItemCount(selectedChatWindows?.length || 0)
   }, [selectedChatWindows])
-
-  const uniqueNamesSet = new Set()
 
   return (
     <div
@@ -336,16 +372,36 @@ const ChatWindowSelection = () => {
           {initialItems?.length > 0 || isPostCommentAvailable ? (
             <div>
               <div id="select-recipients-title">
-                Select Recipients{' '}
-                <span>
-                  ({postCommentSelected?checkedItemCount+1:checkedItemCount} out of {isPostCommentAvailable?initialItems.length+1:initialItems.length})
-                </span>
+                {!duplicateName ? (
+                  <>
+                    Select Recipients{' '}
+                    <span>
+                      (
+                      {postCommentSelected
+                        ? checkedItemCount + 1
+                        : checkedItemCount}{' '}
+                      out of{' '}
+                      {isPostCommentAvailable
+                        ? uniqueNamesSet.size + 1
+                        : uniqueNamesSet.size}
+                      )
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <div className='danger flex flex-row mb-2'>
+                    <CgDanger color='red'size={20}/>
+                      There are duplicate names. Please copy and paste the
+                      correct message manually and then send them.
+                    </div>
+                  </>
+                )}
               </div>
               <div className="mt-1 select-recipient-list">
                 {isPostCommentAvailable && (
                   <div id="post-comment" className="d-flex">
                     <input
-                      id="post-checkbox"
+                      id="post-comment-checkbox"
                       type="checkbox"
                       className="form-check-input"
                       value="Post Comment"
@@ -355,35 +411,25 @@ const ChatWindowSelection = () => {
                     <label className="form-check-label">Post Comment</label>
                   </div>
                 )}
-                {initialItems?.length > 0 &&
-                  initialItems?.map((item, index) => {
-                    if (!uniqueNamesSet.has(item.name)) {
-                      uniqueNamesSet.add(item.name)
-                      return (
-                        <div
-                          key={index + 1}
-                          id="select-recipient-item"
-                          className="d-flex"
-                        >
-                          <input
-                            id="recipient-checkbox"
-                            type="checkbox"
-                            className="form-check-input"
-                            value={item.name}
-                            checked={selectedChatWindows.some(
-                              (checkedItem) => checkedItem.name === item.name
-                            )}
-                            onChange={handleCheckboxChange}
-                          />
-                          <label className="form-check-label">
-                            {item.name}
-                          </label>
-                        </div>
-                      )
-                    } else {
-                      return null
-                    }
-                  })}
+                {[...uniqueNamesSet].map((name, index) => (
+                  <div
+                    key={index}
+                    id="select-recipient-item"
+                    className="d-flex"
+                  >
+                    <input
+                      id={`recipient-checkbox`}
+                      type="checkbox"
+                      className="form-check-input"
+                      value={name}
+                      checked={selectedChatWindows.some(
+                        (checkedItem) => checkedItem.name === name
+                      )}
+                      onChange={handleCheckboxChange}
+                    />
+                    <label className="form-check-label">{name}</label>
+                  </div>
+                ))}
               </div>
             </div>
           ) : (

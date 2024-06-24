@@ -1,31 +1,33 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AiFillRobot } from "react-icons/ai";
-import { HiMiniGif } from "react-icons/hi2";
-import EmojiPicker from "emoji-picker-react";
-import ChatGpt from "../Chatgpt/index.js";
-import GiphyWindow from "../Gif/index.js";
-import Library from "../Library/index.js";
-import MessageTemplate from "../TemplateMessage/index.js";
+import React, { useContext, useEffect, useState } from 'react'
+import { AiFillRobot } from 'react-icons/ai'
+import { HiMiniGif } from 'react-icons/hi2'
+import EmojiPicker from 'emoji-picker-react'
+import ChatGpt from '../Chatgpt/index.js'
+import GiphyWindow from '../Gif/index.js'
+import Library from '../Library/index.js'
+import MessageTemplate from '../TemplateMessage/index.js'
 import {
+  handleCopyToClipboard,
   insertHtmlAtPositionInMail,
   insertIntoLinkedInMessageWindow,
-} from "../../utils/index.js";
-import GlobalStatesContext from "../../contexts/GlobalStates.js";
-import MessageWindow from "../MessageWindow.jsx";
-import MessageContext from "../../contexts/MessageContext.js";
-import AuthContext from "../../contexts/AuthContext.js";
-import ChatWindowSelection from "../ChatWindowSelection/index.js";
-import toast from "react-hot-toast";
-import API_ENDPOINTS from "../apiConfig.js";
-import MediaUtilsContext from "../../contexts/MediaUtilsContext.js";
-import { VideoPreview } from "../VideoPreview.jsx";
-import ScreenContext from "../../contexts/ScreenContext.js";
-import { MdOutlineFileUpload } from "react-icons/md";
-import { useRecording } from "../../contexts/RecordingContext.js"
+} from '../../utils/index.js'
+import GlobalStatesContext from '../../contexts/GlobalStates.js'
+import MessageWindow from '../MessageWindow.jsx'
+import MessageContext from '../../contexts/MessageContext.js'
+import AuthContext from '../../contexts/AuthContext.js'
+import ChatWindowSelection from '../ChatWindowSelection/index.js'
+import toast from 'react-hot-toast'
+import API_ENDPOINTS from '../apiConfig.js'
+import MediaUtilsContext from '../../contexts/MediaUtilsContext.js'
+import { VideoPreview } from '../VideoPreview.jsx'
+import ScreenContext from '../../contexts/ScreenContext.js'
+import { MdOutlineFileUpload } from 'react-icons/md'
+import { useRecording } from '../../contexts/RecordingContext.js'
+import { FaRegClipboard } from 'react-icons/fa'
 
 const MessageComposer = () => {
-  const [displayComp, setDisplayComp] = useState("");
-  const [activateCalenderLink, setActivateCalenderLink] = useState(false);
+  const [displayComp, setDisplayComp] = useState('')
+  const [activateCalenderLink, setActivateCalenderLink] = useState(false)
 
   const {
     isLinkedin,
@@ -37,84 +39,91 @@ const MessageComposer = () => {
     expand,
     setLatestBlob,
     setLatestVideo,
-    latestBlob,postCommentSelected,postCommentElement
-  } = useContext(GlobalStatesContext);
-  const { message, addMessage, setMessage } = useContext(MessageContext);
-  const { getCalendarUrl, getUserPreferences } = useContext(AuthContext);
-  const { uploadVideo } = useContext(MediaUtilsContext);
-  const { addToMessage } = useContext(MessageContext);
-  const { navigateToPage, activePage } = useContext(ScreenContext);
-  const {isRecordStart} = useRecording();
+    latestBlob,
+    postCommentSelected,
+    postCommentElement,
+  } = useContext(GlobalStatesContext)
+  const { message, addMessage, setMessage } = useContext(MessageContext)
+  const { getCalendarUrl, getUserPreferences } = useContext(AuthContext)
+  const { uploadVideo } = useContext(MediaUtilsContext)
+  const { addToMessage } = useContext(MessageContext)
+  const { navigateToPage, activePage } = useContext(ScreenContext)
+  const { isRecordStart } = useRecording()
 
   const handleInsertion = (text) => {
-    const newText = text + " \n ";
-    addMessage(newText);
-    window.scrollTo(0, document.body.scrollHeight);
-  };
+    const newText = text + ' \n '
+    addMessage(newText)
+    window.scrollTo(0, document.body.scrollHeight)
+  }
 
   useEffect(() => {
     if (latestBlob) {
-      setDisplayComp("DefaultCard");
+      setDisplayComp('DefaultCard')
     }
-  }, [message, latestBlob]);
+  }, [message, latestBlob])
   const addMeetSchedulingLink = async () => {
-    const url = await getCalendarUrl();
+    const url = await getCalendarUrl()
     if (isLinkedin) {
-      handleInsertion(url);
-      toast.success("Meeting Calendar link added successfully!", {
-        className: "custom-toast",
-      });
+      handleInsertion(url)
+      toast.success('Meeting Calendar link added successfully!', {
+        className: 'custom-toast',
+      })
     } else {
-      handleInsertion(`<a href="${url}">Schedule Virtual Appointment</a>`);
-      toast.success("Meeting Calendar link added successfully!", {
-        className: "custom-toast",
-      });
+      handleInsertion(`<a href="${url}">Schedule Virtual Appointment</a>`)
+      toast.success('Meeting Calendar link added successfully!', {
+        className: 'custom-toast',
+      })
     }
-  };
+  }
 
   const checkForUserPreferences = async () => {
-    const userPreferences = await getUserPreferences();
-    const url = await getCalendarUrl();
+    const userPreferences = await getUserPreferences()
+    const url = await getCalendarUrl()
     if (url.startsWith(API_ENDPOINTS.skoopCalendarUrl)) {
       if (userPreferences && userPreferences.length > 0) {
-        return true;
+        return true
       } else {
-        toast.error("User preference is not set");
-        return false;
+        toast.error('User preference is not set')
+        return false
       }
     } else {
-      return true;
+      return true
     }
-  };
+  }
 
   const handleIconClick = async (eventKey) => {
-    setLatestBlob();
-    setLatestVideo();
-    if (eventKey === "Calender Link") {
+    setLatestBlob()
+    setLatestVideo()
+    if (eventKey === 'Calender Link') {
       if (await checkForUserPreferences()) {
-        setDisplayComp(eventKey);
-        addMeetSchedulingLink();
-        return;
+        setDisplayComp(eventKey)
+        addMeetSchedulingLink()
+        return
       }
     }
-    if (eventKey === "Upload Video") {
-      document.getElementById("video-upload").click();
+    if (eventKey === 'Upload Video') {
+      toast.success('Video size should not be more than 50 mb.')
+
+      // Set a timeout before opening the file upload dialog
+      setTimeout(() => {
+        document.getElementById('video-upload').click()
+      }, 1000)
     }
-    if (eventKey === "Videos") {
-      setIsVideoContainer(true);
+    if (eventKey === 'Videos') {
+      setIsVideoContainer(true)
     }
     if (displayComp == eventKey) {
-      setDisplayComp("DefaultCard");
+      setDisplayComp('DefaultCard')
     } else {
-      setDisplayComp(eventKey);
+      setDisplayComp(eventKey)
     }
-  };
+  }
 
   const renderNavItem = (eventKey, icon, tooltipText) => (
     <li key={eventKey} className="cursor-pointer">
       <a
         className={`px-1 ${
-          displayComp === eventKey ? "text-black" : "text-white"
+          displayComp === eventKey ? 'text-black' : 'text-white'
         }`}
         onClick={() => handleIconClick(eventKey)}
         data-bs-toggle="tooltip"
@@ -125,59 +134,59 @@ const MessageComposer = () => {
         <span className="d-none d-sm-inline">{tooltipText}</span>
       </a>
     </li>
-  );
+  )
 
   const handleSend = () => {
     const clickSendButtons = (arr) => {
       const sendButtons = Array.from(
-        document.getElementsByClassName("msg-form__send-button")
-      );
+        document.getElementsByClassName('msg-form__send-button')
+      )
       arr.forEach((item) => {
-        const btn = sendButtons[item.index];
-        btn.click();
-      });
-    };
+        const btn = sendButtons[item.index]
+        btn.click()
+      })
+    }
 
     try {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const targetTab = tabs[0];
+        const targetTab = tabs[0]
         if (targetTab) {
           try {
             chrome.scripting.executeScript({
               target: { tabId: targetTab.id },
               func: clickSendButtons,
               args: [selectedChatWindows],
-            });
+            })
           } catch (err) {
-            console.error("some error occured in executing script", err);
+            console.error('some error occured in executing script', err)
           }
         }
-      });
+      })
     } catch (err) {
-      console.error("some error occured while setting up initial array");
+      console.error('some error occured while setting up initial array')
     }
-  };
+  }
   function hasDatasetProperty(item) {
-    return item.hasOwnProperty("dataset");
+    return item.hasOwnProperty('dataset')
   }
 
   const handleOpenMessageWindow = () => {
     const clickMessageButton = () => {
-      const btns = Array.from(document.querySelectorAll("div>div>div>button"));
+      const btns = Array.from(document.querySelectorAll('div>div>div>button'))
       let selectedButton = btns.find(
-        (btn) => btn.ariaLabel && btn.ariaLabel.includes("Message")
-      );
+        (btn) => btn.ariaLabel && btn.ariaLabel.includes('Message')
+      )
       if (selectedButton) {
-        selectedButton.click();
+        selectedButton.click()
       } else {
-        throw new Error("Message button not found.");
+        throw new Error('Message button not found.')
       }
-    };
+    }
 
     return new Promise((resolve, reject) => {
       try {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-          const targetTab = tabs[0];
+          const targetTab = tabs[0]
           if (targetTab) {
             chrome.scripting.executeScript(
               {
@@ -187,110 +196,139 @@ const MessageComposer = () => {
               (injectionResults) => {
                 if (chrome.runtime.lastError) {
                   console.error(
-                    "Error executing script:",
+                    'Error executing script:',
                     chrome.runtime.lastError
-                  );
-                  reject("Failed to execute script on tab");
+                  )
+                  reject('Failed to execute script on tab')
                 } else {
-                  resolve("Message button clicked successfully");
+                  resolve('Message button clicked successfully')
                 }
               }
-            );
+            )
           } else {
-            reject("Target tab is not accessible");
+            reject('Target tab is not accessible')
           }
-        });
+        })
       } catch (err) {
         console.error(
-          "some error occurred while trying to open message window",
+          'some error occurred while trying to open message window',
           err
-        );
-        reject("Unexpected error occurred");
+        )
+        reject('Unexpected error occurred')
       }
-    });
-  };
+    })
+  }
 
   const handleInsertionToWebsite = async () => {
     if (message === null || message === undefined) {
-      toast.error("Please add message!!");
-      return;
+      toast.error('Please add message!!')
+      return
     }
     if (isLinkedin) {
       if (!postCommentSelected && selectedChatWindows?.length === 0) {
-        toast.error("Please select a recipient");
-        return;
+        toast.error('Please select a recipient')
+        return
       }
       for (const item of selectedChatWindows) {
         if (hasDatasetProperty(item)) {
           try {
-            const openChatWindow = await handleOpenMessageWindow();
+            const openChatWindow = await handleOpenMessageWindow()
           } catch (err) {
-            console.error(err);
+            console.error(err)
           }
         }
       }
       await insertIntoLinkedInMessageWindow(
         `<p>${message}</p>`,
-        selectedChatWindows,postCommentSelected,postCommentElement
-        
-      );
+        selectedChatWindows,
+        postCommentSelected,
+        postCommentElement
+      )
       setTimeout(() => {
-        handleSend();
-      }, 900);
-      toast.success("Message Sent Successfully!!");
+        handleSend()
+      }, 900)
+      toast.success('Message Sent Successfully!!')
+      if (postCommentSelected) {
+        let toastId = toast.loading('Message Sent Successfully!!')
+
+        // Countdown duration in seconds
+        let countdown = 5
+
+        // Update the toast every second
+        const interval = setInterval(() => {
+          countdown -= 1
+          if (countdown > 0) {
+            // Update the toast with the remaining countdown time
+            toast.loading(
+              `Comments will be posted in ${countdown} seconds...`,
+              {
+                id: toastId,
+              }
+            )
+          } else {
+            // Clear the interval when countdown is finished
+            clearInterval(interval)
+            // Update the toast with the final message
+            toast.success('Comments posted!', {
+              id: toastId,
+              duration: 4000,
+            })
+          }
+        }, 1000)
+      }
     } else {
       const gmailInsertion = await insertHtmlAtPositionInMail(
         message,
         focusedElementId
-      );
+      )
       if (gmailInsertion) {
-        setMessage();
+        setMessage()
       }
     }
-    if (selectedChatWindows?.length !== 0) {
-      setMessage();
+    if (selectedChatWindows?.length !== 0 || postCommentSelected) {
+      setMessage()
     }
-  };
+  }
   const saveMessageAsTemplate = async () => {
-    const heading = new Date().toISOString();
+    const heading = new Date().toISOString()
     try {
       const response = await fetch(
         API_ENDPOINTS.skoopCrmAddPreloadedResponses,
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("accessToken")
+              localStorage.getItem('accessToken')
             )}`,
           },
           body: JSON.stringify({
-            heading: "Saved message" + heading,
+            heading: 'Saved message' + heading,
             description: message,
           }),
         }
-      );
+      )
 
       if (response.ok) {
-        toast.success("Message saved to template successfully");
+        toast.success('Message saved to template successfully')
       } else {
-        toast.error("Failed to add as template message. Please try again.");
+        toast.error('Failed to add as template message. Please try again.')
       }
     } catch (error) {
-      console.error("Error to add as template message:", error);
-      toast.error("Failed to add as template message. Please try again.");
+      console.error('Error to add as template message:', error)
+      toast.error('Failed to add as template message. Please try again.')
     }
-  };
+  }
   const renderNavButtonItem = (eventKey, icon, tooltipText) => (
     <li
       key={eventKey}
       className={`rounded-1 p-1 ${
-        displayComp === eventKey ? "bg-active active " : ""
+        displayComp === eventKey ? 'bg-active active ' : ''
       }`}
     >
       <a
         className={`text-decoration-none ${
-          displayComp === eventKey ? "text-white" : "text-black"
+          displayComp === eventKey ? 'text-white' : 'text-black'
         }`}
         onClick={() => handleIconClick(eventKey)}
         data-bs-toggle="tooltip"
@@ -300,50 +338,50 @@ const MessageComposer = () => {
         <div className="d-flex flex-column align-items-center justify-content-center">
           {React.cloneElement(icon, {
             className: `svg-icon ${
-              displayComp === eventKey ? "active-path" : "default-path"
+              displayComp === eventKey ? 'active-path' : 'default-path'
             }`,
           })}
           <span className="nav-item-label">{eventKey}</span>
         </div>
       </a>
     </li>
-  );
+  )
   function dataURLtoBlob(dataurl) {
-    var arr = dataurl.split(","),
+    var arr = dataurl.split(','),
       mime = arr[0].match(/:(.*?);/)[1],
       bstr = atob(arr[1]),
       n = bstr.length,
-      u8arr = new Uint8Array(n);
+      u8arr = new Uint8Array(n)
     while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
+      u8arr[n] = bstr.charCodeAt(n)
     }
-    return new Blob([u8arr], { type: mime });
+    return new Blob([u8arr], { type: mime })
   }
   const uploadVideoHandler = async (event) => {
-    const file = event.target.files[0];
-
+    const file = event.target.files[0]
+    event.target.value = null
     if (file) {
-      let fileSizeInMB = file.size / (1024 * 1024);
-      fileSizeInMB = fileSizeInMB.toFixed(2);
-      if(fileSizeInMB > 80) {
-        toast.error("Video size should not be more than 80 mb.");
-        return;
+      let fileSizeInMB = file.size / (1024 * 1024)
+      fileSizeInMB = fileSizeInMB.toFixed(2)
+      if (fileSizeInMB > 80) {
+        toast.error('Video size should not be more than 50 mb.')
+        return
       }
-      const videoTitle = "MyVideoTitle";
-      const directoryName = "New";
+      const videoTitle = 'MyVideoTitle'
+      const directoryName = 'New'
 
       // Create a URL for the uploaded video file
-      const videoUrl = URL.createObjectURL(file);
-      const videoElement = document.createElement("video");
+      const videoUrl = URL.createObjectURL(file)
+      const videoElement = document.createElement('video')
 
       // Set the video source to the created URL
-      videoElement.src = videoUrl;
+      videoElement.src = videoUrl
 
       // Load the video metadata to ensure dimensions are available
-      videoElement.addEventListener("loadedmetadata", async function () {
+      videoElement.addEventListener('loadedmetadata', async function () {
         // Now you have access to video dimensions
-        const width = videoElement.videoWidth;
-        const height = videoElement.videoHeight;
+        const width = videoElement.videoWidth
+        const height = videoElement.videoHeight
 
         // Proceed with your upload function, now including dimensions
         try {
@@ -353,30 +391,30 @@ const MessageComposer = () => {
             directoryName,
             height,
             width
-          );
-          setLatestVideo(response);
-          addToMessage(response.facade_player_uuid, response?.urlForThumbnail);
+          )
+          setLatestVideo(response)
+          addToMessage(response.facade_player_uuid, response?.urlForThumbnail)
         } catch (error) {
-          console.error("Upload Error:", error);
+          console.error('Upload Error:', error)
         }
 
         // Cleanup: Revoke the object URL to free up resources
-        URL.revokeObjectURL(videoUrl);
-      });
+        URL.revokeObjectURL(videoUrl)
+      })
 
       // Load the video to trigger 'loadedmetadata'
-      videoElement.load();
+      videoElement.load()
     }
-  };
+  }
   const onEmojiClick = (event) => {
-    addMessage("" + event.emoji);
-  };
+    addMessage('' + event.emoji)
+  }
   return (
     <>
       <input
         id="video-upload"
         type="file"
-        style={{ display: "none" }}
+        style={{ display: 'none' }}
         onChange={uploadVideoHandler}
         accept="video/*"
       />
@@ -385,7 +423,7 @@ const MessageComposer = () => {
           <div class="container mt-1 mx-2">
             <ul className="nav-button mb-1">
               {renderNavButtonItem(
-                "Message",
+                'Message',
                 <svg
                   width="13"
                   height="13"
@@ -400,10 +438,10 @@ const MessageComposer = () => {
                     fill="#2A2B39"
                   />
                 </svg>,
-                "Send predetermined custom message responses."
+                'Send predetermined custom message responses.'
               )}
               {renderNavButtonItem(
-                "ChatGpt",
+                'ChatGpt',
                 <svg
                   width="13"
                   height="12"
@@ -432,11 +470,11 @@ const MessageComposer = () => {
                     </clipPath>
                   </defs>
                 </svg>,
-                "Send Chatgpt responses"
+                'Send Chatgpt responses'
               )}
 
               {renderNavButtonItem(
-                "Videos",
+                'Videos',
                 <svg
                   width="13"
                   height="13"
@@ -451,10 +489,10 @@ const MessageComposer = () => {
                     fill="#2A2B39"
                   />
                 </svg>,
-                "Send any recorded video or audio file"
+                'Send any recorded video or audio file'
               )}
               {renderNavButtonItem(
-                "Calender Link",
+                'Calender Link',
                 <svg
                   width="13"
                   height="15"
@@ -469,17 +507,17 @@ const MessageComposer = () => {
                     fill="#2A2B39"
                   />
                 </svg>,
-                "Send link to schedule virtual appointment."
+                'Send link to schedule virtual appointment.'
               )}
             </ul>
           </div>
         </nav>
       ) : null}
       <div className="container bg-white">
-        {displayComp === "Message" && (
+        {displayComp === 'Message' && (
           <MessageTemplate appendToBody={handleInsertion} />
         )}
-        {displayComp === "ChatGpt" && (
+        {displayComp === 'ChatGpt' && (
           <ChatGpt appendToBody={handleInsertion} close={setDisplayComp} />
         )}
         <VideoPreview />
@@ -490,23 +528,23 @@ const MessageComposer = () => {
             <ChatWindowSelection />
             <MessageWindow />
           </div>
-          {displayComp === "Giphy" && (
+          {displayComp === 'Giphy' && (
             <GiphyWindow appendToBody={handleInsertion} />
           )}
-          {displayComp === "Emoji" && (
+          {displayComp === 'Emoji' && (
             <EmojiPicker onEmojiClick={onEmojiClick} searchDisabled />
           )}
           <nav className="navbar px-2" id="messageFooter">
             <div class="navbar-brand d-flex flex-row">
               <ul className="nav">
                 {renderNavItem(
-                  "Giphy",
+                  'Giphy',
                   <HiMiniGif />,
-                  "Send your favorite GIFs to Mail"
+                  'Send your favorite GIFs to Mail'
                 )}
 
                 {renderNavItem(
-                  "Emoji",
+                  'Emoji',
                   <svg
                     width="18"
                     height="18"
@@ -519,12 +557,12 @@ const MessageComposer = () => {
                       fill="white"
                     />
                   </svg>,
-                  "Add emotions"
+                  'Add emotions'
                 )}
                 {renderNavItem(
-                  "Upload Video",
+                  'Upload Video',
                   <MdOutlineFileUpload color="white" />,
-                  "Upload video from your device (80mb max limit)"
+                  'Upload video from your device (80mb max limit)'
                 )}
 
                 {message && (
@@ -533,7 +571,7 @@ const MessageComposer = () => {
                     onClick={() => saveMessageAsTemplate()}
                   >
                     <a
-                      className={"px-1text-white"}
+                      className={'px-1text-white'}
                       data-bs-toggle="tooltip"
                       data-bs-placement="bottom"
                       title="Save the customized message as template."
@@ -561,6 +599,16 @@ const MessageComposer = () => {
             </div>
             <div className="d-flex flex-row  align-items-right me-2">
               <button
+                className="copy-icon"
+                onClick={() => {
+                  handleCopyToClipboard(message)
+                  toast.success('Message copied.')
+                }}
+                title="Copy the message"
+              >
+                <FaRegClipboard title="Copy the message" />
+              </button>
+              <button
                 className="btn send-button d-flex me-2 align-items-center justify-content-center"
                 type="button"
                 onClick={handleInsertionToWebsite}
@@ -572,7 +620,7 @@ const MessageComposer = () => {
         </div>
       )}
     </>
-  );
-};
+  )
+}
 
-export default MessageComposer;
+export default MessageComposer

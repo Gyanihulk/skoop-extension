@@ -30,12 +30,10 @@ const MessageWindow = () => {
         className="form-control auto-height-textarea"
         placeholder="Type your message..."
         aria-label="With textarea"
-        value={message}
+        value={message == null ? '' : message}
         onChange={handleTextChange}
       ></textarea>
-      <button className="copy-icon" onClick={()=>{handleCopyToClipboard(message);toast.success("Message copied.")}}>
-        <FaRegClipboard />
-      </button>
+    
     </div>
   )
 }
