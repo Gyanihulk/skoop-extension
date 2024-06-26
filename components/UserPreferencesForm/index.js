@@ -1,19 +1,9 @@
-import React, {
-  Component,
-  useEffect,
-  useContext,
-  useState,
-  useRef,
-} from 'react'
+import React, { Component, useEffect, useContext, useState, useRef } from 'react'
 import { FaAngleDown, FaRegClock, FaMicrosoft } from 'react-icons/fa'
 import API_ENDPOINTS from '../apiConfig'
 import { toast } from 'react-hot-toast'
 import { timezones } from '../../lib/timezones'
-import {
-  isStartTimeBeforeEndTime,
-  convertTo12HrTime,
-  convertToMinutes,
-} from '../../lib/helpers'
+import { isStartTimeBeforeEndTime, convertTo12HrTime, convertToMinutes } from '../../lib/helpers'
 import { MdExpandMore } from 'react-icons/md'
 import { RxCross2 } from 'react-icons/rx'
 import { IoSearchOutline } from 'react-icons/io5'
@@ -38,16 +28,12 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
     breakEndTime: '',
   })
   const [isPreference, setIsPreference] = useState(false)
-  const [toggleInfo, setToggleInfo] = collapse
-    ? useState(collapse)
-    : useState(false)
+  const [toggleInfo, setToggleInfo] = collapse ? useState(collapse) : useState(false)
   const [isTimezoneEmpty, setIsTimezoneEmpty] = useState(false)
   const [selectedTimezone, setSelectedTimezone] = useState('')
   const [google, setGoogle] = useState(false)
   const [microsoft, setMicrosoft] = useState(false)
-  const [preferredStartTime, setPreferredStartTime] = useState(
-    'Preferred start time'
-  )
+  const [preferredStartTime, setPreferredStartTime] = useState('Preferred start time')
   const [preferredEndTime, setPreferredEndTime] = useState(0)
   const [breakStartTime, setBreakStartTime] = useState(0)
   const [breakEndTime, setBreakEndTime] = useState(0)
@@ -55,12 +41,10 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
   const [additionalDetails, setAdditionalDetails] = useState('')
   const [myTimezone, setMyTimezone] = useState('')
   const [filteredTimezones, setFilteredTimezones] = useState(timezones)
-  const { getUserPreferences, calendarSync, setNewUser, userProfileDetail, getUserProfileDetail } =
-    useContext(AuthContext)
+  const { getUserPreferences, calendarSync, setNewUser, userProfileDetail, getUserProfileDetail } = useContext(AuthContext)
   const inputRef = useRef()
 
-  const { isTimezoneScreen, setIsTimezoneScreen } =
-    useContext(GlobalStatesContext)
+  const { isTimezoneScreen, setIsTimezoneScreen } = useContext(GlobalStatesContext)
   const { navigateToPage, activePage } = useContext(ScreenContext)
   const fetchUserPreferences = async () => {
     try {
@@ -80,8 +64,8 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
         setTimeZone(preferences[0].time_zone)
         setAdditionalDetails(preferences[0].additional_details)
         if (preferences[0]?.time_zone) {
-          setMyTimezone(preferences[0].time_zone);
-          setSelectedTimezone(preferences[0].time_zone);
+          setMyTimezone(preferences[0].time_zone)
+          setSelectedTimezone(preferences[0].time_zone)
         }
       }
     } catch (err) {
@@ -105,7 +89,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
     values.timeZone = detectedTimezone
     setMyTimezone(detectedTimezone)
     setSelectedTimezone(detectedTimezone)
-    fetchUserPreferences() 
+    fetchUserPreferences()
   }, [])
 
   useEffect(() => {
@@ -154,9 +138,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
 
   const handleSearch = (event) => {
     const query = event.target.value.toLowerCase()
-    const filtered = timezones.filter((timezone) =>
-      timezone.toLowerCase().includes(query)
-    )
+    const filtered = timezones.filter((timezone) => timezone.toLowerCase().includes(query))
     setFilteredTimezones(filtered)
   }
 
@@ -170,11 +152,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    if (
-      preferredStartTime < preferredEndTime &&
-      breakStartTime < breakEndTime &&
-      preferredStartTime < breakStartTime
-    ) {
+    if (preferredStartTime < preferredEndTime && breakStartTime < breakEndTime && preferredStartTime < breakStartTime) {
       try {
         let startTime = timeFromInt(preferredStartTime, { format: 12 })
         let endTime = timeFromInt(preferredEndTime, { format: 12 })
@@ -195,9 +173,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
             body: payload,
             headers: {
               'Content-type': 'application/json; charset=UTF-8',
-              authorization: `Bearer ${JSON.parse(
-                localStorage.getItem('accessToken')
-              )}`,
+              authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
             },
           })
           const data = await res.json()
@@ -214,13 +190,12 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
             body: payload,
             headers: {
               'Content-type': 'application/json; charset=UTF-8',
-              authorization: `Bearer ${JSON.parse(
-                localStorage.getItem('accessToken')
-              )}`,
+              authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
             },
           })
           const data = await res.json()
-          if (res.ok) {  handleFormSubmit()
+          if (res.ok) {
+            handleFormSubmit()
             toast.success('Preferences saved successfully')
             fetchUserPreferences()
           } else {
@@ -232,7 +207,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
           setNewUser(false)
         }
       } catch (err) {
-        console.error(err);
+        console.error(err)
         toast.error('Preferences not saved. Please try again.')
       }
     } else {
@@ -240,37 +215,24 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
     }
   }
   const handleAdditionalDetailsChange = (e) => {
-    const value = e.target.value;
+    const value = e.target.value
     if (value.length <= 230) {
-      setAdditionalDetails(value);
+      setAdditionalDetails(value)
     } else {
-      setAdditionalDetails(value.slice(0, 230));
-      toast.error('Character limit exceeded (Max: 230 characters)');
+      setAdditionalDetails(value.slice(0, 230))
+      toast.error('Character limit exceeded (Max: 230 characters)')
     }
-  };
+  }
   return (
     <>
       {!isTimezoneScreen && (
         <div className="card border-radius-12 overflow-hidden outline">
-          <div
-            className="light-pink card-header-custom toggle-collapse"
-            onClick={() => setToggleInfo(!toggleInfo)}
-            aria-controls="user-preference-collapse"
-            aria-expanded={toggleInfo}
-          >
+          <div className="light-pink card-header-custom toggle-collapse" onClick={() => setToggleInfo(!toggleInfo)} aria-controls="user-preference-collapse" aria-expanded={toggleInfo}>
             <div className="d-flex justify-content-between align-items-center">
-              <h6 className="mb-0 card-title">
-                {heading ? heading : 'User Preferences'}
-              </h6>
+              <h6 className="mb-0 card-title">{heading ? heading : 'User Preferences'}</h6>
               {!collapse && (
                 <div>
-                  <FaAngleDown
-                    style={
-                      toggleInfo
-                        ? { transform: 'rotate(180deg)' }
-                        : { transform: 'rotate(0deg)' }
-                    }
-                  />
+                  <FaAngleDown style={toggleInfo ? { transform: 'rotate(180deg)' } : { transform: 'rotate(0deg)' }} />
                 </div>
               )}
             </div>
@@ -281,116 +243,58 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
                 <div className="card-body p-0">
                   <div className="container my-2">
                     <div className="mb-3">
-                      <label className="form-label profile-text">
-                        Preferred Start Time
-                      </label>
+                      <label className="form-label profile-text">Preferred Start Time</label>
                       <div className="position-relative mt-2">
-                        <TimePicker
-                          value={preferredStartTime}
-                          onChange={(time) => setPreferredStartTime(time)}
-                          className="custom-time-picker"
-                        />
+                        <TimePicker value={preferredStartTime} onChange={(time) => setPreferredStartTime(time)} className="custom-time-picker" />
                         <div className="clock-icon">
                           <FaRegClock size={14} />
                         </div>
                       </div>
                     </div>
                     <div className="mb-3">
-                      <label className="form-label profile-text">
-                        Break Start Time
-                      </label>
+                      <label className="form-label profile-text">Break Start Time</label>
                       <div className="position-relative mt-2">
-                        <TimePicker
-                          value={breakStartTime}
-                          onChange={(time) => setBreakStartTime(time)}
-                          className="custom-time-picker"
-                        />
+                        <TimePicker value={breakStartTime} onChange={(time) => setBreakStartTime(time)} className="custom-time-picker" />
                         <div className="clock-icon">
                           <FaRegClock size={14} />
                         </div>
                       </div>
                     </div>
                     <div className="mb-3">
-                      <label className="form-label profile-text">
-                        Break End Time
-                      </label>
+                      <label className="form-label profile-text">Break End Time</label>
                       <div className="position-relative mt-2">
-                        <TimePicker
-                          value={breakEndTime}
-                          onChange={(time) => setBreakEndTime(time)}
-                          className="custom-time-picker"
-                        />
+                        <TimePicker value={breakEndTime} onChange={(time) => setBreakEndTime(time)} className="custom-time-picker" />
                         <div className="clock-icon">
                           <FaRegClock size={14} />
                         </div>
                       </div>
                     </div>
                     <div className="mb-3">
-                      <label className="form-label profile-text">
-                        Preferred End Time
-                      </label>
+                      <label className="form-label profile-text">Preferred End Time</label>
                       <div className="position-relative mt-2">
-                        <TimePicker
-                          value={preferredEndTime}
-                          onChange={(time) => setPreferredEndTime(time)}
-                          className="custom-time-picker"
-                        />
+                        <TimePicker value={preferredEndTime} onChange={(time) => setPreferredEndTime(time)} className="custom-time-picker" />
                         <div className="clock-icon">
                           <FaRegClock size={14} />
                         </div>
                       </div>
                     </div>
                     <div className="mb-3">
-                      <label className="form-label profile-text">
-                        Time Zone
-                      </label>
-                      <div
-                        className="position-relative mt-2"
-                        onClick={handleToggleTimezoneScreen}
-                      >
-                        <input
-                          className="form-control cursor-pointer custom-input-global"
-                          id="time-zone-dropdown"
-                          type="text"
-                          name="timezone"
-                          placeholder="Select time zone"
-                          value={myTimezone}
-                          readOnly
-                        />
-                        <button
-                          className="btn position-absolute end-0 top-50 translate-middle-y border-0"
-                          type="button"
-                        >
+                      <label className="form-label profile-text">Time Zone</label>
+                      <div className="position-relative mt-2" onClick={handleToggleTimezoneScreen}>
+                        <input className="form-control cursor-pointer custom-input-global" id="time-zone-dropdown" type="text" name="timezone" placeholder="Select time zone" value={myTimezone} readOnly />
+                        <button className="btn position-absolute end-0 top-50 translate-middle-y border-0" type="button">
                           <MdExpandMore size={16} />
                         </button>
                       </div>
-                      {isTimezoneEmpty && (
-                        <ValidationError title="Please select timezone" />
-                      )}
+                      {isTimezoneEmpty && <ValidationError title="Please select timezone" />}
                     </div>
                     <div className="mb-3">
-                      <label className="form-label profile-text">
-                        Additional Details
-                      </label>
-                      <textarea
-                        className="form-control mt-2 custom-textarea-global"
-                        id="additionalDetails"
-                        name="additionalDetails"
-                        placeholder="Additional Info"
-                        value={additionalDetails}
-                        onChange={handleAdditionalDetailsChange}
-                        rows="3"
-                      ></textarea>
+                      <label className="form-label profile-text">Additional Details</label>
+                      <textarea className="form-control mt-2 custom-textarea-global" id="additionalDetails" name="additionalDetails" placeholder="Additional Info" value={additionalDetails} onChange={handleAdditionalDetailsChange} rows="3"></textarea>
                     </div>
                     <div className="mb-3">
-                      <p className="card-title">
-                        You can add update these from the account settings
-                        anytime.
-                      </p>
-                      <p className="card-title">
-                        Connect your calendar to auto-check for busy times and
-                        add new events as they are scheduled.
-                      </p>
+                      <p className="card-title">You can add update these from the account settings anytime.</p>
+                      <p className="card-title">Connect your calendar to auto-check for busy times and add new events as they are scheduled.</p>
 
                       <div class="d-flex flex-column align-items-center justify-content-start mt-3">
                         <div class="d-flex align-items-center w-100 justify-content-between">
@@ -406,19 +310,16 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
                               }}
                               id="google"
                             ></input>
-                            <label
-                              class="d-flex align-items-center ms-2"
-                              for="google"
-                            >
+                            <label class="d-flex align-items-center ms-2" for="google">
                               <FcGoogle />
-                              <h5 class="card-title mb-0 pb-0 ms-1">
-                                Google Calendar
-                              </h5>
+                              <h5 class="card-title mb-0 pb-0 ms-1">Google Calendar</h5>
                             </label>
                           </div>
-                          {userProfileDetail?.calendar_info && (<div className='d-flex justify-content-end align-items-center'>
-                            <span className="badge badge-pill badge-primary">Synced</span>
-                          </div>)}
+                          {userProfileDetail?.calendar_info && (
+                            <div className="d-flex justify-content-end align-items-center">
+                              <span className="badge badge-pill badge-primary">Synced</span>
+                            </div>
+                          )}
                         </div>
                         <div class="d-flex align-items-center w-100 mt-3">
                           <div class="d-flex align-items-center">
@@ -433,15 +334,10 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
                               }}
                               id="microsoft"
                             ></input>
-                            <label
-                              class="d-flex align-items-center ms-2"
-                              for="microsoft"
-                            >
+                            <label class="d-flex align-items-center ms-2" for="microsoft">
                               <FaMicrosoft />
                             </label>
-                            <h5 class="card-title mb-0 pb-0 ms-1">
-                              Outlook Calendar
-                            </h5>
+                            <h5 class="card-title mb-0 pb-0 ms-1">Outlook Calendar</h5>
                           </div>
                         </div>
                       </div>
@@ -470,31 +366,14 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
         </div>
       )}
       {isTimezoneScreen && (
-        <div
-          id="timezone-preference"
-          className=" py-3 px-2 time-zone-main user-preference-timezone"
-        >
+        <div id="timezone-preference" className=" py-3 px-2 time-zone-main user-preference-timezone">
           <div className="pt-3 timezone-head d-flex justify-content-between">
             <h2>Select time zone</h2>
-            <RxCross2
-              className="cursor-pointer"
-              size={20}
-              color="#2C2D2E"
-              onClick={onCloseTimezoneScreen}
-            />
+            <RxCross2 className="cursor-pointer" size={20} color="#2C2D2E" onClick={onCloseTimezoneScreen} />
           </div>
           <div className="position-relative custom-password-input-box">
-            <input
-              type="text"
-              className="form-control mt-3"
-              id="timezone-search-input-box"
-              placeholder="Search"
-              onChange={handleSearch}
-            />
-            <button
-              className="btn position-absolute ps-3 top-50 translate-middle-y border-0"
-              type="button"
-            >
+            <input type="text" className="form-control mt-3" id="timezone-search-input-box" placeholder="Search" onChange={handleSearch} />
+            <button className="btn position-absolute ps-3 top-50 translate-middle-y border-0" type="button">
               <IoSearchOutline />
             </button>
           </div>
@@ -502,14 +381,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
           <div className="mt-4" id="timezone-list-container">
             {filteredTimezones.map((timezone, index) => (
               <div>
-                <div
-                  onClick={() => handleSelectTimezone(timezone)}
-                  className={`px-2 timezone-item cursor-pointer`}
-                  id={`${
-                    selectedTimezone === timezone ? 'selected-timezone' : ''
-                  }`}
-                  key={index}
-                >
+                <div onClick={() => handleSelectTimezone(timezone)} className={`px-2 timezone-item cursor-pointer`} id={`${selectedTimezone === timezone ? 'selected-timezone' : ''}`} key={index}>
                   <div>{timezone}</div>
                   {selectedTimezone === timezone && <IoCheckmark size={16} />}
                 </div>

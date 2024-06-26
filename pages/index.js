@@ -23,61 +23,44 @@ import ContactUs from '../Screens/ContactUs'
 import ReportBug from '../Screens/ReportBug'
 import { PaymentScreen } from '../Screens/PaymentScreen'
 import CantUseScreen from '../Screens/CantUseScreen'
+import GlobalStatesContext from '../contexts/GlobalStates'
 export default function Home() {
-  const {
-    verifyToken,
-    isAuthenticated,
-    newUser,
-    isPro,
-    setVersion,
-    createUserDevice,
-    ipAddress,
-    operatingSystem,
-    fingerPrint,
-  } = useContext(AuthContext)
+  const { setTabId } = useContext(GlobalStatesContext)
+  const { verifyToken, isAuthenticated, newUser, isPro, setVersion, createUserDevice, ipAddress, operatingSystem, fingerPrint } = useContext(AuthContext)
   const { activePage, navigateToPage } = useContext(ScreenContext)
   const [isWebPage, setIsWebPage] = useState(false)
 
   // Using useEffect to call getData on component mount
   useEffect(() => {
-
     if (chrome && chrome.runtime && chrome.runtime.getManifest) {
-      const globalWindowObject = window;
-      let skoopExtensionBody = document.getElementById("skoop-extension-body");
+      const globalWindowObject = window
+      let skoopExtensionBody = document.getElementById('skoop-extension-body')
       if (skoopExtensionBody && globalWindowObject?.location.ancestorOrigins?.length > 0) {
-        skoopExtensionBody.style.height = "100vh";
+        skoopExtensionBody.style.height = '100vh'
         setIsWebPage(true)
-      }
-      else {
-        skoopExtensionBody.style.height = "500px";
-        navigateToPage("CantUseScreen")
+      } else {
+        skoopExtensionBody.style.height = '500px'
+        navigateToPage('CantUseScreen')
       }
       // Get the manifest using the getManifest() method
       const manifest = chrome.runtime.getManifest()
       // Set the version from the manifest file
       setVersion(manifest.version)
     }
-
   }, [])
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       const res = await verifyToken()
       const showWelcomePage = localStorage.getItem('welcomePageShown')
 
-
-
       if (isWebPage && chrome.tabs) {
         // Query the tabs
-        chrome.tabs.query({ active: true, lastFocusedWindow: true}, function (tabs) {
-
-          const targetTab = tabs.find((tab) => tab.active && (tab.url.includes("https://www.linkedin.com") || tab.url.includes('https://mail.google.com')));
-          console.log("targetTab", targetTab)
+        chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
+          const targetTab = tabs.find((tab) => tab.active && (tab.url.includes('https://www.linkedin.com') || tab.url.includes('https://mail.google.com')))
+          setTabId(targetTab.id)
           if (targetTab && targetTab.url) {
-            if (
-              targetTab.url.includes('https://www.linkedin.com') ||
-              targetTab.url.includes('https://mail.google.com/')
-            ) {
+            if (targetTab.url.includes('https://www.linkedin.com') || targetTab.url.includes('https://mail.google.com/')) {
               if (isAuthenticated && newUser && !isPro) {
                 navigateToPage('Subscription')
               } else if (isAuthenticated && newUser && isPro) {
@@ -107,23 +90,14 @@ export default function Home() {
   return (
     <>
       <div id="skoop-extension-body">
-        {![
-          'Welcome',
-          'SignInIntro',
-          'SignIn',
-          'SignUp',
-          ' ',
-          'ForgotPassword', 'CantUseScreen'
-        ].includes(activePage) && <Header />}
+        {!['Welcome', 'SignInIntro', 'SignIn', 'SignUp', ' ', 'ForgotPassword', 'CantUseScreen'].includes(activePage) && <Header />}
         {activePage === ' ' && <LoadingScreen />}
         {activePage === 'CantUseScreen' && <CantUseScreen />}
         {isAuthenticated & isPro ? (
           <>
             {activePage === 'Home' && <Homepage />}
             {activePage === 'RecordVideos' && <RecordVideos />}
-            {activePage === 'HelperVideos' && (
-              <HelperVideos navigateTo={'Home'} />
-            )}
+            {activePage === 'HelperVideos' && <HelperVideos navigateTo={'Home'} />}
             {activePage === 'ContactUs' && <ContactUs navigateTo={'Home'} />}
             {activePage === 'ReportBug' && <ReportBug navigateTo={'Home'} />}
             {activePage === 'AccountSettings' && <AccountSettings />}
@@ -138,15 +112,9 @@ export default function Home() {
           <>
             {activePage === 'Subscription' && <SubscriptionScreen />}
             {activePage == 'PaymentScreen' && <PaymentScreen />}
-            {activePage === 'ContactUs' && (
-              <ContactUs navigateTo={'Subscription'} />
-            )}
-            {activePage === 'ReportBug' && (
-              <ReportBug navigateTo={'Subscription'} />
-            )}
-            {activePage === 'HelperVideos' && (
-              <HelperVideos navigateTo={'Subscription'} />
-            )}
+            {activePage === 'ContactUs' && <ContactUs navigateTo={'Subscription'} />}
+            {activePage === 'ReportBug' && <ReportBug navigateTo={'Subscription'} />}
+            {activePage === 'HelperVideos' && <HelperVideos navigateTo={'Subscription'} />}
           </>
         ) : (
           <>

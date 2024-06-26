@@ -16,13 +16,7 @@ import GlobalStatesContext from '../../contexts/GlobalStates'
 import MessageContext from '../../contexts/MessageContext'
 import { sendMessageToBackgroundScript } from '../../lib/sendMessageToBackground'
 
-const VideoCard = ({
-  video,
-  handleLinkInsertion,
-  deleteVideo,
-  toggleFavourite,
-  fetchVideos,
-}) => {
+const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, fetchVideos }) => {
   const [showMovePopup, setShowMovePopup] = useState(false)
   const [showRenamePopup, setShowRenamePopup] = useState(false)
   const [newTitle, setNewTitle] = useState(video.video_title)
@@ -31,7 +25,7 @@ const VideoCard = ({
   const [isLoaded, setIsLoaded] = useState(false)
   const { isLinkedin } = useContext(GlobalStatesContext)
   const { message, setMessage } = useContext(MessageContext)
-  const { getDownloadLink , getThumbnail} = useContext(MediaUtilsContext)
+  const { getDownloadLink, getThumbnail } = useContext(MediaUtilsContext)
   const handleLoad = () => {
     setIsLoaded(true)
   }
@@ -57,9 +51,7 @@ const VideoCard = ({
       const response = await fetch(API_ENDPOINTS.renameVideo + `/${video.id}`, {
         method: 'PATCH',
         headers: {
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
           'Content-type': 'application/json; charset=UTF-8',
         },
         body: JSON.stringify({
@@ -70,7 +62,7 @@ const VideoCard = ({
         video.video_title = newTitle
         handleCloseRenamePopup()
         if (message !== undefined && containsInlineVideoTitle(message)) {
-          updateInsertedLink(video.link, video.id, newTitle);
+          updateInsertedLink(video.link, video.id, newTitle)
         }
         toast.success('Video renamed successfully')
       } else {
@@ -80,33 +72,33 @@ const VideoCard = ({
       toast.error('Failed to rename video')
     }
   }
-//---------------------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------------------
   const updateInsertedLink = async (link, id, name = '') => {
-    const facade_player_uuid = link?.substring(link.lastIndexOf("/") + 1);
-    const url = `https://skoop.hubs.vidyard.com/watch/${facade_player_uuid}`;
+    const facade_player_uuid = link?.substring(link.lastIndexOf('/') + 1)
+    const url = `https://skoop.hubs.vidyard.com/watch/${facade_player_uuid}`
 
     if (!isLinkedin) {
-      const thumbnail_link = await getThumbnail(id);
-      var ret;
+      const thumbnail_link = await getThumbnail(id)
+      var ret
       if (thumbnail_link != undefined && thumbnail_link != null) {
-        ret = `<a href='${url}'> <p class = "inline-video-title"> Watch Video - ${name} </p> <br> <img src='${thumbnail_link}' className="inline-block-width"/></a>`;
+        ret = `<a href='${url}'> <p class = "inline-video-title"> Watch Video - ${name} </p> <br> <img src='${thumbnail_link}' className="inline-block-width"/></a>`
       } else {
-        ret += `<a href='${url}'>video link</a>`;
+        ret += `<a href='${url}'>video link</a>`
       }
-      setMessage(ret);
+      setMessage(ret)
     } else {
-      setMessage(url);
+      setMessage(url)
     }
     handleCopyToClipboard(url)
-  };
+  }
 
   const containsInlineVideoTitle = (htmlString) => {
-    const regex = /<p class\s*=\s*"inline-video-title">/;
+    const regex = /<p class\s*=\s*"inline-video-title">/
 
-    return regex.test(htmlString);
+    return regex.test(htmlString)
   }
   //-----------------------------------------------------------------------------------------------------
- 
+
   const handleDeleteClick = async () => {
     setIsDeleteModal(true)
   }
@@ -124,9 +116,7 @@ const VideoCard = ({
   const handleToggleFavouriteClick = async () => {
     try {
       await toggleFavourite(video.id)
-      toast.success(
-        video.is_favourite ? 'Removed from favorites' : 'Added to favorites'
-      )
+      toast.success(video.is_favourite ? 'Removed from favorites' : 'Added to favorites')
       fetchVideos()
     } catch (error) {
       toast.error('Failed to toggle favorite status')
@@ -165,96 +155,46 @@ const VideoCard = ({
     // Remove the anchor from the body
     document.body.removeChild(anchor)
   }
- 
+
   return (
     <div className="col-6 my-1" key={video.id}>
-      <div
-        className="video-loader justify-content-center align-items-center"
-        style={{ display: isLoaded ? 'none' : 'flex' }}
-      >
+      <div className="video-loader justify-content-center align-items-center" style={{ display: isLoaded ? 'none' : 'flex' }}>
         <div class="spinner-border" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
       </div>
-      <div
-        className="card  video-card"
-        style={{ display: isLoaded ? 'block' : 'none' }}
-      >
-        <iframe
-          title={video.video_title}
-          width="100%"
-          height="100vw"
-          src={video.link}
-          allow="autoplay; fullscreen; picture-in-picture"
-          onLoad={handleLoad}
-        />
+      <div className="card  video-card" style={{ display: isLoaded ? 'block' : 'none' }}>
+        <iframe title={video.video_title} width="100%" height="100vw" src={video.link} allow="autoplay; fullscreen; picture-in-picture" onLoad={handleLoad} />
 
-        <div
-          className="overlay position-absolute bottom-0 start-0 w-100 h-100 "
-          onClick={(e) => openPopUp(video.link, e)}
-        ></div>
+        <div className="overlay position-absolute bottom-0 start-0 w-100 h-100 " onClick={(e) => openPopUp(video.link, e)}></div>
         <div className="overlay position-absolute bottom-0 start-0 w-100 video-card-footer">
           <div className="d-flex flex-wrap ">
             <button
               title="Insert link to send box."
               className="btn btn-link btn-sm video-card-footer-button"
               onClick={() => {
-                handleLinkInsertion(video.link, video.id, video.video_title);
-                toast.success('Link copied and inserted.');
+                handleLinkInsertion(video.link, video.id, video.video_title)
+                toast.success('Link copied and inserted.')
               }}
             >
               <IoIosLink size={10} />
             </button>
 
-            <button
-              title={
-                video.is_favourite
-                  ? 'Remove from favorites'
-                  : 'Add to favorites'
-              }
-              className="btn btn-link btn-sm video-card-footer-button"
-              onClick={handleToggleFavouriteClick}
-            >
-              {video.is_favourite ? (
-                <FaStar className="text-primary" size={10} />
-              ) : (
-                <FaRegStar size={10} />
-              )}
+            <button title={video.is_favourite ? 'Remove from favorites' : 'Add to favorites'} className="btn btn-link btn-sm video-card-footer-button" onClick={handleToggleFavouriteClick}>
+              {video.is_favourite ? <FaStar className="text-primary" size={10} /> : <FaRegStar size={10} />}
             </button>
 
-            <button
-              title="Rename video"
-              className="btn btn-link btn-sm video-card-footer-button"
-              onClick={handleRenameClick}
-            >
+            <button title="Rename video" className="btn btn-link btn-sm video-card-footer-button" onClick={handleRenameClick}>
               <FaPencilAlt size={10} />
             </button>
-            <button
-              title="Move video to another folder"
-              className="btn btn-link btn-sm video-card-footer-button"
-              onClick={handleMoveClick}
-            >
+            <button title="Move video to another folder" className="btn btn-link btn-sm video-card-footer-button" onClick={handleMoveClick}>
               <MdMoveUp size={10} />
             </button>
-            <button
-              title="Download video"
-              className="btn btn-link btn-sm video-card-footer-button"
-              onClick={downloadVideo}
-            >
+            <button title="Download video" className="btn btn-link btn-sm video-card-footer-button" onClick={downloadVideo}>
               <MdDownload size={10} />
             </button>
-            <button
-              title="Delete video"
-              className="btn btn-link btn-sm video-card-footer-button"
-              onClick={handleDeleteClick}
-            >
-              <svg
-                width="15"
-                height="15"
-                viewBox="0 0 13 12"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
+            <button title="Delete video" className="btn btn-link btn-sm video-card-footer-button" onClick={handleDeleteClick}>
+              <svg width="15" height="15" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                   fill-rule="evenodd"
                   clip-rule="evenodd"
@@ -277,24 +217,10 @@ const VideoCard = ({
             }}
           />
         )}
-        {showRenamePopup && (
-          <RenameVideoPopup
-            newTitle={newTitle}
-            onClose={handleCloseRenamePopup}
-            onSave={handleRenameSave}
-            onTitleChange={(e) => setNewTitle(e.target.value)}
-          />
-        )}
-        {showPreviewPopup && (
-          <VideoPreviewPopup video={video} onClose={handleClosePreviewPopup} />
-        )}
+        {showRenamePopup && <RenameVideoPopup newTitle={newTitle} onClose={handleCloseRenamePopup} onSave={handleRenameSave} onTitleChange={(e) => setNewTitle(e.target.value)} />}
+        {showPreviewPopup && <VideoPreviewPopup video={video} onClose={handleClosePreviewPopup} />}
 
-        <DeleteModal
-          middleContent={newTitle}
-          show={isDeleteModal}
-          onHide={() => setIsDeleteModal(false)}
-          onDelete={() => onDeleteVideo()}
-        />
+        <DeleteModal middleContent={newTitle} show={isDeleteModal} onHide={() => setIsDeleteModal(false)} onDelete={() => onDeleteVideo()} />
       </div>
     </div>
   )

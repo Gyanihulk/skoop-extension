@@ -7,14 +7,10 @@ import { LockIcon } from '../components/SVG/LockIcon'
 import ScreenContext from '../contexts/ScreenContext'
 import ConfirmationModal from '../components/ConfirmationModal'
 
-
-
 const SubscriptionScreen = () => {
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const { createSubscription, verifyCoupon, getMySubscription } =
-    useContext(AuthContext)
-  const { subscriptionType, setSubscriptionType } =
-    useContext(GlobalStatesContext)
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+  const { createSubscription, verifyCoupon, getMySubscription } = useContext(AuthContext)
+  const { subscriptionType, setSubscriptionType } = useContext(GlobalStatesContext)
   const [sessionUrl, setSessionUrl] = useState('')
   const handleSubscriptionChange = (type) => {
     setSubscriptionType(type)
@@ -69,20 +65,20 @@ const SubscriptionScreen = () => {
     setCouponCode(event.target.value)
   }
   return (
-    <> {showConfirmationModal && (
-      <ConfirmationModal
-      show={showConfirmationModal}
-        onConfirm={async () => {
-          handleCreateSubscription();
-          setShowConfirmationModal(false);
-          
-        }}
-        onHide={() => {
-          
-          setShowConfirmationModal(false);
-        }}
-      />
-    )}
+    <>
+      {' '}
+      {showConfirmationModal && (
+        <ConfirmationModal
+          show={showConfirmationModal}
+          onConfirm={async () => {
+            handleCreateSubscription()
+            setShowConfirmationModal(false)
+          }}
+          onHide={() => {
+            setShowConfirmationModal(false)
+          }}
+        />
+      )}
       <div className="subscription-container">
         <div className="subscription-header">
           <h1>Start your 10-day free trial.</h1>
@@ -93,45 +89,23 @@ const SubscriptionScreen = () => {
             <li>⚡ Faster AI generated responses</li>
           </ul>
         </div>
-        <svg
-          width="315"
-          height="1"
-          viewBox="0 0 315 1"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <line
-            y1="0.5"
-            x2="315"
-            y2="0.5"
-            stroke="black"
-            stroke-opacity="0.2"
-          />
+        <svg width="315" height="1" viewBox="0 0 315 1" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line y1="0.5" x2="315" y2="0.5" stroke="black" stroke-opacity="0.2" />
         </svg>
 
         <div className="subscription-options align-items-center">
           <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              value=""
-              id="circleCheckbox"
-              checked={subscriptionType === 'monthly'}
-              onChange={() => handleSubscriptionChange('monthly')}
-            />
+            <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'monthly'} onChange={() => handleSubscriptionChange('monthly')} />
             <div className="ps-4 pt-2">
               <h5>Monthly</h5>
               <p>
                 First 10 days free, then $
                 {couponInfo && subscriptionType === 'monthly'
                   ? couponInfo?.discount?.percent_off
-                    ? (
-                        (47 * (100 - couponInfo?.discount?.percent_off)) /
-                        100
-                      ).toFixed(2)
+                    ? ((47 * (100 - couponInfo?.discount?.percent_off)) / 100).toFixed(2)
                     : couponInfo?.discount?.amount_off
-                    ? (47 - couponInfo?.discount?.amount_off).toFixed(2)
-                    : 47
+                      ? (47 - couponInfo?.discount?.amount_off).toFixed(2)
+                      : 47
                   : 47}
                 /month
               </p>
@@ -139,34 +113,21 @@ const SubscriptionScreen = () => {
           </div>
           <div className="subscription-option d-flex flex-row align-items-center bg-yearly">
             <div>
-              <input
-                class="form-check-input"
-                type="checkbox"
-                value=""
-                id="circleCheckbox"
-                checked={subscriptionType === 'yearly'}
-                onChange={() => handleSubscriptionChange('yearly')}
-              />
+              <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'yearly'} onChange={() => handleSubscriptionChange('yearly')} />
             </div>
 
             <div className="ps-4 pt-2">
               <h5>
-                Yearly{' '}
-                <span className="badge rounded-pill bg-warning text-dark">
-                  SAVE 20%{' '}
-                </span>
+                Yearly <span className="badge rounded-pill bg-warning text-dark">SAVE 20% </span>
               </h5>
               <p>
                 First 10 days free, then $
                 {couponInfo && subscriptionType === 'yearly'
                   ? couponInfo?.discount?.percent_off
-                    ? (
-                        (451 * (100 - couponInfo?.discount?.percent_off)) /
-                        100
-                      ).toFixed(2)
+                    ? ((451 * (100 - couponInfo?.discount?.percent_off)) / 100).toFixed(2)
                     : couponInfo?.discount?.amount_off
-                    ? (451 - couponInfo?.discount?.amount_off).toFixed(2)
-                    : 451
+                      ? (451 - couponInfo?.discount?.amount_off).toFixed(2)
+                      : 451
                   : 451}
                 /year
               </p>
@@ -176,42 +137,31 @@ const SubscriptionScreen = () => {
 
         <div className="d-flex flex-column">
           <div class="input-group mb-3">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Have Coupon!"
-              aria-label="Have Coupon!"
-              value={couponCode}
-              onChange={handleInputChange}
-            />
-            <span
-              class="input-group-text cursor-pointer"
-              id="basic-addon2"
-              onClick={handleCouponValidation}
-            >
+            <input type="text" class="form-control" placeholder="Have Coupon!" aria-label="Have Coupon!" value={couponCode} onChange={handleInputChange} />
+            <span class="input-group-text cursor-pointer" id="basic-addon2" onClick={handleCouponValidation}>
               <FaCheckCircle color={!couponValid ? 'red' : 'green'} />
               Apply
             </span>
           </div>
-          {couponInfo && couponValid && (
-            <span className="badge rounded-pill bg-warning text-dark ">
-              Coupon Applied.
-            </span>
-          )}
+          {couponInfo && couponValid && <span className="badge rounded-pill bg-warning text-dark ">Coupon Applied.</span>}
         </div>
 
         <div className="subscription-button d-grid gap-2 my-2">
           <button
             className="btn btn-primary btn-trial"
             type="button"
-            onClick={()=>{if(couponValid){handleCreateSubscription()}else{setShowConfirmationModal(true)}}}
+            onClick={() => {
+              if (couponValid) {
+                handleCreateSubscription()
+              } else {
+                setShowConfirmationModal(true)
+              }
+            }}
           >
             START 10-DAY FREE TRIAL
           </button>
         </div>
-        <p className="small-bold-text">
-          Credit Card/Debit Card information is required.
-        </p>
+        <p className="small-bold-text">Credit Card/Debit Card information is required.</p>
         {/* <br/> */}
         <p className="small-bold-text">
           <LockIcon />

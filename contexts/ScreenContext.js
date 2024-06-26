@@ -1,21 +1,16 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from 'react'
 
-const ScreenContext = createContext();
+const ScreenContext = createContext()
 
 export const ScreenProvider = ({ children }) => {
-  const [activePage, setActivePage] = useState(" ");
+  const [activePage, setActivePage] = useState(' ')
 
   const navigateToPage = (page) => {
-    setActivePage(page);
-  };
+    setActivePage(page)
+  }
 
-  useEffect(() => {
-  }, [activePage]);
-  return (
-    <ScreenContext.Provider value={{ activePage, navigateToPage }}>
-      {children}
-    </ScreenContext.Provider>
-  );
-};
+  useEffect(() => {}, [activePage])
+  return <ScreenContext.Provider value={{ activePage, navigateToPage }}>{children}</ScreenContext.Provider>
+}
 
-export default ScreenContext;
+export default ScreenContext

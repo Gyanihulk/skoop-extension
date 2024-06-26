@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
-import ScreenContext from '../../contexts/ScreenContext';
-import GlobalStatesContext from '../../contexts/GlobalStates';
+import React, { useContext } from 'react'
+import ScreenContext from '../../contexts/ScreenContext'
+import GlobalStatesContext from '../../contexts/GlobalStates'
 
 const ProfileScraper = () => {
-  const { setScraperPage,scraperPage } = useContext(GlobalStatesContext);
-  const { navigateToPage } = useContext(ScreenContext);
+  const { setScraperPage, scraperPage } = useContext(GlobalStatesContext)
+  const { navigateToPage } = useContext(ScreenContext)
   return (
     <>
       <button
@@ -13,12 +13,15 @@ const ProfileScraper = () => {
         data-mdb-toggle="tooltip"
         data-mdb-placement="top"
         title="Go to any LinkedIn profile page & click this button to fetch its details."
-        onClick={() => {navigateToPage("ContactPage");setScraperPage(!scraperPage)}}
+        onClick={() => {
+          navigateToPage('ContactPage')
+          setScraperPage(!scraperPage)
+        }}
       >
         Save Contact Details
       </button>
     </>
-  );
-};
+  )
+}
 
-export default ProfileScraper;
+export default ProfileScraper

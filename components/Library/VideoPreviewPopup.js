@@ -1,6 +1,5 @@
-import React from 'react';
-import { IoMdClose } from "react-icons/io";
-
+import React from 'react'
+import { IoMdClose } from 'react-icons/io'
 
 const VideoPreviewPopup = ({ video, onClose }) => {
   return (
@@ -9,7 +8,7 @@ const VideoPreviewPopup = ({ video, onClose }) => {
         <div className="modal-content">
           <div className="modal-header px-3 pt-3 pb-2">
             <button type="button" className="custom-close-button" onClick={onClose} aria-label="Close">
-                <IoMdClose size={16}/>
+              <IoMdClose size={16} />
             </button>
           </div>
           <div className="modal-body">
@@ -25,7 +24,7 @@ const VideoPreviewPopup = ({ video, onClose }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default VideoPreviewPopup;
+export default VideoPreviewPopup

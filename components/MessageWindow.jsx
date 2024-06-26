@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useRef } from 'react'
 import MessageContext from '../contexts/MessageContext'
-import { FaRegClipboard } from 'react-icons/fa';
-import { handleCopyToClipboard } from '../utils';
-import toast from 'react-hot-toast';
+import { FaRegClipboard } from 'react-icons/fa'
+import { handleCopyToClipboard } from '../utils'
+import toast from 'react-hot-toast'
 const MessageWindow = () => {
   const { message, setMessage } = useContext(MessageContext)
   const textareaRef = useRef(null)
@@ -33,7 +33,6 @@ const MessageWindow = () => {
         value={message == null ? '' : message}
         onChange={handleTextChange}
       ></textarea>
-    
     </div>
   )
 }

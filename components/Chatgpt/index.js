@@ -9,22 +9,8 @@ import DeleteModal from '../DeleteModal'
 import { RiDragMove2Fill } from 'react-icons/ri'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
-import {
-  closestCenter,
-  DndContext,
-  DragOverlay,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core'
-import {
-  arrayMove,
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-  sortableKeyboardCoordinates,
-} from '@dnd-kit/sortable'
+import { closestCenter, DndContext, DragOverlay, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
 const renderTooltip = (props) => (
@@ -34,10 +20,9 @@ const renderTooltip = (props) => (
 )
 
 const SortableGpts = ({ gptPrompt, orderId, heading, children }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({
-      id: orderId,
-    })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: orderId,
+  })
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -45,25 +30,10 @@ const SortableGpts = ({ gptPrompt, orderId, heading, children }) => {
   }
 
   return (
-    <Dropdown.Item
-      ref={setNodeRef}
-      style={style}
-      eventKey={gptPrompt.id}
-      className="dropdown-item-hover"
-    >
+    <Dropdown.Item ref={setNodeRef} style={style} eventKey={gptPrompt.id} className="dropdown-item-hover">
       <div className="dropdown-child">
-        <OverlayTrigger
-          placement="bottom"
-          delay={{ show: 250, hide: 400 }}
-          overlay={renderTooltip}
-        >
-          <button
-            {...attributes}
-            {...listeners}
-            type="button"
-            className="custom-close-button"
-            aria-label="Close"
-          >
+        <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={renderTooltip}>
+          <button {...attributes} {...listeners} type="button" className="custom-close-button" aria-label="Close">
             <RiDragMove2Fill className="drag-drop-icon" size={16} />
           </button>
         </OverlayTrigger>
@@ -109,9 +79,7 @@ const ChatGpt = ({ appendToBody, close }) => {
     } else {
       // setShowModal(false);
       setSelectedOption(value)
-      const selectedPrompt = messageOptions.find(
-        (option) => option.id === parseInt(value, 10)
-      )
+      const selectedPrompt = messageOptions.find((option) => option.id === parseInt(value, 10))
 
       if (selectedPrompt) {
         setCgpt(` ${selectedPrompt.description}`)
@@ -172,17 +140,12 @@ const ChatGpt = ({ appendToBody, close }) => {
     try {
       setLoading(true)
       toast.success('Generating response...')
-      const choices = await fetch(
-        API_ENDPOINTS.cgpt + new URLSearchParams({ input: cgpt }),
-        {
-          method: 'GET',
-          headers: {
-            authorization: `Bearer ${JSON.parse(
-              localStorage.getItem('accessToken')
-            )}`,
-          },
-        }
-      )
+      const choices = await fetch(API_ENDPOINTS.cgpt + new URLSearchParams({ input: cgpt }), {
+        method: 'GET',
+        headers: {
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+        },
+      })
 
       const response = await choices.json()
       setLoading(false)
@@ -201,9 +164,7 @@ const ChatGpt = ({ appendToBody, close }) => {
       const response = await fetch(API_ENDPOINTS.chatgptprompt, {
         method: 'GET',
         headers: {
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
           'Content-type': 'application/json; charset=UTF-8',
         },
       })
@@ -225,9 +186,7 @@ const ChatGpt = ({ appendToBody, close }) => {
         await fetch(API_ENDPOINTS.chatgptprompt, {
           method: 'POST',
           headers: {
-            authorization: `Bearer ${JSON.parse(
-              localStorage.getItem('accessToken')
-            )}`,
+            authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
             'Content-type': 'application/json; charset=UTF-8',
           },
           body: JSON.stringify({
@@ -242,9 +201,7 @@ const ChatGpt = ({ appendToBody, close }) => {
       } else {
         // Set validation errors if the fields are empty
         setTitleError(newPrompt.heading ? '' : 'Title is required')
-        setDescriptionError(
-          newPrompt.description ? '' : 'Description is required'
-        )
+        setDescriptionError(newPrompt.description ? '' : 'Description is required')
         toast.error('Please fill in all required fields.')
       }
     } catch (error) {
@@ -257,18 +214,14 @@ const ChatGpt = ({ appendToBody, close }) => {
       const response = await fetch(`${API_ENDPOINTS.chatgptprompt}/${id}`, {
         method: 'DELETE',
         headers: {
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
           'Content-type': 'application/json; charset=UTF-8',
         },
       })
 
       if (!response.ok) {
         const errorMessage = await response.text()
-        throw new Error(
-          `Failed to delete prompt. Server response: ${errorMessage}`
-        )
+        throw new Error(`Failed to delete prompt. Server response: ${errorMessage}`)
       }
 
       fetchPrompts()
@@ -280,18 +233,11 @@ const ChatGpt = ({ appendToBody, close }) => {
 
   const updatePrompt = async () => {
     try {
-      if (
-        isEditing &&
-        editingPrompt &&
-        newPrompt.heading &&
-        newPrompt.description
-      ) {
+      if (isEditing && editingPrompt && newPrompt.heading && newPrompt.description) {
         await fetch(`${API_ENDPOINTS.chatgptprompt}/${editingPrompt.id}`, {
           method: 'PUT',
           headers: {
-            authorization: `Bearer ${JSON.parse(
-              localStorage.getItem('accessToken')
-            )}`,
+            authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
             'Content-type': 'application/json; charset=UTF-8',
           },
           body: JSON.stringify({
@@ -310,12 +256,8 @@ const ChatGpt = ({ appendToBody, close }) => {
       } else {
         // Set validation errors if the fields are empty or editingPrompt is not available
         setTitleError(newPrompt.heading ? '' : 'Title is required')
-        setDescriptionError(
-          newPrompt.description ? '' : 'Description is required'
-        )
-        toast.error(
-          'Please fill in all required fields and ensure you are editing a valid prompt.'
-        )
+        setDescriptionError(newPrompt.description ? '' : 'Description is required')
+        toast.error('Please fill in all required fields and ensure you are editing a valid prompt.')
       }
     } catch (error) {
       console.error(error)
@@ -329,9 +271,7 @@ const ChatGpt = ({ appendToBody, close }) => {
   }
 
   const handleEditOption = (id) => {
-    const selectedPrompt = messageOptions.find(
-      (option) => option.id === parseInt(id, 10)
-    )
+    const selectedPrompt = messageOptions.find((option) => option.id === parseInt(id, 10))
     if (selectedPrompt) {
       setEditingPrompt(selectedPrompt)
       setNewPrompt({
@@ -377,28 +317,19 @@ const ChatGpt = ({ appendToBody, close }) => {
       }
     })
 
-    orderData.splice(
-      startIndex,
-      endIndex - startIndex + 1,
-      ...updatedSplitedOrder
-    )
+    orderData.splice(startIndex, endIndex - startIndex + 1, ...updatedSplitedOrder)
     setMessageOptions(orderData)
     try {
-      let response = await fetch(
-        `${API_ENDPOINTS.chatgptpromptorderidupdate}`,
-        {
-          method: 'POST',
-          headers: {
-            authorization: `Bearer ${JSON.parse(
-              localStorage.getItem('accessToken')
-            )}`,
-            'Content-type': 'application/json; charset=UTF-8',
-          },
-          body: JSON.stringify({
-            orderData: updatedOrderDetails,
-          }),
-        }
-      )
+      let response = await fetch(`${API_ENDPOINTS.chatgptpromptorderidupdate}`, {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify({
+          orderData: updatedOrderDetails,
+        }),
+      })
       if (response.ok) {
         toast.success('Prompt preferences updated successfully')
       }
@@ -438,23 +369,10 @@ const ChatGpt = ({ appendToBody, close }) => {
       <div className="chatgpt-container">
         <div className="d-flex flex-row">
           <div className="col">
-            <div className="heading">
-              Select Prompts to generate ChatGPT responses
-            </div>
+            <div className="heading">Select Prompts to generate ChatGPT responses</div>
           </div>
-          <div
-            className="justify-content-end"
-            onClick={() => close('DefaultCard')}
-          >
-            <svg
-              stroke="currentColor"
-              fill="currentColor"
-              stroke-width="0"
-              viewBox="0 0 512 512"
-              height="16px"
-              width="16px"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+          <div className="justify-content-end" onClick={() => close('DefaultCard')}>
+            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="16px" width="16px" xmlns="http://www.w3.org/2000/svg">
               <path d="M405 136.798L375.202 107 256 226.202 136.798 107 107 136.798 226.202 256 107 375.202 136.798 405 256 285.798 375.202 405 405 375.202 285.798 256z"></path>
             </svg>
           </div>
@@ -477,23 +395,9 @@ const ChatGpt = ({ appendToBody, close }) => {
                                     </option>
                                 ))}
                             </select> */}
-              <DropdownButton
-                as={ButtonGroup}
-                size="sm"
-                title="Select prompt"
-                id="gpt-dropdown"
-                value={selectedOption}
-                onSelect={handleDropdownChange}
-              >
+              <DropdownButton as={ButtonGroup} size="sm" title="Select prompt" id="gpt-dropdown" value={selectedOption} onSelect={handleDropdownChange}>
                 <Dropdown.Item eventKey="AddPrompt">
-                  <svg
-                    width="12"
-                    height="13"
-                    viewBox="0 0 12 13"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="me-2 ml-0-7"
-                  >
+                  <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg" className="me-2 ml-0-7">
                     <path
                       fill-rule="evenodd"
                       clip-rule="evenodd"
@@ -504,23 +408,10 @@ const ChatGpt = ({ appendToBody, close }) => {
                   Add new prompt
                 </Dropdown.Item>
                 <Dropdown.Divider />
-                <DndContext
-                  sensors={sensors}
-                  collisionDetection={closestCenter}
-                  onDragStart={handleDragStart}
-                  onDragEnd={handleDragEnd}
-                >
-                  <SortableContext
-                    items={messageOptions}
-                    strategy={verticalListSortingStrategy}
-                  >
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                  <SortableContext items={messageOptions} strategy={verticalListSortingStrategy}>
                     {messageOptions.map((option) => (
-                      <SortableGpts
-                        key={option.id}
-                        gptPrompt={option}
-                        orderId={option.id}
-                        heading={option.heading}
-                      >
+                      <SortableGpts key={option.id} gptPrompt={option} orderId={option.id} heading={option.heading}>
                         <div>
                           <svg
                             width="20"
@@ -570,46 +461,21 @@ const ChatGpt = ({ appendToBody, close }) => {
               </DropdownButton>
             </div>
             <div className="col-12 mb-2">
-              <textarea
-                id="chatgpt-msg-box"
-                className="form-control custom-textarea-global"
-                placeholder="Ask ChatGPT..."
-                name="cgpt"
-                value={cgpt}
-                onChange={handleChange}
-                rows="4"
-              />
+              <textarea id="chatgpt-msg-box" className="form-control custom-textarea-global" placeholder="Ask ChatGPT..." name="cgpt" value={cgpt} onChange={handleChange} rows="4" />
             </div>
             <div className="d-flex justify-content-end ">
-              <button
-                type="button"
-                className="generate-response"
-                onClick={sendPrompt}
-              >
+              <button type="button" className="generate-response" onClick={sendPrompt}>
                 Generate response
               </button>
             </div>
           </div>
         </div>
-        <div
-          className="modal"
-          tabIndex="-1"
-          role="dialog"
-          style={{ display: showModal ? 'block' : 'none' }}
-        >
+        <div className="modal" tabIndex="-1" role="dialog" style={{ display: showModal ? 'block' : 'none' }}>
           <div className="modal-overlay  modal-dialog-centered" role="document">
             <div className="modal-content mx-2">
               <div className="modal-header d-flex flex-row justify-content-between px-3 pt-3 pb-2 border-0">
-                <h5 className="modal-title">
-                  {' '}
-                  {isEditing ? 'Edit prompt' : 'Add new prompt'}
-                </h5>
-                <button
-                  type="button"
-                  className="custom-close-button"
-                  onClick={handleClose}
-                  aria-label="Close"
-                >
+                <h5 className="modal-title"> {isEditing ? 'Edit prompt' : 'Add new prompt'}</h5>
+                <button type="button" className="custom-close-button" onClick={handleClose} aria-label="Close">
                   <IoMdClose size={16} />
                 </button>
               </div>
@@ -626,9 +492,7 @@ const ChatGpt = ({ appendToBody, close }) => {
                     })
                   }
                 />
-                {titleError && (
-                  <div className="invalid-feedback">{titleError}</div>
-                )}
+                {titleError && <div className="invalid-feedback">{titleError}</div>}
 
                 <textarea
                   rows="3"
@@ -641,9 +505,7 @@ const ChatGpt = ({ appendToBody, close }) => {
                     })
                   }
                 />
-                {descriptionError && (
-                  <div className="invalid-feedback">{descriptionError}</div>
-                )}
+                {descriptionError && <div className="invalid-feedback">{descriptionError}</div>}
               </div>
               <div className="modal-footer border-0 py-1">
                 <button
@@ -666,12 +528,7 @@ const ChatGpt = ({ appendToBody, close }) => {
           </div>
         </div>
 
-        <DeleteModal
-          middleContent={deleteTemplate?.heading}
-          show={isDeleteModal}
-          onHide={() => setIsDeleteModal(false)}
-          onDelete={() => deletePrompt(deleteTemplate?.id)}
-        />
+        <DeleteModal middleContent={deleteTemplate?.heading} show={isDeleteModal} onHide={() => setIsDeleteModal(false)} onDelete={() => deletePrompt(deleteTemplate?.id)} />
       </div>
     </div>
   )

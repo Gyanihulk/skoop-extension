@@ -4,10 +4,7 @@ import { UserInput } from '../UserInput/index.js'
 import { FaStop } from 'react-icons/fa'
 
 import API_ENDPOINTS from '../apiConfig.js'
-import {
-  getCurrentDateTimeString,
-  replaceInvalidCharacters,
-} from '../../utils/index.js'
+import { getCurrentDateTimeString, replaceInvalidCharacters } from '../../utils/index.js'
 
 import GlobalStatesContext from '../../contexts/GlobalStates.js'
 import toast from 'react-hot-toast'
@@ -36,12 +33,8 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
     setIsRecordStart,
     stopAudioRecording,
     startRecordingAudio,
-    handleShareAudio
+    handleShareAudio,
   } = useRecording()
-
-  
-
-
 
   useEffect(() => {
     if (visualizationUrl != '' && !isRecording) {
@@ -51,11 +44,7 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
 
   useEffect(() => {
     if (isRecording && continuousCanvasRef.current) {
-      const { start, stop, reset } = continuousVisualizer(
-        mediaRecorder.stream,
-        continuousCanvasRef.current,
-        {}
-      )
+      const { start, stop, reset } = continuousVisualizer(mediaRecorder.stream, continuousCanvasRef.current, {})
       start()
 
       const stopContinuous = () => {
@@ -67,8 +56,6 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
       }
     }
   }, [isRecording, mediaRecorder])
-
-  
 
   const sharingDetails = (audioTitle, directoryName) => {
     setIsTakingInput(false)
@@ -93,45 +80,28 @@ const VoiceVisualization = ({ setIsUploading, addToMessage }) => {
 
   return (
     <div id="homeDiv">
-     {!isRecordStart && <div className="d-flex flex-column align-items-center px-11 ms-2">
-        <button
-          onClick={isRecording ? stopRecordingAndCloseModal : startRecordingAudio}
-          id="skoop_record_button"
-          data-mdb-toggle="tooltip"
-          data-mdb-placement="bottom"
-          title="Record Audio"
-        >
-          {isRecording ? (
-            <svg
-              width="28"
-              height="28"
-              viewBox="0 0 28 28"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="14" cy="14" r="14" fill="#E31A1A" />
-            </svg>
-          ) : (
-            <svg
-              width="35"
-              height="35"
-              viewBox="0 0 40 40"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M19.8943 24C22.1077 24 23.8943 22.2133 23.8943 20V12C23.8943 9.78667 22.1077 8 19.8943 8C17.681 8 15.8944 9.78667 15.8944 12V20C15.8944 22.2133 17.681 24 19.8943 24ZM27.7743 20C27.121 20 26.5744 20.48 26.4677 21.1333C25.921 24.2667 23.1877 26.6667 19.8944 26.6667C16.601 26.6667 13.8677 24.2667 13.321 21.1333C13.2144 20.48 12.6677 20 12.0144 20C11.201 20 10.561 20.72 10.681 21.52C11.3344 25.52 14.5344 28.6533 18.561 29.2267V32C18.561 32.7333 19.161 33.3333 19.8944 33.3333C20.6277 33.3333 21.2277 32.7333 21.2277 32V29.2267C25.2543 28.6533 28.4543 25.52 29.1077 21.52C29.241 20.72 28.5877 20 27.7743 20Z"
-                fill="#2D68C4"
-              />
-            </svg>
-          )}
-        </button>
-        <span className="record-button-bottom-text">Voice Memos</span>
-      </div>}
-      <div>
-      </div>
+      {!isRecordStart && (
+        <div className="d-flex flex-column align-items-center px-11 ms-2">
+          <button onClick={isRecording ? stopRecordingAndCloseModal : startRecordingAudio} id="skoop_record_button" data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="Record Audio">
+            {isRecording ? (
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="14" cy="14" r="14" fill="#E31A1A" />
+              </svg>
+            ) : (
+              <svg width="35" height="35" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M19.8943 24C22.1077 24 23.8943 22.2133 23.8943 20V12C23.8943 9.78667 22.1077 8 19.8943 8C17.681 8 15.8944 9.78667 15.8944 12V20C15.8944 22.2133 17.681 24 19.8943 24ZM27.7743 20C27.121 20 26.5744 20.48 26.4677 21.1333C25.921 24.2667 23.1877 26.6667 19.8944 26.6667C16.601 26.6667 13.8677 24.2667 13.321 21.1333C13.2144 20.48 12.6677 20 12.0144 20C11.201 20 10.561 20.72 10.681 21.52C11.3344 25.52 14.5344 28.6533 18.561 29.2267V32C18.561 32.7333 19.161 33.3333 19.8944 33.3333C20.6277 33.3333 21.2277 32.7333 21.2277 32V29.2267C25.2543 28.6533 28.4543 25.52 29.1077 21.52C29.241 20.72 28.5877 20 27.7743 20Z"
+                  fill="#2D68C4"
+                />
+              </svg>
+            )}
+          </button>
+          <span className="record-button-bottom-text">Voice Memos</span>
+        </div>
+      )}
+      <div></div>
     </div>
   )
 }

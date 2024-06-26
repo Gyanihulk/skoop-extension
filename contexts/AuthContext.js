@@ -18,32 +18,28 @@ export const AuthProvider = ({ children }) => {
   const [operatingSystem, setOperatingSystem] = useState('')
   const [fingerPrint, setFingerPrint] = useState()
   const [userDevices, setUserDevices] = useState()
-  const [social,setSocial]=useState(null)
+  const [social, setSocial] = useState(null)
   const [showClearSessionDialog, setShowClearSessionDialog] = useState(false)
-  const [gracePeriodCompletion , setGracePeriodCompletion] = useState(false);
-  const [gracePeriod , setGracePeriod] = useState(0);
-  const [userProfileDetail, setUserProfileDetail] = useState(null);
+  const [gracePeriodCompletion, setGracePeriodCompletion] = useState(false)
+  const [gracePeriod, setGracePeriod] = useState(0)
+  const [userProfileDetail, setUserProfileDetail] = useState(null)
 
   const getProfileDetails = async () => {
     try {
       const response = await fetch(API_ENDPOINTS.profileDetails, {
         method: 'GET',
         headers: {
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
           'Content-type': 'application/json; charset=UTF-8',
         },
       })
       const responseData = await response.json()
-      if(response.ok){
-        setUserProfileDetail(responseData);
-        return responseData;
+      if (response.ok) {
+        setUserProfileDetail(responseData)
+        return responseData
+      } else {
+        return null
       }
-      else{
-        return null;
-      }
-
     } catch (err) {
       console.error('could not get profile details', err)
     }
@@ -54,12 +50,11 @@ export const AuthProvider = ({ children }) => {
       return false
     }
     // Password should contain minimum 8 characters, at least one uppercase letter, and one special character
-    const passwordRegex =
-      /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+,\-.;:'"<>=?/\|[\]{}~])(.{8,})$/
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+,\-.;:'"<>=?/\|[\]{}~])(.{8,})$/
     return passwordRegex.test(password)
   }
   const handleSkoopLogin = async (username, password) => {
-    const toastId = toast.success('Signing In...')    
+    const toastId = toast.success('Signing In...')
     setSocial(null)
     try {
       const response = await fetch(API_ENDPOINTS.signIn, {
@@ -78,10 +73,7 @@ export const AuthProvider = ({ children }) => {
         toast.success('Log In Successful')
         const resjson = await response.json()
         localStorage.setItem('accessToken', JSON.stringify(resjson.accessToken))
-        localStorage.setItem(
-          'skoopUsername',
-          JSON.stringify(resjson.skoopUsername)
-        )
+        localStorage.setItem('skoopUsername', JSON.stringify(resjson.skoopUsername))
         sendMessageToBackgroundScript({
           action: 'storeToken',
           token: resjson.accessToken,
@@ -95,15 +87,14 @@ export const AuthProvider = ({ children }) => {
         toast.error('Incorrect username or password')
       }
     } catch (err) {
-      toast.dismiss();
-      console.error(err);
+      toast.dismiss()
+      console.error(err)
       toast.error('Something went wrong, please try again')
     }
   }
 
   const handleAuthCode = async (authCode, type) => {
-    const url =
-      type === 1 ? API_ENDPOINTS.linkedInLogIn : API_ENDPOINTS.GoogleLogIn
+    const url = type === 1 ? API_ENDPOINTS.linkedInLogIn : API_ENDPOINTS.GoogleLogIn
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     try {
       var response = await fetch(url, {
@@ -122,10 +113,7 @@ export const AuthProvider = ({ children }) => {
         let result = await response.json()
         setIsAuthenticated(true)
         localStorage.setItem('accessToken', JSON.stringify(result.accessToken))
-        localStorage.setItem(
-          'skoopUsername',
-          JSON.stringify(result.skoopUsername)
-        )
+        localStorage.setItem('skoopUsername', JSON.stringify(result.skoopUsername))
         sendMessageToBackgroundScript({
           action: 'storeToken',
           token: result.accessToken,
@@ -144,7 +132,7 @@ export const AuthProvider = ({ children }) => {
         })
       }
     } catch (err) {
-      console.error(err);
+      console.error(err)
       toast.error('Could not sign in')
       navigateToPage('SignInIntro')
     }
@@ -156,24 +144,16 @@ export const AuthProvider = ({ children }) => {
         const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=232147382816-a6grr3l3366tp6kpaoran7fcctdmddij.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
           chrome.identity.getRedirectURL()
         )}&scope=profile%20email%20openid%20&access_type=offline`
-        chrome.identity.launchWebAuthFlow(
-          { url: GoogleAuthUrl, interactive: true },
-          async function (redirectUrl) {
-            const code = new URL(redirectUrl).searchParams.get('code')
-            handleAuthCode(code, type)
-          }
-        )
+        chrome.identity.launchWebAuthFlow({ url: GoogleAuthUrl, interactive: true }, async function (redirectUrl) {
+          const code = new URL(redirectUrl).searchParams.get('code')
+          handleAuthCode(code, type)
+        })
       } else {
-        const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77tjwbzu3cxt7m&redirect_uri=${encodeURIComponent(
-          chrome.identity.getRedirectURL()
-        )}&scope=openid%20profile%20email`
-        chrome.identity.launchWebAuthFlow(
-          { url: linkedInAuthUrl, interactive: true },
-          function (redirectUrl) {
-            const code = new URL(redirectUrl).searchParams.get('code')
-            handleAuthCode(code, type)
-          }
-        )
+        const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77tjwbzu3cxt7m&redirect_uri=${encodeURIComponent(chrome.identity.getRedirectURL())}&scope=openid%20profile%20email`
+        chrome.identity.launchWebAuthFlow({ url: linkedInAuthUrl, interactive: true }, function (redirectUrl) {
+          const code = new URL(redirectUrl).searchParams.get('code')
+          handleAuthCode(code, type)
+        })
       }
     } catch (err) {
       toast.error('Something went wrong, please try again')
@@ -186,9 +166,7 @@ export const AuthProvider = ({ children }) => {
         method: 'POST',
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         },
         body: JSON.stringify({
           code: authCode,
@@ -207,14 +185,13 @@ export const AuthProvider = ({ children }) => {
   }
 
   const calendarSync = async (type) => {
-    if(!userProfileDetail ) {
-       let res = await getProfileDetails();
-       if(res!== null && res?.calendar_info === type) {
-          return;
-       }
-    }
-    else if(userProfileDetail?.calendar_info === type) {
-      return;
+    if (!userProfileDetail) {
+      let res = await getProfileDetails()
+      if (res !== null && res?.calendar_info === type) {
+        return
+      }
+    } else if (userProfileDetail?.calendar_info === type) {
+      return
     }
 
     navigateToPage(' ')
@@ -222,20 +199,15 @@ export const AuthProvider = ({ children }) => {
       const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=232147382816-a6grr3l3366tp6kpaoran7fcctdmddij.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
         chrome.identity.getRedirectURL()
       )}&scope=https://www.googleapis.com/auth/calendar&access_type=offline&prompt=consent`
-      chrome.identity.launchWebAuthFlow(
-        { url: GoogleAuthUrl, interactive: true },
-        async function (redirectUrl) {
-          const code = new URL(redirectUrl).searchParams.get('code')
-          handleCalendarAuthCode(code, type)
-        }
-      )
+      chrome.identity.launchWebAuthFlow({ url: GoogleAuthUrl, interactive: true }, async function (redirectUrl) {
+        const code = new URL(redirectUrl).searchParams.get('code')
+        handleCalendarAuthCode(code, type)
+      })
     } else if (type === 'calendly') {
       const clientId = 'd9bQY7A_1IZ-svcemjqlmvmGXvIPvsLZlsD2kMyCJ_o'
       const clientSecret = 'vkm8Lm4b2iBNrWptU5wrtZ-r1GtjvnV4tHQ8K1q2L3U'
       const redirectUri = chrome.identity.getRedirectURL()
-      const authUrl = `https://auth.calendly.com/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(
-        redirectUri
-      )}`
+      const authUrl = `https://auth.calendly.com/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}`
 
       chrome.identity.launchWebAuthFlow(
         {
@@ -245,11 +217,7 @@ export const AuthProvider = ({ children }) => {
         function (redirectUrl) {
           if (chrome.runtime.lastError || !redirectUrl) {
             // Handle errors or user cancellation of the auth flow
-            console.error(
-              chrome.runtime.lastError
-                ? chrome.runtime.lastError.message
-                : 'Authorization flow failed.'
-            )
+            console.error(chrome.runtime.lastError ? chrome.runtime.lastError.message : 'Authorization flow failed.')
             return
           }
 
@@ -266,31 +234,22 @@ export const AuthProvider = ({ children }) => {
       const microsoftAuthUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?client_id=bf6b5ce3-919e-4a92-819f-b9147926e3d0&response_type=code&redirect_uri=${encodeURIComponent(
         chrome.identity.getRedirectURL()
       )}&scope=User.Read%20Calendars.ReadWrite%20offline_access&response_mode=query&state=12345&nonce=678910`
-      chrome.identity.launchWebAuthFlow(
-        { url: microsoftAuthUrl, interactive: true },
-        async function (redirectUrl) {
-          if (chrome.runtime.lastError || !redirectUrl) {
-            // Handle errors or user cancellation here
-            console.error(
-              chrome.runtime.lastError
-                ? chrome.runtime.lastError.message
-                : 'No redirect URL'
-            )
-            return
-          }
-          const code = new URL(redirectUrl).searchParams.get('code')
-          handleCalendarAuthCode(code, type)
+      chrome.identity.launchWebAuthFlow({ url: microsoftAuthUrl, interactive: true }, async function (redirectUrl) {
+        if (chrome.runtime.lastError || !redirectUrl) {
+          // Handle errors or user cancellation here
+          console.error(chrome.runtime.lastError ? chrome.runtime.lastError.message : 'No redirect URL')
+          return
         }
-      )
+        const code = new URL(redirectUrl).searchParams.get('code')
+        handleCalendarAuthCode(code, type)
+      })
     }
   }
 
   const handleRegister = async (fullname, email, password, timezone) => {
     try {
       if (!validatePassword(password)) {
-        toast.error(
-          'Password should contain minimum 8 characters, at least one uppercase letter, and one special character'
-        )
+        toast.error('Password should contain minimum 8 characters, at least one uppercase letter, and one special character')
         return
       }
       const toastId = toast.loading('Signing Up ')
@@ -309,19 +268,16 @@ export const AuthProvider = ({ children }) => {
       })
       if (res.ok) {
         const resjson = await res.json()
-        localStorage.setItem('accessToken', JSON.stringify(resjson.accessToken));
+        localStorage.setItem('accessToken', JSON.stringify(resjson.accessToken))
         toast.success('Success! A verification email has been sent to your inbox. Please confirm your email address to complete the login process.', {
           id: toastId,
         })
-        localStorage.setItem(
-          'skoopUsername',
-          JSON.stringify(resjson.skoopUsername)
-        )
+        localStorage.setItem('skoopUsername', JSON.stringify(resjson.skoopUsername))
         sendMessageToBackgroundScript({
           action: 'storeToken',
           token: resjson.accessToken,
         })
-        setIsAuthenticated(true);
+        setIsAuthenticated(true)
         navigateToPage('Home')
       } else
         toast.error('Email already exists ', {
@@ -337,9 +293,7 @@ export const AuthProvider = ({ children }) => {
       const res = await fetch(API_ENDPOINTS.tokenStatus + '/' + version, {
         method: 'GET',
         headers: {
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         },
       })
       const response = await res.json()
@@ -347,37 +301,35 @@ export const AuthProvider = ({ children }) => {
         if (response?.isPro) {
           setIsPro(response.isPro)
         }
-      setGracePeriodCompletion(response.gracePeriodCompleted);
-      setGracePeriod(response.gracePeriod);
+        setGracePeriodCompletion(response.gracePeriodCompleted)
+        setGracePeriod(response.gracePeriod)
         setIsAuthenticated(true)
       } else {
         setIsAuthenticated(false)
-        if(response.error){
+        if (response.error) {
           toast.error(response.error)
         }
       }
       setLoadingAuthState(false)
       return res
     } catch (err) {
-      console.error(err,"verifytoken");
+      console.error(err, 'verifytoken')
       return { ok: false }
     }
   }
 
   const getOtpForPasswordReset = async (username) => {
     try {
-      const responseCode = await fetch(
-        API_ENDPOINTS.getOtpForPasswordReset +
-          new URLSearchParams({ username: username }),
-        {
-          method: 'GET',
-          headers: {
-            'Content-type': 'application/json; charset=UTF-8',
-          },
-        }
-      )
-      if (responseCode.ok) {toast.success('Otp for password reset sent.');return true}
-      else return false
+      const responseCode = await fetch(API_ENDPOINTS.getOtpForPasswordReset + new URLSearchParams({ username: username }), {
+        method: 'GET',
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+      })
+      if (responseCode.ok) {
+        toast.success('Otp for password reset sent.')
+        return true
+      } else return false
     } catch (err) {
       console.error('some error occured in getting the otp for password reset')
       return false
@@ -398,8 +350,10 @@ export const AuthProvider = ({ children }) => {
         }),
       })
 
-      if (responseCode.ok) {toast.success('Password reset successfully.');return true}
-      else return false
+      if (responseCode.ok) {
+        toast.success('Password reset successfully.')
+        return true
+      } else return false
     } catch (err) {
       console.error('could not make the call to reset password', err)
       return false
@@ -412,9 +366,7 @@ export const AuthProvider = ({ children }) => {
         method: 'GET',
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         },
       })
       if (Number(response.status) === 200) {
@@ -434,9 +386,7 @@ export const AuthProvider = ({ children }) => {
         method: 'GET',
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         },
       })
       if (Number(response.status) === 200) {
@@ -456,9 +406,7 @@ export const AuthProvider = ({ children }) => {
         method: 'GET',
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         },
       })
       if (Number(response.status) === 200) {
@@ -481,49 +429,35 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify(subscriptionData),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         },
       })
       let response = await res.json()
 
       if (res.ok) {
-        chrome.identity.launchWebAuthFlow(
-          { url: response.url, interactive: true },
-          async function (redirectUrl) {
-            if (chrome.runtime.lastError || !redirectUrl) {
-              // Handle errors or user cancellation here
-              console.error(
-                chrome.runtime.lastError
-                  ? chrome.runtime.lastError.message + "test"
-                  : 'No redirect URL'
-              )
-              let res = await fetch(API_ENDPOINTS.createSubscription, {
-                method: 'DELETE',
-                headers: {
-                  'Content-Type': 'application/json; charset=UTF-8',
-                  authorization: `Bearer ${JSON.parse(
-                    localStorage.getItem('accessToken')
-                  )}`,
-                },
-              })
-              
-              setIsAuthenticated(false)
-              navigateToPage('SignInIntro')
-              return
-            }
-            const sessionId = new URL(redirectUrl).searchParams.get(
-              'session_id'
-            )
-            if (sessionId) {
-              setIsPro(true)
-              navigateToPage('Home')
-            }
-           
+        chrome.identity.launchWebAuthFlow({ url: response.url, interactive: true }, async function (redirectUrl) {
+          if (chrome.runtime.lastError || !redirectUrl) {
+            // Handle errors or user cancellation here
+            console.error(chrome.runtime.lastError ? chrome.runtime.lastError.message + 'test' : 'No redirect URL')
+            let res = await fetch(API_ENDPOINTS.createSubscription, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+              },
+            })
+
+            setIsAuthenticated(false)
+            navigateToPage('SignInIntro')
+            return
           }
-        )
-        
+          const sessionId = new URL(redirectUrl).searchParams.get('session_id')
+          if (sessionId) {
+            setIsPro(true)
+            navigateToPage('Home')
+          }
+        })
+
         toast.success('Please complete payment.', {
           id: toastId,
         })
@@ -544,9 +478,7 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify(deviceData),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         },
       })
       let response = await res.json()
@@ -566,9 +498,7 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify(deviceData),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         },
       })
       let response = await res.json()
@@ -584,9 +514,7 @@ export const AuthProvider = ({ children }) => {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         },
       })
       let response = await res.json()
@@ -635,13 +563,11 @@ export const AuthProvider = ({ children }) => {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
-        authorization: `Bearer ${JSON.parse(
-          localStorage.getItem('accessToken')
-        )}`,
+        authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
       },
     })
     sendMessageToBackgroundScript({
-      message: 'initializeExtensionDimension'
+      message: 'initializeExtensionDimension',
     })
     localStorage.setItem('accessToken', JSON.stringify('none'))
     setIsAuthenticated(false)
@@ -655,9 +581,7 @@ export const AuthProvider = ({ children }) => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         },
       })
 
@@ -675,14 +599,12 @@ export const AuthProvider = ({ children }) => {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         },
       })
 
       if (res.ok) {
-        toast.success("Subscription cancelled.")
+        toast.success('Subscription cancelled.')
         return res
       }
     } catch (err) {
@@ -695,9 +617,7 @@ export const AuthProvider = ({ children }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         },
         body: JSON.stringify({
           username: username,
@@ -720,24 +640,16 @@ export const AuthProvider = ({ children }) => {
         const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=232147382816-a6grr3l3366tp6kpaoran7fcctdmddij.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
           chrome.identity.getRedirectURL()
         )}&scope=profile%20email%20openid%20&access_type=offline`
-        chrome.identity.launchWebAuthFlow(
-          { url: GoogleAuthUrl, interactive: true },
-          async function (redirectUrl) {
-            const code = new URL(redirectUrl).searchParams.get('code')
-            handleAuthCodeSessionDeletion(code, type)
-          }
-        )
+        chrome.identity.launchWebAuthFlow({ url: GoogleAuthUrl, interactive: true }, async function (redirectUrl) {
+          const code = new URL(redirectUrl).searchParams.get('code')
+          handleAuthCodeSessionDeletion(code, type)
+        })
       } else {
-        const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77tjwbzu3cxt7m&redirect_uri=${encodeURIComponent(
-          chrome.identity.getRedirectURL()
-        )}&scope=openid%20profile%20email`
-        chrome.identity.launchWebAuthFlow(
-          { url: linkedInAuthUrl, interactive: true },
-          function (redirectUrl) {
-            const code = new URL(redirectUrl).searchParams.get('code')
-            handleAuthCodeSessionDeletion(code, type)
-          }
-        )
+        const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77tjwbzu3cxt7m&redirect_uri=${encodeURIComponent(chrome.identity.getRedirectURL())}&scope=openid%20profile%20email`
+        chrome.identity.launchWebAuthFlow({ url: linkedInAuthUrl, interactive: true }, function (redirectUrl) {
+          const code = new URL(redirectUrl).searchParams.get('code')
+          handleAuthCodeSessionDeletion(code, type)
+        })
       }
     } catch (err) {
       toast.error('Something went wrong, please try again', {
@@ -749,9 +661,7 @@ export const AuthProvider = ({ children }) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         },
         body: JSON.stringify({
           username: username,
@@ -769,10 +679,7 @@ export const AuthProvider = ({ children }) => {
     }
   }
   const handleAuthCodeSessionDeletion = async (authCode, type) => {
-    const url =
-      type === 1
-        ? API_ENDPOINTS.linkedInLogInDeleteSession
-        : API_ENDPOINTS.GoogleLogInDeleteSession
+    const url = type === 1 ? API_ENDPOINTS.linkedInLogInDeleteSession : API_ENDPOINTS.GoogleLogInDeleteSession
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     try {
       var response = await fetch(url, {
@@ -797,7 +704,7 @@ export const AuthProvider = ({ children }) => {
       })
     }
   }
-  
+
   return (
     <AuthContext.Provider
       value={{
@@ -839,7 +746,8 @@ export const AuthProvider = ({ children }) => {
         setShowClearSessionDialog,
         deleteMyAllJwtSessions,
         deleteMyAllJwtSessionsBySocial,
-        social,setSocial,
+        social,
+        setSocial,
         gracePeriod,
         setGracePeriod,
         gracePeriodCompletion,
@@ -847,7 +755,7 @@ export const AuthProvider = ({ children }) => {
         userProfileDetail,
         setUserProfileDetail,
         getProfileDetails,
-        getCtaInfo
+        getCtaInfo,
       }}
     >
       {children}

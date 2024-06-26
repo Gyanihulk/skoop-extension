@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
-import ContactInfoCard from "../components/ContactInfo/index.js";
-import BackButton from "../components/BackButton/index.js";
+import ContactInfoCard from '../components/ContactInfo/index.js'
+import BackButton from '../components/BackButton/index.js'
 
 const ContactPage = () => {
   return (
@@ -11,7 +11,7 @@ const ContactPage = () => {
       </div>
       <ContactInfoCard />
     </>
-  );
-};
+  )
+}
 
-export default ContactPage;
+export default ContactPage
