@@ -190,7 +190,6 @@ const ChatWindowSelection = () => {
         newChatWindows.push(selectedItem)
         setSelectedChatWindows(newChatWindows)
         setCheckedItemCount(checkedItemCount + 1)
-        setIsProfileChatSelected(true)
       } else {
         const newChatWindows = selectedChatWindows
         newChatWindows.push(selectedItem)
