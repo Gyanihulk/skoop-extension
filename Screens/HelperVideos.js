@@ -29,7 +29,7 @@ const MiddleSection = ({ detail, openModal }) => {
 const SmallVideoModule = ({ detail, openModal }) => {
   return (
     <div className="d-flex align-items-center justify-content-start mb-2">
-      <div class="title-video-sm overflow-hidden position-relative">
+      <div class="title-video overflow-hidden position-relative">
         <img width={150} height={110} src={detail.imgSrc} alt={detail.alt} onClick={(e) => openModal(detail.videoSrc, e)} />
         <div id="video-play-icon" style={{ width: '18px', height: '18px' }} onClick={(e) => openModal(detail.videoSrc, e)}>
           <FaPlay color="white" size={6} />

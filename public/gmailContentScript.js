@@ -1128,6 +1128,7 @@ document.addEventListener('focusin', (event) => {
   let parentElement = targetElement.closest(
     '[data-id], [data-urn], [data-chameleon-result-urn]'
   )
+
   if (parentElement && targetElement.ariaPlaceholder) {
     // Determine which identifier is present on the parentElement
     let identifierType
@@ -1163,15 +1164,11 @@ document.addEventListener('focusin', (event) => {
       })
     }
   } else {
-    const elementInfo = {
-      className: targetElement.classList,
-      placeholder: targetElement.ariaPlaceholder,
-    }
     chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
       if (response.tabId) {
         chrome.runtime.sendMessage({
           action: 'skoopFocusedElementLinkedin',
-          element: elementInfo,
+          element: false,
           tabId: response.tabId,
         })
       }

@@ -38,6 +38,8 @@ export const RecordingProvider = ({ children }) => {
   const [selectedVideoStyle, setSelectedVideoStyle] = useState('Vertical Mode')
   const [isRecordStart, setIsRecordStart] = useState(false)
   const [isVideo, setIsVideo] = useState(false)
+  const [isScreenRecording, setIsScreenRecording] = useState(false)
+  const [captureCameraWithScreen, setCaptureCameraWithScreen] = useState(true)
   const { setGlobalRefresh, setLatestVideo, setLatestBlob } = useContext(GlobalStatesContext)
   const { addToMessage } = useContext(MessageContext)
   const stopAudioRecording = () => {
@@ -177,6 +179,10 @@ export const RecordingProvider = ({ children }) => {
     startRecordingAudio,
     restartRecordingAudio,
     handleShareAudio,
+    isScreenRecording,
+    setIsScreenRecording,
+    captureCameraWithScreen,
+    setCaptureCameraWithScreen,
   }
   return <RecordingContext.Provider value={contextValue}>{children}</RecordingContext.Provider>
 }

@@ -34,12 +34,7 @@ export const insertIntoLinkedInMessageWindow = async (html, selectedChatWindows,
           commentElement.innerHTML = htmlToInsert
         }
         setTimeout(() => {
-          let button
-          if (postElement) {
-            button = postElement.querySelector('.comments-comment-box__submit-button')
-          } else {
-            button = document.querySelector('.comments-comment-box__submit-button')
-          }
+          let button = postElement.querySelector('.comments-comment-box__submit-button')
           if (button) {
             setTimeout(() => {
               button.click()
@@ -48,6 +43,11 @@ export const insertIntoLinkedInMessageWindow = async (html, selectedChatWindows,
             console.error('Button not found')
           }
         }, 500)
+        if (postCommentElement && postCommentElement.postId && postCommentElement.postId.startsWith('urn:li:comment')) {
+          commentElement.innerHTML += htmlToInsert
+        } else {
+          commentElement.innerHTML = htmlToInsert
+        }
       }
       const fullMessageWindows = Array.from(document.getElementsByClassName('msg-convo-wrapper'))
 
