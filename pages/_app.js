@@ -1,18 +1,18 @@
-import "../styles/globals.css";
-import "../styles/auth.css";
-import "../styles/welcome.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { GlobalStatesProvider } from "../contexts/GlobalStates";
-import ScreenContext, { ScreenProvider } from "../contexts/ScreenContext";
-import { AuthProvider } from "../contexts/AuthContext";
-import { MediaUtilsProvider } from "../contexts/MediaUtilsContext";
-import { Toaster } from "react-hot-toast";
-import { MessageProvider } from "../contexts/MessageContext";
-import { FpjsProvider } from "@fingerprintjs/fingerprintjs-pro-react";
-import { AppProps } from "next/app";
+import '../styles/globals.css'
+import '../styles/auth.css'
+import '../styles/welcome.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { GlobalStatesProvider } from '../contexts/GlobalStates'
+import ScreenContext, { ScreenProvider } from '../contexts/ScreenContext'
+import { AuthProvider } from '../contexts/AuthContext'
+import { MediaUtilsProvider } from '../contexts/MediaUtilsContext'
+import { Toaster } from 'react-hot-toast'
+import { MessageProvider } from '../contexts/MessageContext'
+import { FpjsProvider } from '@fingerprintjs/fingerprintjs-pro-react'
+import { AppProps } from 'next/app'
 
-import Script from "next/script";
-import { RecordingProvider } from "../contexts/RecordingContext";
+import Script from 'next/script'
+import { RecordingProvider } from '../contexts/RecordingContext'
 export default function App({ Component, pageProps }) {
   return (
     <>
@@ -22,7 +22,7 @@ export default function App({ Component, pageProps }) {
 
       <FpjsProvider
         loadOptions={{
-          apiKey: "DsKyYXvowdS8sg26bY0u",
+          apiKey: 'DsKyYXvowdS8sg26bY0u',
         }}
       >
         <MediaUtilsProvider>
@@ -31,17 +31,16 @@ export default function App({ Component, pageProps }) {
               <AuthProvider>
                 <MessageProvider>
                   <RecordingProvider>
-
-                  <Toaster
-                    position="top-right"
-                    toastOptions={{
-                      className: "custom-toast",
-                      duration: 3000
-                    }}
+                    <Toaster
+                      position="top-right"
+                      toastOptions={{
+                        className: 'custom-toast',
+                        duration: 3000,
+                      }}
                     />
 
-                  <Component {...pageProps} />
-                    </RecordingProvider>
+                    <Component {...pageProps} />
+                  </RecordingProvider>
                 </MessageProvider>
               </AuthProvider>
             </ScreenProvider>
@@ -49,5 +48,5 @@ export default function App({ Component, pageProps }) {
         </MediaUtilsProvider>
       </FpjsProvider>
     </>
-  );
+  )
 }

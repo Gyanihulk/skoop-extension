@@ -170,7 +170,9 @@
   outline: none;
   font-size: 16px;
   text-decoration: none;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
 }
 
 #skoop_record_button:hover svg path {
@@ -302,7 +304,10 @@
   font-size: 16px;
   color: #0a66c2;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    border-color 0.3s;
 }
 
 /* Hover styles for the button */
@@ -322,7 +327,10 @@
   font-size: 16px;
   color: red;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    border-color 0.3s;
 }
 
 /* Hover styles for the button */
@@ -415,6 +423,38 @@
   font-family: Montserrat, sans-serif;
   padding: 12px;
   border-radius: 8px;
+  border: none;
+  outline: none;
+  font-weight: 500;
+}
+
+.contact-info-custom-textarea-box {
+  position: relative;
+  color: #2a2b39;
+  border: 1px solid #a9aaabcc;
+  border-color: #a9aaabcc;
+  font-family: 'Montserrat', sans-serif;
+  border-radius: 4px;
+  margin: 16px 0px 0px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.contact-info-custom-textarea-box label {
+  position: absolute;
+  top: 5%;
+  left: 7px;
+  color: #a6a7ad;
+  transform: translateY(5%);
+  background-color: white;
+  z-index: 99999;
+  padding: 0 4px;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
 }
 
 .contact-info-custom-textarea:focus-visible {
@@ -424,6 +464,25 @@
 
 .contact-info-custom-textarea::placeholder {
   color: #a9aaabcc;
+}
+
+.contact-info-custom-textarea-box.filled label,
+.contact-info-custom-textarea-box input:not(:placeholder-shown) + label {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: 12px;
+}
+
+.contact-info-custom-textarea-box.focused label {
+  top: 0;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #ff8210;
+}
+
+.contact-info-custom-textarea-box.focused {
+  border-color: #ff8210;
+  box-shadow: none;
 }
 
 .contact-info-save-btn {
@@ -1318,8 +1377,7 @@ select.form-control {
   font-weight: 400;
   font-size: 12px;
   color: #fff !important;
-  }
-
+}
 
 #footermessage {
   position: fixed;
@@ -1539,7 +1597,7 @@ ul.nav-button li svg path {
 }
 
 .copy-icon {
-  border: none; 
+  border: none;
   border-radius: 50%; /* Circle shape */
   background: none;
   cursor: pointer;
@@ -1551,7 +1609,9 @@ ul.nav-button li svg path {
   justify-content: center;
   align-items: center;
   padding: 0;
-  transition: border-color 0.3s, color 0.3s; /* Smooth transition for hover effect */
+  transition:
+    border-color 0.3s,
+    color 0.3s; /* Smooth transition for hover effect */
 }
 
 .copy-icon svg {
@@ -1698,6 +1758,7 @@ ul.nav-button li svg path {
   height: 60px !important;
   border: 2px solid #2d68c4;
   border-radius: 6px;
+  margin-left: 15px;
 }
 
 .para-md {
@@ -1815,7 +1876,6 @@ img.icon-style-normal {
   background: white;
   position: relative;
 }
-
 
 .subscription-header .close {
   position: absolute;
@@ -1955,11 +2015,11 @@ img.icon-style-normal {
   text-overflow: ellipsis;
 }
 .drag-drop-icon {
-  fill:#8b8787;
+  fill: #8b8787;
 }
 
 .dropdown-item-hover:hover .drag-drop-icon {
-  fill:#ffffff;
+  fill: #ffffff;
 }
 
 #gpt-dropdown {
@@ -2106,11 +2166,10 @@ img.icon-style-normal {
 #select-recipients-title span {
   font-size: 12px;
 }
-#select-recipients-title .danger{
+#select-recipients-title .danger {
   background-color: yellow;
   color: red;
   font-size: 12px;
-
 }
 #none-recipients-title {
   font-family: 'Montserrat', sans-serif;
@@ -2426,18 +2485,26 @@ img.icon-style-normal {
   0%,
   20% {
     color: rgba(0, 0, 0, 0);
-    text-shadow: 0.25em 0 0 rgba(0, 0, 0, 0), 0.5em 0 0 rgba(0, 0, 0, 0);
+    text-shadow:
+      0.25em 0 0 rgba(0, 0, 0, 0),
+      0.5em 0 0 rgba(0, 0, 0, 0);
   }
   40% {
     color: rgba(0, 0, 0, 0);
-    text-shadow: 0.25em 0 0 rgba(0, 0, 0, 0), 0.5em 0 0 rgba(0, 0, 0, 0);
+    text-shadow:
+      0.25em 0 0 rgba(0, 0, 0, 0),
+      0.5em 0 0 rgba(0, 0, 0, 0);
   }
   60% {
-    text-shadow: 0.25em 0 0 grey, 0.5em 0 0 rgba(0, 0, 0, 0);
+    text-shadow:
+      0.25em 0 0 grey,
+      0.5em 0 0 rgba(0, 0, 0, 0);
   }
   80%,
   100% {
-    text-shadow: 0.25em 0 0 grey, 0.5em 0 0 grey;
+    text-shadow:
+      0.25em 0 0 grey,
+      0.5em 0 0 grey;
   }
 }
 
@@ -2460,7 +2527,7 @@ img.icon-style-normal {
   position: relative;
   min-width: 355px;
   overflow-x: hidden;
-  height:100vh;
+  height: 100vh;
 }
 
 .h-min-100 {
@@ -2468,18 +2535,18 @@ img.icon-style-normal {
 }
 
 .signin-background-image {
-  border-radius:6px;
+  border-radius: 6px;
 }
 
-#continuous{
-  height:70px;
+#continuous {
+  height: 70px;
 }
-.work-in-progress{
-  height:200px;
-  width:350px;
+.work-in-progress {
+  height: 200px;
+  width: 350px;
 }
-.chatgpt-container .row [role="group"].dropdown.btn-group,
-.message-container .row [role="group"].dropdown.btn-group {
+.chatgpt-container .row [role='group'].dropdown.btn-group,
+.message-container .row [role='group'].dropdown.btn-group {
   width: 100%;
 }
 
@@ -2507,15 +2574,15 @@ img.icon-style-normal {
 }
 
 .gif-input-content {
-    padding: 12px 25px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+  padding: 12px 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
 
 .gif-input-content label {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .gif-input-content label input {
@@ -2523,3 +2590,7 @@ img.icon-style-normal {
   margin-right: 2px;
 }
 
+.rounded-profile-image {
+  height: 50px;
+  width: 50px;
+}

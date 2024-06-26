@@ -60,26 +60,26 @@ function injectIframe() {
   const dragMove = (e) => {
     if (isDragging) {
       // Get the viewport dimensions
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
-      
+      const viewportWidth = window.innerWidth
+      const viewportHeight = window.innerHeight
+
       // Get the dimensions of the container
-      const containerWidth = container.offsetWidth;
-      const containerHeight = container.offsetHeight;
-      
+      const containerWidth = container.offsetWidth
+      const containerHeight = container.offsetHeight
+
       // Calculate the new position
-      let newX = e.clientX - dragStartX;
-      let newY = e.clientY - dragStartY;
-      
+      let newX = e.clientX - dragStartX
+      let newY = e.clientY - dragStartY
+
       // Set boundaries for the new position
-      newX = Math.max(newX, 0); // Left boundary
-      newY = Math.max(newY, 0); // Top boundary
-      newX = Math.min(newX, viewportWidth - containerWidth); // Right boundary
-      newY = Math.min(newY, viewportHeight - containerHeight); // Bottom boundary
-  
+      newX = Math.max(newX, 0) // Left boundary
+      newY = Math.max(newY, 0) // Top boundary
+      newX = Math.min(newX, viewportWidth - containerWidth) // Right boundary
+      newY = Math.min(newY, viewportHeight - containerHeight) // Bottom boundary
+
       // Set the new position, respecting the boundaries
-      container.style.left = `${newX}px`;
-      container.style.top = `${newY}px`;
+      container.style.left = `${newX}px`
+      container.style.top = `${newY}px`
     }
   }
 
@@ -1004,10 +1004,18 @@ function handleMutations(mutationsList) {
           addedNode.classList.contains('msg-convo-wrapper')
         ) {
           // Send a message or perform actions for the added element
-          chrome.runtime.sendMessage({
-            action: 'elementAdded',
-            element: addedNode.outerHTML,
-          })
+          chrome.runtime.sendMessage(
+            { action: 'getTabId' },
+            function (response) {
+              if (response.tabId) {
+                chrome.runtime.sendMessage({
+                  action: 'elementAdded',
+                  element: addedNode.outerHTML,
+                  tabId: response.tabId,
+                })
+              }
+            }
+          )
         }
       })
 
@@ -1018,10 +1026,18 @@ function handleMutations(mutationsList) {
           removedNode.classList.contains('msg-convo-wrapper')
         ) {
           // Send a message or perform actions for the removed element
-          chrome.runtime.sendMessage({
-            action: 'elementRemoved',
-            element: removedNode.outerHTML,
-          })
+          chrome.runtime.sendMessage(
+            { action: 'getTabId' },
+            function (response) {
+              if (response.tabId) {
+                chrome.runtime.sendMessage({
+                  action: 'elementRemoved',
+                  element: removedNode.outerHTML,
+                  tabId: response.tabId,
+                })
+              }
+            }
+          )
         }
       })
     }
@@ -1037,9 +1053,17 @@ function handleMutations(mutationsList) {
           }
         })
         if (MessagingTabFound == false) {
-          chrome.runtime.sendMessage({
-            action: 'elementRemoved',
-          })
+          chrome.runtime.sendMessage(
+            { action: 'getTabId' },
+            function (response) {
+              if (response.tabId) {
+                chrome.runtime.sendMessage({
+                  action: 'elementRemoved',
+                  tabId: response.tabId,
+                })
+              }
+            }
+          )
         }
       }
     })
@@ -1049,8 +1073,13 @@ function handleMutations(mutationsList) {
       !isProfilePage
     ) {
       isProfilePage = true
-      chrome.runtime.sendMessage({
-        action: 'skoopMsgIsProfilePage',
+      chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
+        if (response.tabId) {
+          chrome.runtime.sendMessage({
+            action: 'skoopMsgIsProfilePage',
+            tabId: response.tabId,
+          })
+        }
       })
     }
 
@@ -1059,8 +1088,13 @@ function handleMutations(mutationsList) {
       isProfilePage
     ) {
       isProfilePage = false
-      chrome.runtime.sendMessage({
-        action: 'skoopMsgIsNotProfilePage',
+      chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
+        if (response.tabId) {
+          chrome.runtime.sendMessage({
+            action: 'skoopMsgIsNotProfilePage',
+            tabId: response.tabId,
+          })
+        }
       })
     }
   })
@@ -1078,30 +1112,36 @@ observerForCheckboxes.observe(document, {
 // adding event listner to find the last selected element for insertion at Gmail
 
 document.addEventListener('focusin', (event) => {
-  chrome.runtime.sendMessage({
-    action: 'skoopFocusedElementChanged',
-    elementId: event.target.id,
+  chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
+    if (response.tabId) {
+      chrome.runtime.sendMessage({
+        action: 'skoopFocusedElementChanged',
+        elementId: event.target.id,
+        tabId: response.tabId,
+      })
+    }
   })
 })
 
 document.addEventListener('focusin', (event) => {
-  let targetElement = event.target; // The element that triggered the focus event
-  let parentElement = targetElement.closest('[data-id], [data-urn], [data-chameleon-result-urn]');
-
+  let targetElement = event.target // The element that triggered the focus event
+  let parentElement = targetElement.closest(
+    '[data-id], [data-urn], [data-chameleon-result-urn]'
+  )
   if (parentElement && targetElement.ariaPlaceholder) {
     // Determine which identifier is present on the parentElement
-    let identifierType;
-    let identifierValue;
+    let identifierType
+    let identifierValue
 
     if (parentElement.hasAttribute('data-id')) {
-      identifierType = 'data-id';
-      identifierValue = parentElement.getAttribute('data-id');
+      identifierType = 'data-id'
+      identifierValue = parentElement.getAttribute('data-id')
     } else if (parentElement.hasAttribute('data-urn')) {
-      identifierType = 'data-urn';
-      identifierValue = parentElement.getAttribute('data-urn');
+      identifierType = 'data-urn'
+      identifierValue = parentElement.getAttribute('data-urn')
     } else if (parentElement.hasAttribute('data-chameleon-result-urn')) {
-      identifierType = 'data-chameleon-result-urn';
-      identifierValue = parentElement.getAttribute('data-chameleon-result-urn');
+      identifierType = 'data-chameleon-result-urn'
+      identifierValue = parentElement.getAttribute('data-chameleon-result-urn')
     }
 
     // If an identifier was found, collect element information
@@ -1111,22 +1151,30 @@ document.addEventListener('focusin', (event) => {
         placeholder: targetElement.ariaPlaceholder,
         postId: identifierValue, // Use the value of the found identifier
         identifierType: identifierType, // Specify which identifier was found
-      };
+      }
       chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
-        console.log(response);
         if (response.tabId) {
           chrome.runtime.sendMessage({
             action: 'skoopFocusedElementLinkedin',
             element: elementInfo,
             tabId: response.tabId,
-          });
+          })
         }
-      });
+      })
     }
   } else {
-    chrome.runtime.sendMessage({
-      action: 'skoopFocusedElementLinkedin',
-      element: false,
-    });
+    const elementInfo = {
+      className: targetElement.classList,
+      placeholder: targetElement.ariaPlaceholder,
+    }
+    chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
+      if (response.tabId) {
+        chrome.runtime.sendMessage({
+          action: 'skoopFocusedElementLinkedin',
+          element: elementInfo,
+          tabId: response.tabId,
+        })
+      }
+    })
   }
-});
+})

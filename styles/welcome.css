@@ -88,7 +88,7 @@
 }
 
 .logo-content h3 {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 20px;
   font-weight: 500;
   color: white;
@@ -111,7 +111,7 @@
 }
 
 .welcome-content p {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   text-align: center;
   font-weight: 500;
   font-size: 12px;
@@ -165,7 +165,7 @@
 
 .app-version p {
   color: white;
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 16px;
   font-weight: 500;
 }

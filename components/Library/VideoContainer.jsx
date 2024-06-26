@@ -4,34 +4,20 @@ import VideoCard from './VideoCard'
 import Pagination from './Pagination'
 import GlobalStatesContext from '../../contexts/GlobalStates'
 
-const VideoContainer = ({
-  folderName,
-  handleLinkInsertion,
-  deleteVideo,
-  toggleFavourite,
-  currentPage,
-  handlePageChange,
-}) => {
+const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFavourite, currentPage, handlePageChange }) => {
   const { setTotalMediaCount } = useContext(GlobalStatesContext)
   const [totalPages, setTotalPages] = useState()
   const [videos, setVideos] = useState([])
 
   const fetchVideos = async () => {
     try {
-      const response = await fetch(
-        `${
-          API_ENDPOINTS.linkData
-        }directory=${folderName}&page=${currentPage}&limit=${4}`,
-        {
-          method: 'GET',
-          headers: {
-            authorization: `Bearer ${JSON.parse(
-              localStorage.getItem('accessToken')
-            )}`,
-            'Content-type': 'application/json; charset=UTF-8',
-          },
-        }
-      )
+      const response = await fetch(`${API_ENDPOINTS.linkData}directory=${folderName}&page=${currentPage}&limit=${4}`, {
+        method: 'GET',
+        headers: {
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+      })
       const data = await response.json()
       setTotalMediaCount(data.totalItems)
       setTotalPages(data.totalPages)
@@ -54,17 +40,7 @@ const VideoContainer = ({
       <div className="row" id="media-list-container">
         {videos && videos.length > 0 ? (
           videos.map((item) => {
-            return (
-              <VideoCard
-                key={item.id}
-                video={item}
-                folderName={folderName}
-                handleLinkInsertion={handleLinkInsertion}
-                deleteVideo={deleteVideo}
-                toggleFavourite={toggleFavourite}
-                fetchVideos={fetchVideos}
-              />
-            )
+            return <VideoCard key={item.id} video={item} folderName={folderName} handleLinkInsertion={handleLinkInsertion} deleteVideo={deleteVideo} toggleFavourite={toggleFavourite} fetchVideos={fetchVideos} />
           })
         ) : folderName !== 'favorites' ? (
           <div className="col-12 text-center">
@@ -73,11 +49,7 @@ const VideoContainer = ({
         ) : null}
       </div>
       <div className="d-flex justify-content-center my-2">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
+        <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
       </div>
     </div>
   )

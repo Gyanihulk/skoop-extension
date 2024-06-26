@@ -3,7 +3,7 @@ const backendUrl = "https://skoop.sumits.in"; //test
 // const backendUrl = "https://api.skoopapp.com"; //prod
 const API_ENDPOINTS = {
   backendUrl,
-  skoopCalendarUrl: "https://crm.skoopapp.com", //https://skoopcrm.sumits.in
+  skoopCalendarUrl: 'https://crm.skoopapp.com', //https://skoopcrm.sumits.in
   changePassword: `${backendUrl}/changePassword`, // PATCH
   profileDetails: `${backendUrl}/userDetails`, // GET
   updateUserDetails: `${backendUrl}/updateUserDetails`, // PATCH
@@ -56,19 +56,18 @@ const API_ENDPOINTS = {
   getVideoInfo: `${backendUrl}/videoinfobyvideoid`, //GET
   mySubscriptions: `${backendUrl}/subscription`, // GET
   logout: `${backendUrl}/logout`, // delete
-  deleteAllJwtSessions:`${backendUrl}/jwtsession/all`, // delete
+  deleteAllJwtSessions: `${backendUrl}/jwtsession/all`, // delete
   linkedInLogInDeleteSession: `${backendUrl}/linkedInLogInDeleteSession`, //POST
   GoogleLogInDeleteSession: `${backendUrl}/SignInWithGoogleDeleteSession`, //POST
   createContactUs: `${backendUrl}/contact-us`, //POST
   createReportBugs: `${backendUrl}/report-bug`, //POST
-  getVideoDownloadLink:`${backendUrl}/getdownloadLink`,
+  getVideoDownloadLink: `${backendUrl}/getdownloadLink`,
   skoopCrmAddPreloadedResponsesOrderIdUpdate: `${backendUrl}/skoopCrmAddPreloadedResponsesOrderIdUpdate`, //POST
   chatgptpromptorderidupdate: `${backendUrl}/chatgptpromptorderidupdate`, //Post
-};
+}
 
 // with POST or PATCH apis body is sent in JSON
 // Authorization is handled using bearer token
 // params must be attached whenever required in case of PATCH and GET requests
 
-
-export default API_ENDPOINTS;
+export default API_ENDPOINTS

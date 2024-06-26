@@ -10,81 +10,68 @@ export const replaceInvalidCharacters = (inputString) => {
   return replacedString
 }
 
-export const insertIntoLinkedInMessageWindow = async (
-  html,
-  selectedChatWindows,
-  postCommentSelected = false,
-  postCommentElement = null
-) => {
-  const executeInsertionIntoWindow = (
-    arr,
-    htmlToInsert,
-    postCommentSelected = false,
-    postCommentElement = null
-  ) => {
+export const insertIntoLinkedInMessageWindow = async (html, selectedChatWindows, postCommentSelected = false, postCommentElement = null) => {
+  const executeInsertionIntoWindow = (arr, htmlToInsert, postCommentSelected = false, postCommentElement = null) => {
     setTimeout(() => {
-      if (
-        postCommentSelected &&
-        postCommentElement &&
-        postCommentElement?.className
-      ) {
+      if (postCommentSelected && postCommentElement && postCommentElement?.className) {
         const postId = postCommentElement.postId
-        const postElement = document.querySelector(`[${postCommentElement.identifierType}="${postId}"]`)
         const classNames = Object.values(postCommentElement.className)
-
-        const commentElement = postElement.querySelector(`.${classNames[0]}`)
+        let commentElement
+        let postElement
+        if (postCommentElement?.identifierType && postId) {
+          postElement = document.querySelector(`[${postCommentElement.identifierType}="${postId}"]`)
+          if (postElement) {
+            commentElement = postElement.querySelector(`.${classNames[0]}`)
+          } else {
+            console.error('Post element not found')
+          }
+        } else {
+          commentElement = document.querySelector(`.${classNames[0]}`)
+        }
+        if (postCommentElement && postCommentElement.postId && postCommentElement.postId.startsWith('urn:li:comment')) {
+          commentElement.innerHTML += htmlToInsert
+        } else {
+          commentElement.innerHTML = htmlToInsert
+        }
         setTimeout(() => {
-          let button = postElement.querySelector(
-            '.comments-comment-box__submit-button'
-          )
+          let button
+          if (postElement) {
+            button = postElement.querySelector('.comments-comment-box__submit-button')
+          } else {
+            button = document.querySelector('.comments-comment-box__submit-button')
+          }
           if (button) {
             setTimeout(() => {
-            button.click()}, 5000)
+              button.click()
+            }, 5000)
           } else {
             console.error('Button not found')
           }
         }, 500)
-
-        commentElement.innerHTML = htmlToInsert
       }
-      const fullMessageWindows = Array.from(
-        document.getElementsByClassName('msg-convo-wrapper')
-      )
+      const fullMessageWindows = Array.from(document.getElementsByClassName('msg-convo-wrapper'))
 
       // Map over the fullMessageWindows to create a lookup for names and their corresponding contenteditable element and send button
-      const nameToElementsMap = fullMessageWindows.reduce(
-        (acc, convoWrapper) => {
-          const h2Element = convoWrapper.querySelector('h2')
-          const nameFromH2 = h2Element
-            ? h2Element.textContent.replace(/\s+/g, ' ').trim()
-            : ''
-          const spanInsideButton = convoWrapper.querySelector(
-            '.artdeco-pill__text'
-          )
+      const nameToElementsMap = fullMessageWindows.reduce((acc, convoWrapper) => {
+        const h2Element = convoWrapper.querySelector('h2')
+        const nameFromH2 = h2Element ? h2Element.textContent.replace(/\s+/g, ' ').trim() : ''
+        const spanInsideButton = convoWrapper.querySelector('.artdeco-pill__text')
 
-          const nameFromSpan = spanInsideButton
-            ? spanInsideButton.textContent.replace(/\s+/g, ' ').trim()
-            : ''
-          const contentEditableDiv = convoWrapper.querySelector(
-            '.msg-form__contenteditable'
-          )
-          const sendButton = convoWrapper.querySelector(
-            '.msg-form__send-button'
-          )
+        const nameFromSpan = spanInsideButton ? spanInsideButton.textContent.replace(/\s+/g, ' ').trim() : ''
+        const contentEditableDiv = convoWrapper.querySelector('.msg-form__contenteditable')
+        const sendButton = convoWrapper.querySelector('.msg-form__send-button')
 
-          const sendButton1 = convoWrapper.querySelector('.msg-form__send-btn')
-          const name = nameFromSpan || nameFromH2
-          if (name && contentEditableDiv) {
-            acc[name] = {
-              contentEditableDiv,
-              sendButton: sendButton ? sendButton : sendButton1,
-            }
+        const sendButton1 = convoWrapper.querySelector('.msg-form__send-btn')
+        const name = nameFromSpan || nameFromH2
+        if (name && contentEditableDiv) {
+          acc[name] = {
+            contentEditableDiv,
+            sendButton: sendButton ? sendButton : sendButton1,
           }
+        }
 
-          return acc
-        },
-        {}
-      )
+        return acc
+      }, {})
 
       arr.forEach((item) => {
         const elements = nameToElementsMap[item.name]
@@ -133,12 +120,7 @@ export const insertIntoLinkedInMessageWindow = async (
           chrome.scripting.executeScript({
             target: { tabId: targetTab.id },
             func: executeInsertionIntoWindow,
-            args: [
-              selectedChatWindows,
-              html,
-              postCommentSelected,
-              postCommentElement,
-            ],
+            args: [selectedChatWindows, html, postCommentSelected, postCommentElement],
           })
         } catch (err) {
           console.error('some error occured in executing script', err)

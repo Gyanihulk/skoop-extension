@@ -39,9 +39,7 @@ export class UserInput extends Component {
     var response = await fetch(API_ENDPOINTS.videoDirectories, {
       method: 'GET',
       headers: {
-        authorization: `Bearer ${JSON.parse(
-          localStorage.getItem('accessToken')
-        )}`,
+        authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         'Content-type': 'application/json; charset=UTF-8',
       },
     })
@@ -57,10 +55,7 @@ export class UserInput extends Component {
 
   handleSubmit(event) {
     event.preventDefault()
-    var drName =
-      this.state.selectedOption == 'none'
-        ? this.state.directoryName
-        : this.state.selectedOption
+    var drName = this.state.selectedOption == 'none' ? this.state.directoryName : this.state.selectedOption
     this.props.sharingDetails(this.state.videoTitle, drName)
   }
   render() {
@@ -71,34 +66,17 @@ export class UserInput extends Component {
             <form onSubmit={this.handleSubmit}>
               <div className="form-group">
                 <label htmlFor="videoTitle">Video Title</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="videoTitle"
-                  name="videoTitle"
-                  placeholder=""
-                  value={this.state.videoTitle}
-                  onChange={this.handleChange}
-                />
+                <input type="text" className="form-control" id="videoTitle" name="videoTitle" placeholder="" value={this.state.videoTitle} onChange={this.handleChange} />
               </div>
 
               <div className="form-group">
                 <label htmlFor="selectedOption">Select Folder</label>
-                <select
-                  className="form-control"
-                  id="selectedOption"
-                  name="selectedOption"
-                  value={this.state.selectedOption}
-                  onChange={this.handleChange}
-                >
+                <select className="form-control" id="selectedOption" name="selectedOption" value={this.state.selectedOption} onChange={this.handleChange}>
                   <option value="none">
                     <em>Choose or Create Folder</em>
                   </option>
                   {this.state.listOfDirectories.map((item) => (
-                    <option
-                      key={item.directory_name}
-                      value={item.directory_name.toString()}
-                    >
+                    <option key={item.directory_name} value={item.directory_name.toString()}>
                       {item.directory_name.toString()}
                     </option>
                   ))}
@@ -108,16 +86,7 @@ export class UserInput extends Component {
               {this.state.selectedOption === 'none' && (
                 <div className="form-group">
                   <label htmlFor="directoryName">Enter New Folder Name</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="directoryName"
-                    name="directoryName"
-                    placeholder=""
-                    value={this.state.directoryName}
-                    onChange={this.handleChange}
-                    required
-                  />
+                  <input type="text" className="form-control" id="directoryName" name="directoryName" placeholder="" value={this.state.directoryName} onChange={this.handleChange} required />
                 </div>
               )}
 
@@ -125,11 +94,7 @@ export class UserInput extends Component {
                 <button type="submit" className="btn btn-primary button-size">
                   Upload
                 </button>
-                <button
-                  type="button"
-                  className="btn btn-secondary button-size"
-                  onClick={this.props.cancelUpload}
-                >
+                <button type="button" className="btn btn-secondary button-size" onClick={this.props.cancelUpload}>
                   Cancel
                 </button>
               </div>
@@ -162,9 +127,7 @@ export const NewFolderInput = (props) => {
           directory: values.directoryName,
         }),
         headers: {
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
           'Content-type': 'application/json; charset=UTF-8',
         },
       })
@@ -187,9 +150,7 @@ export const NewFolderInput = (props) => {
           newDirectoryName: values.directoryName,
         }),
         headers: {
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
           'Content-type': 'application/json; charset=UTF-8',
         },
       })
@@ -216,15 +177,7 @@ export const NewFolderInput = (props) => {
     <div>
       <form onSubmit={handleSubmit}>
         <div className="d-flex align-items-center">
-          <input
-            type="text"
-            className="form-control w-75 custom-input-global"
-            name="directoryName"
-            onChange={handleChange}
-            value={values.directoryName}
-            placeholder="Enter folder name"
-            required
-          />
+          <input type="text" className="form-control w-75 custom-input-global" name="directoryName" onChange={handleChange} value={values.directoryName} placeholder="Enter folder name" required />
           <button type="submit" className="modal-btn ms-2 px-4">
             Save
           </button>

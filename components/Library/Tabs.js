@@ -1,30 +1,20 @@
 // Tabs.js
-import React from "react";
-import { LuPlus } from "react-icons/lu";
-import VideoContainer from "./VideoContainer";
+import React from 'react'
+import { LuPlus } from 'react-icons/lu'
+import VideoContainer from './VideoContainer'
 
 const Tabs = ({ activeTab, handleTabChange, handleNewTab, folders }) => (
   <div className="d-flex custom-video-nav">
     <ul className="nav nav-tabs flex-nowrap">
       {/* Existing tabs */}
 
-      <li
-        className={`custom-video-nav-item ${
-          activeTab === "favorites" ? "active" : ""
-        }`}
-        onClick={() => handleTabChange("favorites")}
-      >
+      <li className={`custom-video-nav-item ${activeTab === 'favorites' ? 'active' : ''}`} onClick={() => handleTabChange('favorites')}>
         Favorites
       </li>
 
       {/* Dynamically generated tabs from folders */}
       {folders.map((folder) => (
-        <li
-          className={`custom-video-nav-item ${
-            activeTab === folder.directory_name ? "active" : ""
-          }`}
-          onClick={() => handleTabChange(folder.directory_name)}
-        >
+        <li className={`custom-video-nav-item ${activeTab === folder.directory_name ? 'active' : ''}`} onClick={() => handleTabChange(folder.directory_name)}>
           {folder.directory_name}
         </li>
       ))}
@@ -35,6 +25,6 @@ const Tabs = ({ activeTab, handleTabChange, handleNewTab, folders }) => (
       </li>
     </ul>
   </div>
-);
+)
 
-export default Tabs;
+export default Tabs

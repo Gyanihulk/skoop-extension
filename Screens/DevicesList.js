@@ -1,19 +1,18 @@
-import React, { use, useContext, useEffect, useState } from "react";
-import BackButton from "../components/BackButton";
-import AuthContext from "../contexts/AuthContext";
-import LoadingScreen from "./LoadingScreen";
+import React, { use, useContext, useEffect, useState } from 'react'
+import BackButton from '../components/BackButton'
+import AuthContext from '../contexts/AuthContext'
+import LoadingScreen from './LoadingScreen'
 
 const DevicesList = () => {
-  const { userDevices, deleteUserDevice, getUserDevice } =
-    useContext(AuthContext);
-  const [devices, setDevices] = useState([]);
+  const { userDevices, deleteUserDevice, getUserDevice } = useContext(AuthContext)
+  const [devices, setDevices] = useState([])
   useEffect(() => {
     async function setup() {
-      const devices = await getUserDevice();
-      setDevices(devices);
+      const devices = await getUserDevice()
+      setDevices(devices)
     }
-    setup();
-  }, [userDevices]);
+    setup()
+  }, [userDevices])
   return (
     <>
       <div className="mb-4 pt-3">
@@ -24,9 +23,7 @@ const DevicesList = () => {
           <div className="card-body text-center pb-4">
             <div className="login-device-head">
               <h4>Multiple Logins detected!</h4>
-              <h6 className="profile-text-sm">
-                You can only login Skoop in maximum 2 devices.
-              </h6>
+              <h6 className="profile-text-sm">You can only login Skoop in maximum 2 devices.</h6>
             </div>
           </div>
         </div>
@@ -37,38 +34,22 @@ const DevicesList = () => {
               <div class="card device-card my-4 p-3 " key={device.id}>
                 <div class="list-group">
                   <div className="d-flex flew-row align-items-start device-login-card-title">
-                    {" "}
-                    <div className="me-3 device-login-card-title-bold">
-                      Browser:
-                    </div>{" "}
-                    🌐 Chrome on {device.operating_system}
+                    {' '}
+                    <div className="me-3 device-login-card-title-bold">Browser:</div> 🌐 Chrome on {device.operating_system}
                   </div>
                   <div className="d-flex flew-row align-items-start device-login-card-title">
-                    {" "}
-                    <div className="me-3 device-login-card-title-bold">
-                      Device:
-                    </div>{" "}
-                    {device.operating_system}
+                    {' '}
+                    <div className="me-3 device-login-card-title-bold">Device:</div> {device.operating_system}
                   </div>
                   <div className="d-flex flew-row align-items-start device-login-card-title">
-                    {" "}
-                    <div className="me-3 device-login-card-title-bold">
-                      Location:
-                    </div>{" "}
-                    {device.location}
+                    {' '}
+                    <div className="me-3 device-login-card-title-bold">Location:</div> {device.location}
                   </div>
                   <div className="d-flex flew-row align-items-start device-login-card-title">
-                    <div className="me-3 device-login-card-title-bold">
-                      IP address:
-                    </div>
+                    <div className="me-3 device-login-card-title-bold">IP address:</div>
                     {device.ip_address}
                   </div>
-                  <button
-                    class="mt-3 device-remove-btn"
-                    onClick={() =>
-                      deleteUserDevice(device.id, device.device_id)
-                    }
-                  >
+                  <button class="mt-3 device-remove-btn" onClick={() => deleteUserDevice(device.id, device.device_id)}>
                     Remove
                   </button>
                 </div>
@@ -83,7 +64,7 @@ const DevicesList = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default DevicesList;
+export default DevicesList

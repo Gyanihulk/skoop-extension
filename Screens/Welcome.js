@@ -1,15 +1,15 @@
-import React, { useContext } from "react";
-import ScreenContext from "../contexts/ScreenContext";
-import CustomButton from "../components/Auth/button/CustomButton";
-import AuthContext from "../contexts/AuthContext";
+import React, { useContext } from 'react'
+import ScreenContext from '../contexts/ScreenContext'
+import CustomButton from '../components/Auth/button/CustomButton'
+import AuthContext from '../contexts/AuthContext'
 
 const Welcome = () => {
-  const { navigateToPage } = useContext(ScreenContext);
- const {version}=useContext(AuthContext)
+  const { navigateToPage } = useContext(ScreenContext)
+  const { version } = useContext(AuthContext)
   const handleGetStarted = () => {
-    navigateToPage("SignUp");
-    localStorage.setItem("welcomePageShown", true);
-  };
+    navigateToPage('SignUp')
+    localStorage.setItem('welcomePageShown', true)
+  }
 
   return (
     <div className="welcome-main">
@@ -23,9 +23,7 @@ const Welcome = () => {
           <h3 className="welcome-title">Skoop</h3>
 
           <div className="welcome-content">
-            <p className="welcome-desc">
-              Increase your client engagement to gain more revenue
-            </p>
+            <p className="welcome-desc">Increase your client engagement to gain more revenue</p>
             <div className="w-100 get-started-btn">
               <CustomButton child="Get started" onClick={handleGetStarted} />
             </div>
@@ -33,11 +31,11 @@ const Welcome = () => {
         </div>
 
         <div className="app-version">
-          <p>Version 1.0.5</p>
+          <p>Version 1.0.6</p>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Welcome;
+export default Welcome

@@ -12,35 +12,17 @@ const RenameVideoPopup = ({ newTitle, onClose, onSave, onTitleChange }) => {
   }
 
   return (
-    <div
-      className="modal"
-      tabIndex="-1"
-      role="dialog"
-      style={{ display: 'block' }}
-    >
+    <div className="modal" tabIndex="-1" role="dialog" style={{ display: 'block' }}>
       <div className=" modal-overlay modal-dialog-centered">
         <div className="modal-content mx-2">
           <div className="modal-header px-3 pt-3 pb-2 border-0">
             <h6 className="modal-title">Rename video</h6>
-            <button
-              type="button"
-              className="custom-close-button"
-              onClick={onClose}
-              aria-label="Close"
-            >
+            <button type="button" className="custom-close-button" onClick={onClose} aria-label="Close">
               <IoMdClose size={16} />
             </button>
           </div>
           <div className="modal-body">
-            <input
-              type="text"
-              id="newTitle"
-              placeholder="Enter new video name"
-              value={newTitle}
-              onChange={onTitleChange}
-              className="form-control custom-input-global"
-              required
-            />
+            <input type="text" id="newTitle" placeholder="Enter new video name" value={newTitle} onChange={onTitleChange} className="form-control custom-input-global" required />
           </div>
           <div className="modal-footer border-0 py-1">
             <button type="button" className="modal-btn" onClick={handleSave}>

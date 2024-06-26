@@ -15,17 +15,11 @@ import Link from 'next/link'
 
 const AccountProfile = ({ userData }) => {
   // State for the profile image URL
-  const [profileImage, setProfileImage] = useState(
-    'https://static-00.iconduck.com/assets.00/user-avatar-happy-icon-1023x1024-bve9uom6.png'
-  )
+  const [profileImage, setProfileImage] = useState('https://static-00.iconduck.com/assets.00/user-avatar-happy-icon-1023x1024-bve9uom6.png')
   const { navigateToPage } = useContext(ScreenContext)
   useEffect(() => {
     if (userData.image_path) {
-      setProfileImage(
-        userData.image_path.startsWith('public')
-          ? API_ENDPOINTS.backendUrl + '/' + userData.image_path
-          : userData.image_path
-      )
+      setProfileImage(userData.image_path.startsWith('public') ? API_ENDPOINTS.backendUrl + '/' + userData.image_path : userData.image_path)
     }
   }, [userData])
   // Function to handle the file input change event
@@ -47,18 +41,14 @@ const AccountProfile = ({ userData }) => {
           method: 'PATCH',
           body: formData, // Use FormData here
           headers: {
-            authorization: `Bearer ${JSON.parse(
-              localStorage.getItem('accessToken')
-            )}`,
+            authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
             // Remove 'Content-Type' header when using FormData
           },
         })
 
         if (res.ok) {
           const jsonResponse = await res.json()
-          setProfileImage(
-            API_ENDPOINTS.backendUrl + '/' + jsonResponse.image_path
-          ) // Access image_path from JSON response
+          setProfileImage(API_ENDPOINTS.backendUrl + '/' + jsonResponse.image_path) // Access image_path from JSON response
           toast.success('Profile Image Updated')
         } else throw new Error('Error in the database')
       } catch (err) {
@@ -81,18 +71,8 @@ const AccountProfile = ({ userData }) => {
         <div className="card-body">
           <div className="d-flex flex-column">
             <div className="d-flex align-items-center gap-2">
-              <img
-                src={profileImage}
-                className="rounded-circle rounded-circle-custom"
-                onClick={triggerFileInput}
-                alt="Profile"
-              />
-              <input
-                type="file"
-                id="fileInput"
-                style={{ display: 'none' }}
-                onChange={handleFileChange}
-              />
+              <img src={profileImage} className="rounded-circle rounded-circle-custom" onClick={triggerFileInput} alt="Profile" />
+              <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handleFileChange} />
               <div>
                 <h4 className="profile-name">{userData.full_name}</h4>
                 <h6 className="profile-text-sm">{userData.email}</h6>
@@ -116,8 +96,7 @@ const SettingsPassword = () => {
   const [toggleInfo, setToggleInfo] = useState(false)
   const [showOldPasswordTooltip, setShowOldPasswordTooltip] = useState(false)
   const [showPasswordTooltip, setShowPasswordTooltip] = useState(false)
-  const [showConfirmPasswordTooltip, setShowConfirmPasswordTooltip] =
-    useState(false)
+  const [showConfirmPasswordTooltip, setShowConfirmPasswordTooltip] = useState(false)
 
   function validatePassword(password) {
     const uppercaseRegex = /[A-Z]/
@@ -131,9 +110,7 @@ const SettingsPassword = () => {
     const isNumeric = numericRegex.test(password)
     const isLengthValid = password.length >= 8 && password.length <= 16
 
-    return (
-      isUppercase && isLowercase && isSpecialChar && isNumeric && isLengthValid
-    )
+    return isUppercase && isLowercase && isSpecialChar && isNumeric && isLengthValid
   }
 
   const handleChange = (event) => {
@@ -194,9 +171,7 @@ const SettingsPassword = () => {
           newPassword: values.password,
         }),
         headers: {
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
           'Content-type': 'application/json; charset=UTF-8',
         },
       })
@@ -214,27 +189,12 @@ const SettingsPassword = () => {
   }
 
   return (
-    <div
-      className={`card border-radius-12 ${
-        !toggleInfo ? 'overflow-hidden' : ''
-      } `}
-    >
-      <div
-        className="light-pink card-header-custom toggle-collapse"
-        onClick={() => setToggleInfo(!toggleInfo)}
-        aria-expanded={toggleInfo}
-        aria-controls="change-password-collapse"
-      >
+    <div className={`card border-radius-12 ${!toggleInfo ? 'overflow-hidden' : ''} `}>
+      <div className="light-pink card-header-custom toggle-collapse" onClick={() => setToggleInfo(!toggleInfo)} aria-expanded={toggleInfo} aria-controls="change-password-collapse">
         <div className="d-flex justify-content-between align-items-center">
           <h6 className="mb-0 card-title">Change password</h6>
           <div>
-            <FaAngleDown
-              style={
-                toggleInfo
-                  ? { transform: 'rotate(180deg)' }
-                  : { transform: 'rotate(0deg)' }
-              }
-            />
+            <FaAngleDown style={toggleInfo ? { transform: 'rotate(180deg)' } : { transform: 'rotate(0deg)' }} />
           </div>
         </div>
       </div>
@@ -325,7 +285,7 @@ const CalendarUrlForm = ({ userProfileData }) => {
   const [toggleInfo, setToggleInfo] = useState(false)
   const [preferences, setPreferences] = useState([])
   const [showResetButton, setshowResetButton] = useState(false)
-  const { getCalendarUrl, getUserPreferences ,getCtaInfo} = useContext(AuthContext)
+  const { getCalendarUrl, getUserPreferences, getCtaInfo } = useContext(AuthContext)
 
   const checkForDefaultUrl = async (url) => {
     if (userProfileData && userProfileData.email && url) {
@@ -366,12 +326,10 @@ const CalendarUrlForm = ({ userProfileData }) => {
     try {
       const res = await fetch(API_ENDPOINTS.updateCalendarUrl, {
         method: 'POST',
-        body: JSON.stringify({ calendarUrl ,ctaText}),
+        body: JSON.stringify({ calendarUrl, ctaText }),
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
-          Authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         },
       })
       const data = await res.text()
@@ -384,9 +342,7 @@ const CalendarUrlForm = ({ userProfileData }) => {
         throw new Error(data.message || 'Error saving calendar URL')
       }
     } catch (err) {
-      toast.error(
-        err.message || 'Failed to update calendar link. Please try again.'
-      )
+      toast.error(err.message || 'Failed to update calendar link. Please try again.')
     }
   }
 
@@ -397,9 +353,7 @@ const CalendarUrlForm = ({ userProfileData }) => {
         method: 'get',
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
-          Authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         },
       })
 
@@ -412,29 +366,16 @@ const CalendarUrlForm = ({ userProfileData }) => {
         throw new Error(data.message || 'Error reseting calendar URL')
       }
     } catch (err) {
-      toast.error(
-        err.message || 'Failed to reset calendar url. Please try again.'
-      )
+      toast.error(err.message || 'Failed to reset calendar url. Please try again.')
     }
   }
 
   return (
     <div className="card border-radius-12 overflow-hidden">
-      <div
-        className="light-pink card-header-custom d-flex justify-content-between align-items-center"
-        onClick={() => setToggleInfo(!toggleInfo)}
-        aria-expanded={toggleInfo}
-        aria-controls="appointment-collapse"
-      >
+      <div className="light-pink card-header-custom d-flex justify-content-between align-items-center" onClick={() => setToggleInfo(!toggleInfo)} aria-expanded={toggleInfo} aria-controls="appointment-collapse">
         <h6 className="mb-0 card-title">Call To Action</h6>
         <div>
-          <FaAngleDown
-            style={
-              toggleInfo
-                ? { transform: 'rotate(180deg)' }
-                : { transform: 'rotate(0deg)' }
-            }
-          />
+          <FaAngleDown style={toggleInfo ? { transform: 'rotate(180deg)' } : { transform: 'rotate(0deg)' }} />
         </div>
       </div>
       <Collapse in={toggleInfo}>
@@ -442,61 +383,23 @@ const CalendarUrlForm = ({ userProfileData }) => {
           <form onSubmit={handleSubmit}>
             <div className="card-body p-0">
               <div className="container my-3">
-                
-                  <div className="d-flex justify-content-between align-items-center mt-3 mt-1">
-                    <label className="form-label profile-text">
-                      Call To Action Text
-                    </label>
-                  </div>
-                  <input
-                    type="text"
-                    className="form-control custom-input-global"
-                    id="calendarUrl"
-                    name="calendarUrl"
-                    value={ctaText}
-                    onChange={handleCtaTextChange}
-                    placeholder="Enter Text For Button."
-                    required
-                  />
-               
-                
-                  <div className="d-flex justify-content-between align-items-center mt-2 mt-1">
-                    <label
-                      htmlFor="calendarUrl"
-                      className="form-label profile-text "
-                    >
-                      Call To Action Link
-                    </label>
-                    {showResetButton && (
-                      <GrPowerReset
-                        className="ms-1"
-                        onClick={resetAppointmentLink}
-                      />
-                    )}
-                  </div>
-                  <input
-                    type="text"
-                    className="form-control  custom-input-global"
-                    id="calendarUrl"
-                    name="calendarUrl"
-                    value={calendarUrl}
-                    onChange={handleChange}
-                    placeholder="Enter your calendar link"
-                    required
-                  />
-                
-                <div
-                  className={`mt-1 d-flex ${
-                    preferences?.length == 0
-                      ? 'justify-content-between'
-                      : 'justify-content-end'
-                  }`}
-                >
+                <div className="d-flex justify-content-between align-items-center mt-3 mt-1">
+                  <label className="form-label profile-text">Call To Action Text</label>
+                </div>
+                <input type="text" className="form-control custom-input-global" id="calendarUrl" name="calendarUrl" value={ctaText} onChange={handleCtaTextChange} placeholder="Enter Text For Button." required />
+
+                <div className="d-flex justify-content-between align-items-center mt-2 mt-1">
+                  <label htmlFor="calendarUrl" className="form-label profile-text ">
+                    Call To Action Link
+                  </label>
+                  {showResetButton && <GrPowerReset className="ms-1" onClick={resetAppointmentLink} />}
+                </div>
+                <input type="text" className="form-control  custom-input-global" id="calendarUrl" name="calendarUrl" value={calendarUrl} onChange={handleChange} placeholder="Enter your calendar link" required />
+
+                <div className={`mt-1 d-flex ${preferences?.length == 0 ? 'justify-content-between' : 'justify-content-end'}`}>
                   {preferences?.length == 0 && (
                     <div className="d-flex flex-wrap">
-                      <span className="badge badge-info d-flex align-items-center justify-content-start text-danger text-wrap">
-                        User appointment preferences not set.
-                      </span>
+                      <span className="badge badge-info d-flex align-items-center justify-content-start text-danger text-wrap">User appointment preferences not set.</span>
                     </div>
                   )}
                 </div>
@@ -518,8 +421,7 @@ const CalendarUrlForm = ({ userProfileData }) => {
 }
 const UserSubscriptions = () => {
   const [toggleInfo, setToggleInfo] = useState(false)
-  const { getMySubscription, deactivateMySubscription } =
-    useContext(AuthContext)
+  const { getMySubscription, deactivateMySubscription } = useContext(AuthContext)
   const [subsriptionInfo, setSubscriptionInfo] = useState()
   async function setup() {
     const response = await getMySubscription()
@@ -533,21 +435,10 @@ const UserSubscriptions = () => {
   }
   return (
     <div className="card border-radius-12 overflow-hidden">
-      <div
-        className="light-pink card-header-custom d-flex justify-content-between align-items-center"
-        onClick={() => setToggleInfo(!toggleInfo)}
-        aria-expanded={toggleInfo}
-        aria-controls="subscription-collapse"
-      >
+      <div className="light-pink card-header-custom d-flex justify-content-between align-items-center" onClick={() => setToggleInfo(!toggleInfo)} aria-expanded={toggleInfo} aria-controls="subscription-collapse">
         <h6 className="mb-0 card-title">Subscription</h6>
         <div>
-          <FaAngleDown
-            style={
-              toggleInfo
-                ? { transform: 'rotate(180deg)' }
-                : { transform: 'rotate(0deg)' }
-            }
-          />
+          <FaAngleDown style={toggleInfo ? { transform: 'rotate(180deg)' } : { transform: 'rotate(0deg)' }} />
         </div>
       </div>
       <Collapse in={toggleInfo}>
@@ -556,14 +447,11 @@ const UserSubscriptions = () => {
             {subsriptionInfo?.id && (
               <>
                 <div class="subscription-card-header d-flex justify-content-between">
-                  <h3>{subsriptionInfo?.current_plan_status}</h3>{' '}
-                  <span class="badge badge-active ml-2">Active</span>
+                  <h3>{subsriptionInfo?.current_plan_status}</h3> <span class="badge badge-active ml-2">Active</span>
                 </div>
 
                 <ul class="list-group">
-                  <li class="d-flex justify-content-start align-items-center mt-2 mysubscription-info bold-600">
-                    Plan details
-                  </li>
+                  <li class="d-flex justify-content-start align-items-center mt-2 mysubscription-info bold-600">Plan details</li>
                   {subsriptionInfo?.subscription_id && (
                     <li class="d-flex justify-content-between align-items-center mysubscription-info">
                       Subscription ID
@@ -616,9 +504,7 @@ function AccountSettings(props) {
       var response = await fetch(API_ENDPOINTS.profileDetails, {
         method: 'GET',
         headers: {
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
           'Content-type': 'application/json; charset=UTF-8',
         },
       })
@@ -640,8 +526,7 @@ function AccountSettings(props) {
     })()
   }, [])
 
-  const { isTimezoneScreen, setIsTimezoneScreen } =
-    useContext(GlobalStatesContext)
+  const { isTimezoneScreen, setIsTimezoneScreen } = useContext(GlobalStatesContext)
 
   const openNewWindow = (url) => {
     document.body.style.overflow = 'auto'
@@ -651,22 +536,12 @@ function AccountSettings(props) {
     <>
       <div id="account-settings">
         <div className="pb-2">
-          <div>
-            {!isTimezoneScreen && <AccountProfile userData={profileData} />}
-          </div>
+          <div>{!isTimezoneScreen && <AccountProfile userData={profileData} />}</div>
           <div className="mt-4 mx-3">
             {!isTimezoneScreen && (
               <>
-                <div>
-                  {profileData && (
-                    <UserSubscriptions userProfileData={profileData} />
-                  )}
-                </div>
-                <div className="mt-3">
-                  {profileData && (
-                    <CalendarUrlForm userProfileData={profileData} />
-                  )}
-                </div>
+                <div>{profileData && <UserSubscriptions userProfileData={profileData} />}</div>
+                <div className="mt-3">{profileData && <CalendarUrlForm userProfileData={profileData} />}</div>
                 <div className="mt-3">
                   <SettingsPassword />
                 </div>
@@ -676,23 +551,8 @@ function AccountSettings(props) {
               <UserPreferencesForm />
             </div>
             <div className="fixed-bottom mt-2 cursor-pointer d-flex flex-col auth-footer-label justify-content-center">
-              <div
-                onClick={() =>
-                  openNewWindow(
-                    API_ENDPOINTS.skoopCalendarUrl + '/privacypolicy'
-                  )
-                }
-              >
-                Privacy Policy
-              </div>{' '}
-              &nbsp;|&nbsp;
-              <div
-                onClick={() =>
-                  openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/termsofuse')
-                }
-              >
-                Terms of Use
-              </div>
+              <div onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/privacypolicy')}>Privacy Policy</div> &nbsp;|&nbsp;
+              <div onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/termsofuse')}>Terms of Use</div>
             </div>
           </div>
         </div>

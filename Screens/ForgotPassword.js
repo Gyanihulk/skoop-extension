@@ -9,8 +9,7 @@ import AuthContext from '../contexts/AuthContext'
 
 const ForgotPassword = () => {
   const { navigateToPage } = useContext(ScreenContext)
-  const { getOtpForPasswordReset, resetPasswordUsingOtp } =
-    useContext(AuthContext)
+  const { getOtpForPasswordReset, resetPasswordUsingOtp } = useContext(AuthContext)
 
   const [isOTPSent, setIsOTPSent] = useState(false)
   const [email, setEmail] = useState('')
@@ -75,11 +74,7 @@ const ForgotPassword = () => {
 
     if (otp !== '' && password !== '' && confirmPassword !== '') {
       if (password === confirmPassword) {
-        const isPasswordReset = await resetPasswordUsingOtp(
-          email,
-          otp,
-          password
-        )
+        const isPasswordReset = await resetPasswordUsingOtp(email, otp, password)
         if (isPasswordReset) {
           navigateToPage('SignIn')
         } else {
@@ -116,10 +111,7 @@ const ForgotPassword = () => {
   return (
     <div class="container px-4 forgot-password-main mt-5">
       <div className="forgot-password-head">
-        <div
-          className="d-flex cursor-pointer"
-          onClick={() => navigateToPage('SignIn')}
-        >
+        <div className="d-flex cursor-pointer" onClick={() => navigateToPage('SignIn')}>
           <IoMdArrowBack size={16} color="#2C2D2E" />
           <h6 className="ms-1">Back to Login</h6>
         </div>
@@ -131,25 +123,12 @@ const ForgotPassword = () => {
         {!isOTPSent ? (
           <form onSubmit={handleSendOTP}>
             <h3 className="forgot-password-title">Forgot Password</h3>
-            <p class="text-muted mb-4 forgot-password-description">
-              Enter your email and we'll send you instructions on how to reset
-              your password.
-            </p>
+            <p class="text-muted mb-4 forgot-password-description">Enter your email and we'll send you instructions on how to reset your password.</p>
             <h3 className="forgot-password-step-label">Step 1:</h3>
             <div class="form-group">
-              <CustomInputBox
-                type="email"
-                placeholder="Enter email address"
-                name="email"
-                value={email}
-                onChange={handleChangeSendOTP}
-              />
-              {isEmailEmpty && (
-                <ValidationError title="Please add you email address" />
-              )}
-              {isInvalidUser && (
-                <ValidationError title="Please enter correct email" />
-              )}
+              <CustomInputBox type="email" placeholder="Enter email address" name="email" value={email} onChange={handleChangeSendOTP} />
+              {isEmailEmpty && <ValidationError title="Please add you email address" />}
+              {isInvalidUser && <ValidationError title="Please enter correct email" />}
             </div>
             <div className="mt-4">
               <CustomButton type="submit" child="Next" />
@@ -159,42 +138,16 @@ const ForgotPassword = () => {
           <form className="mt-5" onSubmit={handleResetPassword}>
             <div className="mt-4">
               <h3 className="forgot-password-step-label mb-2">Step 2:</h3>
-              <p className="forgot-password-description text-muted mb-4">
-                Enter the OTP that we sent on your registered email and choose a
-                new password.
-              </p>
+              <p className="forgot-password-description text-muted mb-4">Enter the OTP that we sent on your registered email and choose a new password.</p>
               <div class="form-group">
-                <CustomInputBox
-                  type="text"
-                  placeholder="Enter OTP"
-                  name="otp"
-                  onChange={handleChangeResetPassword}
-                />
+                <CustomInputBox type="text" placeholder="Enter OTP" name="otp" onChange={handleChangeResetPassword} />
                 {isOtpEmpty && <ValidationError title="Please enter OTP" />}
-                {isInvalidOTP && (
-                  <ValidationError title="Please enter correct OTP" />
-                )}
-                <CustomInputBox
-                  type="password"
-                  placeholder="New password"
-                  name="password"
-                  onChange={handleChangeResetPassword}
-                />
-                {isPasswordEmpty && (
-                  <ValidationError title="Please enter new password" />
-                )}
-                <CustomInputBox
-                  type="password"
-                  placeholder="Confirm password"
-                  name="confirmPassword"
-                  onChange={handleChangeResetPassword}
-                />
-                {isConfirmPasswordEmpty && (
-                  <ValidationError title="Please enter confirm password" />
-                )}
-                {isPasswordMatch && (
-                  <ValidationError title="Password does not match" />
-                )}
+                {isInvalidOTP && <ValidationError title="Please enter correct OTP" />}
+                <CustomInputBox type="password" placeholder="New password" name="password" onChange={handleChangeResetPassword} />
+                {isPasswordEmpty && <ValidationError title="Please enter new password" />}
+                <CustomInputBox type="password" placeholder="Confirm password" name="confirmPassword" onChange={handleChangeResetPassword} />
+                {isConfirmPasswordEmpty && <ValidationError title="Please enter confirm password" />}
+                {isPasswordMatch && <ValidationError title="Password does not match" />}
               </div>
               <div className="mt-4">
                 <CustomButton type="submit" child="Submit" />
@@ -202,10 +155,7 @@ const ForgotPassword = () => {
                   {isResendOTPButton ? (
                     <p>
                       Haven't received OTP?{' '}
-                      <span
-                        onClick={handleResendOTP}
-                        className="cursor-pointer orange-label"
-                      >
+                      <span onClick={handleResendOTP} className="cursor-pointer orange-label">
                         Send Again
                       </span>
                     </p>

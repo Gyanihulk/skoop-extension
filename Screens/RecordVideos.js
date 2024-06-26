@@ -1,18 +1,18 @@
-import React, { useContext } from "react";
-import BackButton from "../components/BackButton";
-import Library from "../components/Library";
-import MessageContext from "../contexts/MessageContext";
-import GlobalStatesContext from "../contexts/GlobalStates";
+import React, { useContext } from 'react'
+import BackButton from '../components/BackButton'
+import Library from '../components/Library'
+import MessageContext from '../contexts/MessageContext'
+import GlobalStatesContext from '../contexts/GlobalStates'
 
 const RecordVideos = () => {
-  const { addMessage } = useContext(MessageContext);
-  const { totalMediaCount } = useContext(GlobalStatesContext);
+  const { addMessage } = useContext(MessageContext)
+  const { totalMediaCount } = useContext(GlobalStatesContext)
 
   const handleInsertion = (text) => {
-    const newText = text + " \n ";
-    addMessage(newText);
-    window.scrollTo(0, document.body.scrollHeight);
-  };
+    const newText = text + ' \n '
+    addMessage(newText)
+    window.scrollTo(0, document.body.scrollHeight)
+  }
 
   return (
     <div>
@@ -25,7 +25,7 @@ const RecordVideos = () => {
         <Library appendToBody={handleInsertion} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default RecordVideos;
+export default RecordVideos

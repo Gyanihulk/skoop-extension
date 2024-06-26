@@ -11,23 +11,19 @@ import { FaPencilAlt } from 'react-icons/fa'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import MessageContext from '../contexts/MessageContext'
 import DeleteModal from './DeleteModal'
-import ScreenContext from "../contexts/ScreenContext"
+import ScreenContext from '../contexts/ScreenContext'
 
 export const VideoPreview = () => {
-  const [thumbnailImage, setThumbnailImage] = useState(
-    '/images/videoProcessing.png'
-  )
+  const [thumbnailImage, setThumbnailImage] = useState('/images/videoProcessing.png')
   const [showRenamePopup, setShowRenamePopup] = useState(false)
   const [showVideoOptionsDialog, setShowVideoOptionsDialog] = useState(false)
   const [newTitle, setNewTitle] = useState()
   const [showBookingLink, setShowBookingLink] = useState(true)
-  let { latestVideo, latestBlob, setLatestVideo, setLatestBlob } =
-    useContext(GlobalStatesContext)
-  const { deleteVideo, updateBookingLinkOfVideo } =
-    useContext(MediaUtilsContext)
+  let { latestVideo, latestBlob, setLatestVideo, setLatestBlob } = useContext(GlobalStatesContext)
+  const { deleteVideo, updateBookingLinkOfVideo } = useContext(MediaUtilsContext)
   const { message, setMessage } = useContext(MessageContext)
   const [isDeleteModal, setIsDeleteModal] = useState(false)
-  const { activePage } = useContext(ScreenContext);
+  const { activePage } = useContext(ScreenContext)
 
   useEffect(() => {
     if (latestVideo?.urlForThumbnail) {
@@ -39,8 +35,7 @@ export const VideoPreview = () => {
     }
   }, [latestVideo])
 
-  useEffect(() => {
-  }, [latestBlob, thumbnailImage, , showRenamePopup, showVideoOptionsDialog])
+  useEffect(() => {}, [latestBlob, thumbnailImage, , showRenamePopup, showVideoOptionsDialog])
   const UpdateThumbnail = async (event) => {
     const file = event.target.files[0]
 
@@ -55,20 +50,13 @@ export const VideoPreview = () => {
       formData.append('thumbnailImage', file)
 
       try {
-        const res = await fetch(
-          API_ENDPOINTS.updateThumbnailImage +
-            '/' +
-            latestVideo.facade_player_uuid,
-          {
-            method: 'PATCH',
-            body: formData,
-            headers: {
-              authorization: `Bearer ${JSON.parse(
-                localStorage.getItem('accessToken')
-              )}`,
-            },
-          }
-        )
+        const res = await fetch(API_ENDPOINTS.updateThumbnailImage + '/' + latestVideo.facade_player_uuid, {
+          method: 'PATCH',
+          body: formData,
+          headers: {
+            authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+          },
+        })
         if (res.ok) {
           const jsonResponse = await res.json()
           setThumbnailImage(jsonResponse?.thumbnailUrl)
@@ -97,21 +85,16 @@ export const VideoPreview = () => {
 
   const handleRenameSave = async () => {
     try {
-      const response = await fetch(
-        API_ENDPOINTS.renameVideo + `/${latestVideo?.id}`,
-        {
-          method: 'PATCH',
-          headers: {
-            authorization: `Bearer ${JSON.parse(
-              localStorage.getItem('accessToken')
-            )}`,
-            'Content-type': 'application/json; charset=UTF-8',
-          },
-          body: JSON.stringify({
-            newTitle: newTitle,
-          }),
-        }
-      )
+      const response = await fetch(API_ENDPOINTS.renameVideo + `/${latestVideo?.id}`, {
+        method: 'PATCH',
+        headers: {
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify({
+          newTitle: newTitle,
+        }),
+      })
 
       if (response.ok) {
         toast.success('Video renamed successfully')
@@ -120,10 +103,7 @@ export const VideoPreview = () => {
         // Check if the video title has changed
         if (latestVideo?.name !== newTitle) {
           // Update the message with the new video title
-          const updatedMessage = message.replace(
-            /(Watch Video - )[^<]*/,
-            `$1${newTitle}`
-        );
+          const updatedMessage = message.replace(/(Watch Video - )[^<]*/, `$1${newTitle}`)
           latestVideo.name = newTitle
           setMessage(updatedMessage)
         }
@@ -147,10 +127,7 @@ export const VideoPreview = () => {
 
   const handleDownload = React.useCallback(() => {
     if (latestBlob) {
-      const urlToDownload =
-        latestBlob instanceof Blob
-          ? window.URL.createObjectURL(latestBlob)
-          : latestBlob
+      const urlToDownload = latestBlob instanceof Blob ? window.URL.createObjectURL(latestBlob) : latestBlob
 
       const a = document.createElement('a')
       document.body.appendChild(a)
@@ -175,10 +152,7 @@ export const VideoPreview = () => {
 
   const handleIconClick = (eventKey) => {
     if (eventKey == 'Copy Link') {
-      handleCopyToClipboard(
-        'https://skoop.hubs.vidyard.com/watch/' +
-          latestVideo?.facade_player_uuid
-      )
+      handleCopyToClipboard('https://skoop.hubs.vidyard.com/watch/' + latestVideo?.facade_player_uuid)
     }
     if (eventKey == 'Download') {
       handleDownload()
@@ -200,10 +174,7 @@ export const VideoPreview = () => {
   }
   const handleSwitchChange = async (e) => {
     setShowBookingLink(e.target.checked)
-    await updateBookingLinkOfVideo(
-      latestVideo.facade_player_uuid,
-      e.target.checked
-    )
+    await updateBookingLinkOfVideo(latestVideo.facade_player_uuid, e.target.checked)
   }
   return (
     <>
@@ -217,104 +188,53 @@ export const VideoPreview = () => {
           onTitleChange={(e) => setNewTitle(e.target.value)}
         />
       )}
-      <input
-        id="file-upload"
-        type="file"
-        style={{ display: 'none' }}
-        onChange={UpdateThumbnail}
-        accept="image/*"
-      />
+      <input id="file-upload" type="file" style={{ display: 'none' }} onChange={UpdateThumbnail} accept="image/*" />
 
-      {(latestVideo || latestBlob) && (<div className="container" id="video-Preview">
-        <div className="card d-flex flex-row align-items-center">
-          <div
-            className="d-flex justify-content-between px-2"
-            id="video-preview-top-content"
-          >
-            <div>
-              {newTitle != null ? (
-                <div>
-                  <span id="preview-video-name">
-                    {newTitle?.length > 5
-                      ? `${newTitle?.slice(0, 6)}...${newTitle?.slice(-4)}`
-                      : ' '}
-                  </span>
+      {(latestVideo || latestBlob) && (
+        <div className="container" id="video-Preview">
+          <div className="card d-flex flex-row align-items-center">
+            <div className="d-flex justify-content-between px-2" id="video-preview-top-content">
+              <div>
+                {newTitle != null ? (
+                  <div>
+                    <span id="preview-video-name">{newTitle?.length > 5 ? `${newTitle?.slice(0, 6)}...${newTitle?.slice(-4)}` : ' '}</span>
 
-                  <FaPencilAlt
-                    className="video-preview-icon"
-                    size={12}
-                    onClick={() => handleIconClick('Rename Title')}
-                    title="Edit Title"
-                  />
-                </div>
-              ) : null}
-            </div>
-            <div className="d-flex align-items-center">
-              <div id="booking-switch">
-                <Form title="Show Booking Link">
-                  <Form.Check
-                    type="switch"
-                    checked={showBookingLink}
-                    onChange={handleSwitchChange}
-                    className="small-switch video-preview-icon"
-                    id="video-container-switch"
-                  />
-                </Form>
+                    <FaPencilAlt className="video-preview-icon" size={12} onClick={() => handleIconClick('Rename Title')} title="Edit Title" />
+                  </div>
+                ) : null}
               </div>
-              <BsThreeDotsVertical
-                title="Menu"
-                className="video-preview-icon"
-                size={12}
-                onClick={() =>
-                  setShowVideoOptionsDialog(!showVideoOptionsDialog)
-                }
-                color="white"
-              />
+              <div className="d-flex align-items-center">
+                <div id="booking-switch">
+                  <Form title="Show Booking Link">
+                    <Form.Check type="switch" checked={showBookingLink} onChange={handleSwitchChange} className="small-switch video-preview-icon" id="video-container-switch" />
+                  </Form>
+                </div>
+                <BsThreeDotsVertical title="Menu" className="video-preview-icon" size={12} onClick={() => setShowVideoOptionsDialog(!showVideoOptionsDialog)} color="white" />
+              </div>
             </div>
-          </div>
-          <img
-            className="video-preview-iframe-img"
-            src={thumbnailImage}
-            alt="Video Thumbnail"
-            onClick={(e) => {
-              openPopUp(
-                `https://play.vidyard.com/${latestVideo?.facade_player_uuid}.html?`,
-                e
-              )
-            }}
-          />
+            <img
+              className="video-preview-iframe-img"
+              src={thumbnailImage}
+              alt="Video Thumbnail"
+              onClick={(e) => {
+                openPopUp(`https://play.vidyard.com/${latestVideo?.facade_player_uuid}.html?`, e)
+              }}
+            />
 
-          <div id="video-preview-option">
-            <div
-              className={`ddstyle dropdown-menu ${
-                showVideoOptionsDialog ? 'show' : ''
-              }`}
-            >
-              {[
-                'Rename Title',
-                'Update Thumbnail',
-                'Copy Link',
-                'Download',
-                'Delete',
-              ].map((key, index) => (
-                <button
-                  onClick={() => handleIconClick(key)}
-                  className="dropdown-item"
-                >
-                  {key}
-                </button>
-              ))}
+            <div id="video-preview-option">
+              <div className={`ddstyle dropdown-menu ${showVideoOptionsDialog ? 'show' : ''}`}>
+                {['Rename Title', 'Update Thumbnail', 'Copy Link', 'Download', 'Delete'].map((key, index) => (
+                  <button onClick={() => handleIconClick(key)} className="dropdown-item">
+                    {key}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>)}
+      )}
 
-      <DeleteModal
-        middleContent={newTitle}
-        show={isDeleteModal}
-        onHide={() => setIsDeleteModal(false)}
-        onDelete={() => onDeleteVideo()}
-      />
+      <DeleteModal middleContent={newTitle} show={isDeleteModal} onHide={() => setIsDeleteModal(false)} onDelete={() => onDeleteVideo()} />
     </>
   )
 }

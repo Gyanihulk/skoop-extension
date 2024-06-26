@@ -10,12 +10,7 @@ import toast from 'react-hot-toast'
 
 const SignInForm = () => {
   const { navigateToPage } = useContext(ScreenContext)
-  const {
-    handleSkoopLogin,
-    deleteMyAllJwtSessions,
-    social,
-    showClearSessionDialog,
-  } = useContext(AuthContext)
+  const { handleSkoopLogin, deleteMyAllJwtSessions, social, showClearSessionDialog } = useContext(AuthContext)
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -52,41 +47,19 @@ const SignInForm = () => {
   }
   return (
     <div className="row justify-content-center">
-      {showClearSessionDialog && social == null && (
-        <RemoveSessions onDelete={handleDeleteSessions} />
-      )}
+      {showClearSessionDialog && social == null && <RemoveSessions onDelete={handleDeleteSessions} />}
       <div className="col-md-6">
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <CustomInputBox
-              type="text"
-              placeholder="Email address"
-              name="username"
-              onChange={handleChange}
-              value={username}
-              isEmpty={isUsernameEmpty}
-            />
-            {isUsernameEmpty && (
-              <ValidationError title="Please add your email address" />
-            )}
+            <CustomInputBox type="text" placeholder="Email address" name="username" onChange={handleChange} value={username} isEmpty={isUsernameEmpty} />
+            {isUsernameEmpty && <ValidationError title="Please add your email address" />}
           </div>
           <div className="form-group">
-            <CustomPasswordInputBox
-              placeholder="Password"
-              name="password"
-              onChange={handleChange}
-              value={password}
-              isEmpty={isPasswordEmpty}
-            />
-            {isPasswordEmpty && (
-              <ValidationError title="Please add your password" />
-            )}
+            <CustomPasswordInputBox placeholder="Password" name="password" onChange={handleChange} value={password} isEmpty={isPasswordEmpty} />
+            {isPasswordEmpty && <ValidationError title="Please add your password" />}
           </div>
           <div className="mt-2 forgot-password-label">
-            <span
-              className="cursor-pointer"
-              onClick={() => navigateToPage('ForgotPassword')}
-            >
+            <span className="cursor-pointer" onClick={() => navigateToPage('ForgotPassword')}>
               Forgot Password?
             </span>
           </div>

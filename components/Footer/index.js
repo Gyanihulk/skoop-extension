@@ -1,5 +1,4 @@
-import React from 'react';
-
+import React from 'react'
 
 const MobileFooter = () => {
   return (
@@ -8,7 +7,7 @@ const MobileFooter = () => {
         <span className="text-muted">&copy; 2024 Skoop - Privacy Policy</span>
       </div>
     </footer>
-  );
-};
+  )
+}
 
-export default MobileFooter;
+export default MobileFooter

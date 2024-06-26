@@ -41,9 +41,7 @@ const ReportBug = ({ navigateTo }) => {
         method: 'POST',
         body: formData, // Use FormData here
         headers: {
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
           // Remove 'Content-Type' header when using FormData
         },
       })
@@ -71,44 +69,17 @@ const ReportBug = ({ navigateTo }) => {
 
           <div className="container d-flex flex-column">
             <h3 className="pageHeading mb-1">Report a Bug</h3>
-            <CustomInputBox
-              placeholder="Enter title"
-              onChange={(e) => setTitle(e.target.value)}
-              value={title}
-            />
-            <textarea
-              value={description}
-              className="mt-2 contact-info-custom-textarea custom-textarea-global"
-              rows="4"
-              placeholder="Enter description"
-              onChange={(e) => setDescription(e.target.value)}
-            />
-            <input
-              type="file"
-              className="form-control mt-2 input-file"
-              id="imageUpload"
-              name="imageUpload"
-              accept="image/*"
-              multiple
-              onChange={handleFileChange}
-            />
+            <CustomInputBox placeholder="Enter title" onChange={(e) => setTitle(e.target.value)} value={title} />
+            <textarea value={description} className="mt-2 contact-info-custom-textarea custom-textarea-global" rows="4" placeholder="Enter description" onChange={(e) => setDescription(e.target.value)} />
+            <input type="file" className="form-control mt-2 input-file" id="imageUpload" name="imageUpload" accept="image/*" multiple onChange={handleFileChange} />
             <div className="mt-3">
               <CustomButton child="Submit" onClick={handleSubmit} />
             </div>
           </div>
         </div>
       ) : (
-        <ThankYou
-          heading="Form Submitted"
-          pageToRedirect={navigateTo}
-          redirectPageText={navigateTo}
-        >
-          <p>
-            Thank you for submitting the bug report. We appreciate your effort
-            in helping us improve our services. Our team will investigate the
-            issue and take the necessary steps to resolve it. We will keep you
-            updated on our progress.
-          </p>
+        <ThankYou heading="Form Submitted" pageToRedirect={navigateTo} redirectPageText={navigateTo}>
+          <p>Thank you for submitting the bug report. We appreciate your effort in helping us improve our services. Our team will investigate the issue and take the necessary steps to resolve it. We will keep you updated on our progress.</p>
         </ThankYou>
       )}
     </>

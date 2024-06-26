@@ -1,56 +1,38 @@
 import React, { useContext, useEffect, useState } from 'react'
 import GlobalStatesContext from '../../contexts/GlobalStates'
 import Scrape from '../Scraper'
-import { CgDanger } from "react-icons/cg";
-import { removeNestedParentheses } from '../../lib/helpers';
+import { CgDanger } from 'react-icons/cg'
+import { removeNestedParentheses } from '../../lib/helpers'
 const ChatWindowSelection = () => {
   const [initialItems, setInitialItems] = useState([])
   const [checkedItemCount, setCheckedItemCount] = useState(0)
   const [duplicateName, setDuplicateName] = useState(false)
   const [uniqueNamesSet, setUniqueNamesSet] = useState(new Set())
-  const {
-    selectedChatWindows,
-    setSelectedChatWindows,
-    isLinkedin,
-    focusedElementId,
-    isProfilePage,
-    isPostCommentAvailable,
-    setIsPostCommentAvailable,
-    postCommentSelected,
-    setPostCommentSelected,
-    setPostCommentElement,
-    postCommentElement,
-  } = useContext(GlobalStatesContext)
+  const { selectedChatWindows, setSelectedChatWindows, isLinkedin, focusedElementId, isProfilePage, isPostCommentAvailable, setIsPostCommentAvailable, postCommentSelected, setPostCommentSelected, setPostCommentElement, postCommentElement, tabId } =
+    useContext(GlobalStatesContext)
   const [localRefresh, setLocalRefresh] = useState(0)
   const [resetInitialItems, setResetInitialItems] = useState(0)
   const [currentUrl, setCurrentUrl] = useState('')
-
+  const [postCommentLabel, setPostCommentLabel] = useState('Post Comment')
   function checkForExistenceOfMessageWindow(element) {
     return element.querySelector('.msg-form__contenteditable') != null
   }
 
   const setUpInitialArray = async () => {
     try {
-      const allChatWindows = Array.from(
-        document.getElementsByClassName('msg-convo-wrapper')
-      )
-      const validChatWindows = allChatWindows.filter((element) =>
-        checkForExistenceOfMessageWindow(element)
-      )
+      const allChatWindows = Array.from(document.getElementsByClassName('msg-convo-wrapper'))
+      const validChatWindows = allChatWindows.filter((element) => checkForExistenceOfMessageWindow(element))
 
       const profileUserName = document.querySelector('a>h1')?.innerText
       var combinedArray = validChatWindows?.map((item, index) => {
         var nameOfRecipient
         if (item.querySelector('h2').innerText == 'New message') {
           try {
-            const profileLink = item.getElementsByClassName(
-              'msg-compose__profile-link'
-            )
+            const profileLink = item.getElementsByClassName('msg-compose__profile-link')
             if (profileLink?.length) {
               nameOfRecipient = profileLink[0].innerText
             } else {
-              nameOfRecipient =
-                item.getElementsByClassName('artdeco-pill__text')[0].innerText
+              nameOfRecipient = item.getElementsByClassName('artdeco-pill__text')[0].innerText
             }
           } catch (err) {
             nameOfRecipient = 'New Message'
@@ -67,9 +49,7 @@ const ChatWindowSelection = () => {
       const windowUrl = window.location.href
       // check if the messaging tab is open
       if (windowUrl.includes('messaging')) {
-        const name = document.querySelector(
-          '#thread-detail-jump-target'
-        ).innerText
+        const name = document.querySelector('#thread-detail-jump-target').innerText
         combinedArray[0].name = name
       }
 
@@ -95,12 +75,7 @@ const ChatWindowSelection = () => {
         const urlToFindLinkedIn = 'https://www.linkedin.com/'
 
         const targetTab = tabs[0]
-        tabs.find(
-          (tab) =>
-            tab.active &&
-            (tab.url.startsWith(urlToFindGoogle) ||
-              tab.url.startsWith(urlToFindLinkedIn))
-        )
+        tabs.find((tab) => tab.active && (tab.url.startsWith(urlToFindGoogle) || tab.url.startsWith(urlToFindLinkedIn)))
         if (targetTab) {
           try {
             chrome.scripting
@@ -126,17 +101,10 @@ const ChatWindowSelection = () => {
                   })
                   setInitialItems(combinedArray)
 
-                  const filtered = filteredArray.filter((item) =>
-                    selectedChatWindows.some(
-                      (secondItems) => secondItems.name === item.name
-                    )
-                  )
+                  const filtered = filteredArray.filter((item) => selectedChatWindows.some((secondItems) => secondItems.name === item.name))
                   setSelectedChatWindows(filtered)
                 } else {
-                  console.error(
-                    'Error retrieving combinedArray:',
-                    chrome.runtime.lastError
-                  )
+                  console.error('Error retrieving combinedArray:', chrome.runtime.lastError)
                 }
               })
           } catch (err) {
@@ -150,27 +118,28 @@ const ChatWindowSelection = () => {
   }, [resetInitialItems, isProfilePage, currentUrl])
 
   const messageHandler = (message) => {
-    if (message.action === 'elementAdded') {
-      setResetInitialItems(Math.random())
-    } else if (message.action === 'elementRemoved') {
-      setResetInitialItems(Math.random())
-    } else if (message.action === 'skoopFocusedElementLinkedin') {
-      if (
-        message?.element &&
-        message.element.placeholder != null &&
-        message.element.placeholder.startsWith('Add a comment')
-      ) {
-        setIsPostCommentAvailable(true)
-        setPostCommentElement({ ...message.element })
-      } else {
-        setIsPostCommentAvailable(false)
-        setPostCommentSelected(false)
+    if (message?.tabId == tabId) {
+      if (message.action === 'elementAdded') {
+        setResetInitialItems(Math.random())
+      } else if (message.action === 'elementRemoved') {
+        setResetInitialItems(Math.random())
+      } else if (message.action === 'skoopFocusedElementLinkedin') {
+        if (message?.element && message.element.placeholder != null && (message.element.placeholder.startsWith('Add a comment') || message.element.placeholder.startsWith('Add a reply'))) {
+          setIsPostCommentAvailable(true)
+          setPostCommentElement({ ...message.element })
+          if (message.element.placeholder.includes('comment')) {
+            setPostCommentLabel('Post Comment')
+          } else if (message.element.placeholder.includes('reply')) {
+            setPostCommentLabel('Comment Reply')
+          }
+        } else {
+          setIsPostCommentAvailable(false)
+          setPostCommentSelected(false)
+        }
       }
     }
   }
-  // useEffect(() => {
 
-  // }, [isPostCommentAvailable,postCommentElement])
   useEffect(() => {
     if (chrome.runtime.onMessage) {
       chrome.runtime.onMessage.addListener(messageHandler)
@@ -197,9 +166,7 @@ const ChatWindowSelection = () => {
         setCheckedItemCount(checkedItemCount + 1)
       }
     } else {
-      const newChatWindows = selectedChatWindows.filter(
-        (item) => item.name !== value
-      )
+      const newChatWindows = selectedChatWindows.filter((item) => item.name !== value)
       setSelectedChatWindows(newChatWindows)
       setCheckedItemCount(checkedItemCount - 1)
     }
@@ -212,9 +179,7 @@ const ChatWindowSelection = () => {
   const handleOpenMessageWindow = () => {
     const clickMessageButton = () => {
       const btns = Array.from(document.querySelectorAll('div>div>div>button'))
-      let selectedButton = btns.find(
-        (btn) => btn.ariaLabel && btn.ariaLabel.includes('Message')
-      )
+      let selectedButton = btns.find((btn) => btn.ariaLabel && btn.ariaLabel.includes('Message'))
       if (selectedButton) {
         selectedButton.click()
       } else {
@@ -234,10 +199,7 @@ const ChatWindowSelection = () => {
               },
               (injectionResults) => {
                 if (chrome.runtime.lastError) {
-                  console.error(
-                    'Error executing script:',
-                    chrome.runtime.lastError
-                  )
+                  console.error('Error executing script:', chrome.runtime.lastError)
                   reject('Failed to execute script on tab')
                 } else {
                   resolve('Message button clicked successfully')
@@ -249,18 +211,13 @@ const ChatWindowSelection = () => {
           }
         })
       } catch (err) {
-        console.error(
-          'some error occurred while trying to open message window',
-          err
-        )
+        console.error('some error occurred while trying to open message window', err)
         reject('Unexpected error occurred')
       }
     })
   }
   function extractWordsFromString(inputString) {
-    let cleanedString = inputString
-      .replace(/[^a-zA-Z0-9\s\/.-]/g, ' ')
-      .toLowerCase()
+    let cleanedString = inputString.replace(/[^a-zA-Z0-9\s\/.-]/g, ' ').toLowerCase()
     cleanedString = cleanedString.replace(/\s+/g, ' ')
     let wordsArray = cleanedString.split(/[\/\s-]+/)
     wordsArray = wordsArray.filter((word) => word.length > 0)
@@ -268,9 +225,7 @@ const ChatWindowSelection = () => {
   }
 
   function extractWordsFromString(inputString) {
-    let cleanedString = inputString
-      .replace(/[^a-zA-Z0-9\s\/.-]/g, ' ')
-      .toLowerCase()
+    let cleanedString = inputString.replace(/[^a-zA-Z0-9\s\/.-]/g, ' ').toLowerCase()
     cleanedString = cleanedString.replace(/\s+/g, ' ')
     let wordsArray = cleanedString.split(/[\/\s-]+/)
     wordsArray = wordsArray.filter((word) => word.length > 0)
@@ -278,16 +233,16 @@ const ChatWindowSelection = () => {
   }
 
   function getNameFromLinkedInUrl(element) {
-    const name = element.name;
-  
+    const name = element.name
+
     // Use a non-greedy match to remove only the first set of parentheses
     // and everything inside them.
-    const nameWithoutFirstParentheses = removeNestedParentheses(name);
-  
+    const nameWithoutFirstParentheses = removeNestedParentheses(name)
+
     // Trim the resulting string to remove any leading or trailing spaces
-    const trimmedName = nameWithoutFirstParentheses.trim();
-  
-    return trimmedName;
+    const trimmedName = nameWithoutFirstParentheses.trim()
+
+    return trimmedName
   }
   //-----------------------------------------------------------------------------------
 
@@ -334,9 +289,7 @@ const ChatWindowSelection = () => {
     })
 
     // Check for duplicates where neither item has a dataset
-    const hasDuplicateWithoutDataset = Object.values(nameMap).some(
-      (item) => item.count > 1 && !item.hasDataset
-    )
+    const hasDuplicateWithoutDataset = Object.values(nameMap).some((item) => item.count > 1 && !item.hasDataset)
     setDuplicateName(hasDuplicateWithoutDataset)
 
     // Track if a duplicate name without a dataset is found
@@ -362,10 +315,7 @@ const ChatWindowSelection = () => {
   }, [selectedChatWindows])
 
   return (
-    <div
-      id="chatWindowsList"
-      className="container selection-container bg-white"
-    >
+    <div id="chatWindowsList" className="container selection-container bg-white">
       {isLinkedin && (
         <>
           {initialItems?.length > 0 || isPostCommentAvailable ? (
@@ -375,23 +325,14 @@ const ChatWindowSelection = () => {
                   <>
                     Select Recipients{' '}
                     <span>
-                      (
-                      {postCommentSelected
-                        ? checkedItemCount + 1
-                        : checkedItemCount}{' '}
-                      out of{' '}
-                      {isPostCommentAvailable
-                        ? uniqueNamesSet.size + 1
-                        : uniqueNamesSet.size}
-                      )
+                      ({postCommentSelected ? checkedItemCount + 1 : checkedItemCount} out of {isPostCommentAvailable ? uniqueNamesSet.size + 1 : uniqueNamesSet.size})
                     </span>
                   </>
                 ) : (
                   <>
-                    <div className='danger flex flex-row mb-2'>
-                    <CgDanger color='red'size={20}/>
-                      There are duplicate names. Please copy and paste the
-                      correct message manually and then send them.
+                    <div className="danger flex flex-row mb-2">
+                      <CgDanger color="red" size={20} />
+                      There are duplicate names. Please copy and paste the correct message manually and then send them.
                     </div>
                   </>
                 )}
@@ -399,33 +340,13 @@ const ChatWindowSelection = () => {
               <div className="mt-1 select-recipient-list">
                 {isPostCommentAvailable && (
                   <div id="post-comment" className="d-flex">
-                    <input
-                      id="post-comment-checkbox"
-                      type="checkbox"
-                      className="form-check-input"
-                      value="Post Comment"
-                      checked={postCommentSelected}
-                      onChange={(e) => setPostCommentSelected(e.target.checked)}
-                    />
-                    <label className="form-check-label">Post Comment</label>
+                    <input id="post-comment-checkbox" type="checkbox" className="form-check-input" value="Post Comment" checked={postCommentSelected} onChange={(e) => setPostCommentSelected(e.target.checked)} />
+                    <label className="form-check-label">{postCommentLabel}</label>
                   </div>
                 )}
                 {[...uniqueNamesSet].map((name, index) => (
-                  <div
-                    key={index}
-                    id="select-recipient-item"
-                    className="d-flex"
-                  >
-                    <input
-                      id={`recipient-checkbox`}
-                      type="checkbox"
-                      className="form-check-input"
-                      value={name}
-                      checked={selectedChatWindows.some(
-                        (checkedItem) => checkedItem.name === name
-                      )}
-                      onChange={handleCheckboxChange}
-                    />
+                  <div key={index} id="select-recipient-item" className="d-flex">
+                    <input id={`recipient-checkbox`} type="checkbox" className="form-check-input" value={name} checked={selectedChatWindows.some((checkedItem) => checkedItem.name === name)} onChange={handleCheckboxChange} />
                     <label className="form-check-label">{name}</label>
                   </div>
                 ))}

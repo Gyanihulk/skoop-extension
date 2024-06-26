@@ -47,9 +47,7 @@ const ContactUs = ({ navigateTo }) => {
         method: 'POST',
         body: payload,
         headers: {
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('accessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
           'Content-type': 'application/json; charset=UTF-8',
         },
       })
@@ -79,59 +77,28 @@ const ContactUs = ({ navigateTo }) => {
 
           <div className="container d-flex flex-column">
             <h3 className="pageHeading mb-1">Contact Us</h3>
-            <CustomInputBox
-              placeholder="Enter Subject"
-              onChange={(e) => setSubject(e.target.value)}
-              value={subject}
-            />
+            <CustomInputBox placeholder="Enter Subject" onChange={(e) => setSubject(e.target.value)} value={subject} />
             <div className="form-group">
-              <select
-                className={`form-control custom-input-box select-box ${
-                  inquiry_type != 'select' ? 'active' : ''
-                }`}
-                id="inquiry_type"
-                name="inquiry_type"
-                value={inquiry_type}
-                onChange={(e) => setInquiryType(e.target.value)}
-              >
+              <select className={`form-control custom-input-box select-box ${inquiry_type != 'select' ? 'active' : ''}`} id="inquiry_type" name="inquiry_type" value={inquiry_type} onChange={(e) => setInquiryType(e.target.value)}>
                 <option value="select" disabled>
                   Select the Enquery Type
                 </option>
                 {inqueryOptions?.map((option) => (
-                  <option
-                    className="select-box-option"
-                    key={option.value}
-                    value={option.value}
-                  >
+                  <option className="select-box-option" key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
               </select>
             </div>
-            <textarea
-              value={message}
-              className="mt-2 contact-info-custom-textarea custom-textarea-global"
-              rows="4"
-              placeholder="Write a message..."
-              onChange={(e) => setMessage(e.target.value)}
-            />
+            <textarea value={message} className="mt-2 contact-info-custom-textarea custom-textarea-global" rows="4" placeholder="Write a message..." onChange={(e) => setMessage(e.target.value)} />
             <div className="mt-3">
               <CustomButton child="Submit" onClick={handleSubmit} />
             </div>
           </div>
         </div>
       ) : (
-        <ThankYou
-          heading="Form Submitted"
-          pageToRedirect={navigateTo}
-          redirectPageText={navigateTo}
-        >
-          <p>
-            Thank you for reaching out to the Skoop team. We have received your
-            message and will get back to you as soon as possible. Your inquiry
-            is important to us, and we are committed to providing you with the
-            assistance you need.
-          </p>
+        <ThankYou heading="Form Submitted" pageToRedirect={navigateTo} redirectPageText={navigateTo}>
+          <p>Thank you for reaching out to the Skoop team. We have received your message and will get back to you as soon as possible. Your inquiry is important to us, and we are committed to providing you with the assistance you need.</p>
         </ThankYou>
       )}
     </div>

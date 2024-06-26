@@ -1,27 +1,23 @@
-import React, { useContext } from "react";
-import MessageContext from "../../contexts/MessageContext";
-import GlobalStatesContext from "../../contexts/GlobalStates";
-import Library from "../Library";
-import { FaArrowLeft } from "react-icons/fa";
+import React, { useContext } from 'react'
+import MessageContext from '../../contexts/MessageContext'
+import GlobalStatesContext from '../../contexts/GlobalStates'
+import Library from '../Library'
+import { FaArrowLeft } from 'react-icons/fa'
 
 const VideosListContainer = () => {
-  const { addMessage } = useContext(MessageContext);
-  const { totalMediaCount, setIsVideoContainer } =
-    useContext(GlobalStatesContext);
+  const { addMessage } = useContext(MessageContext)
+  const { totalMediaCount, setIsVideoContainer } = useContext(GlobalStatesContext)
 
   const handleInsertion = (text) => {
-    const newText = text + " \n ";
-    addMessage(newText);
-    window.scrollTo(0, document.body.scrollHeight);
-  };
+    const newText = text + ' \n '
+    addMessage(newText)
+    window.scrollTo(0, document.body.scrollHeight)
+  }
 
   return (
     <div>
       <div className="mt-2 mb-3 d-flex justify-content-between">
-        <div
-          class="back-button d-flex align-items-center cursor-pointer"
-          onClick={() => setIsVideoContainer(false)}
-        >
+        <div class="back-button d-flex align-items-center cursor-pointer" onClick={() => setIsVideoContainer(false)}>
           <div className="d-flex align-items-center">
             <FaArrowLeft className="mini-icon" size={16} />
           </div>
@@ -34,7 +30,7 @@ const VideosListContainer = () => {
         <Library appendToBody={handleInsertion} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default VideosListContainer;
+export default VideosListContainer

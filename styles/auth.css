@@ -42,26 +42,82 @@
   margin-top: 2rem;
 }
 
+.custom-input-box,
 #custom-input-box {
   height: 36px;
+  width: 100%;
   color: #2a2b39;
   border-color: #a9aaabcc;
   font-family: 'Montserrat', sans-serif;
   border-radius: 4px;
+  border: none;
+  outline: none;
+  font-weight: 500;
+  font-size: 12px;
+  padding: 0 12px;
 }
 
 .input-empty {
   border-color: #e31a1a;
 }
 
+.custom-input-box:focus,
 #custom-input-box:focus {
   border-color: #ff8210;
   box-shadow: none;
 }
 
+.custom-input-box::placeholder,
 #custom-input-box::placeholder {
   color: #a9aaabcc;
   font-family: 'Montserrat', sans-serif;
+}
+
+.custom-input-container {
+  position: relative;
+  color: #2a2b39;
+  border: 1px solid #a9aaabcc;
+  border-color: #a9aaabcc;
+  font-family: 'Montserrat', sans-serif;
+  border-radius: 4px;
+  margin: 16px 0px 0px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.custom-input-container label {
+  position: absolute;
+  top: 50%;
+  left: 7px;
+  color: #a6a7ad;
+  transform: translateY(-50%);
+  background-color: white;
+  z-index: 99999;
+  padding: 0 4px;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.custom-input-container.filled label {
+  top: 0;
+  transform: translateY(-54%);
+  font-size: 12px;
+}
+
+.custom-input-container.focused label {
+  top: 0;
+  transform: translateY(-54%);
+  font-size: 12px;
+  color: #ff8210;
+}
+
+.custom-input-container.focused {
+  border-color: #ff8210;
+  box-shadow: none;
 }
 
 #custom-password-input-box {

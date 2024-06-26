@@ -19,9 +19,10 @@ export const GlobalStatesProvider = ({ children }) => {
   const [totalMediaCount, setTotalMediaCount] = useState()
   const [isVideoContainer, setIsVideoContainer] = useState(false)
   const [isTimezoneScreen, setIsTimezoneScreen] = useState(false)
-  const [ isPostCommentAvailable,setIsPostCommentAvailable]=useState(false);
-  const [postCommentSelected,setPostCommentSelected]=useState(false)
-  const [postCommentElement,setPostCommentElement]=useState(null)
+  const [isPostCommentAvailable, setIsPostCommentAvailable] = useState(false)
+  const [postCommentSelected, setPostCommentSelected] = useState(false)
+  const [postCommentElement, setPostCommentElement] = useState(null)
+  const [tabId, setTabId] = useState(null)
   useEffect(() => {}, [globalRefresh])
 
   return (
@@ -56,7 +57,17 @@ export const GlobalStatesProvider = ({ children }) => {
         isVideoContainer,
         setIsVideoContainer,
         isTimezoneScreen,
-        setIsTimezoneScreen,focusedElementLinkedin, setFocusedElementLinkedin, isPostCommentAvailable,setIsPostCommentAvailable,postCommentSelected,setPostCommentSelected,postCommentElement,setPostCommentElement
+        setIsTimezoneScreen,
+        focusedElementLinkedin,
+        setFocusedElementLinkedin,
+        isPostCommentAvailable,
+        setIsPostCommentAvailable,
+        postCommentSelected,
+        setPostCommentSelected,
+        postCommentElement,
+        setPostCommentElement,
+        tabId,
+        setTabId,
       }}
     >
       {children}

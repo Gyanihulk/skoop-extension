@@ -9,7 +9,8 @@
     "exp": "next build && next export",
     "run": "next start",
     "dev": "next dev",
-    "watch": "npm-watch"
+    "watch": "npm-watch",
+    "format": "prettier --write \"**/*.{js,jsx,json,css,md}\" --ignore-path .prettierignore"
   },
   "watch": {
     "build": {
@@ -53,5 +54,8 @@
     "react-webcam": "^7.2.0",
     "sound-visualizer": "^1.2.0",
     "time-number": "^1.1.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.2"
   }
 }
