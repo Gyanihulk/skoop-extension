@@ -144,22 +144,13 @@ const ContactInfoCard = () => {
     var contactOverlayInfo
     try {
       profileInfo = await Scrape('ProfilePage')
-      profileInfo = profileInfo.map((item) => {
-        return item.replace(/[^\x00-\x7F]/g, '')
-      })
+      contactOverlayInfo = await Scrape('ContactInfoOverlay')
     } catch (err) {
       console.error('error fetching scraped info from profile page')
     }
-    try {
-      contactOverlayInfo = await Scrape('ContactInfoOverlay')
-      contactOverlayInfo = contactOverlayInfo.map((item) => {
-        return item.replace(/[^\x00-\x7F]/g, '')
-      })
-    } catch (err) {
-      console.error('could not scrape from overlay', err)
-    }
-
-    linkedIn_url = profileInfo[3] || contactOverlayInfo[4]
+  
+    console.log(profileInfo,contactOverlayInfo,"test")
+    linkedIn_url =  contactOverlayInfo[4]
     const regex = /https:\/\/www\.linkedin\.com\/in\/([^/?]+)/
     const match = linkedIn_url.match(regex)
     const linkedInProfileId = match ? match[1] : null
