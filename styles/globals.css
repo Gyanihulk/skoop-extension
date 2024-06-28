@@ -1318,7 +1318,11 @@ select.form-control {
   color: rgba(44, 45, 46, 0.5);
 }
 
-#Header,
+#Header{  height: 44px;
+  background-color: var(--main-color);
+z-index: 1000;}
+
+
 #messageFooter {
   height: 44px;
   background-color: var(--main-color);
@@ -2608,4 +2612,54 @@ img.icon-style-normal {
 .rounded-profile-image {
   height: 50px;
   width: 50px;
+}
+@keyframes dotAnimation {
+  0%, 100% {
+    color: white;
+    text-shadow:
+      0.25em 0 0 transparent,
+      0.5em 0 0 transparent,
+      0.75em 0 0 transparent;
+  }
+  25% {
+    color: white;
+    text-shadow:
+      0.25em 0 0 transparent,
+      0.5em 0 0 transparent,
+      0.75em 0 0 transparent;
+  }
+  50% {
+    color: white;
+    text-shadow:
+      0.25em 0 0 white,
+      0.5em 0 0 transparent,
+      0.75em 0 0 transparent;
+  }
+  60% {
+    color: white;
+    text-shadow:
+      0.25em 0 0 white,
+      0.5em 0 0 white,
+      0.75em 0 0 transparent;
+  }
+  70% {
+    color: white;
+    text-shadow:
+      0.25em 0 0 white,
+      0.5em 0 0 white,
+      0.75em 0 0 white;
+  }
+}
+
+.recording-dots {
+  display: inline-block;
+  font-size: 1em;
+  line-height: 1;
+  margin-left: 0.5em;
+  color: transparent;
+  text-shadow:
+    0.25em 0 0 transparent,
+    0.5em 0 0 transparent,
+    0.75em 0 0 transparent;
+  animation: dotAnimation 2s infinite;
 }

@@ -24,7 +24,35 @@ export const GlobalStatesProvider = ({ children }) => {
   const [postCommentElement, setPostCommentElement] = useState(null)
   const [tabId, setTabId] = useState(null)
   useEffect(() => {}, [globalRefresh])
-
+  const getToggleButton = () => {
+    const toggleButton = document.getElementById('skoop-expand-minimize-button')
+    toggleButton.click()
+  }
+  const expandMinimizeExtension = () => {
+    try {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const targetTab = tabs[0]
+        if (targetTab) {
+          try {
+            chrome.scripting.executeScript({
+              target: { tabId: targetTab.id },
+              func: getToggleButton,
+            })
+          } catch (err) {
+            console.error('some error occured in executing script', err)
+          }
+        }
+      })
+      if (expand) {
+        document.body.style.overflow = 'auto'
+      } else {
+        document.body.style.overflow = 'hidden'
+      }
+      setExpand(!expand)
+    } catch (err) {
+      console.error('some error occured while setting up initial array')
+    }
+  }
   return (
     <GlobalStatesContext.Provider
       value={{
@@ -67,7 +95,7 @@ export const GlobalStatesProvider = ({ children }) => {
         postCommentElement,
         setPostCommentElement,
         tabId,
-        setTabId,
+        setTabId,expandMinimizeExtension
       }}
     >
       {children}

@@ -16,15 +16,20 @@ import { HiMiniMinus } from 'react-icons/hi2'
 import { TbArrowsDiagonalMinimize2 } from 'react-icons/tb'
 import { TbArrowsDiagonal } from 'react-icons/tb'
 import { RiDashboard2Line } from 'react-icons/ri'
+import { useRecording } from '../../contexts/RecordingContext.js'
 
 export default function Header() {
   const { isAuthenticated, handleLogOut, isPro, gracePeriodCompletion, gracePeriod } = useContext(AuthContext)
   const { navigateToPage, activePage } = useContext(ScreenContext)
-  const { setScraperPage, scraperPage, isProfilePage, expand, setExpand } = useContext(GlobalStatesContext)
+  const { setScraperPage, scraperPage, isProfilePage, expand, expandMinimizeExtension } = useContext(GlobalStatesContext)
 
   const [profileOpen, setProfileOpen] = useState(false)
   const [showHelpMenu, setShowHelpMenu] = useState(false)
+  const {
+    isRecordStart,
 
+    isScreenRecording
+  } = useRecording()
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (profileOpen && !event.target.closest('.custom')) {
@@ -68,10 +73,6 @@ export default function Header() {
     const container = document.getElementById('skoop-extension-container')
     container.style.display = 'none'
   }
-  const getToggleButton = () => {
-    const toggleButton = document.getElementById('skoop-expand-minimize-button')
-    toggleButton.click()
-  }
 
   const closeExtension = () => {
     try {
@@ -92,31 +93,7 @@ export default function Header() {
       console.error('some error occured while setting up initial array')
     }
   }
-  const expandMinimizeExtension = () => {
-    try {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const targetTab = tabs[0]
-        if (targetTab) {
-          try {
-            chrome.scripting.executeScript({
-              target: { tabId: targetTab.id },
-              func: getToggleButton,
-            })
-          } catch (err) {
-            console.error('some error occured in executing script', err)
-          }
-        }
-      })
-      if (expand) {
-        document.body.style.overflow = 'auto'
-      } else {
-        document.body.style.overflow = 'hidden'
-      }
-      setExpand(!expand)
-    } catch (err) {
-      console.error('some error occured while setting up initial array')
-    }
-  }
+
   const openCalendarWindow = () => {
     document.body.style.overflow = 'auto'
     window.open(API_ENDPOINTS.skoopCalendarUrl, '_blank')
@@ -128,7 +105,15 @@ export default function Header() {
   return (
     <>
       <nav className="navbar pe-2 py-2 d-flex align-items-center" id="Header">
-        <div className="header-text">Skoop App</div>
+        <div className="header-text">
+          {isScreenRecording && isRecordStart ? (
+            <span>
+              Recording Screen<span className="recording-dots">...</span>
+            </span>
+          ) : (
+            <>Skoop App</>
+          )}
+        </div>
 
         <div className="d-flex ml-auto align-items-center">
           {isAuthenticated && (

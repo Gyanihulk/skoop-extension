@@ -55,7 +55,7 @@ const RecordingButton = () => {
     captureCameraWithScreen,
     setCaptureCameraWithScreen,
   } = useRecording()
-  const { setGlobalRefresh, setLatestVideo, setLatestBlob } = useContext(GlobalStatesContext)
+  const { setGlobalRefresh, setLatestVideo, setLatestBlob, expandMinimizeExtension, setExpand } = useContext(GlobalStatesContext)
   const { uploadVideo } = useContext(MediaUtilsContext)
   const { addToMessage } = useContext(MessageContext)
   const handleVideoStyleSelect = (style) => {
@@ -139,6 +139,10 @@ const RecordingButton = () => {
       const blob = await response.blob()
       url = URL.createObjectURL(blob)
       setBlobUrl(url)
+      if (isScreenRecording) {
+        expandMinimizeExtension()
+        setExpand(false)
+      }
       return blob
     } catch (error) {
       console.error('Error fetching blob:', error)
@@ -162,6 +166,7 @@ const RecordingButton = () => {
         setGlobalRefresh(true)
         setCapturing(false)
         setIsVideo(false)
+       
       })
     }
   }
@@ -178,11 +183,16 @@ const RecordingButton = () => {
     setLatestVideo(null)
     setLatestBlob(null)
     console.log(isScreenRecording, captureCameraWithScreen)
+    if (isScreenRecording) {
+      expandMinimizeExtension()
+    }
     sendMessageToBackgroundScript(
       {
         action: 'startRecording',
         height,
         width,
+        isScreenRecording,
+        captureCameraWithScreen,
       },
       handleVideoBlob
     )
@@ -257,7 +267,7 @@ const RecordingButton = () => {
                         <input id="capture-camera-checkbox" type="checkbox" className="form-check-input" value="Capture Camera" checked={captureCameraWithScreen} onChange={(e) => setCaptureCameraWithScreen(e.target.checked)} />
 
                         <label class="form-check-label" for="capture-camera-checkbox">
-                          Capture Camera
+                          Record Camera
                         </label>
                       </div>
                     ) : (

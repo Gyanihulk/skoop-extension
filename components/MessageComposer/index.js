@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useDebugValue, useEffect, useState } from 'react'
 import { AiFillRobot } from 'react-icons/ai'
 import { HiMiniGif } from 'react-icons/hi2'
 import EmojiPicker from 'emoji-picker-react'
@@ -183,7 +183,7 @@ const MessageComposer = () => {
       }
     })
   }
-
+useEffect(()=>{},[expand])
   const handleInsertionToWebsite = async () => {
     if (message === null || message === undefined) {
       toast.error('Please add message!!')

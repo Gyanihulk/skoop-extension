@@ -677,18 +677,62 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       )
     }
 
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices
-        .getUserMedia({
+    
+   
+    function getMediaStream() {
+      if (request.isScreenRecording && request.captureCameraWithScreen) {
+        // Capture both screen and camera
+        return Promise.all([
+          navigator.mediaDevices.getDisplayMedia({
+            video: {
+              width: { ideal: 1980 },
+              height: { ideal: 1080 },
+              frameRate: { max: 60 },
+            },
+            audio: true,
+          }),
+          navigator.mediaDevices.getUserMedia({
+            video: {
+              width: { ideal: request.width },
+              height: { ideal: request.height },
+              frameRate: { max: 60 },
+            },
+          }),
+        ]).then(([screenStream, cameraStream]) => {
+          return { screenStream, cameraStream };
+        });
+      } else if (request.isScreenRecording) {
+        // Capture screen only
+        return navigator.mediaDevices.getDisplayMedia({
+          video: {
+            width: { ideal: 1980 },
+            height: { ideal: 1080 },
+            frameRate: { max: 60 },
+          },
+          audio: true,
+        }).then(screenStream => {
+          return { screenStream, cameraStream: null };
+        });
+      } else {
+        // Capture camera only
+        return navigator.mediaDevices.getUserMedia({
           video: {
             width: { ideal: request.width },
             height: { ideal: request.height },
+            frameRate: { max: 60 },
           },
           audio: true,
-        })
-        .then((stream) => {
+        }).then(cameraStream => {
+          return { screenStream: null, cameraStream };
+        });
+      }
+    }
+
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      getMediaStream().then(({ screenStream, cameraStream }) => {
+        let recordingStream=request.isScreenRecording?screenStream:cameraStream
           function startRecording() {
-            mediaRecorder = new MediaRecorder(stream)
+            mediaRecorder = new MediaRecorder(recordingStream)
             mediaRecorder.ondataavailable = (event) => {
               if (event.data.size > 0) recordedChunks.push(event.data)
             }
@@ -697,22 +741,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
               const blobUrl = URL.createObjectURL(blob)
               recordedChunks = []
               isRecording = false
-              if (!isRestarting) {
+              if (!isRestarting ) {
                 const videos = skoopVideoContainer.getElementsByTagName('video')
 
-                const video = videos[videos.length - 1] // Last video element
+                const video = videos[videos.length - 1] 
 
                 if (video && video?.srcObject) {
                   video.srcObject.getTracks().forEach((track) => track.stop())
                   skoopVideoContainer.removeChild(video)
                   skoopVideoContainer.destroy()
                   skoopVideoContainer = null
-                } else {
-                  console.error(
-                    'The last video element is undefined, or srcObject is null.'
-                  )
+                } 
+                if (screenStream) {
+                  screenStream.getTracks().forEach((track) => track.stop());
                 }
-
                 sendResponse({ videoBlob: blob, url: blobUrl })
               }
             }
@@ -724,9 +766,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
               }
             }, 120000)
           }
+          if (!request.isScreenRecording || request.captureCameraWithScreen) {
           const video = document.createElement('video')
           video.id = 'skoop-video-recording'
-          video.srcObject = stream
+          video.srcObject = cameraStream
           video.autoplay = true
           video.muted = true
           video.style.height = request.height + 'px'
@@ -738,8 +781,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           skoopVideoContainer.style.height = request.height + 98 + 'px'
           skoopVideoContainer.style.width = request.width + 'px'
           skoopVideoContainer.appendChild(video)
-          skoopVideoContainer.style
-
+          }
           skoopVideoContainer.showCountdown()
 
           function stopStream() {
