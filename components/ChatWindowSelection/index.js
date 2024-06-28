@@ -116,7 +116,53 @@ const ChatWindowSelection = () => {
       console.error('some error occured while setting up initial array')
     }
   }, [resetInitialItems, isProfilePage, currentUrl])
+  function connectAll(){
+    // Get all the cards with the class "discover-entity-type-card"
+const cards = document.querySelectorAll('.discover-entity-type-card');
 
+// Define an async function to click the connect button with a delay
+async function clickConnectButtons(cards) {
+  for (const card of cards) {
+    // Find the connect button within the card
+    const connectButton = card.querySelector('button[aria-label*="Invite"]');
+    
+    // If the connect button exists, click it
+    if (connectButton) {
+      connectButton.click();
+      console.log('Clicked connect on:', card);
+      
+      // Wait for 1 second (1000 milliseconds) before continuing to the next card
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+  }
+}
+
+// Execute the function with the cards
+clickConnectButtons(cards);
+  }
+  function connect(){
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const urlToFindGoogle = 'https://mail.google.com/mail'
+      const urlToFindLinkedIn = 'https://www.linkedin.com/'
+
+      const targetTab = tabs[0]
+      tabs.find((tab) => tab.active && (tab.url.startsWith(urlToFindGoogle) || tab.url.startsWith(urlToFindLinkedIn)))
+      if (targetTab) {
+        try {
+          chrome.scripting
+            .executeScript({
+              target: { tabId: targetTab.id },
+              func: connectAll,
+            })
+            .then(async (response) => {
+              console.log(response)
+            })
+        } catch (err) {
+          console.error('some error occured in executing script', err)
+        }
+      }
+    })
+  }
   const messageHandler = (message) => {
     if (message?.tabId == tabId) {
       if (message.action === 'elementAdded') {
@@ -316,6 +362,7 @@ const ChatWindowSelection = () => {
 
   return (
     <div id="chatWindowsList" className="container selection-container bg-white">
+    <button onClick={connect}>connect</button>
       {isLinkedin && (
         <>
           {initialItems?.length > 0 || isPostCommentAvailable ? (
