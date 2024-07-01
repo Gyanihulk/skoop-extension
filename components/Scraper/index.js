@@ -19,81 +19,80 @@ const Scrape = async (commandType) => {
     const waitForElement = (selector, timeout = 3000) => {
       return new Promise((resolve, reject) => {
         const interval = setInterval(() => {
-          const element = document.querySelector(selector);
+          const element = document.querySelector(selector)
           if (element) {
-            clearInterval(interval);
-            clearTimeout(timeoutId);
-            resolve(element);
+            clearInterval(interval)
+            clearTimeout(timeoutId)
+            resolve(element)
           }
-        }, 100);
+        }, 100)
 
         const timeoutId = setTimeout(() => {
-          clearInterval(interval);
-          reject(new Error('Element not found within time frame'));
-        }, timeout);
-      });
-    };
+          clearInterval(interval)
+          reject(new Error('Element not found within time frame'))
+        }, timeout)
+      })
+    }
 
     try {
-      const anchorTags = document.getElementsByTagName('a');
-      let contactLink;
+      const anchorTags = document.getElementsByTagName('a')
+      let contactLink
       for (let i = 0; i < anchorTags.length; i++) {
         if (anchorTags[i].innerText === 'Contact info') {
-          contactLink = anchorTags[i];
-          break;
+          contactLink = anchorTags[i]
+          break
         }
       }
       if (contactLink) {
-        contactLink.click();
-        await waitForElement('.pv-contact-info__contact-type'); // Wait for the contact info overlay to load
+        contactLink.click()
+        await waitForElement('.pv-contact-info__contact-type') // Wait for the contact info overlay to load
       } else {
-        throw new Error('Contact link not found');
+        throw new Error('Contact link not found')
       }
 
       // Assuming the overlay is now loaded, proceed to scrape the contact information
-      var email = '';
-      var website = '';
-      var twitter = '';
-      var phoneNumber = '';
-      var linkedinUrl = '';
-      var address = '';
-      const contactSections = Array.from(document.getElementsByClassName('pv-contact-info__contact-type'));
+      var email = ''
+      var website = ''
+      var twitter = ''
+      var phoneNumber = ''
+      var linkedinUrl = ''
+      var address = ''
+      const contactSections = Array.from(document.getElementsByClassName('pv-contact-info__contact-type'))
 
       contactSections.forEach((item) => {
-        const label = item.children[1].innerText;
-        const value = item.children[2].innerText;
+        const label = item.children[1].innerText
+        const value = item.children[2].innerText
         switch (label) {
           case 'Email':
-            email = value;
-            break;
+            email = value
+            break
           case 'Website':
           case 'Websites':
-            website = value.replace(/\n/g, '|');
-            break;
+            website = value.replace(/\n/g, '|')
+            break
           case 'Twitter':
-            twitter = value;
-            break;
+            twitter = value
+            break
           case 'Phone':
-            phoneNumber = value;
-            break;
+            phoneNumber = value
+            break
           case 'Address':
-            address = value;
-            break;
+            address = value
+            break
           default:
-            break;
+            break
         }
-      });
+      })
 
       // Assuming the LinkedIn URL is part of the contact info
-      linkedinUrl = window.location.href;
+      linkedinUrl = window.location.href
 
-      return [ email, website, twitter, phoneNumber, linkedinUrl, address ];
-  
+      return [email, website, twitter, phoneNumber, linkedinUrl, address]
     } catch (err) {
-      console.error('Could not open contact info overlay', err);
-      throw err;
+      console.error('Could not open contact info overlay', err)
+      throw err
     }
-  };
+  }
 
   const functionToExecute = commandType == 'ContactInfoOverlay' ? executeScrapingFromContactInfoOverlay : executeScrapingFromProfilePage
   const res = await new Promise((resolve, reject) => {
