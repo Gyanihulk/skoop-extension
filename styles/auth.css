@@ -73,6 +73,17 @@
   font-family: 'Montserrat', sans-serif;
 }
 
+.custom-input-parent-container {
+  margin: 16px 0px 0px;
+}
+
+.custom-input-parent-container .error-message {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  color: #ff8210;
+}
+
 .custom-input-container {
   position: relative;
   color: #2a2b39;
@@ -80,7 +91,7 @@
   border-color: #a9aaabcc;
   font-family: 'Montserrat', sans-serif;
   border-radius: 4px;
-  margin: 16px 0px 0px;
+
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
   font-size: 12px;
@@ -115,9 +126,14 @@
   color: #ff8210;
 }
 
+.custom-input-container.is-error,
 .custom-input-container.focused {
   border-color: #ff8210;
   box-shadow: none;
+}
+
+.custom-input-container.is-error label {
+  color: #ff8210;
 }
 
 #custom-password-input-box {

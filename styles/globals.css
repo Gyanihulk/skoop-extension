@@ -2594,3 +2594,9 @@ img.icon-style-normal {
   height: 50px;
   width: 50px;
 }
+.contact-info-para {
+  margin-bottom: 0px !important;
+}
+.contact-info-title {
+  margin-top: 8px !important;
+}

@@ -26,14 +26,14 @@ const Scrape = async (commandType) => {
             resolve(element);
           }
         }, 100);
-  
+
         const timeoutId = setTimeout(() => {
           clearInterval(interval);
           reject(new Error('Element not found within time frame'));
         }, timeout);
       });
     };
-  
+
     try {
       const anchorTags = document.getElementsByTagName('a');
       let contactLink;
@@ -49,7 +49,7 @@ const Scrape = async (commandType) => {
       } else {
         throw new Error('Contact link not found');
       }
-  
+
       // Assuming the overlay is now loaded, proceed to scrape the contact information
       var email = '';
       var website = '';
@@ -58,7 +58,7 @@ const Scrape = async (commandType) => {
       var linkedinUrl = '';
       var address = '';
       const contactSections = Array.from(document.getElementsByClassName('pv-contact-info__contact-type'));
-  
+
       contactSections.forEach((item) => {
         const label = item.children[1].innerText;
         const value = item.children[2].innerText;
@@ -83,10 +83,10 @@ const Scrape = async (commandType) => {
             break;
         }
       });
-  
+
       // Assuming the LinkedIn URL is part of the contact info
       linkedinUrl = window.location.href;
-  
+
       return [ email, website, twitter, phoneNumber, linkedinUrl, address ];
   
     } catch (err) {
