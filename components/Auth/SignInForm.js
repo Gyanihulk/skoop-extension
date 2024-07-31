@@ -49,7 +49,7 @@ const SignInForm = () => {
     <div className="row justify-content-center">
       {showClearSessionDialog && social == null && <RemoveSessions onDelete={handleDeleteSessions} />}
       <div className="col-md-6">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
             <CustomInputBox type="text" placeholder="Email address" name="username" onChange={handleChange} value={username} isEmpty={isUsernameEmpty} />
             {isUsernameEmpty && <ValidationError title="Please add your email address" />}
@@ -63,8 +63,10 @@ const SignInForm = () => {
               Forgot Password?
             </span>
           </div>
-          <div className="mt-4">
-            <CustomButton type="Submit" child="Sign in" />
+          <div className="mt-4 text-center">
+            <button type="Submit" id="custom-btn-1" className={`btn w-40 ${username != '' || password != '' ? 'active' : ''}`}>
+              Sign In
+            </button>
           </div>
         </form>
       </div>

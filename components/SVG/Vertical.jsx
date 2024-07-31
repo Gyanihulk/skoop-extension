@@ -2,7 +2,7 @@ import React from 'react'
 
 const Vertical = () => {
   return (
-    <svg width="44" height="60" viewBox="0 0 44 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="40" height="48" viewBox="0 0 44 60" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g clip-path="url(#clip0_3_1847)">
         <rect x="0.5" y="0.5" width="43" height="59" rx="6" fill="#2D68C4" fill-opacity="0.8" />
         <rect width="46" height="12" transform="translate(0.5 0.5)" fill="#2D6891" />

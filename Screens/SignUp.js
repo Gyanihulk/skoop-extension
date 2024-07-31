@@ -119,10 +119,20 @@ const SignUp = () => {
             <h1>Create your Skoop account</h1>
             <p>It's time to get more clients and contact again with old connections</p>
           </div>
-          <div className="mt-3">
+          <div className="mt-4">
+            {showClearSessionDialog && social != null && <RemoveSessions onDelete={handleDeleteSessions} />}
+            <ContinueWithGoogleButton setSocial={setSocial} message="Sign up with Google" />
+            <ContinueWithLinkedInButton setSocial={setSocial} message="Sign up with LinkedIn" />
+
+            <div className="text-center mt-3 or-with-label">
+              <span>OR</span>
+            </div>
+          </div>
+
+          <div>
             <div className="row justify-content-center">
               <div className="col-md-6">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="auth-form">
                   <div className="form-group">
                     <div>
                       <CustomInputBox type="text" placeholder="Full name" name="fullname" onChange={handleChange} value={fullname} isEmpty={isFullnameEmpty} />
@@ -151,15 +161,17 @@ const SignUp = () => {
                     {isTimezoneEmpty && <ValidationError title="Please select timezone" />}
                   </div>
 
-                  <div className="mt-4">
-                    <CustomButton type="Submit" child="Sign Up" />
+                  <div className="mt-4 text-center">
+                    <button type="Submit" id="custom-btn-1" className={`btn w-40 ${fullname != '' || password != '' || email != '' ? 'active' : ''}`}>
+                      Sign Up
+                    </button>
                   </div>
                 </form>
               </div>
             </div>
           </div>
           <div>
-            <p className="mt-2 sign-up-privacy-policy">
+            <p className="text-center mt-2 sign-up-privacy-policy">
               By clicking submit you are agreeing to{' '}
               <span className="cursor-pointer fw-bold footer-font" onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/privacypolicy')}>
                 Privacy policies
@@ -170,24 +182,20 @@ const SignUp = () => {
               </span>
             </p>
           </div>
-          <div className="mt-4">
-            <div className="text-center mb-3 or-with-label">
-              <span>Or</span>
-            </div>
-            {showClearSessionDialog && social != null && <RemoveSessions onDelete={handleDeleteSessions} />}
-            <ContinueWithLinkedInButton setSocial={setSocial} message="Sign up with LinkedIn" />
-            <ContinueWithGoogleButton setSocial={setSocial} message="Sign up with Google" />
-            <div className="text-center mt-2 auth-footer-label">
-              Already have an account?{' '}
-              <span onClick={() => navigateToPage('SignIn')} className="cursor-pointer fw-bold footer-font">
-                Login
-              </span>
-            </div>
-            <div className="text-center mt-2 auth-footer-label">
-              <span onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/affiliate/sign-up')} className="cursor-pointer fw-bold footer-font">
-                Become an affiliate.
-              </span>
-            </div>
+          <div className="text-center mt-2 auth-footer-label">
+            Already have an account?{' '}
+            <span onClick={() => navigateToPage('SignIn')} className="cursor-pointer fw-bold footer-font">
+              Login
+            </span>
+          </div>
+          <div className="text-center my-2 auth-footer-label">
+            <span onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/affiliate/sign-up')} className="cursor-pointer fw-bold footer-font">
+              Become an affiliate.
+            </span>
+          </div>
+          <div className="my-2 cursor-pointer auth-footer-label d-flex flex-col justify-content-center">
+            <div onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/privacypolicy')}>Privacy Policy</div> &nbsp;|&nbsp;
+            <div onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/termsofuse')}>Terms of Use</div>
           </div>
         </div>
       ) : (

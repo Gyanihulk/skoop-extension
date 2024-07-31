@@ -1,216 +1,18 @@
-function injectIframe() {
-  const existingContainer = document.getElementById('skoop-extension-container')
-  if (existingContainer) {
-    // Toggle visibility if container exists
-    existingContainer.style.display =
-      existingContainer.style.display === 'none' ? 'block' : 'none'
-    return
-  }
-
-  // Create the container
-  const container = document.createElement('div')
-  container.id = 'skoop-extension-container'
-
-  const extensionDimension = localStorage.getItem('skoopExtensionDimension')
-  if (extensionDimension) {
-    const { width, height } = JSON.parse(extensionDimension)
-    container.style.width = width + 'px'
-    container.style.height = height + 'px'
-  }
-
-  container.ondragstart = function () {
-    return false
-  }
-
-  // Create the iframe
-  const iframe = document.createElement('iframe')
-  iframe.id = 'skoop-extension-iframe'
-  iframe.src = `chrome-extension://gplimcomjkejccjoafekbjedgmlclpag/index.html`
-  iframe.setAttribute('allow', 'camera;microphone')
-  iframe.style.border = 'none'
-  iframe.style.width = '100%'
-  iframe.style.height = '100%' // Height when expanded
-  iframe.style.borderRadius = '10px'
-
-  const dragButton = document.createElement('div')
-  dragButton.id = 'skoop-drag-button'
-  dragButton.style.left = '14px'
-  dragButton.style.top = '13px'
-  dragButton.style.width = '20px'
-  dragButton.style.height = '20px'
-  dragButton.style.position = 'absolute'
-  dragButton.style.cursor = 'move'
-  dragButton.title = 'Click and Drag To Move'
-
-  dragButton.style.backgroundImage =
-    'url("' + chrome.runtime.getURL('/icons/move.png') + '")'
-  dragButton.style.backgroundSize = 'cover'
-  // Drag functionality
-  let isDragging = false
-  let dragStartX, dragStartY
-
-  const dragStart = (e) => {
-    disableTextSelection()
-    isDragging = true
-    dragStartX = e.clientX - container.offsetLeft
-    dragStartY = e.clientY - container.offsetTop
-    document.addEventListener('mousemove', dragMove)
-    document.addEventListener('mouseup', dragEnd)
-  }
-  const dragMove = (e) => {
-    if (isDragging) {
-      // Get the viewport dimensions
-      const viewportWidth = window.innerWidth
-      const viewportHeight = window.innerHeight
-
-      // Get the dimensions of the container
-      const containerWidth = container.offsetWidth
-      const containerHeight = container.offsetHeight
-
-      // Calculate the new position
-      let newX = e.clientX - dragStartX
-      let newY = e.clientY - dragStartY
-
-      // Set boundaries for the new position
-      newX = Math.max(newX, 0) // Left boundary
-      newY = Math.max(newY, 0) // Top boundary
-      newX = Math.min(newX, viewportWidth - containerWidth) // Right boundary
-      newY = Math.min(newY, viewportHeight - containerHeight) // Bottom boundary
-
-      // Set the new position, respecting the boundaries
-      container.style.left = `${newX}px`
-      container.style.top = `${newY}px`
-    }
-  }
-
-  const dragEnd = () => {
-    isDragging = false
-    enableTextSelection()
-    document.removeEventListener('mousemove', dragMove)
-    document.removeEventListener('mousedown', dragEnd)
-  }
-  dragButton.addEventListener('mousedown', dragStart)
-
-  // Create minimize/expand button
-  const toggleButton = document.createElement('button')
-  toggleButton.id = 'skoop-expand-minimize-button'
-  toggleButton.style.display = 'none'
-
-  // Toggle button functionality
-  let isMinimized = false
-  toggleButton.onclick = function () {
-    const resizer = document.getElementById('skoop-resizer-buttom')
-    if (isMinimized) {
-      resizer.style.display = 'block'
-      const extensionDimension = localStorage.getItem('skoopExtensionDimension')
-      if (extensionDimension) {
-        const { width, height } = JSON.parse(extensionDimension)
-        container.style.width = width + 'px'
-        container.style.height = height + 'px'
-      } else {
-        container.style.height = '98vh'
-      }
-    } else {
-      container.style.height = '44px'
-      resizer.style.display = 'none'
-    }
-    isMinimized = !isMinimized
-  }
-
-  container.appendChild(dragButton)
-  container.appendChild(toggleButton)
-  container.appendChild(iframe)
-
-  const minWidth = 355
-  const maxWidth = 355
-  const minHeight = 550
-  const resizer = document.createElement('div')
-
-  resizer.id = 'skoop-resizer-buttom'
-  resizer.style.width = '20px'
-  resizer.style.height = '20px'
-  resizer.style.position = 'absolute'
-  resizer.style.bottom = '3px'
-  resizer.style.right = '3px'
-  resizer.style.cursor = 'se-resize'
-  resizer.style.backgroundImage =
-    'url("' + chrome.runtime.getURL('/icons/resize.png') + '")'
-  resizer.style.backgroundSize = 'cover'
-  resizer.style.backgroundRepeat = 'no-repeat'
-  resizer.style.backgroundPosition = 'center'
-  resizer.style.transform = 'rotate(-90deg)'
-
-  resizer.addEventListener('pointerdown', initResize, false)
-
-  function disableTextSelection() {
-    document.body.style.userSelect = 'none' // for most browsers
-    document.body.style.webkitUserSelect = 'none' // for Safari and Chrome
-    document.body.style.MozUserSelect = 'none' // for Firefox
-    document.body.style.msUserSelect = 'none' // for IE and Edge
-  }
-
-  function enableTextSelection() {
-    document.body.style.userSelect = ''
-    document.body.style.webkitUserSelect = ''
-    document.body.style.MozUserSelect = ''
-    document.body.style.msUserSelect = ''
-  }
-
-  function initResize(e) {
-    disableTextSelection()
-    // Set pointer capture to ensure all pointer events go to the resizer
-    resizer.setPointerCapture(e.pointerId)
-    window.addEventListener('pointermove', resize, false)
-    window.addEventListener('pointerup', stopResize, false)
-    window.addEventListener('pointerleave', stopResize, false) // Handle pointer leaving the window
-  }
-
-  function resize(e) {
-    const dimensions = container.getBoundingClientRect()
-    let newWidth = e.clientX - dimensions.left
-    let newHeight = e.clientY - dimensions.top
-    const maxHeight = window.innerHeight * 0.98
-    // Constrain newWidth and newHeight within min/max bounds
-    newWidth = Math.max(minWidth, Math.min(newWidth, maxWidth))
-    newHeight = Math.max(minHeight, Math.min(newHeight, maxHeight))
-
-    // update the container's size
-    localStorage.setItem(
-      'skoopExtensionDimension',
-      JSON.stringify({ width: newWidth, height: newHeight })
-    )
-
-    container.style.width = newWidth + 'px'
-    container.style.height = newHeight + 'px'
-    if (!resizer.contains(e.target)) {
-      stopResize(e)
-    }
-  }
-
-  function stopResize(e) {
-    enableTextSelection()
-    // Release pointer capture
-    if (resizer.releasePointerCapture) {
-      resizer.releasePointerCapture(e.pointerId)
-    }
-    window.removeEventListener('pointermove', resize, false)
-    window.removeEventListener('pointerup', stopResize, false)
-    window.removeEventListener('pointerleave', stopResize, false) // Clean up this listener as well
-  }
-  // Append the container to the body of the document
-  container.appendChild(resizer)
-  document.body.appendChild(container)
-}
+injectIframe()
 
 function requestCameraAndMicrophonePermissions() {
   // Use the modern navigator.mediaDevices.getUserMedia if available
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices
-      .getUserMedia({ audio: false, video: { width: 1280, height: 720 } })
+      .getUserMedia({ audio: true, video: true })
       .then((stream) => {
-        console.info('Camera and microphone access granted')
+        console.info('Camera access granted')
 
-        // Handle the stream here (e.g., display it in a video element)
+        // Perform any checks or actions you need here
+
+        // Close the stream by stopping all tracks
+        stream.getTracks().forEach((track) => track.stop())
+        console.info('Camera stream closed')
       })
       .catch((err) => {
         console.error(`The following error occurred: ${err.name}`)
@@ -221,13 +23,14 @@ function requestCameraAndMicrophonePermissions() {
   }
 }
 
+// Call the function to request permissions when the page loads
+
 // Function to create a button on the webpage
 function createButton() {
   const buttonId = 'skoop-extension-button'
-  const existingButton = document.getElementById(buttonId)
-
+  const extensionButton = document.getElementById(buttonId)
   // If the button already exists, do nothing
-  if (existingButton) {
+  if (extensionButton) {
     return
   }
 
@@ -241,8 +44,7 @@ function createButton() {
   buttonContainer.style.width = '40px'
   buttonContainer.style.height = '40px'
   buttonContainer.style.borderRadius = '50%'
-  buttonContainer.style.backgroundImage =
-    'url("' + chrome.runtime.getURL('/icons/icon.png') + '")'
+  buttonContainer.style.backgroundImage = 'url("' + chrome.runtime.getURL('/icons/icon.png') + '")'
   buttonContainer.style.backgroundSize = 'cover'
   buttonContainer.style.backgroundPosition = 'center'
   buttonContainer.style.backgroundRepeat = 'no-repeat'
@@ -300,354 +102,42 @@ function getHostUrl() {
   const hostUrl = new URL(window.location.href).hostname
   return hostUrl
 }
-
-function resizeIframe(newWidth, newHeight) {
+let skoopExtensionContainer
+function resizeIframe(newWidth, newHeight, display = 'block') {
   // Select the iframe element by ID
-  const skoopExtensionContainer = document.getElementById(
-    'skoop-extension-container'
-  )
+  skoopExtensionContainer = document.getElementById('skoop-extension-container')
 
   // Check if the element exists
   if (skoopExtensionContainer) {
     // Set the new width and height
-    skoopExtensionContainer.style.width = newWidth
-    skoopExtensionContainer.style.height = newHeight
-    skoopExtensionContainer.style.top = '66px'
-    if (newWidth == '450px') {
-      skoopExtensionContainer.style.borderRadius = '0px'
-    }
+    skoopExtensionContainer.style.width = newWidth + 'px'
+    skoopExtensionContainer.style.minWidth = newWidth + 'px'
+
+    skoopExtensionContainer.style.height = newHeight + 'px'
+    skoopExtensionContainer.style.display = display
   } else {
     console.error('Iframe with id "skoop-extension-iframe" not found.')
   }
 }
 
-function createWebcamContainer(title, height, width) {
-  const container = document.createElement('div')
-  container.id = 'skoop-webcam-container'
-  container.style.position = 'fixed'
-  container.style.top = '50%'
-  container.style.left = '50%'
-  container.style.transform = 'translate(-50%, -50%)'
-  container.style.zIndex = '11000'
-  container.style.display = 'none'
-  container.style.height = height
-  container.style.width = width
-  container.style.borderRadius = '10px'
-  container.style.boxShadow = '0px 4px 6px rgba(0, 0, 0, 0.1)'
-  var overlay = document.createElement('div')
-
-  // Style the overlay
-  overlay.style.position = 'absolute'
-  overlay.style.top = '0'
-  overlay.style.left = '0'
-  overlay.style.width = '100%'
-  overlay.style.height = '100%'
-  overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)' // Black color with opacity
-  overlay.style.zIndex = '10'
-  overlay.style.display = 'none'
-  overlay.style.borderRadius = '6px'
-  container.showOverlay = () => {
-    overlay.style.display = 'block'
+function attachScreenRecordingContainer(height, width) {
+  // Check if the webcam container exists
+  if (skoopVideoContainer) {
+    skoopVideoContainer.reinitialize()
+  } else {
+    skoopVideoContainer = createWebcamContainer(height, width)
+    // The container does not exist, create it
   }
-  container.hideOverlay = () => {
-    overlay.style.display = 'none'
-  }
-  container.appendChild(overlay)
-  const timerDisplay = document.createElement('span')
-  timerDisplay.style.position = 'absolute'
-  timerDisplay.style.top = '10px'
-  timerDisplay.style.right = '10px'
-  timerDisplay.innerText = '00:00'
-  timerDisplay.style.fontSize = '24px'
-  timerDisplay.style.fontWeight = 'bold'
-  timerDisplay.style.color = 'white'
-  container.appendChild(timerDisplay)
+  skoopVideoContainer.show()
+  // Check if the webcam container is not already in the current document's body
+  if (document.body.contains(skoopVideoContainer)) {
+    // The webcam container is already in place, no need to re-attach
 
-  const countDownTimer = document.createElement('div')
-  countDownTimer.style.position = 'absolute'
-  countDownTimer.style.top = '50%'
-  countDownTimer.style.zIndex = '20'
-  countDownTimer.style.left = '50%'
-  countDownTimer.style.transform = 'translate(-50%, -50%)'
-  countDownTimer.style.fontSize = '125px'
-  countDownTimer.style.fontWeight = 'bold'
-  countDownTimer.style.color = 'white'
-  container.appendChild(countDownTimer)
-
-  const loaderBar = document.createElement('div')
-  loaderBar.id = 'loader-bar'
-  loaderBar.style.position = 'absolute'
-  loaderBar.style.bottom = '96px'
-  loaderBar.style.width = '0%'
-  loaderBar.style.height = '5px'
-  loaderBar.style.backgroundColor = 'green'
-  loaderBar.style.zIndex = '10001'
-  container.appendChild(loaderBar)
-
-  // Drag functionality
-  let isDragging = false
-  let dragStartX, dragStartY
-
-  const dragStart = (e) => {
-    isDragging = true
-    dragStartX = e.clientX - container.offsetLeft
-    dragStartY = e.clientY - container.offsetTop
-    document.addEventListener('mousemove', dragMove)
-    document.addEventListener('mouseup', dragEnd)
+    return
   }
 
-  const dragMove = (e) => {
-    if (isDragging) {
-      container.style.left = `${e.clientX - dragStartX}px`
-      container.style.top = `${e.clientY - dragStartY}px`
-    }
-  }
-
-  const dragEnd = () => {
-    isDragging = false
-    document.removeEventListener('mousemove', dragMove)
-    document.removeEventListener('mousedown', dragEnd)
-  }
-
-  container.addEventListener('mousedown', dragStart)
-  let pausedSeconds = 0
-  let totalDuration = 120 // total duration in seconds
-  let timerInterval = null
-
-  container.pauseTimer = () => {
-    if (timerInterval !== null) {
-      clearInterval(timerInterval)
-      timerInterval = null
-      pausedSeconds = seconds
-    }
-  }
-
-  container.resumeFromPause = () => {
-    if (timerInterval === null) {
-      timerInterval = setInterval(updateTimer, 1000)
-      seconds = pausedSeconds
-      pausedSeconds = 0
-    }
-  }
-
-  const updateTimer = () => {
-    seconds++
-    const minutes = Math.floor((seconds % 3600) / 60)
-    const secs = seconds % 60
-    timerDisplay.innerText = `${String(minutes).padStart(2, '0')}:${String(
-      secs
-    ).padStart(2, '0')}`
-
-    const elapsedSeconds = seconds - pausedSeconds
-    const widthPercent = (elapsedSeconds / totalDuration) * 100
-    loaderBar.style.width = `${widthPercent}%`
-
-    // Change color based on time elapsed
-    if (elapsedSeconds <= 45) {
-      loaderBar.style.backgroundColor = 'green'
-    } else if (elapsedSeconds <= 60) {
-      loaderBar.style.backgroundColor = 'yellow'
-    } else if (elapsedSeconds <= totalDuration) {
-      loaderBar.style.backgroundColor = 'red'
-    }
-  }
-
-  container.startTimer = () => {
-    if (timerInterval !== null) {
-      clearInterval(timerInterval) // Clear existing interval if any
-    }
-    seconds = 0 // Reset seconds on start
-    timerInterval = setInterval(updateTimer, 1000)
-  }
-
-  container.stopTimer = () => {
-    if (timerInterval !== null) {
-      clearInterval(timerInterval)
-      timerInterval = null // Clear interval reference after stopping
-    }
-    timerDisplay.innerText = '00:00'
-    pausedSeconds = 0
-  }
-
-  container.resetTimer = () => {
-    seconds = 0
-    loaderBar.style.width = '0px'
-    loaderBar.style.backgroundColor = 'green'
-    pausedSeconds = 0
-  }
-
-  let countdownInterval
-
-  container.showCountdown = () => {
-    let countdown = 3
-    countDownTimer.style.display = 'block'
-    overlay.style.display = 'block'
-    countDownTimer.innerText = countdown
-    countdownInterval = setInterval(() => {
-      countdown--
-      countDownTimer.innerText = countdown
-
-      if (countdown <= 0) {
-        clearInterval(countdownInterval)
-        countDownTimer.style.display = 'none'
-        overlay.style.display = 'none'
-        timerDisplay.innerText = '00:00'
-        container.startTimer()
-      }
-    }, 1000)
-  }
-  container.destroy = function () {
-    // Remove the container from the DOM
-    container.parentNode.removeChild(container)
-
-    // Perform additional cleanup tasks
-    clearInterval(container.timerInterval) // Clear timer interval
-    container.removeEventListener('mousedown', dragStart) // Remove drag event listener
-
-    // Clear any other intervals or event listeners
-    clearInterval(countdownInterval) // Clear countdown interval
-    document.removeEventListener('mousemove', dragMove) // Remove drag move event listener
-    document.removeEventListener('mouseup', dragEnd) // Remove drag end event listener
-
-    // Reset any variables or state related to the container
-    isRecording = false
-    isRestarting = false
-    recordedChunks = []
-  }
-  // Store the timer interval ID in the container for later reference
-  container.timerInterval = timerInterval
-
-  var controlBar = document.createElement('div')
-  controlBar.style.position = 'fixed'
-  controlBar.style.bottom = '0px'
-  controlBar.style.backgroundColor = '#2D68C4'
-  controlBar.style.borderBottomLeftRadius = '10px'
-  controlBar.style.borderBottomRightRadius = '10px'
-  controlBar.style.display = 'flex'
-  controlBar.style.justifyContent = 'center'
-  controlBar.style.alignItems = 'center'
-  controlBar.style.width = '100%'
-  controlBar.style.height = '98px'
-
-  // Create the power button
-  var restartButton = document.createElement('button')
-  restartButton.id = 'video-restart-button'
-  restartButton.style.backgroundColor = 'white'
-  restartButton.style.border = 'none'
-  restartButton.style.cursor = 'pointer'
-  restartButton.style.borderRadius = '50%'
-  restartButton.style.marginRight = '8px'
-  restartButton.onclick = function () {
-    // Add your power button functionality here
-  }
-  restartButton.style.display = 'flex'
-  restartButton.style.justifyContent = 'center'
-  restartButton.style.alignItems = 'center'
-  restartButton.style.width = '40px'
-  restartButton.style.height = '40px'
-
-  var svgNS = 'http://www.w3.org/2000/svg'
-  var svg = document.createElementNS(svgNS, 'svg')
-  svg.setAttribute('width', '20')
-  svg.setAttribute('height', '20')
-  svg.setAttribute('viewBox', '0 0 20 20')
-  var path = document.createElementNS(svgNS, 'path')
-  path.setAttribute(
-    'd',
-    'M9.9998 0.799885C9.8938 0.798385 9.78854 0.81797 9.69017 0.857501C9.5918 0.897032 9.50226 0.955721 9.42676 1.03016C9.35127 1.10459 9.29132 1.19329 9.2504 1.2911C9.20948 1.3889 9.18841 1.49386 9.18841 1.59988C9.18841 1.7059 9.20948 1.81087 9.2504 1.90867C9.29132 2.00648 9.35127 2.09518 9.42676 2.16961C9.50226 2.24405 9.5918 2.30274 9.69017 2.34227C9.78854 2.3818 9.8938 2.40138 9.9998 2.39988C14.2067 2.39988 17.5998 5.79304 17.5998 9.99988C17.5998 14.2067 14.2067 17.5999 9.9998 17.5999C5.79295 17.5999 2.3998 14.2067 2.3998 9.99988C2.3998 7.80957 3.32301 5.84313 4.7998 4.4577V5.99989C4.79831 6.10589 4.81789 6.21114 4.85742 6.30952C4.89695 6.40789 4.95564 6.49743 5.03008 6.57293C5.10451 6.64842 5.19321 6.70837 5.29102 6.74929C5.38882 6.79021 5.49378 6.81128 5.5998 6.81128C5.70582 6.81128 5.81079 6.79021 5.90859 6.74929C6.0064 6.70837 6.0951 6.64842 6.16953 6.57293C6.24397 6.49743 6.30266 6.40789 6.34219 6.30952C6.38172 6.21114 6.4013 6.10589 6.3998 5.99989V1.59988H1.9998C1.8938 1.59839 1.78854 1.61797 1.69017 1.6575C1.5918 1.69703 1.50226 1.75572 1.42676 1.83016C1.35127 1.90459 1.29132 1.99329 1.2504 2.0911C1.20948 2.1889 1.18841 2.29386 1.18841 2.39988C1.18841 2.5059 1.20948 2.61087 1.2504 2.70867C1.29132 2.80648 1.35127 2.89518 1.42676 2.96961C1.50226 3.04405 1.5918 3.10274 1.69017 3.14227C1.78854 3.1818 1.8938 3.20138 1.9998 3.19988H3.80996C1.96249 4.88368 0.799805 7.30882 0.799805 9.99988C0.799805 15.0714 4.92825 19.1999 9.9998 19.1999C15.0714 19.1999 19.1998 15.0714 19.1998 9.99988C19.1998 4.92833 15.0714 0.799885 9.9998 0.799885Z'
-  )
-  path.setAttribute('fill', 'currentColor')
-
-  svg.appendChild(path)
-  restartButton.appendChild(svg)
-
-  const stopButton = document.createElement('button')
-  stopButton.id = 'video-stop-button'
-  stopButton.style.borderRadius = '50%'
-  stopButton.style.backgroundColor = 'white'
-  stopButton.style.border = 'none'
-  stopButton.style.color = 'red'
-  stopButton.style.fontSize = '24px'
-  stopButton.style.cursor = 'pointer'
-  stopButton.onclick = function () {
-    // Add your record button functionality here
-  }
-  stopButton.style.display = 'flex'
-  stopButton.style.alignItems = 'center'
-  stopButton.style.justifyContent = 'center'
-  stopButton.style.width = '60px'
-  stopButton.style.height = '60px'
-  const svgHTML = `
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="20" height="20" rx="10" fill="#E31A1A"/>
-        </svg>`
-
-  stopButton.innerHTML = svgHTML
-  // Create the pause button
-  var pauseButton = document.createElement('button')
-  pauseButton.id = 'video-pause-button'
-  pauseButton.style.backgroundColor = 'white'
-  pauseButton.style.display = 'flex'
-  pauseButton.style.alignItems = 'center'
-  pauseButton.style.justifyContent = 'center'
-  pauseButton.style.border = 'none'
-  pauseButton.style.borderRadius = '50%'
-  pauseButton.style.cursor = 'pointer'
-  pauseButton.onclick = function () {
-    // Add your pause button functionality here
-  }
-  pauseButton.style.width = '40px'
-  pauseButton.style.height = '40px'
-  pauseButton.style.marginLeft = '8px'
-  var svg = document.createElementNS(svgNS, 'svg')
-  svg.id = 'playing'
-  svg.setAttribute('width', '10')
-  svg.setAttribute('height', '15')
-  svg.setAttribute('viewBox', '0 0 10 12')
-  svg.setAttribute('fill', 'none')
-  svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
-
-  // Create the first rectangle
-  var rect1 = document.createElementNS(svgNS, 'rect')
-  rect1.setAttribute('width', '3')
-  rect1.setAttribute('height', '25')
-  rect1.setAttribute('fill', '#E31A1A')
-
-  // Create the second rectangle
-  var rect2 = document.createElementNS(svgNS, 'rect')
-  rect2.setAttribute('width', '3')
-  rect2.setAttribute('height', '25')
-  rect2.setAttribute('transform', 'translate(7)')
-  rect2.setAttribute('fill', '#E31A1A')
-
-  // Append the rectangles to the SVG
-  svg.appendChild(rect1)
-  svg.appendChild(rect2)
-  pauseButton.appendChild(svg)
-
-  var playSVG = document.createElementNS(svgNS, 'svg')
-  playSVG.id = 'paused'
-  playSVG.style.display = 'none'
-  playSVG.setAttribute('width', '10')
-  playSVG.setAttribute('height', '20')
-  playSVG.setAttribute('viewBox', '0 0 10 12')
-  playSVG.setAttribute('fill', 'none')
-  playSVG.setAttribute('xmlns', svgNS)
-
-  var playPath = document.createElementNS(svgNS, 'path')
-  playPath.setAttribute('d', 'M0 0L10 6L0 12Z') // Triangle pointing right
-  playPath.setAttribute('fill', '#E31A1A')
-  playSVG.appendChild(playPath)
-  pauseButton.appendChild(playSVG)
-
-  controlBar.appendChild(restartButton)
-  controlBar.appendChild(stopButton)
-  controlBar.appendChild(pauseButton)
-  container.appendChild(controlBar)
-  document.body.appendChild(container)
-  return container
+  document.body.appendChild(skoopVideoContainer)
 }
-
 // Function to stop the webcam
 
 let mediaRecorder
@@ -656,336 +146,525 @@ let skoopVideoContainer
 let isRecording = false
 let isRestarting = false
 let stopTimeoutId
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'collectClasses') {
-    const classes = collectClasses()
-    const url = getHostUrl()
-    sendResponse({ classes: classes, url })
+let isTimerPaused = false
+function stopStream() {
+  skoopVideoContainer.stopTimer()
+  skoopVideoContainer.resetTimer()
+  mediaRecorder.stop()
+  if (!isRestarting) {
+    skoopVideoContainer.style.display = 'none'
   }
-
-  if (request.action === 'resizeIframe') {
-    resizeIframe(request.width, request.height)
-    sendResponse({ result: 'Iframe resized' })
-  }
-  if (request.action === 'startRecording') {
-    skoopVideoContainer = document.getElementById('skoop-webcam-container')
-    if (!skoopVideoContainer) {
-      skoopVideoContainer = createWebcamContainer(
-        'title',
-        request.height,
-        request.width
-      )
+  clearTimeout(stopTimeoutId)
+  isRecording = false
+}
+function saveRecordingChunk(blob) {
+  const reader = new FileReader()
+  reader.onloadend = function () {
+    // Convert the ArrayBuffer to a Uint8Array
+    const uInt8Array = new Uint8Array(reader.result)
+    let binaryString = ''
+    for (let i = 0; i < uInt8Array.length; i++) {
+      binaryString += String.fromCharCode(uInt8Array[i])
     }
 
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices
-        .getUserMedia({
-          video: {
-            width: { ideal: request.width },
-            height: { ideal: request.height },
-          },
-          audio: true,
+    const base64data = btoa(binaryString)
+    chrome.storage.local.get({ recordedChunks: [] }, function (result) {
+      // Append the Base64 string to the recordedChunks array
+      const newChunks = [...result.recordedChunks, base64data]
+      // Save the updated array back to storage
+      chrome.storage.local.set({ recordedChunks: newChunks }, function () {
+        // console.log('Recording chunk saved', newChunks.length, newChunks)
+      })
+    })
+  }
+  // Start reading the Blob as an ArrayBuffer
+  reader.readAsArrayBuffer(blob)
+}
+
+// This function retrieves all recording chunks from Chrome storage and compiles them into a Blob
+function compileRecordingChunks(callback) {
+  chrome.storage.local.get('recordedChunks', function (result) {
+    if (result.recordedChunks && result.recordedChunks.length > 0) {
+      // Convert Base64 strings back to ArrayBuffers
+      const arrayBuffers = result.recordedChunks.map((base64) => {
+        const binary_string = atob(base64)
+        const len = binary_string.length
+        const bytes = new Uint8Array(len)
+        for (let i = 0; i < len; i++) {
+          bytes[i] = binary_string.charCodeAt(i)
+        }
+        return bytes.buffer
+      })
+      // Create a Blob from the ArrayBuffers
+      const blob = new Blob(arrayBuffers, { type: 'video/webm' })
+      const blobUrl = URL.createObjectURL(blob)
+      callback(blob, blobUrl)
+      // Optionally clear the stored chunks after compiling them
+      chrome.storage.local.remove('recordedChunks')
+    } else {
+      console.error('No recorded chunks found or empty recording.')
+    }
+  })
+}
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  try {
+    if (request.action === 'collectClasses') {
+      const classes = collectClasses()
+      const url = getHostUrl()
+      sendResponse({ classes: classes, url })
+    }
+    if (request.action === 'showScreenRecordingTimer') {
+      showScreenRecordingTimer()
+      applySavedScaleState()
+    }
+    if (request.action === 'resizeIframe') {
+      skoopExtensionContainer = document.getElementById('skoop-extension-container')
+      if (request.reset) {
+        skoopExtensionContainer.style.setProperty('min-width', '355px', 'important')
+        skoopExtensionContainer.style.setProperty('width', '355px', 'important')
+      } else {
+        resizeIframe(request.width, request.height)
+      }
+      if (request.hideResizer) {
+        const resizer = document.getElementById('skoop-resizer-buttom')
+        if (resizer) {
+          resizer.style.display = 'none'
+        }
+        const scaleButton = document.getElementById('container-scale-down')
+        if (scaleButton) {
+          scaleButton.style.display = 'block'
+          applySavedScaleState()
+        }
+      }
+      if (request.showResizer) {
+        const resizer = document.getElementById('skoop-resizer-buttom')
+        if (resizer) {
+          resizer.style.display = 'block'
+        }
+        const scaleButton = document.getElementById('container-scale-down')
+        if (scaleButton) {
+          scaleButton.style.display = 'none'
+        }
+        const container = document.getElementById('skoop-extension-container')
+        if (container) {
+          container.style.transform = 'scale(1)'
+        }
+      }
+      sendResponse({ result: 'Iframe resized' })
+    }
+
+    if (request.action === 'screenRecordingStopped') {
+      const resizer = document.getElementById('skoop-resizer-buttom')
+      if (resizer) {
+        resizer.style.display = 'block'
+      }
+      const scaleButton = document.getElementById('container-scale-down')
+      if (scaleButton) {
+        scaleButton.style.display = 'none'
+      }
+      const container = document.getElementById('skoop-extension-container')
+      if (container) {
+        container.style.transform = 'scale(1)'
+      }
+    }
+
+    if (request.action === 'startRecording' && !request.isScreenRecording) {
+      const getStoredDeviceLabels = (callback) => {
+        chrome.storage.sync.get(['selectedVideoLabel', 'selectedAudioLabel'], (result) => {
+          callback(result.selectedVideoLabel, result.selectedAudioLabel)
         })
-        .then((stream) => {
-          function startRecording() {
-            mediaRecorder = new MediaRecorder(stream)
-            mediaRecorder.ondataavailable = (event) => {
-              if (event.data.size > 0) recordedChunks.push(event.data)
+      }
+
+      skoopVideoContainer = document.getElementById('skoop-webcam-container')
+      if (!skoopVideoContainer) {
+        skoopVideoContainer = createWebcamContainer(request.height, request.width, false)
+      }
+      requestCameraAndMicrophonePermissions()
+      getStoredDeviceLabels((storedVideoLabel, storedAudioLabel) => {
+        navigator.mediaDevices
+          .enumerateDevices()
+          .then((devices) => {
+            const videoDevices = devices.filter((device) => device.kind === 'videoinput')
+            const audioDevices = devices.filter((device) => device.kind === 'audioinput')
+
+            let videoDevice
+            if (storedVideoLabel) {
+              videoDevice = videoDevices.find((device) => device.label === storedVideoLabel)
             }
-            mediaRecorder.onstop = () => {
-              const blob = new Blob(recordedChunks, { type: 'video/webm' })
-              const blobUrl = URL.createObjectURL(blob)
-              recordedChunks = []
-              isRecording = false
-              if (!isRestarting) {
-                const videos = skoopVideoContainer.getElementsByTagName('video')
+            if (!videoDevice && videoDevices.length > 0) {
+              videoDevice = videoDevices[0] // Select the first video device if no stored label matches
+            }
 
-                const video = videos[videos.length - 1] // Last video element
+            let audioDevice
+            if (storedAudioLabel) {
+              audioDevice = audioDevices.find((device) => device.label === storedAudioLabel)
+            }
+            if (!audioDevice && audioDevices.length > 0) {
+              audioDevice = audioDevices[0] // Select the first audio device if no stored label matches
+            }
 
-                if (video && video?.srcObject) {
-                  video.srcObject.getTracks().forEach((track) => track.stop())
-                  skoopVideoContainer.removeChild(video)
-                  skoopVideoContainer.destroy()
-                  skoopVideoContainer = null
-                } else {
-                  console.error(
-                    'The last video element is undefined, or srcObject is null.'
-                  )
+            let videoConstraints = {
+              width: { ideal: request.width },
+              height: { ideal: request.height },
+            }
+            if (videoDevice && videoDevice.deviceId != '') {
+              videoConstraints.deviceId = { exact: videoDevice.deviceId }
+            }
+
+            let audioConstraints = {}
+            if (audioDevice && audioDevice.deviceId != '') {
+              audioConstraints.deviceId = { exact: audioDevice.deviceId }
+            } else {
+              audioConstraints = true // Use the default audio device
+            }
+            return navigator.mediaDevices.getUserMedia({
+              video: videoConstraints,
+              audio: audioConstraints,
+            })
+          })
+          .then((stream) => {
+            function startRecording() {
+              mediaRecorder = new MediaRecorder(stream)
+              mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) recordedChunks.push(event.data)
+              }
+              mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' })
+                const blobUrl = URL.createObjectURL(blob)
+                recordedChunks = []
+                isRecording = false
+                if (!isRestarting) {
+                  const videos = skoopVideoContainer.getElementsByTagName('video')
+
+                  const video = videos[videos.length - 1] // Last video element
+
+                  if (stream) {
+                    stream.getTracks().forEach((track) => track.stop())
+                  }
+                  if (video && video?.srcObject) {
+                    video.srcObject.getTracks().forEach((track) => track.stop())
+                    skoopVideoContainer.removeChild(video)
+                    skoopVideoContainer.destroy()
+                    skoopVideoContainer = null
+                  } else {
+                    console.error('The last video element is undefined, or srcObject is null.')
+                  }
+
+                  sendResponse({ videoBlob: blob, url: blobUrl })
                 }
-
-                sendResponse({ videoBlob: blob, url: blobUrl })
               }
+              isRecording = true
+              mediaRecorder.start()
+              stopTimeoutId = setTimeout(() => {
+                if (isRecording) {
+                  stopStream()
+                }
+              }, 120000)
             }
-            isRecording = true
-            mediaRecorder.start()
-            stopTimeoutId = setTimeout(() => {
-              if (isRecording) {
-                stopStream()
-              }
-            }, 120000)
-          }
-          const video = document.createElement('video')
-          video.id = 'skoop-video-recording'
-          video.srcObject = stream
-          video.autoplay = true
-          video.muted = true
-          video.style.height = request.height + 'px'
-          video.style.width = request.width + 'px'
-          video.style.zIndex = '9998'
-          video.style.borderTopLeftRadius = '10px'
-          video.style.borderTopRightRadius = '10px'
-          video.className = 'skoop-video-recorder'
-          skoopVideoContainer.style.height = request.height + 98 + 'px'
-          skoopVideoContainer.style.width = request.width + 'px'
-          skoopVideoContainer.appendChild(video)
-          skoopVideoContainer.style
+            const video = document.createElement('video')
+            video.id = 'skoop-video-recording'
+            video.srcObject = stream
+            video.autoplay = true
+            video.muted = true
+            video.style.height = request.height + 'px'
+            // video.style.width = request.width + 'px'
+            video.style.zIndex = '9998'
+            video.style.borderTopLeftRadius = '10px'
+            video.style.borderTopRightRadius = '10px'
+            video.className = 'skoop-video-recorder'
+            skoopVideoContainer.style.height = request.height + 98 + 'px'
+            skoopVideoContainer.style.backgroundColor = 'black'
+            // skoopVideoContainer.style.width = request.width + 'px'
+            skoopVideoContainer.appendChild(video)
+            skoopVideoContainer.style
 
-          skoopVideoContainer.showCountdown()
-
-          function stopStream() {
-            skoopVideoContainer.stopTimer()
-            skoopVideoContainer.resetTimer()
-            mediaRecorder.stop()
-            if (!isRestarting) {
-              skoopVideoContainer.style.display = 'none'
-            }
-            clearTimeout(stopTimeoutId)
-
-            isRecording = false
-          }
-          function restartStream() {
-            recordedChunks = []
             skoopVideoContainer.showCountdown()
 
-            isRestarting = true
-            stopStream()
+            function stopStream() {
+              skoopVideoContainer.stopTimer()
+              skoopVideoContainer.resetTimer()
+              mediaRecorder.stop()
+              if (!isRestarting) {
+                skoopVideoContainer.style.display = 'none'
+              }
+              clearTimeout(stopTimeoutId)
+
+              isRecording = false
+            }
+            function restartStream() {
+              recordedChunks = []
+              skoopVideoContainer.showCountdown()
+
+              isRestarting = true
+              stopStream()
+              setTimeout(() => {
+                startRecording()
+                isRestarting = false
+              }, 3000)
+            }
+            const playingIcon = document.getElementById('playing')
+            const pausedIcon = document.getElementById('paused')
+            function togglePauseResumeMediaRecorder() {
+              // Check if the mediaRecorder is defined and has a state
+
+              if (mediaRecorder && mediaRecorder.state) {
+                // If the mediaRecorder is recording, pause it
+                if (mediaRecorder.state === 'recording') {
+                  mediaRecorder.pause()
+                  skoopVideoContainer.pauseTimer()
+                  playingIcon.style.display = 'none'
+                  pausedIcon.style.display = 'block'
+                }
+                // If the mediaRecorder is paused, resume it
+                else if (mediaRecorder.state === 'paused') {
+                  mediaRecorder.resume()
+                  skoopVideoContainer.resumeFromPause()
+                  pausedIcon.style.display = 'none'
+                  playingIcon.style.display = 'block'
+                } else {
+                  console.error('MediaRecorder is in an unexpected state:', mediaRecorder.state)
+                }
+              } else {
+                console.error('MediaRecorder is not initialized or does not exist')
+              }
+            }
+
             setTimeout(() => {
               startRecording()
-              isRestarting = false
             }, 3000)
-          }
-          const playingIcon = document.getElementById('playing')
-          const pausedIcon = document.getElementById('paused')
-          function togglePauseResumeMediaRecorder() {
-            // Check if the mediaRecorder is defined and has a state
 
-            if (mediaRecorder && mediaRecorder.state) {
-              // If the mediaRecorder is recording, pause it
-              if (mediaRecorder.state === 'recording') {
-                mediaRecorder.pause()
-                skoopVideoContainer.pauseTimer()
-                playingIcon.style.display = 'none'
-                pausedIcon.style.display = 'block'
-              }
-              // If the mediaRecorder is paused, resume it
-              else if (mediaRecorder.state === 'paused') {
-                mediaRecorder.resume()
-                skoopVideoContainer.resumeFromPause()
-                pausedIcon.style.display = 'none'
-                playingIcon.style.display = 'block'
-              } else {
-                console.error(
-                  'MediaRecorder is in an unexpected state:',
-                  mediaRecorder.state
-                )
-              }
-            } else {
-              console.error(
-                'MediaRecorder is not initialized or does not exist'
-              )
+            skoopVideoContainer.style.display = 'block'
+
+            const stopButton = document.getElementById('video-stop-button')
+            if (stopButton) {
+              stopButton.addEventListener('click', stopStream)
             }
-          }
 
-          setTimeout(() => {
-            startRecording()
-          }, 3000)
+            const pauseButton = document.getElementById('video-pause-button')
+            if (pauseButton) {
+              pauseButton.addEventListener('click', togglePauseResumeMediaRecorder)
+            }
 
-          skoopVideoContainer.style.display = 'block'
+            const restartButton = document.getElementById('video-restart-button')
+            if (restartButton) {
+              restartButton.addEventListener('click', restartStream)
+            }
+          })
+          .catch((err) => {
+            console.error(`[Creating web cam in website]: ${err}`)
+            sendResponse({ error: err })
+            if (err.message.includes('in use') || err.message.includes('hardware error') || err.name === 'NotAllowedError') {
+              alert('Could not access your camera. It appears to be in use by another application. Please close the other application and try again.')
+            }
+          })
+      })
+      return true
+    }
+    if (request.action === 'stopRecording') {
+      const stopButton = document.getElementById('video-stop-button')
+      stopButton.click()
 
-          const stopButton = document.getElementById('video-stop-button')
-          if (stopButton) {
-            stopButton.addEventListener('click', stopStream)
-          }
+      return true
+    }
+    if (request.action === 'showWebcam') {
+      // Get the container by ID
 
-          const pauseButton = document.getElementById('video-pause-button')
-          if (pauseButton) {
-            pauseButton.addEventListener(
-              'click',
-              togglePauseResumeMediaRecorder
-            )
-          }
+      const container = document.getElementById('skoop-extension-container')
 
-          const restartButton = document.getElementById('video-restart-button')
-          if (restartButton) {
-            restartButton.addEventListener('click', restartStream)
+      if (container) {
+        applySavedScaleState()
+        // Retrieve the position from Chrome storage
+        chrome.storage.sync.get('containerPosition', (data) => {
+          if (data.containerPosition) {
+            // Check if stored positions are not undefined
+            const { left, top } = data.containerPosition
+            if (left && top) {
+              // Set the position of the container
+              container.style.position = 'fixed' // Ensure it's positioned absolutely
+              container.style.left = left
+              container.style.top = top
+            }
+          } else {
+            // Optionally set a default position if nothing is stored
+            container.style.left = '14px' // Default left position
+            container.style.top = '13px' // Default top position
           }
         })
-        .catch((err) => {
-          console.error(`[Creating web cam in website]: ${err}`)
-          sendResponse({ error: err })
-          if (
-            err.message.includes('in use') ||
-            err.message.includes('hardware error') ||
-            err.name === 'NotAllowedError'
-          ) {
-            alert(
-              'Could not access your camera. It appears to be in use by another application. Please close the other application and try again.'
-            )
-          }
-        })
-    }
-    return true
-  }
-  if (request.action === 'stopRecording') {
-    const stopButton = document.getElementById('video-stop-button')
-    stopButton.click()
+        const resizer = document.getElementById('skoop-resizer-buttom')
+        if (resizer) {
+          resizer.style.display = 'none'
+        }
+        const scaleButton = document.getElementById('container-scale-down')
 
-    return true
-  }
+        if (scaleButton && request.captureCameraWithScreen) {
+          scaleButton.style.display = 'block'
+        }
+      } else {
+        console.error('Failed to find the container with ID "skoop-extension-container".')
+      }
 
-  if (request.action === 'restartRecording') {
-    const restartButton = document.getElementById('video-restart-button')
-    restartButton.click()
-
-    return true
-  }
-  if (request.action === 'showVideoPreview') {
-    return true
-  }
-
-  if (request.action === 'startPlayingVideo') {
-    let existingContainer = document.getElementById(
-      'skoop-helper-video-element'
-    )
-    let existingOverlay = document.getElementById('skoop-helper-video-overlay')
-    if (existingContainer) {
-      // Toggle visibility if container exists
-      existingContainer.remove()
-      existingOverlay.remove()
+      sendResponse({ message: 'Webcam container attached and displayed with updated timer' })
     }
 
-    // create the container
-    let container = document.createElement('div')
-    container.id = 'skoop-helper-video-element'
-    container.style.position = 'absolute'
-    container.style.top = '0'
-    container.style.left = '0'
-    container.style.width = '100%'
-    container.style.height = '100vh'
-    container.style.display = 'grid'
-    container.style.placeItems = 'center'
-    container.style.zIndex = '999999'
+    if (request.action === 'closeWebcam') {
+      // Check if the webcam container is not already in the current document's body
+      if (document.body.contains(skoopVideoContainer)) {
+        skoopVideoContainer.destroy()
+      }
+    }
+    if (request.action === 'stopRecording') {
+      const stopButton = document.getElementById('video-stop-button')
+      stopButton.click()
 
-    // create-overlay for container
-    let overlay = document.createElement('div')
-    overlay.id = 'skoop-helper-video-overlay'
-    overlay.style.position = 'fixed'
-    overlay.style.top = '0'
-    overlay.style.left = '0'
-    overlay.style.width = '100%'
-    overlay.style.height = '100%'
-    overlay.style.backgroundColor = 'rgba(42, 43, 57, 0.244)'
-    overlay.style.zIndex = '99999'
+      return true
+    }
 
-    // create the modal
-    let modal = document.createElement('div')
-    modal.id = 'skoop-helper-video-modal'
-    modal.style.position = 'relative'
-    modal.style.display = 'flex'
-    modal.style.justifyContent = 'center'
-    modal.style.alignItems = 'center'
+    if (request.action === 'restartRecording') {
+      const restartButton = document.getElementById('video-restart-button')
+      if (restartButton) {
+        restartButton.click()
+      }
+      skoopVideoContainer.updateTimerDisplay(0)
+      return true
+    }
+    if (request.action === 'showVideoPreview') {
+      return true
+    }
 
-    // create modal box
-    let modalBox = document.createElement('div')
-    modalBox.id = 'skoop-helper-video-modal-box'
-    modalBox.style.position = 'fixed'
-    modalBox.style.top = '50%'
-    modalBox.style.left = '50%'
-    modalBox.style.transform = 'translate(-50%, -50%)'
-    modalBox.style.width = request.width + 'px'
-    modalBox.style.height = '100%'
-    modalBox.style.display = 'flex'
-    modalBox.style.justifyContent = 'center'
-    modalBox.style.alignItems = 'center'
-    modalBox.style.flexDirection = 'column'
-    modalBox.style.borderRadius = '8px'
+    if (request.action === 'startPlayingVideo') {
+      let existingContainer = document.getElementById('skoop-helper-video-element')
+      let existingOverlay = document.getElementById('skoop-helper-video-overlay')
+      if (existingContainer) {
+        // Toggle visibility if container exists
+        existingContainer.remove()
+        existingOverlay.remove()
+      }
 
-    // button container
-    let buttonContainer = document.createElement('div')
-    buttonContainer.id = 'skoop-helper-video-button-container'
-    buttonContainer.style.position = 'absolute'
-    buttonContainer.style.top = '0'
-    buttonContainer.style.right = '0'
-    buttonContainer.style.display = 'flex'
-    buttonContainer.style.justifyContent = 'end'
-    buttonContainer.style.width = '100%'
-    buttonContainer.style.zIndex = '999999'
+      // create the container
+      let container = document.createElement('div')
+      container.id = 'skoop-helper-video-element'
+      container.style.position = 'absolute'
+      container.style.top = '0'
+      container.style.left = '0'
+      container.style.width = '100%'
+      container.style.height = '100vh'
+      container.style.display = 'grid'
+      container.style.placeItems = 'center'
+      container.style.zIndex = '999999'
 
-    // button
-    let button = document.createElement('button')
-    button.id = 'skoop-helper-video-close-button'
-    button.textContent = 'Close'
-    button.innerHTML = `<svg stroke="currentColor" fill="#ffffff" stroke-width="0" viewBox="0 0 512 512" class="text-light" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M405 136.798L375.202 107 256 226.202 136.798 107 107 136.798 226.202 256 107 375.202 136.798 405 256 285.798 375.202 405 405 375.202 285.798 256z"></path></svg>`
-    button.style.backgroundColor = 'transparent'
-    button.style.border = 'none'
-    button.style.cursor = 'pointer'
-    button.style.outline = 'none'
-    button.style.marginRight = '10px'
-    button.style.paddingTop = '5px'
+      // create-overlay for container
+      let overlay = document.createElement('div')
+      overlay.id = 'skoop-helper-video-overlay'
+      overlay.style.position = 'fixed'
+      overlay.style.top = '0'
+      overlay.style.left = '0'
+      overlay.style.width = '100%'
+      overlay.style.height = '100%'
+      overlay.style.backgroundColor = 'rgba(42, 43, 57, 0.244)'
+      overlay.style.zIndex = '99999'
 
-    button.addEventListener('click', () => {
-      container.remove()
-      overlay.remove()
-    })
+      // create the modal
+      let modal = document.createElement('div')
+      modal.id = 'skoop-helper-video-modal'
+      modal.style.position = 'relative'
+      modal.style.display = 'flex'
+      modal.style.justifyContent = 'center'
+      modal.style.alignItems = 'center'
 
-    // modal content
-    let modalContent = document.createElement('div')
-    modalContent.id = 'skoop-helper-video-modal-content'
-    modalContent.style.position = 'relative'
-    modalContent.style.width = request.width + 'px'
-    modalContent.style.height = request.height + 'px'
-    modalContent.style.borderRadius = '8px'
-    modalContent.style.overflow = 'hidden'
+      // create modal box
+      let modalBox = document.createElement('div')
+      modalBox.id = 'skoop-helper-video-modal-box'
+      modalBox.style.position = 'fixed'
+      modalBox.style.top = '50%'
+      modalBox.style.left = '50%'
+      modalBox.style.transform = 'translate(-50%, -50%)'
+      modalBox.style.width = request.width + 'px'
+      modalBox.style.height = '100%'
+      modalBox.style.display = 'flex'
+      modalBox.style.justifyContent = 'center'
+      modalBox.style.alignItems = 'center'
+      modalBox.style.flexDirection = 'column'
+      modalBox.style.borderRadius = '8px'
 
-    // close the video when clicked outside of the video
-    document.addEventListener('click', function (event) {
-      if (!modalContent.contains(event.target)) {
+      // button container
+      let buttonContainer = document.createElement('div')
+      buttonContainer.id = 'skoop-helper-video-button-container'
+      buttonContainer.style.position = 'absolute'
+      buttonContainer.style.top = '0'
+      buttonContainer.style.right = '0'
+      buttonContainer.style.display = 'flex'
+      buttonContainer.style.justifyContent = 'end'
+      buttonContainer.style.width = '100%'
+      buttonContainer.style.zIndex = '999999'
+
+      // button
+      let button = document.createElement('button')
+      button.id = 'skoop-helper-video-close-button'
+      button.textContent = 'Close'
+      button.innerHTML = `<svg stroke="currentColor" fill="#ffffff" stroke-width="0" viewBox="0 0 512 512" class="text-light" height="20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M405 136.798L375.202 107 256 226.202 136.798 107 107 136.798 226.202 256 107 375.202 136.798 405 256 285.798 375.202 405 405 375.202 285.798 256z"></path></svg>`
+      button.style.backgroundColor = 'transparent'
+      button.style.border = 'none'
+      button.style.cursor = 'pointer'
+      button.style.outline = 'none'
+      button.style.marginRight = '10px'
+      button.style.paddingTop = '5px'
+
+      button.addEventListener('click', () => {
         container.remove()
         overlay.remove()
-      }
-    })
+      })
 
-    // create the iframe
-    let iframe = document.createElement('iframe')
-    iframe.id = 'skoop-helper-video-iframe'
-    iframe.src = request.src
-    iframe.style.border = 'none'
-    iframe.style.width = '100%'
-    iframe.style.height = '100%'
-    iframe.style.position = 'relative'
+      // modal content
+      let modalContent = document.createElement('div')
+      modalContent.id = 'skoop-helper-video-modal-content'
+      modalContent.style.position = 'relative'
+      modalContent.style.width = request.width + 'px'
+      modalContent.style.height = request.height + 'px'
+      modalContent.style.borderRadius = '8px'
+      modalContent.style.overflow = 'hidden'
 
-    modalContent.appendChild(iframe)
-    buttonContainer.appendChild(button)
-    modalContent.appendChild(buttonContainer)
-    modalBox.appendChild(modalContent)
-    modal.appendChild(modalBox)
-    container.appendChild(modal)
-    document.body.appendChild(overlay)
-    document.body.appendChild(container)
-  }
+      // close the video when clicked outside of the video
+      document.addEventListener('click', function (event) {
+        if (!modalContent.contains(event.target)) {
+          container.remove()
+          overlay.remove()
+        }
+      })
 
-  if (request.action === 'initializeExtensionDimension') {
-    const extensionDimension = localStorage.getItem('skoopExtensionDimension')
-    if (extensionDimension) {
-      localStorage.removeItem('skoopExtensionDimension')
-      const container = document.getElementById('skoop-extension-container')
-      container.style.width = '12.2vw'
-      container.style.height = '98vh'
+      // create the iframe
+      let iframe = document.createElement('iframe')
+      iframe.id = 'skoop-helper-video-iframe'
+      iframe.src = request.src
+      iframe.style.border = 'none'
+      iframe.style.width = '100%'
+      iframe.style.height = '100%'
+      iframe.style.position = 'relative'
+
+      modalContent.appendChild(iframe)
+      buttonContainer.appendChild(button)
+      modalContent.appendChild(buttonContainer)
+      modalBox.appendChild(modalContent)
+      modal.appendChild(modalBox)
+      container.appendChild(modal)
+      document.body.appendChild(overlay)
+      document.body.appendChild(container)
     }
-    return true
-  }
 
-  return true
+    if (request.action === 'initializeExtensionDimension') {
+      const extensionDimension = localStorage.getItem('skoopExtensionDimension')
+      if (extensionDimension) {
+        localStorage.removeItem('skoopExtensionDimension')
+        const container = document.getElementById('skoop-extension-container')
+        container.style.width = '12.2vw'
+        container.style.height = '98vh'
+      }
+      return true
+    }
+
+    return true
+  } catch (err) {
+    console.error(err)
+  }
 })
 
 // MutationObserver to handle dynamic changes in the DOM
@@ -998,46 +677,32 @@ function handleMutations(mutationsList) {
   mutationsList.forEach((mutation) => {
     if (mutation.type === 'childList') {
       mutation.addedNodes.forEach((addedNode) => {
-        if (
-          addedNode.nodeType === 1 &&
-          addedNode.classList &&
-          addedNode.classList.contains('msg-convo-wrapper')
-        ) {
+        if (addedNode.nodeType === 1 && addedNode.classList && addedNode.classList.contains('msg-convo-wrapper')) {
           // Send a message or perform actions for the added element
-          chrome.runtime.sendMessage(
-            { action: 'getTabId' },
-            function (response) {
-              if (response.tabId) {
-                chrome.runtime.sendMessage({
-                  action: 'elementAdded',
-                  element: addedNode.outerHTML,
-                  tabId: response.tabId,
-                })
-              }
+          chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
+            if (response.tabId) {
+              chrome.runtime.sendMessage({
+                action: 'elementAdded',
+                element: addedNode.outerHTML,
+                tabId: response.tabId,
+              })
             }
-          )
+          })
         }
       })
 
       mutation.removedNodes.forEach((removedNode) => {
-        if (
-          removedNode.nodeType === 1 &&
-          removedNode.classList &&
-          removedNode.classList.contains('msg-convo-wrapper')
-        ) {
+        if (removedNode.nodeType === 1 && removedNode.classList && removedNode.classList.contains('msg-convo-wrapper')) {
           // Send a message or perform actions for the removed element
-          chrome.runtime.sendMessage(
-            { action: 'getTabId' },
-            function (response) {
-              if (response.tabId) {
-                chrome.runtime.sendMessage({
-                  action: 'elementRemoved',
-                  element: removedNode.outerHTML,
-                  tabId: response.tabId,
-                })
-              }
+          chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
+            if (response.tabId) {
+              chrome.runtime.sendMessage({
+                action: 'elementRemoved',
+                element: removedNode.outerHTML,
+                tabId: response.tabId,
+              })
             }
-          )
+          })
         }
       })
     }
@@ -1053,25 +718,19 @@ function handleMutations(mutationsList) {
           }
         })
         if (MessagingTabFound == false) {
-          chrome.runtime.sendMessage(
-            { action: 'getTabId' },
-            function (response) {
-              if (response.tabId) {
-                chrome.runtime.sendMessage({
-                  action: 'elementRemoved',
-                  tabId: response.tabId,
-                })
-              }
+          chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
+            if (response.tabId) {
+              chrome.runtime.sendMessage({
+                action: 'elementRemoved',
+                tabId: response.tabId,
+              })
             }
-          )
+          })
         }
       }
     })
 
-    if (
-      window.location.href.includes('www.linkedin.com/in') &&
-      !isProfilePage
-    ) {
+    if (window.location.href.includes('www.linkedin.com/in') && !isProfilePage) {
       isProfilePage = true
       chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
         if (response.tabId) {
@@ -1083,10 +742,7 @@ function handleMutations(mutationsList) {
       })
     }
 
-    if (
-      window.location.href.includes('www.linkedin.com/in') == false &&
-      isProfilePage
-    ) {
+    if (window.location.href.includes('www.linkedin.com/in') == false && isProfilePage) {
       isProfilePage = false
       chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
         if (response.tabId) {
@@ -1125,9 +781,8 @@ document.addEventListener('focusin', (event) => {
 
 document.addEventListener('focusin', (event) => {
   let targetElement = event.target // The element that triggered the focus event
-  let parentElement = targetElement.closest(
-    '[data-id], [data-urn], [data-chameleon-result-urn]'
-  )
+  let parentElement = targetElement.closest('[data-id], [data-urn], [data-chameleon-result-urn]')
+
   if (parentElement && targetElement.ariaPlaceholder) {
     // Determine which identifier is present on the parentElement
     let identifierType
@@ -1163,15 +818,11 @@ document.addEventListener('focusin', (event) => {
       })
     }
   } else {
-    const elementInfo = {
-      className: targetElement.classList,
-      placeholder: targetElement.ariaPlaceholder,
-    }
     chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
       if (response.tabId) {
         chrome.runtime.sendMessage({
           action: 'skoopFocusedElementLinkedin',
-          element: elementInfo,
+          element: false,
           tabId: response.tabId,
         })
       }

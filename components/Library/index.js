@@ -18,7 +18,7 @@ const Library = (props) => {
   const [openNewFolder, setOpenNewFolder] = useState(0)
   const [currentDirectory, setCurrentDirectory] = useState('')
   const [fav, setFav] = useState(false)
-  const { globalRefresh, isLinkedin, setGlobalRefresh } = useContext(GlobalStatesContext)
+  const { globalRefresh, isLinkedin, isGmail, setGlobalRefresh } = useContext(GlobalStatesContext)
   const { getThumbnail } = useContext(MediaUtilsContext)
   const [activeTab, setActiveTab] = useState('New')
   const [favorites, setFavorites] = useState([])
@@ -164,7 +164,7 @@ const Library = (props) => {
     const facade_player_uuid = link?.substring(link.lastIndexOf('/') + 1)
     const url = `https://skoop.hubs.vidyard.com/watch/${facade_player_uuid}`
 
-    if (!isLinkedin) {
+    if (isGmail) {
       const thumbnail_link = await getThumbnail(id)
       var ret
       if (thumbnail_link != undefined && thumbnail_link != null) {

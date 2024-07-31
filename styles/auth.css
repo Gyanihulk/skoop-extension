@@ -18,8 +18,13 @@
   border-radius: 4px;
   font-size: 12px;
   font-weight: 600;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.2);
   padding: 8px;
+}
+
+#sign-in-with-email:hover {
+  background: rgba(255, 255, 255, 0.4);
+  transition: background 0.3s ease;
 }
 
 .auth-head-content {
@@ -175,6 +180,34 @@
   font-size: 12px;
 }
 
+#custom-btn-1 {
+  height: 36px;
+  font-family: 'Montserrat', sans-serif;
+  background-color: transparent;
+  border: 1px solid #a9aaabcc;
+  border-radius: 4px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  font-size: 12px;
+  color: #a9aaabcc;
+  transition: all 0.3s ease;
+}
+
+#custom-btn-1:hover {
+  background-color: #a9aaabcc;
+  color: white;
+}
+#custom-btn-1.active {
+  border-color: #2d68c4; /* Replace with your desired active border color */
+  color: #2d68c4; /* Replace with your desired active text color */
+}
+#custom-btn-1.active:hover {
+  background-color: #2d68c4;
+  color: white; /* Replace with your desired active text color */
+}
+.auth-form {
+  transform: scale(0.85);
+}
 .or-with-label {
   font-family: 'Montserrat', sans-serif;
   color: #2a2b39e5;
@@ -344,4 +377,7 @@
   background-color: #eee3fc;
   display: flex;
   justify-content: space-between;
+}
+.bg-orange {
+  background-color: #ff8500 !important; /* Replace with your desired shade of orange */
 }

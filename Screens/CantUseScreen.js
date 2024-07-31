@@ -19,11 +19,12 @@ const CantUseScreen = () => {
       <div class="row justify-content-center">
         <div class="col-md-8">
           <div class="py-4 text-center">
-            <img className="work-in-progress mt-3" src={isLinkedin ? '/images/linkedIn.png' : '/images/gmail.png'} alt="work progress" />
             <div class="confirmation-title mt-3">Important Notice!</div>
             <div class="alert alert-warning" role="alert">
-              This extension is solely compatible with LinkedIn and Gmail for networking purposes. Access the networking feature through the dedicated button on the top right of the respective LinkedIn and Gmail pages.
+              This extension is versatile and designed for screen and video recording communication across all tabs. Easily access the recording features by clicking on the dedicated button located at the top right corner of any tab you're browsing.
+              Whether you're on LinkedIn, Gmail, or any other site, our extension is ready to assist you with your recording needs for effective networking and communication.
             </div>
+            <img className="work-in-progress mt-3" src={isLinkedin ? '/images/linkedIn.png' : '/images/gmail.png'} alt="work progress" />
           </div>
         </div>
       </div>

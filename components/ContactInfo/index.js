@@ -11,6 +11,7 @@ import { FaRegUserCircle } from 'react-icons/fa'
 import toast from 'react-hot-toast'
 import GlobalStatesContext from '../../contexts/GlobalStates'
 import CustomInputBox from '../Auth/CustomInputBox'
+import { removeUnsupportedCharacters } from '../../lib/helpers'
 
 const ContactInfoCard = () => {
   const [isFocused, setIsFocused] = useState(false)
@@ -91,32 +92,32 @@ const ContactInfoCard = () => {
           let imageResponse = await fetch(profileImage)
           blob = await imageResponse.blob()
         } catch (error) {
-          console.log('error while fetching image', error)
+          console.error('error while fetching image', error)
         }
 
         bodyData = new FormData()
         bodyData.append('personal_email', email)
-        bodyData.append('name', profileName)
-        bodyData.append('linkedIn_url', linkedin)
-        bodyData.append('website_url', website)
-        bodyData.append('profile_desc', profileDesc)
-        bodyData.append('address', profileAddress)
-        bodyData.append('notes', notes)
-        bodyData.append('linkedin_id', linkedInId)
-        bodyData.append('phone_number', phone)
+        bodyData.append('name', removeUnsupportedCharacters(profileName))
+        bodyData.append('linkedIn_url', removeUnsupportedCharacters(linkedin))
+        bodyData.append('website_url', removeUnsupportedCharacters(website))
+        bodyData.append('profile_desc', removeUnsupportedCharacters(profileDesc))
+        bodyData.append('address', removeUnsupportedCharacters(profileAddress))
+        bodyData.append('notes', removeUnsupportedCharacters(notes))
+        bodyData.append('linkedin_id', removeUnsupportedCharacters(linkedInId))
+        bodyData.append('phone_number', removeUnsupportedCharacters(phone))
         bodyData.append('profile_contact_image', blob, `${linkedInId}.jpg`)
         isFormData = true
       } else {
         bodyData = JSON.stringify({
-          personal_email: email,
-          name: profileName,
-          linkedIn_url: linkedin,
-          website_url: website,
-          profile_desc: profileDesc,
-          address: profileAddress,
-          notes: notes,
-          linkedin_id: linkedInId,
-          phone_number: phone,
+          personal_email: removeUnsupportedCharacters(email),
+          name: removeUnsupportedCharacters(profileName),
+          linkedIn_url: removeUnsupportedCharacters(linkedin),
+          website_url: removeUnsupportedCharacters(website),
+          profile_desc: removeUnsupportedCharacters(profileDesc),
+          address: removeUnsupportedCharacters(profileAddress),
+          notes: removeUnsupportedCharacters(notes),
+          linkedin_id: removeUnsupportedCharacters(linkedInId),
+          phone_number: removeUnsupportedCharacters(phone),
         })
         isFormData = false
       }
@@ -152,7 +153,7 @@ const ContactInfoCard = () => {
         toast.success('Profile details updated.', { id: toastId })
       }
     } catch (err) {
-      console.log('error is ', err)
+      console.error('error is ', err)
       toast.dismiss()
       toast.error('some error occured')
     }
@@ -384,7 +385,7 @@ const ContactInfoCard = () => {
             <CustomInputBox type="text" placeholder="Phone Number" value={phone} onChange={(e) => handlePhoneChange(e)} errorMessage={phoneErrorMessage} />
             <CustomInputBox type="text" placeholder="Address" value={profileAddress} onChange={(e) => setProfileAddress(e.target.value)} />
             <CustomInputBox type="text" placeholder="Website" value={website} onChange={(e) => setWebsite(e.target.value)} />
-            <div className={`contact-info-custom-textarea-box ${isFocused ? 'focused' : ''} ${profileDesc ? 'filled' : ''}`}>
+            <div className={`my-2 ${isFocused ? 'focused' : ''} ${profileDesc ? 'filled' : ''}`}>
               <textarea className="contact-info-custom-textarea" rows="4" value={profileDesc} onChange={(e) => setProfileDesc(e.target.value)} onFocus={handleFocus} onBlur={handleBlur} />
               <label>Additional Info</label>
             </div>

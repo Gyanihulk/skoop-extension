@@ -28,47 +28,108 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
     breakEndTime: '',
   })
   const [isPreference, setIsPreference] = useState(false)
+  const [userPreferences, setUserPreferences] = useState(null)
   const [toggleInfo, setToggleInfo] = collapse ? useState(collapse) : useState(false)
   const [isTimezoneEmpty, setIsTimezoneEmpty] = useState(false)
   const [selectedTimezone, setSelectedTimezone] = useState('')
   const [google, setGoogle] = useState(false)
   const [microsoft, setMicrosoft] = useState(false)
-  const [preferredStartTime, setPreferredStartTime] = useState('Preferred start time')
-  const [preferredEndTime, setPreferredEndTime] = useState(0)
-  const [breakStartTime, setBreakStartTime] = useState(0)
-  const [breakEndTime, setBreakEndTime] = useState(0)
+  const [preferredStartTime, setPreferredStartTime] = useState('08:00:00')
+  const [preferredEndTime, setPreferredEndTime] = useState('17:00:00')
+  const [breakStartTime, setBreakStartTime] = useState('12:00:00')
+  const [breakEndTime, setBreakEndTime] = useState('13:00:00')
   const [timeZone, setTimeZone] = useState('')
   const [additionalDetails, setAdditionalDetails] = useState('')
   const [myTimezone, setMyTimezone] = useState('')
   const [filteredTimezones, setFilteredTimezones] = useState(timezones)
+  const [toggleBreakTimes, setToggleBreakTimes] = useState(true)
+  const [toggleAdditionalDetails, setToggleAdditionalDetails] = useState(true)
   const { getUserPreferences, calendarSync, setNewUser, userProfileDetail, getUserProfileDetail } = useContext(AuthContext)
   const inputRef = useRef()
 
   const { isTimezoneScreen, setIsTimezoneScreen } = useContext(GlobalStatesContext)
   const { navigateToPage, activePage } = useContext(ScreenContext)
+
+  const handleSwitchChange = (event) => {
+    if (event.target.name === 'toggle-break-times') {
+      setToggleBreakTimes(event.target.checked)
+    }
+    if (event.target.name === 'toggle-additional-details') {
+      setToggleAdditionalDetails(event.target.checked)
+    }
+  }
+
+  const initializePreferedTime = () => {
+    let startTime = timeToInt(preferredStartTime)
+    let endTime = timeToInt(preferredEndTime)
+    let breakTimestart = timeToInt(breakStartTime)
+    let breakTimeEnd = timeToInt(breakEndTime)
+
+    setPreferredStartTime(startTime)
+    setPreferredEndTime(endTime)
+    setBreakStartTime(breakTimestart)
+    setBreakEndTime(breakTimeEnd)
+  }
+
+  const handleCalendarSync = (e) => {
+    if (e.target.name === 'google') {
+      if (e.target.checked) {
+        setGoogle(true)
+        setMicrosoft(false)
+      } else {
+        setGoogle(false)
+      }
+    } else {
+      if (e.target.checked) {
+        setGoogle(false)
+        setMicrosoft(true)
+      } else {
+        setMicrosoft(false)
+      }
+    }
+  }
+
   const fetchUserPreferences = async () => {
     try {
       const preferences = await getUserPreferences()
       if (preferences && preferences.length > 0) {
         setIsPreference(true)
+        setUserPreferences(preferences[0])
 
         let startTime = timeToInt(preferences[0].preferred_start_time)
         let endTime = timeToInt(preferences[0].preferred_end_time)
-        let breakTimestart = timeToInt(preferences[0].break_start_time)
-        let breakTimeEnd = timeToInt(preferences[0].break_end_time)
+        let breakTimestart
+        let breakTimeEnd
+        if (preferences[0].break_start_time && preferences[0].break_end_time) {
+          breakTimestart = timeToInt(preferences[0].break_start_time)
+          breakTimeEnd = timeToInt(preferences[0].break_end_time)
+          setToggleBreakTimes(true)
+        } else {
+          breakTimestart = timeToInt('12:00:00')
+          breakTimeEnd = timeToInt('13:00:00')
+          setToggleBreakTimes(false)
+        }
 
         setPreferredStartTime(startTime)
         setPreferredEndTime(endTime)
         setBreakStartTime(breakTimestart)
         setBreakEndTime(breakTimeEnd)
         setTimeZone(preferences[0].time_zone)
-        setAdditionalDetails(preferences[0].additional_details)
+        if (preferences[0].additional_details && preferences[0].additional_details.length > 0) {
+          setAdditionalDetails(preferences[0].additional_details)
+          toggleAdditionalDetails(true)
+        } else {
+          toggleAdditionalDetails(false)
+        }
         if (preferences[0]?.time_zone) {
           setMyTimezone(preferences[0].time_zone)
           setSelectedTimezone(preferences[0].time_zone)
         }
+      } else {
+        initializePreferedTime()
       }
     } catch (err) {
+      initializePreferedTime()
       console.error(err?.message)
     }
   }
@@ -96,9 +157,11 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
     if (userProfileDetail?.calendar_info) {
       if (userProfileDetail.calendar_info == 'google') {
         setGoogle(true)
+        setMicrosoft(false)
       }
       if (userProfileDetail.calendar_info == 'microsoft') {
         setMicrosoft(true)
+        setGoogle(false)
       }
     }
   }, [userProfileDetail])
@@ -152,7 +215,38 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    if (preferredStartTime < preferredEndTime && breakStartTime < breakEndTime && preferredStartTime < breakStartTime) {
+    let checkTimesValues
+    let checkTimeMessage = 'Preferred start time should be less than Preferred end time'
+    if (toggleBreakTimes) {
+      if (preferredStartTime > preferredEndTime) {
+        checkTimesValues = false
+        checkTimeMessage = 'Preferred start time should be less than Preferred end time'
+      } else if (preferredStartTime > breakStartTime) {
+        checkTimesValues = false
+        checkTimeMessage = 'Preferred start time should be less than Break start time'
+      } else if (preferredStartTime > breakEndTime) {
+        checkTimesValues = false
+        checkTimeMessage = 'Preferred start time should be less than Break end time'
+      } else if (breakStartTime > breakEndTime) {
+        checkTimesValues = false
+        checkTimeMessage = 'Break start time should be less than Break end time'
+      } else if (preferredEndTime < breakStartTime) {
+        checkTimesValues = false
+        checkTimeMessage = 'Preferred end time should be greater than Break start time'
+      } else if (preferredEndTime < breakEndTime) {
+        checkTimesValues = false
+        checkTimeMessage = 'Preferred end time should be greater than Break end time'
+      } else {
+        checkTimesValues = true
+      }
+    } else {
+      checkTimesValues = preferredStartTime < preferredEndTime
+      if (!checkTimesValues) {
+        checkTimeMessage = 'Preferred start time should be less than Preferred end time'
+      }
+    }
+
+    if (checkTimesValues) {
       try {
         let startTime = timeFromInt(preferredStartTime, { format: 12 })
         let endTime = timeFromInt(preferredEndTime, { format: 12 })
@@ -161,10 +255,9 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
         const payload = JSON.stringify({
           preferred_start_time: startTime,
           preferred_end_time: endTime,
-          break_start_time: breakTimestart,
-          break_end_time: breakTimeEnd,
+          ...(toggleBreakTimes ? { break_start_time: breakTimestart, break_end_time: breakTimeEnd } : {}),
           time_zone: selectedTimezone,
-          additional_details: additionalDetails,
+          ...(toggleAdditionalDetails ? { additional_details: additionalDetails } : {}),
         })
 
         if (!isPreference) {
@@ -185,7 +278,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
             throw new Error(data.message || 'Error saving preferences')
           }
         } else {
-          const res = await fetch(API_ENDPOINTS.userPreferences, {
+          const res = await fetch(API_ENDPOINTS.userPreferences + `/${userPreferences && userPreferences.id ? userPreferences.id : ''}`, {
             method: 'PUT',
             body: payload,
             headers: {
@@ -208,10 +301,10 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
         }
       } catch (err) {
         console.error(err)
-        toast.error('Preferences not saved. Please try again.')
+        toast.error(err?.message || 'Preferences not saved. Please try again.')
       }
     } else {
-      toast.error('Preferred Start time OR Break time is greater than End Time')
+      toast.error(checkTimeMessage)
     }
   }
   const handleAdditionalDetailsChange = (e) => {
@@ -226,10 +319,10 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
   return (
     <>
       {!isTimezoneScreen && (
-        <div className="card border-radius-12 overflow-hidden outline">
+        <div className="card border-radius-12 overflow-hidden outline user-preference-container">
           <div className="light-pink card-header-custom toggle-collapse" onClick={() => setToggleInfo(!toggleInfo)} aria-controls="user-preference-collapse" aria-expanded={toggleInfo}>
             <div className="d-flex justify-content-between align-items-center">
-              <h6 className="mb-0 card-title">{heading ? heading : 'User Preferences'}</h6>
+              <h6 className="mb-0 card-title">{heading ? heading : 'SKOOP Booking Link Setup'}</h6>
               {!collapse && (
                 <div>
                   <FaAngleDown style={toggleInfo ? { transform: 'rotate(180deg)' } : { transform: 'rotate(0deg)' }} />
@@ -246,24 +339,6 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
                       <label className="form-label profile-text">Preferred Start Time</label>
                       <div className="position-relative mt-2">
                         <TimePicker value={preferredStartTime} onChange={(time) => setPreferredStartTime(time)} className="custom-time-picker" />
-                        <div className="clock-icon">
-                          <FaRegClock size={14} />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mb-3">
-                      <label className="form-label profile-text">Break Start Time</label>
-                      <div className="position-relative mt-2">
-                        <TimePicker value={breakStartTime} onChange={(time) => setBreakStartTime(time)} className="custom-time-picker" />
-                        <div className="clock-icon">
-                          <FaRegClock size={14} />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mb-3">
-                      <label className="form-label profile-text">Break End Time</label>
-                      <div className="position-relative mt-2">
-                        <TimePicker value={breakEndTime} onChange={(time) => setBreakEndTime(time)} className="custom-time-picker" />
                         <div className="clock-icon">
                           <FaRegClock size={14} />
                         </div>
@@ -288,9 +363,57 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
                       </div>
                       {isTimezoneEmpty && <ValidationError title="Please select timezone" />}
                     </div>
-                    <div className="mb-3">
-                      <label className="form-label profile-text">Additional Details</label>
-                      <textarea className="form-control mt-2 custom-textarea-global" id="additionalDetails" name="additionalDetails" placeholder="Additional Info" value={additionalDetails} onChange={handleAdditionalDetailsChange} rows="3"></textarea>
+                    <div className={`${toggleBreakTimes ? 'mb-3' : 'mb-2'}`}>
+                      <div className="d-flex justify-content-between align-items-center mt-1-3">
+                        <label className="form-label profile-text fw-bold">Add Break Times</label>
+                        <div class="form-check form-switch switch-button-container d-flex justify-content-end me-2 align-items-center">
+                          <input className="form-check-input custom-switch" name="toggle-break-times" type="checkbox" role="switch" checked={toggleBreakTimes} onChange={handleSwitchChange} />
+                        </div>
+                      </div>
+                      {toggleBreakTimes && (
+                        <>
+                          <label className="form-label profile-text">Break Start Time</label>
+                          <div className="position-relative mt-2">
+                            <TimePicker value={breakStartTime} onChange={(time) => setBreakStartTime(time)} className="custom-time-picker" />
+                            <div className="clock-icon">
+                              <FaRegClock size={14} />
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    {toggleBreakTimes && (
+                      <div className="mb-3">
+                        <label className="form-label profile-text">Break End Time</label>
+                        <div className="position-relative mt-2">
+                          <TimePicker value={breakEndTime} onChange={(time) => setBreakEndTime(time)} className="custom-time-picker" />
+                          <div className="clock-icon">
+                            <FaRegClock size={14} />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    <div className={`${toggleAdditionalDetails ? 'mb-3' : 'mb-2'}`}>
+                      <div className="d-flex justify-content-between align-items-center mt-1-3">
+                        <label className="form-label profile-text fw-bold">Add Booking Link Details</label>
+                        <div class="form-check form-switch switch-button-container d-flex justify-content-end me-2 align-items-center">
+                          <input className="form-check-input custom-switch" name="toggle-additional-details" type="checkbox" role="switch" checked={toggleAdditionalDetails} onChange={handleSwitchChange} />
+                        </div>
+                      </div>
+                      {toggleAdditionalDetails && (
+                        <>
+                          <label className="form-label profile-text">Booking Link Details</label>
+                          <textarea
+                            className="form-control mt-2 custom-textarea-global"
+                            id="booking-link-details"
+                            name="bookingLinkDetails"
+                            placeholder="Booking Link Details"
+                            value={additionalDetails}
+                            onChange={handleAdditionalDetailsChange}
+                            rows="3"
+                          ></textarea>
+                        </>
+                      )}
                     </div>
                     <div className="mb-3">
                       <p className="card-title">You can add update these from the account settings anytime.</p>
@@ -299,17 +422,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
                       <div class="d-flex flex-column align-items-center justify-content-start mt-3">
                         <div class="d-flex align-items-center w-100 justify-content-between">
                           <div class="d-flex align-items-center">
-                            <input
-                              class="form-check-input mt-0 pt-0 ml-0-4"
-                              type="checkbox"
-                              value=""
-                              checked={google}
-                              onChange={() => {
-                                setGoogle(!google)
-                                setMicrosoft(false)
-                              }}
-                              id="google"
-                            ></input>
+                            <input class="form-check-input mt-0 pt-0 ml-0-4" type="checkbox" value="" name="google" checked={google} onChange={handleCalendarSync} id="google"></input>
                             <label class="d-flex align-items-center ms-2" for="google">
                               <FcGoogle />
                               <h5 class="card-title mb-0 pb-0 ms-1">Google Calendar</h5>
@@ -323,17 +436,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
                         </div>
                         <div class="d-flex align-items-center w-100 mt-3">
                           <div class="d-flex align-items-center">
-                            <input
-                              class="form-check-input mt-0 pt-0 ml-0-4"
-                              type="checkbox"
-                              value=""
-                              checked={microsoft}
-                              onChange={() => {
-                                setMicrosoft(!microsoft)
-                                setGoogle(false)
-                              }}
-                              id="microsoft"
-                            ></input>
+                            <input class="form-check-input mt-0 pt-0 ml-0-4" type="checkbox" value="" name="microsoft" checked={microsoft} onChange={handleCalendarSync} id="microsoft"></input>
                             <label class="d-flex align-items-center ms-2" for="microsoft">
                               <FaMicrosoft />
                             </label>

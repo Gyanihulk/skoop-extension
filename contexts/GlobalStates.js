@@ -6,6 +6,7 @@ export const GlobalStatesProvider = ({ children }) => {
   const [latestVideoUrl, setLatestVideoUrl] = useState('')
   const [globalRefresh, setGlobalRefresh] = useState(false)
   const [isLinkedin, setIsLinkedin] = useState(false)
+  const [isGmail, setIsGmail] = useState(false)
   const [isProfilePage, setIsProfilePage] = useState(false)
   const [scraperPage, setScraperPage] = useState(false)
   const [focusedElementId, setFocusedElementId] = useState(null)
@@ -23,8 +24,55 @@ export const GlobalStatesProvider = ({ children }) => {
   const [postCommentSelected, setPostCommentSelected] = useState(false)
   const [postCommentElement, setPostCommentElement] = useState(null)
   const [tabId, setTabId] = useState(null)
+  const [isMatchingUrl, setIsMatchingUrl] = useState(false)
   useEffect(() => {}, [globalRefresh])
+  const getToggleButton = () => {
+    try {
+      const toggleButton = document.getElementById('skoop-expand-minimize-button')
+      toggleButton.click()
+    } catch (err) {
+      console.error('some error occured in executing script', err)
+    }
+  }
+  const expandMinimizeExtension = () => {
+    try {
+      chrome.scripting.executeScript({
+        target: { tabId },
+        func: getToggleButton,
+      })
 
+      if (!expand) {
+        document.body.style.overflow = 'auto'
+      } else {
+        document.body.style.overflow = 'hidden'
+      }
+      setExpand(!expand)
+    } catch (err) {
+      console.error('some error occured while setting up initial array')
+    }
+  }
+  const clickExpandButton = () => {
+    try {
+      const toggleButton = document.getElementById('skoop-expand-button')
+      toggleButton.click()
+    } catch (err) {
+      console.error('some error occured in executing script', err)
+    }
+  }
+  const expandExtension = () => {
+    try {
+      chrome.scripting.executeScript({
+        target: { tabId },
+        func: clickExpandButton,
+      })
+
+      document.body.style.overflow = 'hidden'
+
+      setExpand(false)
+    } catch (err) {
+      console.error('some error occured while setting up initial array')
+    }
+  }
   return (
     <GlobalStatesContext.Provider
       value={{
@@ -68,6 +116,12 @@ export const GlobalStatesProvider = ({ children }) => {
         setPostCommentElement,
         tabId,
         setTabId,
+        expandMinimizeExtension,
+        isMatchingUrl,
+        setIsMatchingUrl,
+        expandExtension,
+        isGmail,
+        setIsGmail,
       }}
     >
       {children}

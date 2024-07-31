@@ -9,10 +9,10 @@ const CustomPasswordInputBox = ({ placeholder, name, onChange, value, isEmpty, o
   }
 
   return (
-    <div className="position-relative custom-password-input-box">
+    <div className="custom-input-container mt-3">
       <input
         type={showPassword ? 'text' : 'password'}
-        className={`form-control mt-3 ${isEmpty ? 'input-empty' : ''}`}
+        className={`custom-input-box ${isEmpty ? 'input-empty' : ''}`}
         id="custom-password-input-box"
         placeholder={placeholder}
         name={name}

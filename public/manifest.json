@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "SKOOP - Instant Video for LinkedIn & More",
   "short_name": "N-C-S",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "SKOOP - Instant Video for LinkedIn & More",
   "icons": {
     "16": "/icons/icon.png",
@@ -15,19 +15,19 @@
     "tabs","scripting",
     "storage",
     "clipboardWrite","https://mail.google.com/","https://www.linkedin.com/",
-    "audioCapture",
-    "videoCapture"
+    "audioCapture","desktopCapture",
+    "videoCapture","activeTab"
   ],
   "web_accessible_resources": [
     {
-      "resources": ["index.html","icons/icon.png","icons/move.png","icons/resize.png"],
+      "resources": ["index.html","icons/icon.png","icons/move.png","icons/resize.png","icons/minimize.png","icons/maximize.png"],
       "matches": ["<all_urls>"]
     }
   ],
   "content_scripts": [
     {
-      "matches": ["*://mail.google.com/*","*://www.linkedin.com/*"],
-      "js": ["gmailContentScript.js"],
+      "matches": ["*://*/*"],
+      "js": ["showScreenRecordingTimer.js","injectIframe.js","gmailContentScript.js","helperfunctions.js","createWebCamContainer.js"],
       "css": ["styles.css"]
     },
     {
@@ -39,16 +39,20 @@
     "client_id":"232147382816-a6grr3l3366tp6kpaoran7fcctdmddij.apps.googleusercontent.com",
     "scopes": ["openid", "profile", "email","https://www.googleapis.com/auth/calendar"]
   },
-  "host_permissions": ["*://mail.google.com/*","*://www.linkedin.com/*"],
+  "host_permissions": ["<all_urls>"],
     "action": {
     "default_popup": "index.html"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "persistent": false
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; media-src *"
   },
+  "browser_action": {
+        "default_title": "Show desktop capture request"
+    },
   "externally_connectable": {
     "matches": ["https://crm.skoopapp.com/*"]
   },

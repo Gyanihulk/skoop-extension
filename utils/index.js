@@ -34,16 +34,26 @@ export const insertIntoLinkedInMessageWindow = async (html, selectedChatWindows,
           commentElement.innerHTML = htmlToInsert
         }
         setTimeout(() => {
-          let button
-          if (postElement) {
-            button = postElement.querySelector('.comments-comment-box__submit-button')
-          } else {
-            button = document.querySelector('.comments-comment-box__submit-button')
-          }
+          let button = postElement.querySelector('.comments-comment-box__submit-button')
+          let buttons = postElement.querySelectorAll('.artdeco-button')
+
+          // Iterate through the buttons and find the one with the span containing "Comment" or "Reply"
+          let targetButton = null
+          buttons.forEach((button) => {
+            let span = button.querySelector('span.artdeco-button__text')
+            if (span && span.children.length === 0 && (span.textContent.trim() === 'Comment' || span.textContent.trim() === 'Reply')) {
+              targetButton = button
+            }
+          })
+
           if (button) {
             setTimeout(() => {
               button.click()
-            }, 5000)
+            }, 7000)
+          } else if (targetButton) {
+            setTimeout(() => {
+              targetButton.click()
+            }, 7000)
           } else {
             console.error('Button not found')
           }

@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
-import { replaceInvalidCharacters } from '../utils'
+import { getCurrentDateTimeString, replaceInvalidCharacters } from '../utils'
 import GlobalStatesContext from './GlobalStates'
 import API_ENDPOINTS from '../components/apiConfig'
 import MessageContext from './MessageContext'
+import MediaUtilsContext from './MediaUtilsContext'
 
 const RecordingContext = createContext()
 export const useRecording = () => {
@@ -30,7 +31,7 @@ export const RecordingProvider = ({ children }) => {
   const [countdown, setCountdown] = useState(false)
   const [countTimer, setCountTimer] = useState(0)
   const [isUploading, setIsUploading] = useState(false)
-
+  const { uploadVideo } = useContext(MediaUtilsContext)
   const [bloburl, setBlobUrl] = useState(null)
   const [height, setHeight] = useState(16 * videoResizeConstant)
   const [width, setWidth] = useState(9 * videoResizeConstant)
@@ -38,8 +39,11 @@ export const RecordingProvider = ({ children }) => {
   const [selectedVideoStyle, setSelectedVideoStyle] = useState('Vertical Mode')
   const [isRecordStart, setIsRecordStart] = useState(false)
   const [isVideo, setIsVideo] = useState(false)
+  const [isScreenRecording, setIsScreenRecording] = useState(false)
+  const [captureCameraWithScreen, setCaptureCameraWithScreen] = useState(true)
   const { setGlobalRefresh, setLatestVideo, setLatestBlob } = useContext(GlobalStatesContext)
   const { addToMessage } = useContext(MessageContext)
+  const [videoStream, setVideoStream] = useState(null)
   const stopAudioRecording = () => {
     mediaRecorder.stop()
     setIsRecordStart(false)
@@ -131,17 +135,82 @@ export const RecordingProvider = ({ children }) => {
       toast.error('Could not upload.')
     }
   }
+  const stopMediaStreams = () => {
+    if (videoStream) {
+      videoStream.getTracks().forEach((track) => track.stop())
+    }
+    setVideoStream(null)
+  }
+  async function getBlobFromUrl(url) {
+    try {
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`)
+      }
+      const blob = await response.blob()
+      url = URL.createObjectURL(blob)
+      setBlobUrl(url)
+      return blob
+    } catch (error) {
+      console.error('Error fetching blob:', error)
+    }
+  }
+
+  function handleVideoBlob(response) {
+    if (response.error) {
+      setIsUploading(false)
+      setCapturing(false)
+    }
+    console.log(response)
+    if (response.videoBlob) {
+      getBlobFromUrl(response.url).then(async (blob) => {
+        setLatestBlob(blob)
+        setIsUploading(true)
+        const response = await uploadVideo(blob, getCurrentDateTimeString(), 'New', height, width)
+        setIsUploading(false)
+        setIsRecordStart(false)
+        setLatestVideo(response)
+        addToMessage(response.facade_player_uuid, response?.urlForThumbnail, response?.name)
+        setGlobalRefresh(true)
+        setCapturing(false)
+        setIsVideo(false)
+      })
+    }
+  }
+  function handleScreenVideoBlob(response) {
+    if (response.error) {
+      setIsUploading(false)
+      setCapturing(false)
+    }
+    if (response.videoBlob) {
+      getBlobFromUrl(response.url).then(async (blob) => {
+        setLatestBlob(blob)
+        setIsUploading(true)
+        const response = await uploadVideo(blob, getCurrentDateTimeString(), 'New', 9 * videoResizeConstant, 16 * videoResizeConstant)
+        setIsUploading(false)
+        setIsRecordStart(false)
+        setLatestVideo(response)
+        addToMessage(response.facade_player_uuid, response?.urlForThumbnail, response?.name)
+        setGlobalRefresh(true)
+        setCapturing(false)
+        setIsVideo(false)
+      })
+    }
+  }
 
   const contextValue = {
     mediaRecorder,
     setMediaRecorder,
     visualizationUrl,
     setVisualizationUrl,
+    stopMediaStreams,
     isRecording,
     setIsRecording,
     isTakingInput,
     setIsTakingInput,
     time,
+    videoStream,
+    setVideoStream,
     setTime,
     duration,
     setDuration,
@@ -177,6 +246,12 @@ export const RecordingProvider = ({ children }) => {
     startRecordingAudio,
     restartRecordingAudio,
     handleShareAudio,
+    isScreenRecording,
+    setIsScreenRecording,
+    captureCameraWithScreen,
+    setCaptureCameraWithScreen,
+    handleVideoBlob,
+    handleScreenVideoBlob,
   }
   return <RecordingContext.Provider value={contextValue}>{children}</RecordingContext.Provider>
 }

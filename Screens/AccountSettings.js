@@ -15,6 +15,7 @@ import Link from 'next/link'
 
 const AccountProfile = ({ userData }) => {
   // State for the profile image URL
+
   const [profileImage, setProfileImage] = useState('https://static-00.iconduck.com/assets.00/user-avatar-happy-icon-1023x1024-bve9uom6.png')
   const { navigateToPage } = useContext(ScreenContext)
   useEffect(() => {
@@ -305,7 +306,6 @@ const CalendarUrlForm = ({ userProfileData }) => {
     const preference = await getUserPreferences()
     setPreferences(preference)
     const info = await getCtaInfo()
-    console.log(info)
     setCalendarUrl(info.url)
     setCTAText(info.text)
     checkForDefaultUrl(info.url)
@@ -392,12 +392,12 @@ const CalendarUrlForm = ({ userProfileData }) => {
                   <label htmlFor="calendarUrl" className="form-label profile-text ">
                     Call To Action Link
                   </label>
-                  {showResetButton && <GrPowerReset className="ms-1" onClick={resetAppointmentLink} />}
+                  {showResetButton && <GrPowerReset className="ms-1" title="Reset to Skoop Calendar Booking Link" onClick={resetAppointmentLink} />}
                 </div>
                 <input type="text" className="form-control  custom-input-global" id="calendarUrl" name="calendarUrl" value={calendarUrl} onChange={handleChange} placeholder="Enter your calendar link" required />
 
                 <div className={`mt-1 d-flex ${preferences?.length == 0 ? 'justify-content-between' : 'justify-content-end'}`}>
-                  {preferences?.length == 0 && (
+                  {preferences?.length == 0 && calendarUrl.startsWith(API_ENDPOINTS.skoopCalendarUrl) && (
                     <div className="d-flex flex-wrap">
                       <span className="badge badge-info d-flex align-items-center justify-content-start text-danger text-wrap">User appointment preferences not set.</span>
                     </div>
@@ -526,7 +526,7 @@ function AccountSettings(props) {
     })()
   }, [])
 
-  const { isTimezoneScreen, setIsTimezoneScreen } = useContext(GlobalStatesContext)
+  const { isTimezoneScreen, setIsTimezoneScreen, expand } = useContext(GlobalStatesContext)
 
   const openNewWindow = (url) => {
     document.body.style.overflow = 'auto'
@@ -534,29 +534,31 @@ function AccountSettings(props) {
   }
   return (
     <>
-      <div id="account-settings">
-        <div className="pb-2">
-          <div>{!isTimezoneScreen && <AccountProfile userData={profileData} />}</div>
-          <div className="mt-4 mx-3">
-            {!isTimezoneScreen && (
-              <>
-                <div>{profileData && <UserSubscriptions userProfileData={profileData} />}</div>
-                <div className="mt-3">{profileData && <CalendarUrlForm userProfileData={profileData} />}</div>
-                <div className="mt-3">
-                  <SettingsPassword />
-                </div>
-              </>
-            )}
-            <div className="mt-3 mb-3-0">
-              <UserPreferencesForm />
-            </div>
-            <div className="fixed-bottom mt-2 cursor-pointer d-flex flex-col auth-footer-label justify-content-center">
-              <div onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/privacypolicy')}>Privacy Policy</div> &nbsp;|&nbsp;
-              <div onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/termsofuse')}>Terms of Use</div>
+      {!expand && (
+        <div id="account-settings">
+          <div className="pb-2">
+            <div>{!isTimezoneScreen && <AccountProfile userData={profileData} />}</div>
+            <div className="mt-4 mx-3">
+              {!isTimezoneScreen && (
+                <>
+                  <div>{profileData && <UserSubscriptions userProfileData={profileData} />}</div>
+                  <div className="mt-3">{profileData && <CalendarUrlForm userProfileData={profileData} />}</div>
+                  <div className="mt-3">
+                    <SettingsPassword />
+                  </div>
+                </>
+              )}
+              <div className="mt-3 mb-3-0">
+                <UserPreferencesForm />
+              </div>
+              <div className="fixed-bottom mt-2 cursor-pointer d-flex flex-col auth-footer-label justify-content-center">
+                <div onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/privacypolicy')}>Privacy Policy</div> &nbsp;|&nbsp;
+                <div onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/termsofuse')}>Terms of Use</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useDebugValue, useEffect, useState } from 'react'
 import { AiFillRobot } from 'react-icons/ai'
 import { HiMiniGif } from 'react-icons/hi2'
 import EmojiPicker from 'emoji-picker-react'
@@ -20,12 +20,13 @@ import ScreenContext from '../../contexts/ScreenContext.js'
 import { MdOutlineFileUpload } from 'react-icons/md'
 import { useRecording } from '../../contexts/RecordingContext.js'
 import { FaRegClipboard } from 'react-icons/fa'
-
+import { MdCallToAction } from 'react-icons/md'
 const MessageComposer = () => {
   const [displayComp, setDisplayComp] = useState('')
   const [activateCalenderLink, setActivateCalenderLink] = useState(false)
-
-  const { isLinkedin, selectedChatWindows, focusedElementId, isProfilePage, isVideoContainer, setIsVideoContainer, expand, setLatestBlob, setLatestVideo, latestBlob, postCommentSelected, postCommentElement } = useContext(GlobalStatesContext)
+  const [flashTrigger, setFlashTrigger] = useState(0)
+  const { isGmail, isLinkedin, selectedChatWindows, focusedElementId, isProfilePage, isVideoContainer, setIsVideoContainer, expand, setLatestBlob, setLatestVideo, latestBlob, postCommentSelected, postCommentElement, isMatchingUrl } =
+    useContext(GlobalStatesContext)
   const { message, addMessage, setMessage } = useContext(MessageContext)
   const { getCalendarUrl, getUserPreferences } = useContext(AuthContext)
   const { uploadVideo } = useContext(MediaUtilsContext)
@@ -46,17 +47,14 @@ const MessageComposer = () => {
   }, [message, latestBlob])
   const addMeetSchedulingLink = async () => {
     const url = await getCalendarUrl()
-    if (isLinkedin) {
-      handleInsertion(url)
-      toast.success('Meeting Calendar link added successfully!', {
-        className: 'custom-toast',
-      })
-    } else {
+    if (isGmail) {
       handleInsertion(`<a href="${url}">Schedule Virtual Appointment</a>`)
-      toast.success('Meeting Calendar link added successfully!', {
-        className: 'custom-toast',
-      })
+    } else {
+      handleInsertion(url)
     }
+    toast.success('Meeting Calendar link added successfully!', {
+      className: 'custom-toast',
+    })
   }
 
   const checkForUserPreferences = async () => {
@@ -77,7 +75,7 @@ const MessageComposer = () => {
   const handleIconClick = async (eventKey) => {
     setLatestBlob()
     setLatestVideo()
-    if (eventKey === 'Calender Link') {
+    if (eventKey === 'CTA Link') {
       if (await checkForUserPreferences()) {
         setDisplayComp(eventKey)
         addMeetSchedulingLink()
@@ -212,7 +210,7 @@ const MessageComposer = () => {
         let toastId = toast.loading('Message Sent Successfully!!')
 
         // Countdown duration in seconds
-        let countdown = 5
+        let countdown = 7
 
         // Update the toast every second
         const interval = setInterval(() => {
@@ -228,7 +226,7 @@ const MessageComposer = () => {
             // Update the toast with the final message
             toast.success('Comment posted!', {
               id: toastId,
-              duration: 4000,
+              duration: 7000,
             })
           }
         }, 1000)
@@ -337,6 +335,19 @@ const MessageComposer = () => {
   const onEmojiClick = (event) => {
     addMessage('' + event.emoji)
   }
+
+  const triggerFunction = () => {
+    // Your function logic here...
+
+    // Trigger the flash effect
+    setFlashTrigger((prevCount) => prevCount + 1)
+  }
+  function handleCopy() {
+    handleCopyToClipboard(message)
+    toast.success('Message copied.')
+    triggerFunction()
+  }
+
   return (
     <>
       <input id="video-upload" type="file" style={{ display: 'none' }} onChange={uploadVideoHandler} accept="video/*" />
@@ -391,16 +402,15 @@ const MessageComposer = () => {
                 'Send any recorded video or audio file'
               )}
               {renderNavButtonItem(
-                'Calender Link',
-                <svg width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M11.3 2.0999H10.7V1.4999C10.7 1.1699 10.43 0.899902 10.1 0.899902C9.77 0.899902 9.5 1.1699 9.5 1.4999V2.0999H3.5V1.4999C3.5 1.1699 3.23 0.899902 2.9 0.899902C2.57 0.899902 2.3 1.1699 2.3 1.4999V2.0999H1.7C1.04 2.0999 0.5 2.6399 0.5 3.2999V12.8999C0.5 13.5599 1.04 14.0999 1.7 14.0999H11.3C11.96 14.0999 12.5 13.5599 12.5 12.8999V3.2999C12.5 2.6399 11.96 2.0999 11.3 2.0999ZM10.7 12.9002H2.30002C1.97002 12.9002 1.70002 12.6302 1.70002 12.3002V5.10024H11.3V12.3002C11.3 12.6302 11.03 12.9002 10.7 12.9002Z"
-                    fill="#2A2B39"
-                  />
+                'CTA Link',
+                <svg fill="#000000" width="800px" height="800px" viewBox="0 0 32 32" id="Outlined" xmlns="http://www.w3.org/2000/svg">
+                  <title />
+
+                  <g id="Fill">
+                    <path d="M29.35,6.88,25.11,2.63a3,3,0,0,0-4.23,0L14.64,8.81a3,3,0,0,0,0,4.25l1.44,1.45-1.54,1.54-1.42-1.42a3,3,0,0,0-4.24,0L2.65,20.8a3,3,0,0,0,0,4.26L6.88,29.3A3,3,0,0,0,9,30.17a3,3,0,0,0,2.11-.86l6.23-6.19A3,3,0,0,0,18.24,21a3,3,0,0,0-.88-2.13L16,17.46l1.54-1.54,1.39,1.38a3,3,0,0,0,4.23,0l6.23-6.18A2.94,2.94,0,0,0,30.23,9,3,3,0,0,0,29.35,6.88ZM15.94,20.29a1,1,0,0,1,.3.71,1,1,0,0,1-.3.7L9.71,27.89a1,1,0,0,1-1.41,0L4.06,23.64a1,1,0,0,1-.3-.71,1,1,0,0,1,.3-.71L10.29,16a1,1,0,0,1,1.41,0l1.42,1.42-2.83,2.83,1.42,1.42,2.83-2.83Zm12-10.58L21.7,15.89a1,1,0,0,1-1.41,0l-1.38-1.38,2.8-2.8-1.42-1.42-2.8,2.8-1.44-1.44a1,1,0,0,1,0-1.42l6.23-6.18A1,1,0,0,1,23,3.76a1,1,0,0,1,.71.29l4.24,4.24a1,1,0,0,1,0,1.42Z" />
+                  </g>
                 </svg>,
-                'Send link to schedule virtual appointment.'
+                'Call to action link.'
               )}
             </ul>
           </div>
@@ -415,7 +425,7 @@ const MessageComposer = () => {
         <div id="footermessage" className=" w-full">
           <div className="container bg-white mb-2">
             <ChatWindowSelection />
-            <MessageWindow />
+            <MessageWindow flashTrigger={flashTrigger} />
           </div>
           {displayComp === 'Giphy' && <GiphyWindow appendToBody={handleInsertion} />}
           {displayComp === 'Emoji' && <EmojiPicker onEmojiClick={onEmojiClick} searchDisabled />}
@@ -449,18 +459,13 @@ const MessageComposer = () => {
               </ul>
             </div>
             <div className="d-flex flex-row  align-items-right me-2">
-              <button
-                className="copy-icon"
-                onClick={() => {
-                  handleCopyToClipboard(message)
-                  toast.success('Message copied.')
-                }}
-                title="Copy the message"
-              >
-                <FaRegClipboard title="Copy the message" />
-              </button>
-              <button className="btn send-button d-flex me-2 align-items-center justify-content-center" type="button" onClick={handleInsertionToWebsite}>
-                Send
+              {isMatchingUrl && (
+                <button className="copy-icon" onClick={handleCopy} title="Copy the message">
+                  <FaRegClipboard title="Copy the message" />
+                </button>
+              )}
+              <button className="btn send-button d-flex me-2 align-items-center justify-content-center" type="button" onClick={isMatchingUrl ? handleInsertionToWebsite : handleCopy}>
+                {isMatchingUrl ? 'Send' : 'Copy'}
               </button>
             </div>
           </nav>

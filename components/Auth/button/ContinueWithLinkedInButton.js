@@ -6,7 +6,7 @@ const ContinueWithLinkedInButton = ({ setSocial, message }) => {
   const { handleSocialLogin } = useContext(AuthContext)
   return (
     <button
-      className="btn w-100 mb-2 text-white"
+      className="btn w-100  text-white"
       id="sign-in-with-linkedIn"
       onClick={() => {
         handleSocialLogin(1)

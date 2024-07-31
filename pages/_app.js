@@ -8,11 +8,12 @@ import { AuthProvider } from '../contexts/AuthContext'
 import { MediaUtilsProvider } from '../contexts/MediaUtilsContext'
 import { Toaster } from 'react-hot-toast'
 import { MessageProvider } from '../contexts/MessageContext'
-import { FpjsProvider } from '@fingerprintjs/fingerprintjs-pro-react'
+
 import { AppProps } from 'next/app'
 
 import Script from 'next/script'
 import { RecordingProvider } from '../contexts/RecordingContext'
+import { TimerProvider } from '../contexts/TimerContext'
 export default function App({ Component, pageProps }) {
   return (
     <>
@@ -20,11 +21,7 @@ export default function App({ Component, pageProps }) {
       <Script src="/bootstrap.min.js"></Script>
       <Script src="/popper.min.js"></Script>
 
-      <FpjsProvider
-        loadOptions={{
-          apiKey: 'DsKyYXvowdS8sg26bY0u',
-        }}
-      >
+      <TimerProvider>
         <MediaUtilsProvider>
           <GlobalStatesProvider>
             <ScreenProvider>
@@ -46,7 +43,7 @@ export default function App({ Component, pageProps }) {
             </ScreenProvider>
           </GlobalStatesProvider>
         </MediaUtilsProvider>
-      </FpjsProvider>
+      </TimerProvider>
     </>
   )
 }

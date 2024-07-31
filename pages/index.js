@@ -15,7 +15,6 @@ import Header from '../components/Header'
 import HelperVideos from '../Screens/HelperVideos'
 import SignInWith from '../Screens/SignInWith'
 import SubscriptionScreen from '../Screens/SubscriptionScreen'
-import { useVisitorData } from '@fingerprintjs/fingerprintjs-pro-react'
 import DevicesList from '../Screens/DevicesList'
 import { ThankYouScreen } from '../Screens/ThankYou'
 import RecordVideos from '../Screens/RecordVideos'
@@ -24,13 +23,184 @@ import ReportBug from '../Screens/ReportBug'
 import { PaymentScreen } from '../Screens/PaymentScreen'
 import CantUseScreen from '../Screens/CantUseScreen'
 import GlobalStatesContext from '../contexts/GlobalStates'
+import { useRecording } from '../contexts/RecordingContext'
+import { sendMessageToBackgroundScript } from '../lib/sendMessageToBackground'
+import { CameraScreen } from '../Screens/CameraScreen'
+import { useTimer } from '../contexts/TimerContext'
+import VideoRecording from '../Screens/VideoRecording'
 export default function Home() {
-  const { setTabId } = useContext(GlobalStatesContext)
+  const { setTabId, expandExtension, tabId, setIsMatchingUrl, setExpand, setIsLinkedin, setIsGmail, setIsProfilePage } = useContext(GlobalStatesContext)
+  const {
+    height,
+    setHeight,
+    width,
+    setWidth,
+    videoSettingsOpen,
+    setVideoSettingsOpen,
+    selectedVideoStyle,
+    setSelectedVideoStyle,
+    isRecordStart,
+    setIsRecordStart,
+    setIsVideo,
+    setIsScreenRecording,
+    setCaptureCameraWithScreen,
+    handleScreenVideoBlob,
+    stopMediaStreams,
+  } = useRecording()
+  const { startCountdown } = useTimer()
   const { verifyToken, isAuthenticated, newUser, isPro, setVersion, createUserDevice, ipAddress, operatingSystem, fingerPrint } = useContext(AuthContext)
   const { activePage, navigateToPage } = useContext(ScreenContext)
   const [isWebPage, setIsWebPage] = useState(false)
 
+  useEffect(() => {
+    // Define the handler inside the useEffect hook so it has access to the latest tabId
+    const messageHandler = (request, sender, sendResponse) => {
+      if (request.action === 'screenRecordingStopped' || request.action === 'resetState') {
+        chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
+          if (response.tabId && request.currentWebcamTabId && response.tabId == request.currentWebcamTabId) {
+            handleScreenVideoBlob(request)
+          } else {
+            setIsRecordStart(false)
+            setIsVideo(false)
+            setIsScreenRecording(false)
+            setIsRecordStart(false)
+          }
+          expandExtension()
+          setExpand(false)
+          navigateToPage('Home')
+        })
+        // Set the color for .header-text and svg inside #Header to #2d68c4
+        let skoopExtensionBody = document.getElementById('skoop-extension-body')
+        skoopExtensionBody.style.backgroundColor = 'transparent'
+        document.body.style.backgroundColor = 'var(--bs-body-bg)'
+        chrome.runtime.sendMessage({ action: 'resizeIframe', reset: true }, function (response) {
+          // console.log(response)
+        })
+      } else if (request.action == 'screenRecordingStarted') {
+        setIsRecordStart(true)
+        setIsVideo(true)
+        setIsScreenRecording(true)
+        setIsRecordStart(true)
+        setExpand(true)
+        if (!request.captureCameraWithScreen) {
+          let skoopExtensionBody = document.getElementById('skoop-extension-body')
+          if (skoopExtensionBody) {
+            skoopExtensionBody.style.setProperty('background-color', 'rgba(191, 191, 191, 0.5)', 'important')
+            document.body.style.backgroundColor = 'transparent'
+          }
+        } else {
+          navigateToPage('Camera')
+        }
+        if (request.countdown) {
+          startCountdown(3)
+        }
+
+        setCaptureCameraWithScreen(request.captureCameraWithScreen)
+        const message = { action: 'resizeIframe', width: request.captureCameraWithScreen ? request.width : '355', height: request.captureCameraWithScreen ? request.height : '100' }
+        chrome.runtime.sendMessage(message, function (response) {
+          // console.log(response)
+        })
+      } else if (request.action == 'showWebcam') {
+        chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
+          setWidth(request.width)
+          setHeight(request.height)
+          navigateToPage('Camera')
+          setCaptureCameraWithScreen(request.captureCameraWithScreen)
+          if (!request.captureCameraWithScreen) {
+            let skoopExtensionBody = document.getElementById('skoop-extension-body')
+            if (skoopExtensionBody) {
+              skoopExtensionBody.style.setProperty('background-color', 'rgba(191, 191, 191, 0.5)', 'important')
+              document.body.style.backgroundColor = 'transparent'
+            }
+          }
+          const message = { action: 'resizeIframe', width: request.captureCameraWithScreen ? request.width : '355', height: request.captureCameraWithScreen ? request.height : '100' }
+          chrome.runtime.sendMessage(message, function (response) {
+            // console.log(response)
+          })
+        })
+      } else if (request.action == 'closeWebcam') {
+        stopMediaStreams()
+        navigateToPage('Home')
+      }
+    }
+
+    // Add the message listener with the newly defined handler
+    chrome.runtime.onMessage.addListener(messageHandler)
+
+    // Make sure to remove the listener when the component unmounts or when tabId changes
+    return () => {
+      chrome.runtime.onMessage.removeListener(messageHandler)
+    }
+  }, [tabId, width, height])
   // Using useEffect to call getData on component mount
+  useEffect(() => {
+    if (chrome.tabs) {
+      // Query the tabs
+      sendMessageToBackgroundScript(
+        {
+          action: 'getTabId',
+        },
+        (res) => {
+          // Define the URLs to check against
+          if (res.source === 'tab') {
+            const linkedInBaseUrl = 'https://www.linkedin.com/'
+            const gmailBaseUrl = 'https://mail.google.com/'
+
+            // Initialize states
+            let isLinkedIn = false
+            let isLinkedInProfilePage = false
+            let isGmail = false
+
+            // Check and set states based on the URL
+            if (res.url.startsWith(linkedInBaseUrl)) {
+              isLinkedIn = true
+              if (res.url.includes('/in/')) {
+                // LinkedIn profile pages often include '/in/' in the URL
+                isLinkedInProfilePage = true
+              }
+              setIsMatchingUrl(true)
+            } else if (res.url.startsWith(gmailBaseUrl)) {
+              isGmail = true
+              setIsMatchingUrl(true)
+            }
+
+            // Now, we update the states accordingly
+            setTabId(res.tabId) // Update the tab ID state
+            setIsLinkedin(isLinkedIn) // Update the LinkedIn state
+            setIsProfilePage(isLinkedInProfilePage) // Update the LinkedIn profile page state
+            setIsGmail(isGmail)
+          } else {
+            navigateToPage('CantUseScreen')
+          } // Update the Gmail state
+        }
+      )
+    }
+  })
+
+  useEffect(() => {
+    ;(async () => {
+      const res = await verifyToken()
+      const showWelcomePage = localStorage.getItem('welcomePageShown')
+
+      if (isWebPage && chrome.tabs) {
+        // Query the tabs
+
+        if (isAuthenticated && newUser && !isPro) {
+          navigateToPage('Subscription')
+        } else if (isAuthenticated && newUser && isPro) {
+          navigateToPage('ThankYouScreen')
+        } else if (isAuthenticated && !isPro) {
+          navigateToPage('Subscription')
+        } else if (isAuthenticated && isPro) {
+          navigateToPage('Home')
+        } else if (!showWelcomePage) {
+          navigateToPage('Welcome')
+        } else if (!isAuthenticated) {
+          navigateToPage('SignInIntro')
+        }
+      }
+    })()
+  }, [isAuthenticated, newUser, isPro, isWebPage])
   useEffect(() => {
     if (chrome && chrome.runtime && chrome.runtime.getManifest) {
       const globalWindowObject = window
@@ -40,7 +210,7 @@ export default function Home() {
         setIsWebPage(true)
       } else {
         skoopExtensionBody.style.height = '500px'
-        navigateToPage('CantUseScreen')
+        navigateToPage('Home')
       }
       // Get the manifest using the getManifest() method
       const manifest = chrome.runtime.getManifest()
@@ -49,39 +219,6 @@ export default function Home() {
     }
   }, [])
 
-  useEffect(() => {
-    ;(async () => {
-      const res = await verifyToken()
-      const showWelcomePage = localStorage.getItem('welcomePageShown')
-
-      if (isWebPage && chrome.tabs) {
-        // Query the tabs
-        chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
-          const targetTab = tabs.find((tab) => tab.active && (tab.url.includes('https://www.linkedin.com') || tab.url.includes('https://mail.google.com')))
-          setTabId(targetTab.id)
-          if (targetTab && targetTab.url) {
-            if (targetTab.url.includes('https://www.linkedin.com') || targetTab.url.includes('https://mail.google.com/')) {
-              if (isAuthenticated && newUser && !isPro) {
-                navigateToPage('Subscription')
-              } else if (isAuthenticated && newUser && isPro) {
-                navigateToPage('ThankYouScreen')
-              } else if (isAuthenticated && !isPro) {
-                navigateToPage('Subscription')
-              } else if (isAuthenticated && isPro) {
-                navigateToPage('Home')
-              } else if (!showWelcomePage) {
-                navigateToPage('Welcome')
-              } else if (!isAuthenticated) {
-                navigateToPage('SignInIntro')
-              }
-            } else {
-              navigateToPage('CantUseScreen')
-            }
-          }
-        })
-      }
-    })()
-  }, [isAuthenticated, newUser, isPro, isWebPage])
   // let isAuthenticated = true;
   // let activePage = 'ThankYouScreen';
   // let isPro = true;
@@ -90,9 +227,11 @@ export default function Home() {
   return (
     <>
       <div id="skoop-extension-body">
-        {!['Welcome', 'SignInIntro', 'SignIn', 'SignUp', ' ', 'ForgotPassword', 'CantUseScreen'].includes(activePage) && <Header />}
+        {!['Welcome', 'SignInIntro', 'SignIn', 'SignUp', ' ', 'RecordVideo', 'ForgotPassword', 'CantUseScreen', 'Camera'].includes(activePage) && <Header />}
         {activePage === ' ' && <LoadingScreen />}
         {activePage === 'CantUseScreen' && <CantUseScreen />}
+        {activePage === 'Camera' && <CameraScreen />}
+        {activePage === 'RecordVideo' && <VideoRecording />}
         {isAuthenticated & isPro ? (
           <>
             {activePage === 'Home' && <Homepage />}

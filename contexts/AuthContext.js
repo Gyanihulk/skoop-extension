@@ -3,6 +3,7 @@ import API_ENDPOINTS from '../components/apiConfig'
 import ScreenContext from './ScreenContext'
 import toast from 'react-hot-toast'
 import { sendMessageToBackgroundScript } from '../lib/sendMessageToBackground'
+import { constants } from '../lib/constants'
 
 const AuthContext = createContext()
 
@@ -10,10 +11,10 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isPro, setIsPro] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
-  const { navigateToPage } = useContext(ScreenContext)
+  const { navigateToPage, activePage } = useContext(ScreenContext)
   const [newUser, setNewUser] = useState(false)
   const [loadingAuthState, setLoadingAuthState] = useState(true)
-  const [version, setVersion] = useState('0.0.18')
+  const [version, setVersion] = useState('0.0.0')
   const [ipAddress, setIpAddress] = useState('')
   const [operatingSystem, setOperatingSystem] = useState('')
   const [fingerPrint, setFingerPrint] = useState()
@@ -23,7 +24,7 @@ export const AuthProvider = ({ children }) => {
   const [gracePeriodCompletion, setGracePeriodCompletion] = useState(false)
   const [gracePeriod, setGracePeriod] = useState(0)
   const [userProfileDetail, setUserProfileDetail] = useState(null)
-
+  const [sessionDeletionToken, setSessionDeletionToken] = useState(null)
   const getProfileDetails = async () => {
     try {
       const response = await fetch(API_ENDPOINTS.profileDetails, {
@@ -106,11 +107,12 @@ export const AuthProvider = ({ children }) => {
           code: authCode,
           timezone,
           version: version,
+          type: activePage == 'SignUp' ? 'register' : 'sign-in',
         }),
       })
 
+      let result = await response.json()
       if (Number(response.status) === 200) {
-        let result = await response.json()
         setIsAuthenticated(true)
         localStorage.setItem('accessToken', JSON.stringify(result.accessToken))
         localStorage.setItem('skoopUsername', JSON.stringify(result.skoopUsername))
@@ -126,6 +128,7 @@ export const AuthProvider = ({ children }) => {
         }
       } else if (response.status == 401) {
         setShowClearSessionDialog(true)
+        setSessionDeletionToken(result.sessionDeletionToken)
       } else {
         toast.error('Could not sign in Correctly.', {
           className: 'custom-toast',
@@ -141,7 +144,7 @@ export const AuthProvider = ({ children }) => {
   const handleSocialLogin = async (type) => {
     try {
       if (type === 2) {
-        const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=232147382816-a6grr3l3366tp6kpaoran7fcctdmddij.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
+        const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${constants.googleClientId}&redirect_uri=${encodeURIComponent(
           chrome.identity.getRedirectURL()
         )}&scope=profile%20email%20openid%20&access_type=offline`
         chrome.identity.launchWebAuthFlow({ url: GoogleAuthUrl, interactive: true }, async function (redirectUrl) {
@@ -196,7 +199,7 @@ export const AuthProvider = ({ children }) => {
 
     navigateToPage(' ')
     if (type === 'google') {
-      const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=232147382816-a6grr3l3366tp6kpaoran7fcctdmddij.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
+      const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${constants.googleClientId}&redirect_uri=${encodeURIComponent(
         chrome.identity.getRedirectURL()
       )}&scope=https://www.googleapis.com/auth/calendar&access_type=offline&prompt=consent`
       chrome.identity.launchWebAuthFlow({ url: GoogleAuthUrl, interactive: true }, async function (redirectUrl) {
@@ -636,72 +639,23 @@ export const AuthProvider = ({ children }) => {
   }
   const deleteMyAllJwtSessionsBySocial = async (type) => {
     try {
-      if (type === 2) {
-        const GoogleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=232147382816-a6grr3l3366tp6kpaoran7fcctdmddij.apps.googleusercontent.com&redirect_uri=${encodeURIComponent(
-          chrome.identity.getRedirectURL()
-        )}&scope=profile%20email%20openid%20&access_type=offline`
-        chrome.identity.launchWebAuthFlow({ url: GoogleAuthUrl, interactive: true }, async function (redirectUrl) {
-          const code = new URL(redirectUrl).searchParams.get('code')
-          handleAuthCodeSessionDeletion(code, type)
-        })
-      } else {
-        const linkedInAuthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=77tjwbzu3cxt7m&redirect_uri=${encodeURIComponent(chrome.identity.getRedirectURL())}&scope=openid%20profile%20email`
-        chrome.identity.launchWebAuthFlow({ url: linkedInAuthUrl, interactive: true }, function (redirectUrl) {
-          const code = new URL(redirectUrl).searchParams.get('code')
-          handleAuthCodeSessionDeletion(code, type)
-        })
-      }
-    } catch (err) {
-      toast.error('Something went wrong, please try again', {
-        className: 'custom-toast',
-      })
-    }
-    try {
-      const res = await fetch(API_ENDPOINTS.deleteAllJwtSessions, {
-        method: 'POST',
+      const res = await fetch(API_ENDPOINTS.jwtSocialSessions, {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+          'Session-Deletion-Token': sessionDeletionToken,
         },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-        }),
       })
-
+      const responseData = await res.json()
       if (res.ok) {
         setShowClearSessionDialog(false)
-        toast.success('Please retry login')
-        return res
-      }
-    } catch (err) {
-      return { ok: false }
-    }
-  }
-  const handleAuthCodeSessionDeletion = async (authCode, type) => {
-    const url = type === 1 ? API_ENDPOINTS.linkedInLogInDeleteSession : API_ENDPOINTS.GoogleLogInDeleteSession
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-    try {
-      var response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-        },
-        body: JSON.stringify({
-          code: authCode,
-          timezone,
-          version: version,
-        }),
-      })
-      if (response.ok) {
+        setSocial(null)
         toast.success('Sessions deleted.Please login now')
-        setShowClearSessionDialog(false)
+      } else {
+        throw new Error(responseData.message)
       }
     } catch (err) {
-      console.error(err)
-      toast.error('Could not sign in', {
-        className: 'custom-toast',
-      })
+      toast.error(err.message)
     }
   }
 

@@ -22,34 +22,36 @@ const SignIn = () => {
     <div className="sign-in-main container px-4 pt-5">
       <div className="auth-head-content">
         <h1>Welcome Back!</h1>
-        <p>Sign in with email</p>
+        <p>Reconnect with your clients and reignite old connections.</p>
       </div>
-      <div className="sign-in-form mt-5">
+
+      <div className="mt-4">
+        {showClearSessionDialog && social != null && <RemoveSessions onDelete={handleDeleteSessions} />}
+
+        <ContinueWithGoogleButton setSocial={setSocial} message="Continue with Google" />
+        <ContinueWithLinkedInButton setSocial={setSocial} message="Continue with LinkedIn" />
+
+        <div className="text-center or-with-label mt-3">
+          <span>OR</span>
+        </div>
+      </div>
+      <div>
         <SignInForm />
       </div>
-      <div className="mt-4">
-        <div className="text-center mb-3 or-with-label">
-          <span>or Sign in with</span>
-        </div>
-        {showClearSessionDialog && social != null && <RemoveSessions onDelete={handleDeleteSessions} />}
-        <ContinueWithLinkedInButton setSocial={setSocial} message="Continue with LinkedIn" />
-        <ContinueWithGoogleButton setSocial={setSocial} message="Continue with Google" />
-
-        <div className="text-center mt-2 auth-footer-label">
-          New to Skoop?{' '}
-          <span onClick={() => navigateToPage('SignUp')} className="cursor-pointer fw-bold footer-font">
-            Create account
-          </span>
-        </div>
-        <div className="text-center mt-2 auth-footer-label">
-          <span onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/affiliate/sign-up')} className="cursor-pointer fw-bold footer-font">
-            Become an affiliate.
-          </span>
-        </div>
-        <div className="mt-2 cursor-pointer auth-footer-label d-flex flex-col justify-content-center">
-          <div onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/privacypolicy')}>Privacy Policy</div> &nbsp;|&nbsp;
-          <div onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/termsofuse')}>Terms of Use</div>
-        </div>
+      <div className="text-center mt-2 auth-footer-label">
+        New to Skoop?{' '}
+        <span onClick={() => navigateToPage('SignUp')} className="cursor-pointer fw-bold footer-font">
+          Create account
+        </span>
+      </div>
+      <div className="text-center mt-2 auth-footer-label">
+        <span onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/affiliate/sign-up')} className="cursor-pointer fw-bold footer-font">
+          Become an affiliate.
+        </span>
+      </div>
+      <div className="mt-2 cursor-pointer auth-footer-label d-flex flex-col justify-content-center">
+        <div onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/privacypolicy')}>Privacy Policy</div> &nbsp;|&nbsp;
+        <div onClick={() => openNewWindow(API_ENDPOINTS.skoopCalendarUrl + '/termsofuse')}>Terms of Use</div>
       </div>
     </div>
   )
