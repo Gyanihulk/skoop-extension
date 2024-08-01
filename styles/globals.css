@@ -2389,13 +2389,13 @@ img.icon-style-normal {
 
 .custom-textarea-global {
   color: #2a2b39 !important;
-  border-color: #a9aaabcc !important;
+  border: 1px solid #a9aaabcc !important;
   font-family: Montserrat, sans-serif !important;
   border-radius: 4px !important;
 }
 
 .custom-textarea-global:focus {
-  border-color: #ff8210 !important;
+  border: 1px solid #ff8210 !important;
   box-shadow: none !important;
 }
 

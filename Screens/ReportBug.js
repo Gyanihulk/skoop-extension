@@ -5,10 +5,11 @@ import CustomButton from '../components/Auth/button/CustomButton'
 import toast from 'react-hot-toast'
 import API_ENDPOINTS from '../components/apiConfig'
 import ThankYou from '../components/ThankYou'
+import { supportType } from "../constants";
 
 const ReportBug = ({ navigateTo }) => {
   const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
+  const [message, setMessage] = useState('')
   const [bugDocument, setBugDocument] = useState(null)
   const [showThankyouPage, setShowThankyouPage] = useState(false)
 
@@ -24,20 +25,21 @@ const ReportBug = ({ navigateTo }) => {
 
   const handleSubmit = async () => {
     if (title.trim() == '') {
-      toast.error('Title can not be empty!')
+      toast.error('Title is required!');
       return
-    } else if (description.trim() == '') {
-      toast.error('Descriptions can not be empty!')
+    } else if (message.trim() == '') {
+      toast.error('Message is required!');
       return
     }
 
     const formData = new FormData()
-    formData.append('title', title)
-    formData.append('description', description)
-    formData.append('bug_document', bugDocument)
+    formData.append('title', title);
+    formData.append('message', message);
+    formData.append('image', bugDocument);
+    formData.append('support_type', supportType.bugReport);
 
     try {
-      const res = await fetch(API_ENDPOINTS.createReportBugs, {
+      const res = await fetch(API_ENDPOINTS.createSupport, {
         method: 'POST',
         body: formData, // Use FormData here
         headers: {
@@ -47,15 +49,15 @@ const ReportBug = ({ navigateTo }) => {
       })
 
       if (res.ok) {
-        const jsonResponse = await res.json()
-        toast.success('Report Bug Created Successfully')
-        setBugDocument('')
-        setTitle('')
-        setDescription('')
-        setShowThankyouPage(true)
-      } else throw new Error('Error occoured while creating report bug')
+        const jsonResponse = await res.json();
+        toast.success('Report Bug Created Successfully');
+        setBugDocument('');
+        setTitle('');
+        setMessage('');
+        setShowThankyouPage(true);
+      } else throw new Error('Error occoured while creating report bug');
     } catch (err) {
-      toast.error('Error occoured while creating report bug')
+      toast.error('Error occoured while creating report bug');
     }
   }
 
@@ -68,10 +70,10 @@ const ReportBug = ({ navigateTo }) => {
           </div>
 
           <div className="container d-flex flex-column">
-            <h3 className="pageHeading mb-1">Report a Bug</h3>
+            <h3 className="pageHeading mb-1">Bug Reports</h3>
             <CustomInputBox placeholder="Enter title" onChange={(e) => setTitle(e.target.value)} value={title} />
-            <textarea value={description} className="mt-2 contact-info-custom-textarea custom-textarea-global" rows="4" placeholder="Enter description" onChange={(e) => setDescription(e.target.value)} />
-            <input type="file" className="form-control mt-2 input-file" id="imageUpload" name="imageUpload" accept="image/*" multiple onChange={handleFileChange} />
+            <textarea value={message} className="mt-2 contact-info-custom-textarea custom-textarea-global" rows="4" placeholder="Write a message..." onChange={(e) => setMessage(e.target.value)} />
+            <input type="file" className="form-control mt-2 input-file" id="imageUpload" name="imageUpload" accept="image/*" single onChange={handleFileChange} />
             <div className="mt-3">
               <CustomButton child="Submit" onClick={handleSubmit} />
             </div>

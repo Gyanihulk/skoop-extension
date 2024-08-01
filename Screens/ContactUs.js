@@ -5,45 +5,39 @@ import toast from 'react-hot-toast'
 import CustomInputBox from '../components/Auth/CustomInputBox'
 import API_ENDPOINTS from '../components/apiConfig'
 import ThankYou from '../components/ThankYou'
+import { enqueryOptions, supportType } from "../constants";
 
 const ContactUs = ({ navigateTo }) => {
-  const [subject, setSubject] = useState('')
+  const [title, setTitle] = useState('')
   const [message, setMessage] = useState('')
-  const [inquiry_type, setInquiryType] = useState('select')
   const [showThankyouPage, setShowThankyouPage] = useState(false)
-
-  const inqueryOptions = [
-    { label: 'Partnership', value: 'partnership' },
-    { label: 'Sales', value: 'sales' },
-    { label: 'Subscription', value: 'subscription' },
-    { label: 'Affiliate', value: 'affiliate' },
-    { label: 'Others', value: 'others' },
-  ]
+  const [enquiry_type, setEnquiryType] = useState('select')
 
   useEffect(() => {
     setShowThankyouPage(false)
   }, [])
 
   const handleSubmit = async () => {
-    if (subject.trim() == '') {
-      toast.error('Subject can not be empty!')
+    if (title.trim() == '') {
+      toast.error('Title is required!')
       return
     } else if (message.trim() == '') {
-      toast.error('Message can not be empty!')
+      toast.error('Message is required!')
       return
-    } else if (inquiry_type == 'select') {
-      toast.error('Inquiry Type can not be empty!')
+    } else if (enquiry_type == 'select') {
+      toast.error('Enquiry type is required!')
       return
     }
 
     try {
       const payload = JSON.stringify({
-        title: subject,
-        description: message,
-        inquiry_type: inquiry_type,
+        title: title,
+        message,
+        enquiry_type: enquiry_type,
+        support_type: supportType.contact,
       })
 
-      const res = await fetch(API_ENDPOINTS.createContactUs, {
+      const res = await fetch(API_ENDPOINTS.createSupport, {
         method: 'POST',
         body: payload,
         headers: {
@@ -53,11 +47,11 @@ const ContactUs = ({ navigateTo }) => {
       })
 
       if (res.ok) {
-        toast.success('Message sent successfully')
-        setSubject('')
-        setMessage('')
-        setInquiryType('select')
-        setShowThankyouPage(true)
+        toast.success('Message sent successfully');
+        setTitle('');
+        setMessage('');
+        setEnquiryType('select');
+        setShowThankyouPage(true);
       } else {
         const resData = await res.json()
         toast.error(resData.message)
@@ -77,13 +71,13 @@ const ContactUs = ({ navigateTo }) => {
 
           <div className="container d-flex flex-column">
             <h3 className="pageHeading mb-1">Contact Us</h3>
-            <CustomInputBox placeholder="Enter Subject" onChange={(e) => setSubject(e.target.value)} value={subject} />
+            <CustomInputBox placeholder="Enter Title" onChange={(e) => setTitle(e.target.value)} value={title} />
             <div className="form-group">
-              <select className={`form-control custom-input-box select-box ${inquiry_type != 'select' ? 'active' : ''}`} id="inquiry_type" name="inquiry_type" value={inquiry_type} onChange={(e) => setInquiryType(e.target.value)}>
+              <select className={`form-control custom-input-box select-box ${enquiry_type != 'select' ? 'active' : ''}`} id="enquiry_type" name="enquiry_type" value={enquiry_type} onChange={(e) => setEnquiryType(e.target.value)}>
                 <option value="select" disabled>
                   Select the Enquery Type
                 </option>
-                {inqueryOptions?.map((option) => (
+                {enqueryOptions?.map((option) => (
                   <option className="select-box-option" key={option.value} value={option.value}>
                     {option.label}
                   </option>
