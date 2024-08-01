@@ -31,7 +31,7 @@ const Welcome = () => {
         </div>
 
         <div className="app-version">
-          <p>Version 1.0.7</p>
+          <p>Version 1.0.8</p>
         </div>
       </div>
     </div>
