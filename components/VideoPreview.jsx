@@ -24,7 +24,7 @@ export const VideoPreview = () => {
   const { message, setMessage } = useContext(MessageContext)
   const [isDeleteModal, setIsDeleteModal] = useState(false)
   const { activePage } = useContext(ScreenContext)
-
+  const { getDownloadLink, getThumbnail } = useContext(MediaUtilsContext)
   useEffect(() => {
     if (latestVideo?.urlForThumbnail) {
       setThumbnailImage(latestVideo?.urlForThumbnail)
@@ -125,26 +125,9 @@ export const VideoPreview = () => {
     }
   }
 
-  const handleDownload = React.useCallback(() => {
-    if (latestBlob) {
-      const urlToDownload = latestBlob instanceof Blob ? window.URL.createObjectURL(latestBlob) : latestBlob
-
-      const a = document.createElement('a')
-      document.body.appendChild(a)
-      a.style = 'display: none'
-      a.href = urlToDownload
-      a.target = '_blank'
-      a.download = 'Skoop video.mp4'
-      a.click()
-
-      document.body.removeChild(a)
-
-      if (urlToDownload !== latestBlob) {
-        window.URL.revokeObjectURL(urlToDownload)
-      }
-    }
-  }, [latestBlob])
-
+  const handleDownload = async () => {
+    await getDownloadLink(latestVideo.facade_player_uuid)
+  }
   const onDeleteVideo = () => {
     handleDeleteClick()
     setLatestVideo()

@@ -140,20 +140,8 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
     const parts = video.link.split('/')
 
     const id = parts.pop()
-    const url = await getDownloadLink(id)
-    const anchor = document.createElement('a')
-    anchor.href = url
-    anchor.target = '_blank'
-    anchor.download = 'video.mp4'
-
-    // Append anchor to the body
-    document.body.appendChild(anchor)
-
-    // Trigger the download by simulating a click
-    anchor.click()
-
-    // Remove the anchor from the body
-    document.body.removeChild(anchor)
+     await getDownloadLink(id)
+   
   }
 
   return (

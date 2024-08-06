@@ -5,6 +5,7 @@ import GlobalStatesContext from './GlobalStates'
 import API_ENDPOINTS from '../components/apiConfig'
 import MessageContext from './MessageContext'
 import MediaUtilsContext from './MediaUtilsContext'
+import { sendMessageToContentScript } from '../lib/sendMessageToBackground'
 
 const RecordingContext = createContext()
 export const useRecording = () => {
@@ -161,7 +162,7 @@ export const RecordingProvider = ({ children }) => {
       setIsUploading(false)
       setCapturing(false)
     }
-    console.log(response)
+  
     if (response.videoBlob) {
       getBlobFromUrl(response.url).then(async (blob) => {
         setLatestBlob(blob)
@@ -182,6 +183,7 @@ export const RecordingProvider = ({ children }) => {
       setIsUploading(false)
       setCapturing(false)
     }
+
     if (response.videoBlob) {
       getBlobFromUrl(response.url).then(async (blob) => {
         setLatestBlob(blob)

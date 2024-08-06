@@ -6,6 +6,7 @@ import { useTimer } from '../contexts/TimerContext'
 import TimerDisplay from '../components/TimerDisplay'
 import ScreenContext from '../contexts/ScreenContext'
 import GlobalStatesContext from '../contexts/GlobalStates'
+import { sendMessageToContentScript } from '../lib/sendMessageToBackground'
 
 export const VideoRecording = () => {
   const { setIsRecording, setIsRecordStart, height, width, videoStream, setVideoStream, stopMediaStreams, handleVideoBlob } = useRecording()
@@ -120,6 +121,11 @@ export const VideoRecording = () => {
   }, [width, height])
 
   const toggleStop = () => {
+
+    sendMessageToContentScript({action:"moveToPosition"})
+    chrome.storage.sync.remove('recordingType', function() {
+      console.log('recordingType has been removed from Chrome storage');
+    })
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
       mediaRecorderRef.current.stop()
       stopMediaStreams()

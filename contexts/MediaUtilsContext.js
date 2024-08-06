@@ -31,8 +31,33 @@ export const MediaUtilsProvider = ({ children }) => {
           'Content-Type': 'application/json',
         },
       })
-      response = await response.json()
-      return response.downloadLink
+
+      if (response.status == 201) {
+        toast('Video is encoding, please try again later.', {
+          icon: '⚠️',
+          style: {
+            borderRadius: '8px',
+          },
+        })
+        return null
+      } else {
+        response = await response.json()
+        const anchor = document.createElement('a')
+        anchor.href = response.downloadLink
+        anchor.target = '_blank'
+        anchor.download = 'video.mp4'
+        console.log(anchor)
+
+        // Append anchor to the body
+        document.body.appendChild(anchor)
+
+        // Trigger the download by simulating a click
+        anchor.click()
+
+        // Remove the anchor from the body
+        document.body.removeChild(anchor)
+        return response.downloadLink
+      }
     } catch (err) {
       console.error('error while fetching thumbnails', err)
       return null

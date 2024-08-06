@@ -217,6 +217,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       showScreenRecordingTimer()
       applySavedScaleState()
     }
+    
     if (request.action === 'resizeIframe') {
       skoopExtensionContainer = document.getElementById('skoop-extension-container')
       if (request.reset) {
@@ -511,6 +512,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (document.body.contains(skoopVideoContainer)) {
         skoopVideoContainer.destroy()
       }
+    }
+    if (request.action === 'changePosition') {
+      // Check if the webcam container is not already in the current document's body
+      moveCameraToStoredPosition(request)
+    }
+    if (request.action === 'savePosition') {
+      // Check if the webcam container is not already in the current document's body
+      saveContainerPosition()
+    }
+    if (request.action === 'moveToPosition') {
+      // Check if the webcam container is not already in the current document's body
+      moveContainerToLastSavedPosition()
     }
     if (request.action === 'stopRecording') {
       const stopButton = document.getElementById('video-stop-button')

@@ -250,6 +250,8 @@ const RecordingButton = () => {
   //useable functions
 
   const startVideoCapture = async (event) => {
+    const key = 'recordingType';
+let label
     setIsRecordStart(true)
     setIsVideo(true)
     if (event) {
@@ -260,7 +262,7 @@ const RecordingButton = () => {
     }
     setLatestVideo(null)
     setLatestBlob(null)
-
+    sendMessageToContentScript({action:"savePosition"})
     if (isScreenRecording) {
       expandMinimizeExtension()
       sendMessageToBackgroundScript(
@@ -273,6 +275,8 @@ const RecordingButton = () => {
         },
         handleVideoBlob
       )
+      sendMessageToContentScript({action:"changePosition",left:"20px",top:"20px"})
+      chrome.storage.sync.set({ recordingType: "screen" });
     } else {
       // sendMessageToContentScript(
       //   {
@@ -284,8 +288,14 @@ const RecordingButton = () => {
       //   },
       //   handleVideoBlob
       // )
+      
       navigateToPage('RecordVideo')
+      sendMessageToContentScript({action:"changePosition",left:"50%",top:"50%"})
+      chrome.storage.sync.set({ recordingType: "candid" });
     }
+
+
+
   }
 
   const toggleStop = () => {

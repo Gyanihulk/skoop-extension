@@ -31,71 +31,107 @@ function injectIframe() {
   iframe.style.borderRadius = '10px'
 
   const dragButton = document.createElement('div');
-dragButton.id = 'skoop-drag-button';
-dragButton.style.left = '14px';
-dragButton.style.top = '13px';
-dragButton.style.width = '20px';
-dragButton.style.height = '20px';
-dragButton.style.position = 'absolute';
-dragButton.style.cursor = 'move';
-dragButton.title = 'Click and Drag To Move';
+  dragButton.id = 'skoop-drag-button';
+  dragButton.style.left = '10px';
+  dragButton.style.top = '10px';
+  dragButton.style.width = '170px';
+  dragButton.style.height = '25px';
+  dragButton.style.position = 'absolute';
+  dragButton.style.cursor = 'pointer';
+  dragButton.title = 'Click and Drag To Move';
+  const dragButtonIcon = document.createElement('div');
+  dragButtonIcon.style.width = '25px';
+  dragButtonIcon.style.height = '25px';
+  dragButtonIcon.style.backgroundImage = 'url("' + chrome.runtime.getURL('/icons/move.png') + '")';
+  dragButtonIcon.style.backgroundSize = 'cover';
+  dragButton.appendChild(dragButtonIcon)
+  dragButton.style.backgroundColor = 'rgba(65, 65, 65, 0.2)';
+  dragButton.style.borderRadius = '4px';
+  // Drag functionality
+  let isDragging = false;
+  let dragStartX, dragStartY;
 
-dragButton.style.backgroundImage = 'url("' + chrome.runtime.getURL('/icons/move.png') + '")';
-dragButton.style.backgroundSize = 'cover';
-dragButton.style.backgroundColor = 'rgba(65, 65, 65, 0.2)';
-dragButton.style.borderRadius = '4px';
-// Drag functionality
-let isDragging = false;
-let dragStartX, dragStartY;
+  const dragStart = (e) => {
+    if (e.buttons !== 1) return;
+    disableTextSelection();
+    isDragging = true;
+    dragStartX = e.clientX - container.offsetLeft;
+    dragStartY = e.clientY - container.offsetTop;
+    document.addEventListener('pointermove', dragMove);
+    document.addEventListener('pointerup', dragEnd);
+    document.addEventListener('pointerleave', dragEnd); 
+  };
 
-const dragStart = (e) => {
-  disableTextSelection();
-  isDragging = true;
-  dragStartX = e.clientX - container.offsetLeft;
-  dragStartY = e.clientY - container.offsetTop;
-  document.addEventListener('pointermove', dragMove);
-  document.addEventListener('pointerup', dragEnd);
-};
+  const dragMove = (e) => {
+    if (e.buttons !== 1) {
+      dragEnd(); // Call dragEnd to stop dragging
+      return; // Exit the function to prevent further dragging
+    }
+    if (isDragging) {
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const containerWidth = container.offsetWidth;
+      const containerHeight = container.offsetHeight;
 
-const dragMove = (e) => {
-  if (isDragging) {
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const containerWidth = container.offsetWidth;
-    const containerHeight = container.offsetHeight;
+      let newX = e.clientX - dragStartX;
+      let newY = e.clientY - dragStartY;
 
-    let newX = e.clientX - dragStartX;
-    let newY = e.clientY - dragStartY;
+      newX = Math.max(newX, 0);
+      newY = Math.max(newY, 0);
+      newX = Math.min(newX, viewportWidth - containerWidth);
+      newY = Math.min(newY, viewportHeight - containerHeight);
 
-    newX = Math.max(newX, 0);
-    newY = Math.max(newY, 0);
-    newX = Math.min(newX, viewportWidth - containerWidth);
-    newY = Math.min(newY, viewportHeight - containerHeight);
+      container.style.left = `${newX}px`;
+      container.style.top = `${newY}px`;
+    }
+  };
 
-    container.style.left = `${newX}px`;
-    container.style.top = `${newY}px`;
-  }
-};
+  const dragEnd = () => {
+    isDragging = false;
+    enableTextSelection();
+    document.removeEventListener('pointermove', dragMove);
+    document.removeEventListener('pointerup', dragEnd);
+    document.removeEventListener('pointerleave', dragEnd); 
+    chrome.storage.sync.get('recordingType', function(result) {
+      if (result.recordingType) {
+        let positionKey;
+        
+        // Determine which position key to use based on the recording type
+        if (result.recordingType === 'screen') {
+          positionKey = 'screenCamera';
+        } else if (result.recordingType === 'candid') {
+          positionKey = 'candidCamera';
+        }
+    
+        // If a valid position key was found, save the position
+        if (positionKey) {
+          const position = { left: container.style.left, top: container.style.top };
+    
 
-const dragEnd = () => {
-  isDragging = false;
-  enableTextSelection();
-  document.removeEventListener('pointermove', dragMove);
-  document.removeEventListener('pointerup', dragEnd);
+          const storageObject = {};
+          storageObject[positionKey] = position;
+    
+          chrome.storage.sync.set(storageObject, () => {
+            console.log(`${positionKey} saved:`, position);
+          });
+        }
+      } else {
+        console.log('No recordingType found.');
+      }
+    });
+    chrome.storage.sync.set({ 'containerPosition': { left: container.style.left, top: container.style.top } });
+    // Save the position to Chrome storage for persistence
+  };
 
-  // Save the position to Chrome storage for persistence
-  chrome.storage.sync.set({ 'containerPosition': { left: container.style.left, top: container.style.top } });
-};
-
-dragButton.addEventListener('pointerdown', dragStart);
+  dragButton.addEventListener('pointerdown', dragStart);
 
   // Create minimize/expand button
   const toggleButton = document.createElement('button')
   toggleButton.id = 'skoop-expand-minimize-button'
   toggleButton.style.display = 'none'
 
- // The height when the container is minimized
- toggleButton.onclick = function () {
+  // The height when the container is minimized
+  toggleButton.onclick = function () {
     let isMinimized = container.style.height == '44px';
     const resizer = document.getElementById('skoop-resizer-buttom')
     if (isMinimized) {
@@ -204,16 +240,16 @@ dragButton.addEventListener('pointerdown', dragStart);
     const extensionDimension = localStorage.getItem('skoopExtensionDimension')
     if (extensionDimension) {
       const { width, height } = JSON.parse(extensionDimension)
-          container.style.minWidth = width + 'px'
+      container.style.minWidth = width + 'px'
       container.style.width = width + 'px'
       container.style.height = height + 'px'
-    }else{
+    } else {
       container.style.height = '78vh'
     }
   }
 
 
-  
+
   // Create the scale down div without setting an initial background image
   var scaleDownDiv = document.createElement('div');
   scaleDownDiv.id = 'container-scale-down';
@@ -268,4 +304,103 @@ function applySavedScaleState() {
       scaleDownDiv.style.backgroundImage = 'url("' + chrome.runtime.getURL('/icons/minimize.png') + '")';
     }
   });
+}
+function changeContainerPosition(left, top) {
+  const container = document.getElementById('skoop-extension-container');
+
+  // Function to set vertical position by percentage
+  function setVerticalPositionByPercentage(topPercentage) {
+    // Calculate the top value based on the percentage of the viewport height
+    const viewportHeight = window.innerHeight;
+    const containerHeight = container.offsetHeight;
+    const centeredTop = (viewportHeight - containerHeight) * (parseFloat(topPercentage) / 100);
+    console.log(centeredTop)
+    container.style.top = `${centeredTop}px`;
+  }
+  
+  // Center the container if both left and top are '50%'
+  if (left === '50%' && top === '50%') {
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const containerWidth = container.offsetWidth;
+    const containerHeight = container.offsetHeight;
+    const centeredLeft = (viewportWidth - containerWidth) / 2;
+    const centeredTop = (viewportHeight - containerHeight) / 2;
+    
+    container.style.left = `${centeredLeft}px`;
+    container.style.top = `${centeredTop}px`;
+  } else {
+    // Set the left position directly (this can be in pixels or any other valid CSS unit)
+    container.style.left = left;
+    
+    // If top is a percentage, calculate the vertical position accordingly
+    if (top.endsWith('%')) {
+      setVerticalPositionByPercentage(top);
+    } else {
+      // If top is not a percentage, set the position directly
+      container.style.bottom = top;
+    }
+  }
+}
+
+function saveContainerPosition() {
+  const container = document.getElementById('skoop-extension-container');
+  const left = container.style.left;
+  const top = container.style.top;
+
+  // Save the position to Chrome storage
+  chrome.storage.sync.set({ 'lastExtensionPositionBeforeRecording': { left: left, top: top } }, function() {
+    console.log('Container position has been saved:', { left: left, top: top });
+  });
+}
+
+function moveContainerToLastSavedPosition() {
+  chrome.storage.sync.get('lastExtensionPositionBeforeRecording', function(result) {
+    const container = document.getElementById('skoop-extension-container');
+    if (result.lastExtensionPositionBeforeRecording) {
+      // Apply the saved position
+      container.style.left = result.lastExtensionPositionBeforeRecording.left;
+      container.style.top = result.lastExtensionPositionBeforeRecording.top;
+    } else {
+      console.log('No saved container position found. Keeping current position or setting default.');
+    }
+  });
+}
+
+function moveCameraToStoredPosition(request) {
+  chrome.storage.sync.get('recordingType', function(result) {
+    if (result.recordingType) {
+      let positionKey;
+      
+      // Determine which position key to use based on the recording type
+      if (result.recordingType === 'screen') {
+        positionKey = 'screenCamera';
+      } else if (result.recordingType === 'candid') {
+        positionKey = 'candidCamera';
+      }
+  
+      // If a valid position key was found, get the position
+      if (positionKey) {
+        chrome.storage.sync.get(positionKey, function(positionResult) {
+          if (positionResult[positionKey]) {
+            const { left, top } = positionResult[positionKey];
+            console.log(positionResult)
+            // Move the camera to the stored position
+            moveCamera(left, top);
+          } else {
+            changeContainerPosition(request.left,request.top)
+          }
+        });
+      }
+    } else {
+      console.log('No recordingType found.');
+    }
+  });
+}
+
+function moveCamera(left, top) {
+  const container = document.getElementById('skoop-extension-container');
+  container.style.left = left;
+  container.style.top = top;
+ 
 }
