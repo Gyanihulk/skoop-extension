@@ -378,17 +378,20 @@ function moveCameraToStoredPosition(request) {
       } else if (result.recordingType === 'candid') {
         positionKey = 'candidCamera';
       }
+
   
+      
       // If a valid position key was found, get the position
       if (positionKey) {
         chrome.storage.sync.get(positionKey, function(positionResult) {
           if (positionResult[positionKey]) {
             const { left, top } = positionResult[positionKey];
-            console.log(positionResult)
+    
             // Move the camera to the stored position
             moveCamera(left, top);
           } else {
-            changeContainerPosition(request.left,request.top)
+
+            changeContainerPosition(request.left, request.top);
           }
         });
       }
@@ -400,7 +403,24 @@ function moveCameraToStoredPosition(request) {
 
 function moveCamera(left, top) {
   const container = document.getElementById('skoop-extension-container');
-  container.style.left = left;
-  container.style.top = top;
- 
+  if (container) {
+
+    
+    // Explicitly set the position using setProperty
+    container.style.setProperty('left', left, 'important');
+    container.style.setProperty('top', top, 'important');
+
+    
+    // Force a repaint and reflow
+    container.offsetHeight;
+    
+    // Check the actual position using getBoundingClientRect
+    const rect = container.getBoundingClientRect();
+
+    
+    // Log computed styles for additional debugging
+    const computedStyles = window.getComputedStyle(container);
+  } else {
+    console.log("Container not found");
+  }
 }

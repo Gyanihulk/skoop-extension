@@ -2775,6 +2775,7 @@ img.icon-style-normal {
   padding: 5px 10px;
   border-radius: 5px;
   font-size: 16px;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .recording-action-container {
@@ -2821,6 +2822,7 @@ img.icon-style-normal {
 }
 
 .countdown-number {
+  font-family: 'Montserrat', sans-serif;
   font-size: 5rem;
   color: white;
   animation: fade 1s ease-in-out infinite;

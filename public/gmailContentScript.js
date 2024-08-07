@@ -475,22 +475,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (container) {
         applySavedScaleState()
         // Retrieve the position from Chrome storage
-        chrome.storage.sync.get('containerPosition', (data) => {
-          if (data.containerPosition) {
-            // Check if stored positions are not undefined
-            const { left, top } = data.containerPosition
-            if (left && top) {
-              // Set the position of the container
-              container.style.position = 'fixed' // Ensure it's positioned absolutely
-              container.style.left = left
-              container.style.top = top
-            }
-          } else {
-            // Optionally set a default position if nothing is stored
-            container.style.left = '14px' // Default left position
-            container.style.top = '13px' // Default top position
-          }
-        })
+        moveCameraToStoredPosition({left:"20px",top:"20px"})
+       
         const resizer = document.getElementById('skoop-resizer-buttom')
         if (resizer) {
           resizer.style.display = 'none'
