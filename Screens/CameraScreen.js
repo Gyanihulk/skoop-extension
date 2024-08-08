@@ -25,7 +25,7 @@ export const CameraScreen = () => {
       try {
         // Get saved device labels from Chrome storage
         
-        setTimeout(()=>{setIsDisabled(false)},3500)
+       
         chrome.storage.sync.get(['selectedVideoLabel'], async (result) => {
           const savedVideoLabel = result.selectedVideoLabel
 
@@ -59,6 +59,7 @@ export const CameraScreen = () => {
         console.error(err)
       }
     }
+    setTimeout(()=>{setIsDisabled(false)},3500)
     if (captureCameraWithScreen) {
       getMediaStream()
     }
