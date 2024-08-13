@@ -8,7 +8,7 @@ function GiphyWindow(props) {
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
   const [sizeOfGif, setSizeOfGif] = useState(20)
-  const { isGmail} = useContext(GlobalStatesContext)
+  const { isLinkedin ,isGmail} = useContext(GlobalStatesContext)
   const handleSearch = async () => {
     try {
       setLoading(true)
@@ -97,7 +97,7 @@ function GiphyWindow(props) {
         </div>
       )}
 
-      {results.length > 0 && !isLinkedin && (
+      {results.length > 0 && isGmail && (
         <div className="gif-input-content">
           <label>
             <input type="radio" name="gifSize" value="20" checked={sizeOfGif === 20} onChange={handleSizeChange} />
