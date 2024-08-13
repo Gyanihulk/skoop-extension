@@ -8,7 +8,7 @@ function GiphyWindow(props) {
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
   const [sizeOfGif, setSizeOfGif] = useState(20)
-  const { isLinkedin } = useContext(GlobalStatesContext)
+  const { isGmail} = useContext(GlobalStatesContext)
   const handleSearch = async () => {
     try {
       setLoading(true)
@@ -40,7 +40,7 @@ function GiphyWindow(props) {
 
   const handleInsertion = (url) => {
     const shortenedUrl = extractShortenedUrl(url)
-    if (!isLinkedin) {
+    if (isGmail) {
       props.appendToBody(`<img src=${shortenedUrl} style="width: ${sizeOfGif}%; height: auto;" >`)
     } else {
       props.appendToBody(shortenedUrl)

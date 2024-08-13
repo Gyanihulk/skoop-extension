@@ -189,9 +189,11 @@ function restartRecording(stream) {
   mediaRecorder.ondataavailable = function (e) {
     chunks.push(e.data)
   }
-
-  // Start the new recording
+setTimeout(()=>{
   mediaRecorder.start()
+},3000)
+  // Start the new recording
+
   mediaRecorder.onstop = async function (e) {
     if (!isRestarting) {
       // Original stop logic
