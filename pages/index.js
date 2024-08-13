@@ -28,6 +28,7 @@ import { sendMessageToBackgroundScript } from '../lib/sendMessageToBackground'
 import { CameraScreen } from '../Screens/CameraScreen'
 import { useTimer } from '../contexts/TimerContext'
 import VideoRecording from '../Screens/VideoRecording'
+import { useUserSettings } from '../contexts/UserSettingsContext'
 export default function Home() {
   const { setTabId, expandExtension, tabId, setIsMatchingUrl, setExpand, setIsLinkedin, setIsGmail, setIsProfilePage } = useContext(GlobalStatesContext)
   const {
@@ -176,12 +177,14 @@ export default function Home() {
       )
     }
   })
-
+const {fetchMySettings}=useUserSettings();
   useEffect(() => {
     ;(async () => {
       const res = await verifyToken()
       const showWelcomePage = localStorage.getItem('welcomePageShown')
-
+if(isAuthenticated){
+  fetchMySettings()
+}
       if (isWebPage && chrome.tabs) {
         // Query the tabs
 

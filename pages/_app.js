@@ -14,6 +14,7 @@ import { AppProps } from 'next/app'
 import Script from 'next/script'
 import { RecordingProvider } from '../contexts/RecordingContext'
 import { TimerProvider } from '../contexts/TimerContext'
+import { UserSettingsProvider } from '../contexts/UserSettingsContext'
 export default function App({ Component, pageProps }) {
   return (
     <>
@@ -28,15 +29,18 @@ export default function App({ Component, pageProps }) {
               <AuthProvider>
                 <MessageProvider>
                   <RecordingProvider>
+                    <UserSettingsProvider>
+
                     <Toaster
                       position="top-right"
                       toastOptions={{
                         className: 'custom-toast',
                         duration: 3000,
                       }}
-                    />
+                      />
 
                     <Component {...pageProps} />
+                      </UserSettingsProvider>
                   </RecordingProvider>
                 </MessageProvider>
               </AuthProvider>
