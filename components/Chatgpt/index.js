@@ -135,7 +135,7 @@ const ChatGpt = ({ appendToBody, close }) => {
     setNewPrompt(prompt)
   }, [prompt])
 
-  const sendPrompt = async (event) => {
+  const generateResponse = async (event) => {
     event.preventDefault()
     try {
       setLoading(true)
@@ -464,7 +464,7 @@ const ChatGpt = ({ appendToBody, close }) => {
               <textarea id="chatgpt-msg-box" className="form-control custom-textarea-global" placeholder="Ask ChatGPT..." name="cgpt" value={cgpt} onChange={handleChange} rows="4" />
             </div>
             <div className="d-flex justify-content-end ">
-              <button type="button" className="generate-response" onClick={sendPrompt}>
+              <button type="button" className="generate-response" onClick={generateResponse}>
                 Generate response
               </button>
             </div>

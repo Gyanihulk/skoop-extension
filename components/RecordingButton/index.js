@@ -91,36 +91,7 @@ const RecordingButton = () => {
       // Function to get the selected media stream
       const getMediaStream = async () => {
         try {
-          const videoStream = await navigator.mediaDevices.getUserMedia({
-            video: { deviceId: selectedVideoDevice },
-          })
-          const audioStream = await navigator.mediaDevices.getUserMedia({
-            audio: { deviceId: selectedAudioDevice },
-          })
-          setVideoStream(videoStream)
-          setAudioStream(audioStream)
-
-          // Initialize the continuous visualizer with the audio stream and canvas
-          visualizerRef.current = continuousVisualizer(audioStream, canvasRef.current, {})
-          visualizerRef.current.start()
-        } catch (err) {
-          console.error(err)
-        }
-      }
-
-      getMediaStream()
-    } else {
-      stopMediaStreams()
-    }
-
-    // Cleanup function to stop media streams when the component unmounts or videoSettingsOpen changes
-    return () => {
-      stopMediaStreams()
-    }
-  }, [selectedVideoDevice, selectedAudioDevice, videoSettingsOpen])
-  useEffect(() => {
-    // Request permission to access media devices and enumerate them
-    navigator.mediaDevices
+          navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         // Stop the stream to avoid using the camera/microphone
@@ -152,7 +123,69 @@ const RecordingButton = () => {
       .catch((err) => {
         console.log(err.name + ': ' + err.message)
       })
-  }, [])
+
+          const videoStream = await navigator.mediaDevices.getUserMedia({
+            video: { deviceId: selectedVideoDevice },
+          })
+          const audioStream = await navigator.mediaDevices.getUserMedia({
+            audio: { deviceId: selectedAudioDevice },
+          })
+          setVideoStream(videoStream)
+          setAudioStream(audioStream)
+
+          // Initialize the continuous visualizer with the audio stream and canvas
+          visualizerRef.current = continuousVisualizer(audioStream, canvasRef.current, {})
+          visualizerRef.current.start()
+        } catch (err) {
+          console.error(err)
+        }
+      }
+
+      getMediaStream()
+    } else {
+      stopMediaStreams()
+    }
+
+    // Cleanup function to stop media streams when the component unmounts or videoSettingsOpen changes
+    return () => {
+      stopMediaStreams()
+    }
+  }, [selectedVideoDevice, selectedAudioDevice, videoSettingsOpen])
+  // useEffect(() => {
+  //   // Request permission to access media devices and enumerate them
+  //   navigator.mediaDevices
+  //     .getUserMedia({ video: true, audio: true })
+  //     .then((stream) => {
+  //       // Stop the stream to avoid using the camera/microphone
+  //       stream.getTracks().forEach((track) => track.stop())
+  //       // Enumerate devices after permission has been granted
+  //       return navigator.mediaDevices.enumerateDevices()
+  //     })
+  //     .then((devices) => {
+  //       setVideoDevices(devices.filter((device) => device.kind === 'videoinput'))
+  //       setAudioDevices(devices.filter((device) => device.kind === 'audioinput'))
+
+  //       // Load saved device labels and select corresponding devices
+  //       chrome.storage.sync.get(['selectedVideoLabel', 'selectedAudioLabel'], (result) => {
+  //         const savedVideoLabel = result.selectedVideoLabel
+  //         const savedAudioLabel = result.selectedAudioLabel
+
+  //         const videoDevice = devices.find((device) => device.label === savedVideoLabel)
+  //         const audioDevice = devices.find((device) => device.label === savedAudioLabel)
+
+  //         if (videoDevice) {
+  //           setSelectedVideoDevice(videoDevice.deviceId)
+  //         }
+
+  //         if (audioDevice) {
+  //           setSelectedAudioDevice(audioDevice.deviceId)
+  //         }
+  //       })
+  //     })
+  //     .catch((err) => {
+  //       console.log(err.name + ': ' + err.message)
+  //     })
+  // }, [])
 
   const saveSelectedDevice = (deviceType, label) => {
     const key = deviceType === 'video' ? 'selectedVideoLabel' : 'selectedAudioLabel'
