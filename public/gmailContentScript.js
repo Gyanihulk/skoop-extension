@@ -659,7 +659,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
       return true
     }
-
+     if (request.action == 'openExtension') {
+      const toggleButton = document.getElementById('skoop-extension-button')
+      toggleButton.click()
+    }
     return true
   } catch (err) {
     console.error(err)

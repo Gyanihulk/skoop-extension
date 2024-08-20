@@ -18,6 +18,7 @@
     "audioCapture","desktopCapture",
     "videoCapture","activeTab"
   ],
+  
   "web_accessible_resources": [
     {
       "resources": ["index.html","icons/icon.png","icons/move.png","icons/resize.png","icons/minimize.png","icons/maximize.png"],
@@ -41,7 +42,7 @@
   },
   "host_permissions": ["<all_urls>"],
     "action": {
-    "default_popup": "index.html"
+    "default_title": "Click to perform an action"
   },
   "background": {
     "service_worker": "background.js",

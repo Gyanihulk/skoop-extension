@@ -12,6 +12,7 @@ import Tooltip from 'react-bootstrap/Tooltip'
 import { closestCenter, DndContext, DragOverlay, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { useUserSettings } from '../../contexts/UserSettingsContext'
 
 const renderTooltip = (props) => (
   <Tooltip id="button-tooltip" {...props}>
@@ -62,6 +63,8 @@ const ChatGpt = ({ appendToBody, close }) => {
   const [isDeleteModal, setIsDeleteModal] = useState(false)
   const [deleteTemplate, setDeleteTemplate] = useState()
   const [isDragging, setIsDragging] = useState(false)
+  const { userSettings ,fetchMySettings} = useUserSettings()
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -137,7 +140,16 @@ const ChatGpt = ({ appendToBody, close }) => {
 
   const generateResponse = async (event) => {
     event.preventDefault()
+    
     try {
+      if(cgpt==''){
+        toast.error("Please enter a prompt to generate a response.")
+        return
+      }
+      if(!userSettings.fullAccess && userSettings.remainingPrompts<=0){
+        toast.error("You have reached the limit of free prompt calls.")
+        return
+      }
       setLoading(true)
       toast.success('Generating response...')
       const choices = await fetch(API_ENDPOINTS.cgpt + new URLSearchParams({ input: cgpt }), {
@@ -154,6 +166,7 @@ const ChatGpt = ({ appendToBody, close }) => {
       appendToBody(response.choices[0].message.content)
       toast.success('Response generated & added to sendbox.')
       setResponseGenerated(true)
+      fetchMySettings()
     } catch (err) {
       toast.error('could not get chatGpt response')
     }
@@ -463,10 +476,13 @@ const ChatGpt = ({ appendToBody, close }) => {
             <div className="col-12 mb-2">
               <textarea id="chatgpt-msg-box" className="form-control custom-textarea-global" placeholder="Ask ChatGPT..." name="cgpt" value={cgpt} onChange={handleChange} rows="4" />
             </div>
-            <div className="d-flex justify-content-end ">
+            <div className="d-flex justify-content-between">
+              {' '}
+              <div className="heading">{userSettings.fullAccess?"":`Remaining Prompt:${userSettings.remainingPrompts}`}</div>
               <button type="button" className="generate-response" onClick={generateResponse}>
-                Generate response
-              </button>
+                {' '}
+                Generate response{' '}
+              </button>{' '}
             </div>
           </div>
         </div>

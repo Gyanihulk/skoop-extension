@@ -164,7 +164,9 @@ export const RecordingProvider = ({ children }) => {
     }
   
     if (response.videoBlob) {
+      console.log(response)
       getBlobFromUrl(response.url).then(async (blob) => {
+        console.log(blob)
         setLatestBlob(blob)
         setIsUploading(true)
         const response = await uploadVideo(blob, getCurrentDateTimeString(), 'New', height, width)

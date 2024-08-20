@@ -52,7 +52,7 @@ export default function Home() {
   const { verifyToken, isAuthenticated, newUser, isPro, setVersion, createUserDevice, ipAddress, operatingSystem, fingerPrint } = useContext(AuthContext)
   const { activePage, navigateToPage } = useContext(ScreenContext)
   const [isWebPage, setIsWebPage] = useState(false)
-
+  const {fetchMySettings}=useUserSettings();
   useEffect(() => {
     // Define the handler inside the useEffect hook so it has access to the latest tabId
     const messageHandler = (request, sender, sendResponse) => {
@@ -70,6 +70,7 @@ export default function Home() {
           setExpand(false)
           navigateToPage('Home')
         })
+        fetchMySettings()
         // Set the color for .header-text and svg inside #Header to #2d68c4
         let skoopExtensionBody = document.getElementById('skoop-extension-body')
         skoopExtensionBody.style.backgroundColor = 'transparent'
@@ -177,7 +178,7 @@ export default function Home() {
       )
     }
   })
-const {fetchMySettings}=useUserSettings();
+
   useEffect(() => {
     ;(async () => {
       const res = await verifyToken()

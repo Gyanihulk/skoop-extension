@@ -23,6 +23,7 @@ import RecordStart from '../RecordStart/index.js'
 import { useRecording } from '../../contexts/RecordingContext.js'
 import { sendMessageToBackgroundScript, sendMessageToContentScript } from '../../lib/sendMessageToBackground.js'
 import ScreenContext from '../../contexts/ScreenContext.js'
+import { useUserSettings } from '../../contexts/UserSettingsContext.js'
 
 const RecordingButton = () => {
   const {
@@ -71,7 +72,7 @@ const RecordingButton = () => {
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const visualizerRef = useRef({ start: () => {}, stop: () => {}, reset: () => {} })
-
+const{userSettings}=useUserSettings();
   // Function to stop the media streams
   const stopMediaStreams = () => {
     if (videoStream) {
@@ -283,8 +284,12 @@ const RecordingButton = () => {
   //useable functions
 
   const startVideoCapture = async (event) => {
-    const key = 'recordingType';
-let label
+
+    if(!userSettings?.fullAccess && userSettings?.remainingVideos<=0){
+      toast.error("You have reached the limit of free videos.")
+      return
+    }
+
     setIsRecordStart(true)
     setIsVideo(true)
     if (event) {
@@ -311,16 +316,7 @@ let label
       sendMessageToContentScript({action:"changePosition",left:"20px",top:"20px"})
       chrome.storage.sync.set({ recordingType: "screen" });
     } else {
-      // sendMessageToContentScript(
-      //   {
-      //     action: 'startRecording',
-      //     height,
-      //     width:width,
-      //     isScreenRecording,
-      //     captureCameraWithScreen,
-      //   },
-      //   handleVideoBlob
-      // )
+      
       
       navigateToPage('RecordVideo')
       sendMessageToContentScript({action:"changePosition",left:"50%",top:"50%"})

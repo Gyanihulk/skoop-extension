@@ -26,7 +26,7 @@ export const UserSettingsProvider = ({ children }) => {
       })
       response=await response.json()
       console.log(response)
-      setUserSettings(response.data);
+      setUserSettings(response);
     } catch (error) {
       console.error('Error fetching user settings:', error);
       // Handle error (e.g., show notification)

@@ -9,6 +9,21 @@ let previousWebcamTabId = null
 let isRecordingPaused = false
 let pausedTime = 0
 let captureCameraWithScreen
+
+chrome.action.onClicked.addListener((tab) => {
+  console.log(tab,"clicked")
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs.length > 0) {
+        // Send a message to the active tab
+        console.log(tabs[0].id)
+        chrome.tabs.sendMessage(tabs[0].id, { action: "openExtension" }, (response) => {
+            console.log("Message sent to active tab:", response);
+        });
+    }
+});
+});
+
+
 const startScreenRecording = async () => {
   await chrome.tabs.query({ active: true, lastFocusedWindow: true, currentWindow: true }, async function (tabs) {
     // Get current tab to focus on it after start recording on recording screen tab

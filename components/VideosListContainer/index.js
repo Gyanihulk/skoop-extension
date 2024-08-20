@@ -3,11 +3,12 @@ import MessageContext from '../../contexts/MessageContext'
 import GlobalStatesContext from '../../contexts/GlobalStates'
 import Library from '../Library'
 import { FaArrowLeft } from 'react-icons/fa'
+import { useUserSettings } from '../../contexts/UserSettingsContext'
 
 const VideosListContainer = () => {
   const { addMessage } = useContext(MessageContext)
   const { totalMediaCount, setIsVideoContainer } = useContext(GlobalStatesContext)
-
+  const { userSettings } = useUserSettings()
   const handleInsertion = (text) => {
     const newText = text + ' \n '
     addMessage(newText)
@@ -23,6 +24,7 @@ const VideosListContainer = () => {
           </div>
           <h4 className="profile-name mb-0 pb-0 ms-2">Back</h4>
         </div>
+          <div className="mx-1 media-count">{userSettings.fullAccess?"":`Remaining Videos:${userSettings.remainingVideos}`}</div>
         <div className="me-3 media-count">Media Count: {totalMediaCount}</div>
       </div>
 

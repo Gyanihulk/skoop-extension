@@ -12,9 +12,8 @@ import { IoMdClose } from 'react-icons/io'
 import { handleCopyToClipboard } from '../../utils/index.js'
 
 const Library = (props) => {
-  const [links, setLinks] = useState([])
-  const [open, setOpen] = useState(false)
-  const [dirs, setDirs] = useState([])
+
+
   const [openNewFolder, setOpenNewFolder] = useState(0)
   const [currentDirectory, setCurrentDirectory] = useState('')
   const [fav, setFav] = useState(false)
@@ -22,7 +21,6 @@ const Library = (props) => {
   const { getThumbnail } = useContext(MediaUtilsContext)
   const [activeTab, setActiveTab] = useState('New')
   const [favorites, setFavorites] = useState([])
-  const [tabName, setTabName] = useState('')
   const [folders, setFolders] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
@@ -40,7 +38,6 @@ const Library = (props) => {
 
   const handleNewTab = () => {
     setOpenNewFolder(true)
-    setTabName('')
   }
 
   const updateFavoritesState = async () => {
@@ -246,7 +243,6 @@ const Library = (props) => {
           },
         })
         const dirsData = await dirsResponse.json()
-        setDirs(dirsData)
 
         // Fetch all links
         const linksResponse = await fetch(API_ENDPOINTS.linkData, {
@@ -257,7 +253,6 @@ const Library = (props) => {
           },
         })
         const linksData = await linksResponse.json()
-        setLinks(linksData)
 
         updateFavoritesState(linksData)
       } catch (err) {
