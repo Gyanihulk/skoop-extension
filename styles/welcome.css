@@ -3,6 +3,7 @@
   background: linear-gradient(to bottom, #2d68c4, #1a3b6e);
   position: relative;
   overflow: hidden;
+  font-family: 'Montserrat', sans-serif;
 }
 
 @keyframes animateWelcomeContainer {
@@ -28,7 +29,7 @@
   left: 50%;
   width: 8rem;
   padding: 2rem;
-  transform: translate(-50%, -20%);
+  transform: translate(-50%, -70%);
   display: flex;
   justify-content: center;
   animation: animateWelcomeContainer 2s ease-out forwards;
@@ -41,7 +42,7 @@
 
 .logo-image-container {
   position: absolute;
-  top: 70%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   height: 100vh;
@@ -86,7 +87,13 @@
     font-size: 28px;
   }
 }
-
+.top-header h4,
+h6 {
+  color: #eee3fc !important;
+}
+.subscription-option-welcome h5 {
+  color: #000;
+}
 .logo-content h3 {
   font-family: 'Montserrat', sans-serif;
   font-size: 20px;
@@ -96,12 +103,20 @@
   animation: animateLogoTitle 2s ease-out forwards;
   animation-delay: 1500ms;
 }
+.top-header h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: white;
+  margin-top: -0.5rem;
+  animation-delay: 1500ms;
+}
 
 @keyframes animateDescription {
   from {
     opacity: 0;
     visibility: hidden;
-    margin-top: 3rem;
+    margin-top: 0;
   }
   to {
     visibility: visible;
@@ -109,19 +124,22 @@
     margin-top: 0;
   }
 }
-
+.welcome-content {
+  padding-left: 10px;
+  padding-right: 10px;
+}
 .welcome-content p {
   font-family: 'Montserrat', sans-serif;
   text-align: center;
   font-weight: 500;
   font-size: 12px;
   color: white;
-  margin-top: 3rem;
-  padding: 0.5rem 2rem 0;
+  margin-top: 0;
+
   visibility: hidden;
   opacity: 0;
   animation: animateDescription 1s ease-out forwards;
-  animation-delay: 2s;
+  animation-delay: 0.5s;
 }
 
 @keyframes animationGetStartBtn {
@@ -136,13 +154,18 @@
     margin-top: 1rem;
   }
 }
-
 .welcome-content .get-started-btn {
   visibility: hidden;
   opacity: 0;
   margin-top: 15rem;
   animation: animationGetStartBtn 2s ease-out forwards;
   animation-delay: 4s;
+}
+.welcome-content .top-header {
+  text-align: center;
+}
+.welcome-content .top-header img {
+  height: 120px;
 }
 
 @keyframes animateVersion {
@@ -155,9 +178,9 @@
 }
 
 .app-version {
-  width: 100px;
+  /* width: 100px;
   left: -3rem;
-  position: absolute;
+  position: absolute; */
   bottom: 10rem;
   animation: animateVersion 2s ease-out forwards;
   animation-delay: 1500ms;
@@ -168,4 +191,28 @@
   font-family: 'Montserrat', sans-serif;
   font-size: 16px;
   font-weight: 500;
+}
+
+.subscription-option-welcome {
+  margin-bottom: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding-left: 20px;
+  color: #000;
+  background-color: #eee3fc;
+}
+.subscription-option-welcome p {
+  color: #000;
+}
+
+
+.coupon-text {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.check-icon {
+  vertical-align: middle;
+  margin-bottom: 0.125em; /* Adjust as needed */
 }

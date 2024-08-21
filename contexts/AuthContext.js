@@ -25,6 +25,9 @@ export const AuthProvider = ({ children }) => {
   const [gracePeriod, setGracePeriod] = useState(0)
   const [userProfileDetail, setUserProfileDetail] = useState(null)
   const [sessionDeletionToken, setSessionDeletionToken] = useState(null)
+  const [coupon, setCoupon] = useState('')
+  const [couponValid, setCouponValid] = useState(false)
+  const [couponInfo, setCouponInfo] = useState()
   const getProfileDetails = async () => {
     try {
       const response = await fetch(API_ENDPOINTS.profileDetails, {
@@ -709,7 +712,7 @@ export const AuthProvider = ({ children }) => {
         userProfileDetail,
         setUserProfileDetail,
         getProfileDetails,
-        getCtaInfo,
+        getCtaInfo,coupon, setCoupon,couponInfo, setCouponInfo,couponValid, setCouponValid
       }}
     >
       {children}

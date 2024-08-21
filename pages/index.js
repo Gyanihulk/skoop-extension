@@ -29,6 +29,8 @@ import { CameraScreen } from '../Screens/CameraScreen'
 import { useTimer } from '../contexts/TimerContext'
 import VideoRecording from '../Screens/VideoRecording'
 import { useUserSettings } from '../contexts/UserSettingsContext'
+import WelcomeAppsumo from '../Screens/WelcomeAppsumo'
+import WelcomeStripe from '../Screens/WelcomeStripe'
 export default function Home() {
   const { setTabId, expandExtension, tabId, setIsMatchingUrl, setExpand, setIsLinkedin, setIsGmail, setIsProfilePage } = useContext(GlobalStatesContext)
   const {
@@ -265,6 +267,8 @@ if(isAuthenticated){
             {activePage === 'SignUp' && <SignUp />}
             {activePage == 'ForgotPassword' && <ForgotPassword />}
             {activePage == 'Welcome' && <Welcome />}
+            {activePage == 'WelcomeStripe' && < WelcomeStripe/>}
+            {activePage == 'WelcomeAppsumo' && <WelcomeAppsumo />}
             {activePage == 'SignInIntro' && <SignInWith />}
           </>
         )}

@@ -7,17 +7,23 @@ import TimerDisplay from '../components/TimerDisplay'
 import ScreenContext from '../contexts/ScreenContext'
 import GlobalStatesContext from '../contexts/GlobalStates'
 import { sendMessageToContentScript } from '../lib/sendMessageToBackground'
+import { useUserSettings } from '../contexts/UserSettingsContext'
 
 export const VideoRecording = () => {
-  const { setIsRecording, setIsRecordStart, height, width, videoStream, setVideoStream, stopMediaStreams, handleVideoBlob } = useRecording()
-  const { stopTimer, startCountdown, isPaused, resumeTimer, pauseTimer, startMainTimer } = useTimer()
+  const { setIsRecording, setIsRecordStart, height, width, videoStream, setVideoStream, stopMediaStreams, handleVideoBlob ,captureCameraWithScreen,isRecording} = useRecording()
+  const { stopTimer, startCountdown, isPaused, resumeTimer, pauseTimer, startMainTimer ,seconds} = useTimer()
   const mediaRecorderRef = useRef(null)
   const { expandExtension } = useContext(GlobalStatesContext)
   const { navigateToPage } = useContext(ScreenContext)
   const recordedChunksRef = useRef([])
   const isRestartingRef = useRef(false)
   const [countdown, setCountdown] = useState(null)
-
+  const {fetchMySettings}=useUserSettings();
+  useEffect(()=>{console.log(captureCameraWithScreen,seconds,isRecording)
+    if(seconds>=120 && isRecording){
+      toggleStop();
+      fetchMySettings()
+  }})
   useEffect(() => {
     if (countdown !== null) {
       const timer = countdown > 0 ? setTimeout(() => setCountdown(countdown - 1), 1000) : null
@@ -34,6 +40,7 @@ export const VideoRecording = () => {
   const initiateCountdown = () => {
     setCountdown(3)
   }
+  
   useEffect(() => {
     const getMediaStream = async () => {
       try {
@@ -76,6 +83,7 @@ export const VideoRecording = () => {
               stream.getTracks().forEach((track) => track.stop())
             }
             handleVideoBlob({ videoBlob: blob, url })
+            fetchMySettings();
             URL.revokeObjectURL(url)
             navigateToPage('Home')
           }
