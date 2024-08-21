@@ -87,8 +87,7 @@
     font-size: 28px;
   }
 }
-.top-header h4,
-h6 {
+.top-header h4, .top-header h6 {
   color: #eee3fc !important;
 }
 .subscription-option-welcome h5 {

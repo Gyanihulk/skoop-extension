@@ -171,10 +171,6 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
             <button title={video.is_favourite ? 'Remove from favorites' : 'Add to favorites'} className="btn btn-link btn-sm video-card-footer-button" onClick={handleToggleFavouriteClick}>
               {video.is_favourite ? <FaStar className="text-primary" size={10} /> : <FaRegStar size={10} />}
             </button>
-
-            <button title="Rename video" className="btn btn-link btn-sm video-card-footer-button" onClick={handleRenameClick}>
-              <FaPencilAlt size={10} />
-            </button>
             <button title="Move video to another folder" className="btn btn-link btn-sm video-card-footer-button" onClick={handleMoveClick}>
               <MdMoveUp size={10} />
             </button>
@@ -209,6 +205,14 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
         {showPreviewPopup && <VideoPreviewPopup video={video} onClose={handleClosePreviewPopup} />}
 
         <DeleteModal middleContent={newTitle} show={isDeleteModal} onHide={() => setIsDeleteModal(false)} onDelete={() => onDeleteVideo()} />
+      </div>
+      <div className='video-details d-flex justify-content-between align-items-center py-0'>
+          <div className='video-title d-flex align-items-center flex-wrap'>
+          <h6 className='card-title mb-0'>{video.video_title}</h6>
+          </div>
+          <button title="Rename video" className="btn btn-link btn-sm video-card-rename-button mb-0" onClick={handleRenameClick}>
+              <FaPencilAlt size={10} />
+            </button>
       </div>
     </div>
   )

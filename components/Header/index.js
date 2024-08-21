@@ -17,9 +17,10 @@ import { TbArrowsDiagonalMinimize2 } from 'react-icons/tb'
 import { TbArrowsDiagonal } from 'react-icons/tb'
 import { RiDashboard2Line } from 'react-icons/ri'
 import { useRecording } from '../../contexts/RecordingContext.js'
+import { appChromeWebStoreLink } from "../../constants.js"
 
 export default function Header() {
-  const { isAuthenticated, handleLogOut, isPro, gracePeriodCompletion, gracePeriod } = useContext(AuthContext)
+  const { isAuthenticated, handleLogOut, isPro, gracePeriodCompletion, gracePeriod, showVersionNotification } = useContext(AuthContext)
   const { navigateToPage, activePage } = useContext(ScreenContext)
   const { setScraperPage, scraperPage, isProfilePage, expand, expandMinimizeExtension } = useContext(GlobalStatesContext)
 
@@ -238,6 +239,11 @@ export default function Header() {
           <div class="notification-div">Please verify your email in next {gracePeriod} days to continue using the app</div>
         </div>
       )}
+      { showVersionNotification && <div className="version-notification">
+         <a href={appChromeWebStoreLink} target="_blank" rel="noreferrer">
+        <h6>New version available, please click here to update</h6>
+        </a>
+      </div>}
     </>
   )
 }

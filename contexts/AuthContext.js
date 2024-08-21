@@ -25,6 +25,7 @@ export const AuthProvider = ({ children }) => {
   const [gracePeriod, setGracePeriod] = useState(0)
   const [userProfileDetail, setUserProfileDetail] = useState(null)
   const [sessionDeletionToken, setSessionDeletionToken] = useState(null)
+  const [showVersionNotification, setShowVersionNotification] = useState(false)
   const [coupon, setCoupon] = useState('')
   const [couponValid, setCouponValid] = useState(false)
   const [couponInfo, setCouponInfo] = useState()
@@ -85,6 +86,9 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true)
         setGracePeriod(resjson.gracePeriod)
         navigateToPage('Home')
+
+        setShowVersionNotification(resjson?.showVersionNotification || false);
+
       } else if (response.status == 401) {
         setShowClearSessionDialog(true)
       } else {
@@ -129,6 +133,9 @@ export const AuthProvider = ({ children }) => {
         } else {
           navigateToPage('Home')
         }
+
+        setShowVersionNotification(result?.showVersionNotification || false);
+
       } else if (response.status == 401) {
         setShowClearSessionDialog(true)
         setSessionDeletionToken(result.sessionDeletionToken)
@@ -285,6 +292,7 @@ export const AuthProvider = ({ children }) => {
         })
         setIsAuthenticated(true)
         navigateToPage('Home')
+        setShowVersionNotification(resjson?.showVersionNotification || false);
       } else
         toast.error('Email already exists ', {
           id: toastId,
@@ -306,6 +314,7 @@ export const AuthProvider = ({ children }) => {
       if (res.ok) {
         if (response?.isPro) {
           setIsPro(response.isPro)
+          setShowVersionNotification(response?.showVersionNotification || false);
         }
         setGracePeriodCompletion(response.gracePeriodCompleted)
         setGracePeriod(response.gracePeriod)
@@ -712,7 +721,9 @@ export const AuthProvider = ({ children }) => {
         userProfileDetail,
         setUserProfileDetail,
         getProfileDetails,
-        getCtaInfo,coupon, setCoupon,couponInfo, setCouponInfo,couponValid, setCouponValid
+        getCtaInfo,coupon, setCoupon,couponInfo, setCouponInfo,couponValid, setCouponValid,
+        showVersionNotification, 
+        setShowVersionNotification
       }}
     >
       {children}

@@ -8,7 +8,9 @@
     "16": "/icons/icon.png",
     "32": "/icons/icon.png",
     "48": "/icons/icon.png",
-    "128": "/icons/icon.png"
+    "128": "/icons/icon.png",
+    "256": "/icons/RegularExtensionIcon.png",
+    "512": "/icons/HoverExtensionIcon.png"
   },
   "permissions": [
     "identity",         
@@ -21,7 +23,7 @@
   
   "web_accessible_resources": [
     {
-      "resources": ["index.html","icons/icon.png","icons/move.png","icons/resize.png","icons/minimize.png","icons/maximize.png"],
+      "resources": ["index.html","icons/icon.png","icons/move.png","icons/resize.png","icons/minimize.png","icons/maximize.png", "icons/RegularExtensionIcon.png", "icons/HoverExtensionIcon.png"],
       "matches": ["<all_urls>"]
     }
   ],

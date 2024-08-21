@@ -2126,7 +2126,8 @@ img.icon-style-normal {
 .video-card-footer-button:last-child {
   border-right: none !important;
 }
-
+.video-card-rename-button{    line-height: 5px !important;
+  padding: 0px !important;}
 .video-card {
   width: 100%;
   border: none !important;
@@ -2839,4 +2840,57 @@ img.icon-style-normal {
   100% {
     opacity: 1;
   }
+}
+
+.video-title {
+  width:80%;
+  text-overflow: inherit;
+  white-space: wrap;
+  overflow: hidden;
+}
+
+.video-title h6 {
+  text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    width: 100%;
+    overflow-x: hidden !important;
+}
+
+.video-details button {
+  margin-bottom:4px !important;
+}
+
+.version-notification {
+  display: flex !important;
+  flex-direction: column !important; /* Stack children vertically */
+  align-items: center !important; /* Center content horizontally */
+  width: 100% !important; /* Full width of the container */
+  background-color: #FFF3CD !important;
+  cursor: pointer !important;
+}
+
+.version-notification a {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  text-decoration: none !important;
+  color: #2a2b39 !important;
+}
+
+.version-notification h6 {
+  background-color: #FFF3CD !important;
+  font-size: 12px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important; /* Center text vertically and horizontally */
+  flex-grow: 1 !important; /* Allow the div to grow to fit its content */
+  min-height: 20px !important; /* Minimum height of 20px */
+  max-height: 36px !important; /* Maximum height of 36px to limit excessive growth */
+  transition: max-height 0.3s ease; /* Smooth transition for height */
+  overflow: hidden !important; /* Ensure no overflow */
+  text-align: center !important;
+  width: 100%;
+  margin-top: 4px !important;
 }

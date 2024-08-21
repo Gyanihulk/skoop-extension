@@ -9,6 +9,8 @@ const enqueryOptions = [
 const supportType = {
   contact: 'contact',
   bugReport: 'bug',
-}
+} 
 
-export { enqueryOptions, supportType }
+const appChromeWebStoreLink = "https://chromewebstore.google.com/detail/skoop-instant-video-for-l/gplimcomjkejccjoafekbjedgmlclpag";
+
+export { enqueryOptions, supportType, appChromeWebStoreLink }

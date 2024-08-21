@@ -40,11 +40,10 @@ function createButton() {
   buttonContainer.className = 'extension-button'
   buttonContainer.style.position = 'fixed'
   buttonContainer.style.top = '10px'
-  buttonContainer.style.right = '10px'
-  buttonContainer.style.width = '40px'
-  buttonContainer.style.height = '40px'
-  buttonContainer.style.borderRadius = '50%'
-  buttonContainer.style.backgroundImage = 'url("' + chrome.runtime.getURL('/icons/icon.png') + '")'
+  buttonContainer.style.right = '0px'
+  buttonContainer.style.width = '73px'
+  buttonContainer.style.height = '37px'
+  buttonContainer.style.backgroundImage = 'url("' + chrome.runtime.getURL('/icons/RegularExtensionIcon.png') + '")'
   buttonContainer.style.backgroundSize = 'cover'
   buttonContainer.style.backgroundPosition = 'center'
   buttonContainer.style.backgroundRepeat = 'no-repeat'
@@ -53,41 +52,118 @@ function createButton() {
   buttonContainer.style.alignItems = 'center'
   buttonContainer.style.justifyContent = 'center'
   buttonContainer.style.cursor = 'pointer'
+  buttonContainer.setAttribute('tabindex', '0');
+  buttonContainer.style.transition = 'all 0.3s ease';
+  buttonContainer.style.transform = "translateX(18px)";
 
   // Add click event listener to the button
-  buttonContainer.addEventListener('click', injectIframe)
+  buttonContainer.addEventListener('click', handleInjectIframe)
+  let isDragging = false;
+  let dragStartY;
+  let initialTop = parseInt(buttonContainer.style.top, 10);
+  var clickDisabled = false;
 
-  // Gmail insertion
-  // var accountButtonParent = document.querySelector(".gb_Pd");
+  chrome.storage.local.get('extensionButton', (result) => { 
+    if (result.extensionButton) {
+      buttonContainer.style.top = result.extensionButton.top
+    } else {
+        buttonContainer.style.top = '10px'
+    }
+  })
 
-  // // Append the new button to the right of the account button
-  // if (accountButtonParent) {
-  //     accountButtonParent.appendChild(buttonContainer);
-  // } else {
-  //     console.error("Account button parent element not found.");
-  // }
+  function disableTextSelection() {
+    document.body.style.userSelect = 'none' // for most browsers
+    document.body.style.webkitUserSelect = 'none' // for Safari and Chrome
+    document.body.style.MozUserSelect = 'none' // for Firefox
+    document.body.style.msUserSelect = 'none' // for IE and Edge
+  }
 
-  //     if(url=="mail.google.com"){
-  //         const headers1 = document.getElementsByTagName('header');
-  //         if (headers1.length > 0) {
-  //             const headerElement = headers1[0];
-  //             const secondChild = headerElement.children[1].children[2].children[0];
-  //             headerElement.children[1].children[2].children[0].children[1].style.display="flex";
-  //             secondChild.style.display="flex";
-  //             secondChild.style.top="-6px";
-  //             secondChild.insertBefore(buttonContainer,headerElement.children[1].children[2].children[0].children[1])
-  //             // secondChild.appendChild(buttonContainer);
+  function enableTextSelection() {
+    document.body.style.userSelect = ''
+    document.body.style.webkitUserSelect = ''
+    document.body.style.MozUserSelect = ''
+    document.body.style.msUserSelect = ''
+  }
 
-  //         } else {
-  //             console.log('No header element found');
-  //         }
-  // }else{
-  //     buttonContainer.style.position = 'fixed';
-  //     buttonContainer.style.top = '15px';
-  //     buttonContainer.style.right = '43px';
-  // }
-  document.body.appendChild(buttonContainer)
+  const handleFocus = () => {
+       buttonContainer.style.backgroundImage = 'url("' + chrome.runtime.getURL('/icons/HoverExtensionIcon.png') + '")'
+       buttonContainer.style.transform = "translateX(0px)";
+  };
+  
+  const handleBlur = () => {
+      buttonContainer.style.backgroundImage = 'url("' + chrome.runtime.getURL('/icons/RegularExtensionIcon.png') + '")';
+      buttonContainer.style.transform = "translateX(18px)";
+  };
+
+  // Add hover effect using pointer events
+  buttonContainer.addEventListener('pointerenter', handleFocus);
+  buttonContainer.addEventListener('pointerleave', handleBlur);
+
+  let wasDragged = false;
+
+  const dragStart = (e) => {
+    if (e.buttons !== 1) return;
+    wasDragged = false;
+    disableTextSelection();
+    initialTop = parseInt(buttonContainer.style.top, 10);
+    isDragging = true;
+    dragStartY = e.clientY;
+    document.addEventListener('pointermove', dragMove);
+    document.addEventListener('pointerup', dragEnd);
+    document.addEventListener('pointerleave', dragEnd); 
+  };
+
+
+  const dragMove = (e) => {
+    if (e.buttons !== 1) {
+      dragEnd(); // Call dragEnd to stop dragging
+      return; // Exit the function to prevent further dragging
+    }
+    if (isDragging) {
+      wasDragged = true;
+      const viewportHeight = window.innerHeight;
+      const containerHeight = buttonContainer.offsetHeight;
+      let deltaY = e.clientY - dragStartY;
+      let newTop = initialTop + deltaY;
+      newTop = Math.max(newTop, 0);
+      newTop = Math.min(newTop, viewportHeight - containerHeight);
+      buttonContainer.style.top = `${newTop}px`;
+    }
+  };
+
+  const dragEnd = (e) => {
+    e.preventDefault();
+    isDragging = false;
+    enableTextSelection();
+    document.removeEventListener('pointermove', dragMove);
+    document.removeEventListener('pointerup', dragEnd);
+    document.removeEventListener('pointerleave', dragEnd); 
+    
+    setTimeout(() => {
+      clickDisabled = false;
+    }, 1000); 
+  
+    const position = {
+      top: buttonContainer.style.top,
+    };
+  
+    chrome.storage.local.set({ extensionButton: position });
+  };
+
+
+  function handleInjectIframe (e) {
+    if (wasDragged) {
+      e.preventDefault();
+      wasDragged = false;
+      return;
+    }
+    injectIframe(e); 
+  }
+
+  buttonContainer.addEventListener('pointerdown', dragStart);
+  document.body.appendChild(buttonContainer);
 }
+
 function collectClasses() {
   const allElements = document.querySelectorAll('*')
   const classes = Array.from(allElements)
