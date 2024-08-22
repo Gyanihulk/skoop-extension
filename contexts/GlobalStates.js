@@ -16,7 +16,7 @@ export const GlobalStatesProvider = ({ children }) => {
   const [latestVideo, setLatestVideo] = useState()
   const [latestBlob, setLatestBlob] = useState()
   const [newTitle, setNewTitle] = useState()
-  const [subscriptionType, setSubscriptionType] = useState('monthly')
+  
   const [totalMediaCount, setTotalMediaCount] = useState()
   const [isVideoContainer, setIsVideoContainer] = useState(false)
   const [isTimezoneScreen, setIsTimezoneScreen] = useState(false)
@@ -98,8 +98,6 @@ export const GlobalStatesProvider = ({ children }) => {
         setLatestBlob,
         newTitle,
         setNewTitle,
-        subscriptionType,
-        setSubscriptionType,
         totalMediaCount,
         setTotalMediaCount,
         isVideoContainer,

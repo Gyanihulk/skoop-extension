@@ -8,8 +8,8 @@ import CustomButton from '../components/Auth/button/CustomButton'
 import { FaCheckCircle } from 'react-icons/fa'
 
 const WelcomeAppsumo = () => {
-  const { verifyCoupon, coupon, setCoupon, setSocial, couponInfo, setCouponInfo, couponValid, setCouponValid } = useContext(AuthContext)
-  const { subscriptionType, setSubscriptionType } = useContext(GlobalStatesContext)
+  const { subscriptionType, setSubscriptionType,verifyCoupon, coupon, setCoupon, setSocial, couponInfo, setCouponInfo, couponValid, setCouponValid } = useContext(AuthContext)
+
   const handleSubscriptionChange = (type) => {
     setSubscriptionType(type)
   }

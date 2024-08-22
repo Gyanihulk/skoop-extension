@@ -200,7 +200,9 @@ if(isAuthenticated){
         } else if (isAuthenticated && isPro) {
           navigateToPage('Home')
         } else if (!showWelcomePage) {
+          
           navigateToPage('Welcome')
+
         } else if (!isAuthenticated) {
           navigateToPage('SignInIntro')
         }

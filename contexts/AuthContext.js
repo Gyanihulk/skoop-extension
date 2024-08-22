@@ -29,6 +29,7 @@ export const AuthProvider = ({ children }) => {
   const [coupon, setCoupon] = useState('')
   const [couponValid, setCouponValid] = useState(false)
   const [couponInfo, setCouponInfo] = useState()
+  const [subscriptionType, setSubscriptionType] = useState('monthly')
   const getProfileDetails = async () => {
     try {
       const response = await fetch(API_ENDPOINTS.profileDetails, {
@@ -114,25 +115,59 @@ export const AuthProvider = ({ children }) => {
           code: authCode,
           timezone,
           version: version,
-          type: activePage == 'SignUp' ? 'register' : 'sign-in',
+          type: activePage == 'SignUp' || activePage == 'WelcomeAppsumo' || activePage == 'WelcomeStripe' ? 'register' : 'sign-in',
+          subscriptionType,coupon
         }),
       })
 
       let result = await response.json()
       if (Number(response.status) === 200) {
-        setIsAuthenticated(true)
+        console.log(result)
+        
+       
         localStorage.setItem('accessToken', JSON.stringify(result.accessToken))
         localStorage.setItem('skoopUsername', JSON.stringify(result.skoopUsername))
         sendMessageToBackgroundScript({
           action: 'storeToken',
           token: result.accessToken,
         })
-        if (result.newUser) {
+        if(result?.paymentUrl){
+          chrome.identity.launchWebAuthFlow({ url: result?.paymentUrl, interactive: true }, async function (redirectUrl) {
+            if (chrome.runtime.lastError || !redirectUrl) {
+              // Handle errors or user cancellation here
+              console.error(chrome.runtime.lastError ? chrome.runtime.lastError.message + 'test' : 'No redirect URL')
+              let res = await fetch(API_ENDPOINTS.createSubscription, {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json; charset=UTF-8',
+                  authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                },
+              })
+  
+              setIsAuthenticated(false)
+              navigateToPage('SignInIntro')
+              return
+            }
+            const sessionId = new URL(redirectUrl).searchParams.get('session_id')
+            if (sessionId) {
+              setIsPro(true)
+              navigateToPage('Home')
+            }
+          })
+          setCouponValid(false)
+          setCouponInfo()
+          setCoupon("")
+          return
+        }else{
+          setIsAuthenticated(true)
+ if (result.newUser) {
           setNewUser(true)
           navigateToPage('CalendarSync')
         } else {
           navigateToPage('Home')
         }
+        }
+       
 
         setShowVersionNotification(result?.showVersionNotification || false);
 
@@ -261,7 +296,9 @@ export const AuthProvider = ({ children }) => {
 
   const handleRegister = async (fullname, email, password, timezone) => {
     try {
-      if (!validatePassword(password)) {
+    
+      
+      if (!validatePassword(password) && !couponValid) {
         toast.error('Password should contain minimum 8 characters, at least one uppercase letter, and one special character')
         return
       }
@@ -274,6 +311,7 @@ export const AuthProvider = ({ children }) => {
           password: password,
           timezone: timezone,
           version: version,
+          subscriptionType,coupon
         }),
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
@@ -282,7 +320,7 @@ export const AuthProvider = ({ children }) => {
       if (res.ok) {
         const resjson = await res.json()
         localStorage.setItem('accessToken', JSON.stringify(resjson.accessToken))
-        toast.success('Success! A verification email has been sent to your inbox. Please confirm your email address to complete the login process.', {
+        toast.success('Success! A verification email has been sent to your inbox. Please confirm your email address to complete the registration process.', {
           id: toastId,
         })
         localStorage.setItem('skoopUsername', JSON.stringify(resjson.skoopUsername))
@@ -290,14 +328,47 @@ export const AuthProvider = ({ children }) => {
           action: 'storeToken',
           token: resjson.accessToken,
         })
-        setIsAuthenticated(true)
-        navigateToPage('Home')
+        console.log(resjson ,couponValid)
+        if(couponValid && resjson?.paymentUrl){
+          chrome.identity.launchWebAuthFlow({ url: resjson?.paymentUrl, interactive: true }, async function (redirectUrl) {
+            if (chrome.runtime.lastError || !redirectUrl) {
+              // Handle errors or user cancellation here
+              console.error(chrome.runtime.lastError ? chrome.runtime.lastError.message + 'test' : 'No redirect URL')
+              let res = await fetch(API_ENDPOINTS.createSubscription, {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json; charset=UTF-8',
+                  authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                },
+              })
+  
+              setIsAuthenticated(false)
+              navigateToPage('SignInIntro')
+              return
+            }
+            const sessionId = new URL(redirectUrl).searchParams.get('session_id')
+            if (sessionId) {
+              setIsPro(true)
+              navigateToPage('Home')
+            }
+          })
+          setCouponValid(false)
+          setCouponInfo()
+          setCoupon("")
+          return
+
+        }else{
+          setIsAuthenticated(true)
+          navigateToPage('Home')
+        }
+      
         setShowVersionNotification(resjson?.showVersionNotification || false);
       } else
         toast.error('Email already exists ', {
           id: toastId,
         })
     } catch (err) {
+      console.log(err)
       toast.dismiss()
       toast.error('Something Went Wrong')
     }
@@ -723,7 +794,7 @@ export const AuthProvider = ({ children }) => {
         getProfileDetails,
         getCtaInfo,coupon, setCoupon,couponInfo, setCouponInfo,couponValid, setCouponValid,
         showVersionNotification, 
-        setShowVersionNotification
+        setShowVersionNotification,subscriptionType, setSubscriptionType
       }}
     >
       {children}

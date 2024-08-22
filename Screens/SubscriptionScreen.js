@@ -9,8 +9,8 @@ import ConfirmationModal from '../components/ConfirmationModal'
 
 const SubscriptionScreen = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
-  const { createSubscription, verifyCoupon, getMySubscription } = useContext(AuthContext)
-  const { subscriptionType, setSubscriptionType } = useContext(GlobalStatesContext)
+  const { createSubscription, verifyCoupon, getMySubscription,subscriptionType, setSubscriptionType } = useContext(AuthContext)
+
   const [sessionUrl, setSessionUrl] = useState('')
   const handleSubscriptionChange = (type) => {
     setSubscriptionType(type)

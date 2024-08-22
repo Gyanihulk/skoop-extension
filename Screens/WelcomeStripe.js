@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import CustomInputBox from '../components/Auth/CustomInputBox'
 import AuthContext from '../contexts/AuthContext'
 import ContinueWithGoogleButton from '../components/Auth/button/ContinueWithGoogleButton'
@@ -8,13 +8,28 @@ import CustomButton from '../components/Auth/button/CustomButton'
 import { FaCheckCircle } from 'react-icons/fa'
 
 const WelcomeStripe = () => {
-  const { verifyCoupon, coupon, setCoupon, setSocial, couponInfo, setCouponInfo, couponValid, setCouponValid } = useContext(AuthContext)
-  const { subscriptionType, setSubscriptionType } = useContext(GlobalStatesContext)
+  const { subscriptionType, setSubscriptionType,verifyCoupon, coupon, setCoupon,handleRegister, setSocial, couponInfo, setCouponInfo, couponValid, setCouponValid } = useContext(AuthContext)
   const handleSubscriptionChange = (type) => {
     setSubscriptionType(type)
   }
   const monthlyPrice = 47; // Original monthly price
   const yearlyPrice = 451; // Original yearly price
+  const [showEmailInput, setShowEmailInput] = useState(false);
+  const [email, setEmail] = useState('');
+
+  const handleEmailButtonClick = async () => {
+    if (!showEmailInput) {
+      // If the input box is not shown yet, show it
+      setShowEmailInput(true);
+    } else {
+      // If the input box is shown and email is entered, call the API
+      if (email) {
+       await handleRegister(   email.split('@')[0],email,null,Intl.DateTimeFormat().resolvedOptions().timeZone); 
+      }
+    }
+  };
+
+  
 
   // Calculate discounted prices
   const discountedMonthlyPrice = couponInfo?.discount?.percent_off
@@ -64,8 +79,8 @@ const WelcomeStripe = () => {
           <div className="subscription-option-welcome d-flex flex-row align-items-center">
             <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'monthly'} onChange={() => handleSubscriptionChange('monthly')} />
             <div className="ps-4 pt-2">
-            <h5>${discountedMonthlyPrice} Monthly</h5>
-            <p>Real Price : $ {monthlyPrice} /month</p>
+            <h5>$ {discountedMonthlyPrice} Monthly</h5>
+            <p>Original Price : $ {monthlyPrice} /month</p>
             </div>
           </div>
           <div className="subscription-option-welcome d-flex flex-row align-items-center">
@@ -74,8 +89,8 @@ const WelcomeStripe = () => {
             </div>
 
             <div className="ps-4 pt-2">
-            <h5>${discountedYearlyPrice} Yearly</h5>
-            <p>Real Price : $ {yearlyPrice} /year</p>
+            <h5>$ {discountedYearlyPrice} Yearly</h5>
+            <p>Original Price : $ {yearlyPrice} /year</p>
             </div>
           </div>
         </div>
@@ -83,10 +98,28 @@ const WelcomeStripe = () => {
           <ContinueWithGoogleButton setSocial={setSocial} message="Continue with Google" />
           <ContinueWithLinkedInButton setSocial={setSocial} message="Continue with LinkedIn" />
         </div>
-
-        <div className="mt-4">
-          <CustomButton child="Continue with Email" onClick={() => {}} />
+        <div className="text-center or-with-label mt-3">
+          <p>OR</p>
         </div>
+        <div className="mt-3">
+        {showEmailInput && (
+          <CustomInputBox
+            type="text"
+            placeholder="Enter Email"
+            name="email"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
+            isEmpty={''} 
+          />
+        )}
+         <div className={showEmailInput && "mt-3"}>
+         <CustomButton
+          child={showEmailInput ? 'Activate with Email' : 'Continue with Email'}
+          onClick={handleEmailButtonClick}
+        />
+         </div>
+        
+      </div>
       </div>
     </div>
   )
