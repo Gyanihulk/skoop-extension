@@ -8,7 +8,7 @@ import toast from 'react-hot-toast'
 const Welcome = () => {
   const { navigateToPage } = useContext(ScreenContext)
   
-  const {  verifyCoupon,coupon, setCoupon,setCouponInfo,setCouponValid} = useContext(AuthContext)
+  const {  verifyCoupon,coupon, setCoupon,setCouponInfo,setCouponValid,setSubscriptionType} = useContext(AuthContext)
   const handleGetStarted = () => {
     navigateToPage('SignUp')
     localStorage.setItem('welcomePageShown', true)
@@ -31,6 +31,7 @@ const Welcome = () => {
     setCouponValid(true)
     
     if(response?.appSumoCoupon){
+      setSubscriptionType("appsumo")
       navigateToPage("WelcomeAppsumo")
     }else if(response?.stripeCoupon){
       navigateToPage("WelcomeStripe")
