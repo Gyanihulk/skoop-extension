@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import CustomInputBox from '../components/Auth/CustomInputBox'
 import AuthContext from '../contexts/AuthContext'
 import ContinueWithGoogleButton from '../components/Auth/button/ContinueWithGoogleButton'
@@ -6,15 +6,25 @@ import ContinueWithLinkedInButton from '../components/Auth/button/ContinueWithLi
 import GlobalStatesContext from '../contexts/GlobalStates'
 import CustomButton from '../components/Auth/button/CustomButton'
 import { FaCheckCircle } from 'react-icons/fa'
+import RemoveSessions from '../components/Auth/RemoveSessions'
 
 const WelcomeAppsumo = () => {
-  const { subscriptionType, setSubscriptionType,verifyCoupon, coupon, setCoupon, setSocial, couponInfo, setCouponInfo, couponValid, setCouponValid } = useContext(AuthContext)
+  const { handleRegister, coupon, setSocial,deleteMyAllJwtSessionsBySocial ,showClearSessionDialog} = useContext(AuthContext)
 
-  const handleSubscriptionChange = (type) => {
-    setSubscriptionType(type)
-  }
-  const monthlyPrice = 47; // Original monthly price
-  const yearlyPrice = 451; // Original yearly price
+  const [showEmailInput, setShowEmailInput] = useState(false);
+  const [email, setEmail] = useState('');
+
+  const handleEmailButtonClick = async () => {
+    if (!showEmailInput) {
+      // If the input box is not shown yet, show it
+      setShowEmailInput(true);
+    } else {
+      // If the input box is shown and email is entered, call the API
+      if (email) {
+       await handleRegister(   email.split('@')[0],email,null,Intl.DateTimeFormat().resolvedOptions().timeZone); 
+      }
+    }
+  };
 
 
   return (
@@ -30,14 +40,19 @@ const WelcomeAppsumo = () => {
            <h3> Welcome Appsumo User</h3>
            <p>Please activate your lifetime access account.</p>
         </div>
-
+        {showClearSessionDialog  && <RemoveSessions onDelete={()=>deleteMyAllJwtSessionsBySocial()} />}
         <div className="mt-4">
           <ContinueWithGoogleButton setSocial={setSocial} message="Continue with Google" />
           <ContinueWithLinkedInButton setSocial={setSocial} message="Continue with LinkedIn" />
         </div>
-
-        <div className="mt-4">
-          <CustomButton child="Continue with Email" onClick={() => {}} />
+        <div className="text-center or-with-label mt-3">
+          <p>OR</p>
+        </div>
+        <div className="mt-3">
+          {showEmailInput && <CustomInputBox type="text" placeholder="Enter Email" name="email" onChange={(e) => setEmail(e.target.value)} value={email} isEmpty={''} />}
+          <div className={showEmailInput && 'mt-3'}>
+            <CustomButton child={showEmailInput ? 'Activate with Email' : 'Continue with Email'} onClick={handleEmailButtonClick} />
+          </div>
         </div>
       </div>
     </div>

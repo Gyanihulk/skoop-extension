@@ -9,7 +9,7 @@ import ConfirmationModal from '../components/ConfirmationModal'
 
 const SubscriptionScreen = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
-  const { createSubscription, verifyCoupon, getMySubscription,subscriptionType, setSubscriptionType } = useContext(AuthContext)
+  const { createSubscription, verifyCoupon, getMySubscription, subscriptionType, setSubscriptionType } = useContext(AuthContext)
 
   const [sessionUrl, setSessionUrl] = useState('')
   const handleSubscriptionChange = (type) => {
@@ -81,12 +81,12 @@ const SubscriptionScreen = () => {
       )}
       <div className="subscription-container">
         <div className="subscription-header">
-          <h1>Start your 10-day free trial.</h1>
-          <span>Unlock all the premium benfits now.</span>
+          <h1>Select Your plan.</h1>
+          <span>Enhance communication With Skoop.</span>
           <ul className="feature-list">
-            <li>🔓 Accessibility to all features</li>
-            <li>✉️ Send unlimited messages</li>
-            <li>⚡ Faster AI generated responses</li>
+            <li>🎥 Video & Screen recordings</li>
+            <li>✉️ Save Template Messages</li>
+            <li>⚡ AI generated responses</li>
           </ul>
         </div>
         <svg width="315" height="1" viewBox="0 0 315 1" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -95,11 +95,19 @@ const SubscriptionScreen = () => {
 
         <div className="subscription-options align-items-center">
           <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
+            <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'freeTrial'} onChange={() => handleSubscriptionChange('freeTrial')} />
+            <div className="ps-4">
+              <h5>30-day Free trial</h5>
+              <p>Limited to 30 videos and 50 AI responses.<br/>No credit card Required .</p>
+             
+            </div>
+          </div>
+          <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
             <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'monthly'} onChange={() => handleSubscriptionChange('monthly')} />
-            <div className="ps-4 pt-2">
+            <div className="ps-4">
               <h5>Monthly</h5>
               <p>
-                First 10 days free, then $
+                 $
                 {couponInfo && subscriptionType === 'monthly'
                   ? couponInfo?.discount?.percent_off
                     ? ((47 * (100 - couponInfo?.discount?.percent_off)) / 100).toFixed(2)
@@ -116,12 +124,12 @@ const SubscriptionScreen = () => {
               <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'yearly'} onChange={() => handleSubscriptionChange('yearly')} />
             </div>
 
-            <div className="ps-4 pt-2">
+            <div className="ps-4">
               <h5>
                 Yearly <span className="badge rounded-pill bg-warning text-dark">SAVE 20% </span>
               </h5>
               <p>
-                First 10 days free, then $
+                 $
                 {couponInfo && subscriptionType === 'yearly'
                   ? couponInfo?.discount?.percent_off
                     ? ((451 * (100 - couponInfo?.discount?.percent_off)) / 100).toFixed(2)
@@ -158,15 +166,15 @@ const SubscriptionScreen = () => {
               }
             }}
           >
-            START 10-DAY FREE TRIAL
+            {subscriptionType === 'freeTrial' ?"Start" :"Make Payment"} 
           </button>
         </div>
-        <p className="small-bold-text">Credit Card/Debit Card information is required.</p>
-        {/* <br/> */}
-        <p className="small-bold-text">
+        {subscriptionType !== 'freeTrial' && <><p className="small-bold-text">Credit Card/Debit Card information is required.</p> <p className="small-bold-text">
           <LockIcon />
           Guaranteed safe & secure checkout <img src="/images/stripe.png" />
-        </p>
+        </p></>}
+        {/* <br/> */}
+       
       </div>
     </>
   )

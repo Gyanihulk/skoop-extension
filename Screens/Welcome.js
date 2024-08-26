@@ -29,7 +29,7 @@ const Welcome = () => {
     // navigateToPage('Welcome')
     setCouponInfo(response)
     setCouponValid(true)
-    
+    localStorage.setItem('welcomePageShown', true)
     if(response?.appSumoCoupon){
       setSubscriptionType("appsumo")
       navigateToPage("WelcomeAppsumo")

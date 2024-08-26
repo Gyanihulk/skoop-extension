@@ -1923,9 +1923,9 @@ img.icon-style-normal {
   list-style: none;
   padding-left: 0;
 }
-.feature-list li {
+/* .feature-list li {
   padding: 5px 0;
-}
+} */
 .subscription-footer {
   text-align: center;
   padding-top: 20px;
@@ -2241,7 +2241,7 @@ img.icon-style-normal {
   margin: auto;
 }
 .subscription-options {
-  margin-top: 30px;
+  margin-top: 10px;
 }
 .subscription-header {
   background-color: #fff;

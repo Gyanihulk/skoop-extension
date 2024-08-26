@@ -193,7 +193,7 @@ if(isAuthenticated){
 
         if (isAuthenticated && newUser && !isPro) {
           navigateToPage('Subscription')
-        } else if (isAuthenticated && newUser && isPro) {
+        } else if (isAuthenticated && newUser && isPro ) {
           navigateToPage('ThankYouScreen')
         } else if (isAuthenticated && !isPro) {
           navigateToPage('Subscription')

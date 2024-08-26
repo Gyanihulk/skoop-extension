@@ -162,7 +162,7 @@ export const AuthProvider = ({ children }) => {
           setIsAuthenticated(true)
  if (result.newUser) {
           setNewUser(true)
-          navigateToPage('CalendarSync')
+       
         } else {
           navigateToPage('Home')
         }
@@ -219,6 +219,7 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({
           code: authCode,
           type,
+          version
         }),
       })
       if (Number(response.status) === 200) {
@@ -226,6 +227,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         toast.error('Could not sign in.')
       }
+      localStorage.setItem('welcomePageShown', true)
     } catch (err) {
       console.error(err)
       toast.error('Could not sign in')
@@ -324,11 +326,12 @@ export const AuthProvider = ({ children }) => {
           id: toastId,
         })
         localStorage.setItem('skoopUsername', JSON.stringify(resjson.skoopUsername))
+        localStorage.setItem('welcomePageShown', true)
         sendMessageToBackgroundScript({
           action: 'storeToken',
           token: resjson.accessToken,
         })
-        console.log(resjson ,couponValid)
+        
         if(couponValid && resjson?.paymentUrl){
           chrome.identity.launchWebAuthFlow({ url: resjson?.paymentUrl, interactive: true }, async function (redirectUrl) {
             if (chrome.runtime.lastError || !redirectUrl) {
@@ -349,7 +352,7 @@ export const AuthProvider = ({ children }) => {
             const sessionId = new URL(redirectUrl).searchParams.get('session_id')
             if (sessionId) {
               setIsPro(true)
-              navigateToPage('Home')
+              setNewUser(true)
             }
           })
           setCouponValid(false)
@@ -521,28 +524,34 @@ export const AuthProvider = ({ children }) => {
       let response = await res.json()
 
       if (res.ok) {
-        chrome.identity.launchWebAuthFlow({ url: response.url, interactive: true }, async function (redirectUrl) {
-          if (chrome.runtime.lastError || !redirectUrl) {
-            // Handle errors or user cancellation here
-            console.error(chrome.runtime.lastError ? chrome.runtime.lastError.message + 'test' : 'No redirect URL')
-            let res = await fetch(API_ENDPOINTS.createSubscription, {
-              method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-                authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-              },
-            })
-
-            setIsAuthenticated(false)
-            navigateToPage('SignInIntro')
-            return
-          }
-          const sessionId = new URL(redirectUrl).searchParams.get('session_id')
-          if (sessionId) {
-            setIsPro(true)
-            navigateToPage('Home')
-          }
-        })
+        if(subscriptionType==='freeTrial'){
+          setIsPro(true)
+          navigateToPage('ThankYouScreen')
+        }else{
+          chrome.identity.launchWebAuthFlow({ url: response.url, interactive: true }, async function (redirectUrl) {
+            if (chrome.runtime.lastError || !redirectUrl) {
+              // Handle errors or user cancellation here
+              console.error(chrome.runtime.lastError ? chrome.runtime.lastError.message + 'test' : 'No redirect URL')
+              let res = await fetch(API_ENDPOINTS.createSubscription, {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json; charset=UTF-8',
+                  authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+                },
+              })
+  
+              setIsAuthenticated(false)
+              navigateToPage('SignInIntro')
+              return
+            }
+            const sessionId = new URL(redirectUrl).searchParams.get('session_id')
+            if (sessionId) {
+              setIsPro(true)
+              navigateToPage('Home')
+            }
+          })
+        }
+        
 
         toast.success('Please complete payment.', {
           id: toastId,
