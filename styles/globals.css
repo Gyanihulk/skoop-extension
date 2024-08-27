@@ -3013,4 +3013,13 @@ img.icon-style-normal {
   z-index: 1000000;
   
 }
+.expand-video-button .expand-icon {
+  color:#fff;
+}
+.expand-video-button:hover .expand-icon {
+  color: #46db83;
+}
+.padding-1-2 {
+  padding: 0 7px !important;
+}
 

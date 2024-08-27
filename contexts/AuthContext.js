@@ -5,6 +5,7 @@ import GlobalStatesContext from './GlobalStates'
 import toast from 'react-hot-toast'
 import { sendMessageToBackgroundScript } from '../lib/sendMessageToBackground'
 import { constants } from '../lib/constants'
+import { useUserSettings } from '../contexts/UserSettingsContext'
 
 const AuthContext = createContext()
 
@@ -130,7 +131,7 @@ export const AuthProvider = ({ children }) => {
 
       let result = await response.json()
       if (Number(response.status) === 200) {
-        console.log(result)
+        setIsAuthenticated(true)
         setIsSignupOrLogin(true)
         localStorage.setItem('accessToken', JSON.stringify(result.accessToken))
         localStorage.setItem('skoopUsername', JSON.stringify(result.skoopUsername))
@@ -299,8 +300,7 @@ export const AuthProvider = ({ children }) => {
       })
     }
   }
-
-  const handleRegister = async (fullname, email, password, timezone) => {
+const handleRegister = async (fullname, email, password, timezone) => {
     try {
       if (!validatePassword(password) && !couponValid) {
         toast.error('Password should contain minimum 8 characters, at least one uppercase letter, and one special character')
@@ -369,6 +369,7 @@ export const AuthProvider = ({ children }) => {
         }
           else {
           setIsAuthenticated(true)
+          setIsSignupOrLogin(true)
           navigateToPage('Home')
         }
 
@@ -383,6 +384,7 @@ export const AuthProvider = ({ children }) => {
       toast.error('Something Went Wrong')
     }
   }
+
   const verifyToken = async () => {
     try {
       const res = await fetch(API_ENDPOINTS.tokenStatus + '/' + version, {
@@ -842,6 +844,8 @@ export const AuthProvider = ({ children }) => {
         setUserProfileDetail,
         getProfileDetails,
         getCtaInfo,
+        isSignupOrLogin,
+        setIsSignupOrLogin,
         coupon,
         setCoupon,
         couponInfo,
@@ -852,15 +856,6 @@ export const AuthProvider = ({ children }) => {
         setShowVersionNotification,
         subscriptionType,
         setSubscriptionType,
-        updateUserSettings,
-        isSignupOrLogin,
-        setIsSignupOrLogin,
-     
-      
-    
-       
-
-
       }}
     >
       {children}

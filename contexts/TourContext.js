@@ -147,7 +147,7 @@ const tourConfigs = [
           <>
             <div>
               <p className="toor-para">Congratulations! You just made your first Reusable Message!</p>
-              <h6 className="mt-1 toor-heading">Go back to the ”Select Message” and click it open.</h6>
+              <h6 className="mt-1 toor-heading">Go back to the ”Select Message” and click it to open.</h6>
             </div>
           </>
         ),

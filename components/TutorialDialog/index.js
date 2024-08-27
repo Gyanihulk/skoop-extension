@@ -8,6 +8,8 @@ import { FaCalendarDay } from 'react-icons/fa6'
 import Tutorial from '../SVG/Tutorial.jsx'
 import Tour from './Tour'
 import { sendMessageToBackgroundScript } from '../../lib/sendMessageToBackground.js'
+import { FaExpand } from "react-icons/fa";
+import { useUserSettings } from '../../contexts/UserSettingsContext'
 
 const videoUrls = {
    messages: {
@@ -23,8 +25,9 @@ const videoUrls = {
 
 const TutorialDialog = () => {
   const { selectedTutorial, setSelectedTutorial, setEnableTutorialScreen, enableTutorialScreen  } = useContext(GlobalStatesContext);
-  const { updateUserSettings, getProfileDetails,  isPro, isSignupOrLogin } = useContext(AuthContext);
+  const { getProfileDetails,  isPro, isSignupOrLogin } = useContext(AuthContext);
   const iframeRef = useRef(null);
+  const [iframeLoaded, setIframeLoaded] = useState(false); // Track iframe loading
   const modalRef = useRef(null)
   const [popUp, setPopUp] = useState(false);
   const [isInitialState, setIsInitialState] = useState(true);
@@ -32,6 +35,8 @@ const TutorialDialog = () => {
   const [activeTutorial, setActiveTutorial] = useState(null);
   const [showTutorialVideo, setShowTutorialVideo] = useState(false);
   const [isVideoVisible, setIsVideoVisible] = useState(false);
+  const [isVideoFrameClicked, setIsVideoFrameClicked] = useState(false);
+  const {fetchMySettings, userSettings, updateUserSettings}=useUserSettings();
 
   const handlePopUpChange = () => {
     setIsInitialState(false);
@@ -42,6 +47,8 @@ const TutorialDialog = () => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
       setToggleTutorial(false)
       setSelectedTutorial('');
+      setIframeLoaded(false)
+      setIsVideoFrameClicked(false)
     }
   }
 
@@ -55,19 +62,24 @@ const TutorialDialog = () => {
       setToggleTutorial(false);
       setShowTutorialVideo(false);
       setActiveTutorial(null);
+      setIframeLoaded(false);
+      setIsVideoFrameClicked(false);
   }
 
-  // useEffect(() => {
-  //    setToggleTutorial(enableTutorialScreen);
-  // }, [enableTutorialScreen])
+  const handleIframeLoad = () => {
+    setIframeLoaded(true); // Set to true when iframe is loaded
+  };
 
+  const handleIframeClicked = (e) => {
+    e.stopPropagation();
+    setIsVideoFrameClicked(true);
+  }
 
   useEffect(() => {
     if(isSignupOrLogin && isPro) {
       (async () => {
-        let user = await getProfileDetails();
-        if(user?.user_setting) {
-          const { show_tutorials } = user.user_setting;
+        if(userSettings) {
+          const { show_tutorials } = userSettings;
           setToggleTutorial(show_tutorials);
           setEnableTutorialScreen(show_tutorials);
           setPopUp(!show_tutorials);
@@ -166,14 +178,20 @@ const TutorialDialog = () => {
                   </div>)
                   :(
                     <>
-                    <div className="embed-responsive embed-responsive-16by9">
+              <div className="embed-responsive embed-responsive-16by9">
               <iframe
                 className="embed-responsive-item tutorial-video-frame"
                 src={videoUrls[activeTutorial]?.path}
                 ref={iframeRef}
                 allow="autoplay; fullscreen; picture-in-picture"
+                onLoad={handleIframeLoad}
+                onClick={handleIframeClicked}
               />
-              <div className='expand-video-button' onClick={handleExpandVideo}></div>
+              {iframeLoaded && (
+        <div className="expand-video-button d-flex justify-content-center align-items-center" onClick={handleExpandVideo}>
+          <FaExpand className="expand-icon" size={18} />
+        </div>
+      )}
             </div>
             <div class="mt-2 d-flex justify-content-center">
                   <button type="button" class="card-btn" onClick={handleTourStart}>

@@ -5,6 +5,7 @@ import BackButton from '../components/BackButton'
 import { FaPlay } from 'react-icons/fa'
 import { sendMessageToBackgroundScript } from '../lib/sendMessageToBackground'
 import AuthContext from '../contexts/AuthContext';
+import { useUserSettings } from '../contexts/UserSettingsContext'
 
 const MiddleSection = ({ detail, openModal }) => {
   const addModules = detail.map(({ imgSrc, videoSrc, alt, text }, index) => {
@@ -150,7 +151,7 @@ const HelperVideos = ({ navigateTo }) => {
   const [playingVideo, setPlayingVideo] = useState(false)
   const { navigateToPage } = useContext(ScreenContext)
   const { enableTutorialScreen, setEnableTutorialScreen } = useContext(GlobalStatesContext);
-  const { updateUserSettings } = useContext(AuthContext);
+  const {updateUserSettings}=useUserSettings();
   const [switchUpdated, setSwitchUpdated] = useState(false);
 
   const handleSwitchChange = (event) => {

@@ -13,6 +13,7 @@ import Tooltip from 'react-bootstrap/Tooltip'
 import { closestCenter, DndContext, DragOverlay, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { restrictToParentElement } from '@dnd-kit/modifiers';
 import TourContext from '../../contexts/TourContext'
 
 const renderTooltip = (props) => (
@@ -536,7 +537,7 @@ const SavedMessages = ({ appendToBody, close }) => {
                   Add New Message
                 </Dropdown.Item>
                 <Dropdown.Divider />
-                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd} modifiers={[restrictToParentElement]}>
                   <SortableContext items={messageOptions} strategy={verticalListSortingStrategy}>
                     {messageOptions.map((option, index) => (
                       <SortableMessages key={option.id} message={option} orderId={option?.id} heading={option.heading} newMessage={(option.newMessage) ? true : false}>

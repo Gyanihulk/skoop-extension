@@ -15,6 +15,7 @@ import { handleCopyToClipboard } from '../../utils'
 import GlobalStatesContext from '../../contexts/GlobalStates'
 import MessageContext from '../../contexts/MessageContext'
 import { sendMessageToBackgroundScript } from '../../lib/sendMessageToBackground'
+import { MdDelete } from "react-icons/md";
 
 const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, fetchVideos }) => {
   const [showMovePopup, setShowMovePopup] = useState(false)
@@ -159,7 +160,7 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
           <div className="d-flex flex-wrap ">
             <button
               title="Insert link to send box."
-              className="btn btn-link btn-sm video-card-footer-button"
+              className="btn btn-link btn-sm video-card-footer-button padding-1-2"
               onClick={() => {
                 handleLinkInsertion(video.link, video.id, video.video_title)
                 toast.success('Link copied and inserted.')
@@ -168,28 +169,29 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
               <IoIosLink size={10} />
             </button>
 
-            <button title={video.is_favourite ? 'Remove from favorites' : 'Add to favorites'} className="btn btn-link btn-sm video-card-footer-button" onClick={handleToggleFavouriteClick}>
+            <button title={video.is_favourite ? 'Remove from favorites' : 'Add to favorites'} className="btn btn-link btn-sm video-card-footer-button padding-1-2" onClick={handleToggleFavouriteClick}>
               {video.is_favourite ? <FaStar className="text-primary" size={10} /> : <FaRegStar size={10} />}
             </button>
 
-            <button title="Rename video" className="btn btn-link btn-sm video-card-footer-button" onClick={handleRenameClick}>
+            {/* <button title="Rename video" className="btn btn-link btn-sm video-card-footer-button" onClick={handleRenameClick}>
               <FaPencilAlt size={10} />
-            </button>
-            <button id="move-video-btn" title="Move video to another folder" className="btn btn-link btn-sm video-card-footer-button" onClick={handleMoveClick}>
+            </button> */}
+            <button id="move-video-btn" title="Move video to another folder" className="btn btn-link btn-sm video-card-footer-button padding-1-2" onClick={handleMoveClick}>
               <MdMoveUp size={10} />
             </button>
-            <button title="Download video" className="btn btn-link btn-sm video-card-footer-button" onClick={downloadVideo}>
+            <button title="Download video" className="btn btn-link btn-sm video-card-footer-button padding-1-2" onClick={downloadVideo}>
               <MdDownload size={10} />
             </button>
-            <button title="Delete video" className="btn btn-link btn-sm video-card-footer-button" onClick={handleDeleteClick}>
-              <svg width="15" height="15" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <button title="Delete video" className="btn btn-link btn-sm video-card-footer-button padding-1-2" onClick={handleDeleteClick}>
+              {/* <svg width="15" height="15" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                   fill-rule="evenodd"
                   clip-rule="evenodd"
                   d="M4.0499 8.7999C4.0499 9.2399 4.4099 9.5999 4.8499 9.5999H8.0499C8.4899 9.5999 8.8499 9.2399 8.8499 8.7999V4.7999C8.8499 4.3599 8.4899 3.9999 8.0499 3.9999H4.8499C4.4099 3.9999 4.0499 4.3599 4.0499 4.7999V8.7999ZM8.8499 2.7999H7.8499L7.5659 2.5159C7.4939 2.4439 7.3899 2.3999 7.2859 2.3999H5.6139C5.5099 2.3999 5.4059 2.4439 5.3339 2.5159L5.0499 2.7999H4.0499C3.8299 2.7999 3.6499 2.9799 3.6499 3.1999C3.6499 3.4199 3.8299 3.5999 4.0499 3.5999H8.8499C9.0699 3.5999 9.2499 3.4199 9.2499 3.1999C9.2499 2.9799 9.0699 2.7999 8.8499 2.7999Z"
                   fill="#2D68C4"
                 />
-              </svg>
+              </svg> */}
+              <MdDelete size={10} />
             </button>
           </div>
         </div>
