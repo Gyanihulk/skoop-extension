@@ -60,7 +60,7 @@ const RecordingButton = () => {
     handleVideoBlob,
   } = useRecording()
   const { setGlobalRefresh, setLatestVideo, setLatestBlob, expandMinimizeExtension, setExpand, tabId } = useContext(GlobalStatesContext)
-  const { recordVideoBtnRef, componentsVisible, isVideoTour, activeTourStepIndex, renderNext } = useContext(TourContext);
+  const { recordVideoBtnRef, componentsVisible, isVideoTour, activeTourStepIndex, renderNext } = useContext(TourContext)
   const { addToMessage } = useContext(MessageContext)
   const [videoDevices, setVideoDevices] = useState([])
   const [audioDevices, setAudioDevices] = useState([])
@@ -73,7 +73,7 @@ const RecordingButton = () => {
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const visualizerRef = useRef({ start: () => {}, stop: () => {}, reset: () => {} })
-const{userSettings}=useUserSettings();
+  const { userSettings } = useUserSettings()
   // Function to stop the media streams
   const stopMediaStreams = () => {
     if (videoStream) {
@@ -94,37 +94,37 @@ const{userSettings}=useUserSettings();
       const getMediaStream = async () => {
         try {
           navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        // Stop the stream to avoid using the camera/microphone
-        stream.getTracks().forEach((track) => track.stop())
-        // Enumerate devices after permission has been granted
-        return navigator.mediaDevices.enumerateDevices()
-      })
-      .then((devices) => {
-        setVideoDevices(devices.filter((device) => device.kind === 'videoinput'))
-        setAudioDevices(devices.filter((device) => device.kind === 'audioinput'))
+            .getUserMedia({ video: true, audio: true })
+            .then((stream) => {
+              // Stop the stream to avoid using the camera/microphone
+              stream.getTracks().forEach((track) => track.stop())
+              // Enumerate devices after permission has been granted
+              return navigator.mediaDevices.enumerateDevices()
+            })
+            .then((devices) => {
+              setVideoDevices(devices.filter((device) => device.kind === 'videoinput'))
+              setAudioDevices(devices.filter((device) => device.kind === 'audioinput'))
 
-        // Load saved device labels and select corresponding devices
-        chrome.storage.sync.get(['selectedVideoLabel', 'selectedAudioLabel'], (result) => {
-          const savedVideoLabel = result.selectedVideoLabel
-          const savedAudioLabel = result.selectedAudioLabel
+              // Load saved device labels and select corresponding devices
+              chrome.storage.sync.get(['selectedVideoLabel', 'selectedAudioLabel'], (result) => {
+                const savedVideoLabel = result.selectedVideoLabel
+                const savedAudioLabel = result.selectedAudioLabel
 
-          const videoDevice = devices.find((device) => device.label === savedVideoLabel)
-          const audioDevice = devices.find((device) => device.label === savedAudioLabel)
+                const videoDevice = devices.find((device) => device.label === savedVideoLabel)
+                const audioDevice = devices.find((device) => device.label === savedAudioLabel)
 
-          if (videoDevice) {
-            setSelectedVideoDevice(videoDevice.deviceId)
-          }
+                if (videoDevice) {
+                  setSelectedVideoDevice(videoDevice.deviceId)
+                }
 
-          if (audioDevice) {
-            setSelectedAudioDevice(audioDevice.deviceId)
-          }
-        })
-      })
-      .catch((err) => {
-        console.log(err.name + ': ' + err.message)
-      })
+                if (audioDevice) {
+                  setSelectedAudioDevice(audioDevice.deviceId)
+                }
+              })
+            })
+            .catch((err) => {
+              console.log(err.name + ': ' + err.message)
+            })
 
           const videoStream = await navigator.mediaDevices.getUserMedia({
             video: { deviceId: selectedVideoDevice },
@@ -132,6 +132,10 @@ const{userSettings}=useUserSettings();
           const audioStream = await navigator.mediaDevices.getUserMedia({
             audio: { deviceId: selectedAudioDevice },
           })
+          console.log(selectedVideoDevice,selectedAudioDevice,videoStream)
+          if (videoRef.current) {
+            videoRef.current.srcObject = videoStream;
+          }
           setVideoStream(videoStream)
           setAudioStream(audioStream)
 
@@ -246,12 +250,12 @@ const{userSettings}=useUserSettings();
   }, [])
 
   useEffect(() => {
-    if(isVideoTour) {
-      if(componentsVisible?.renderItem === 12) {
-        console.log("component visible is also called 12");
-        console.log("recordVideoBtnRef", recordVideoBtnRef.current);
-        recordVideoBtnRef.current.click();
-        renderNext();
+    if (isVideoTour) {
+      if (componentsVisible?.renderItem === 12) {
+        console.log('component visible is also called 12')
+        console.log('recordVideoBtnRef', recordVideoBtnRef.current)
+        recordVideoBtnRef.current.click()
+        renderNext()
       }
     }
   }, [componentsVisible])
@@ -296,15 +300,14 @@ const{userSettings}=useUserSettings();
   //useable functions
 
   const startVideoCapture = async (event) => {
-
-    if(!userSettings?.fullAccess && userSettings?.remainingVideos<=0){
-      toast.error("You have reached the limit of free videos.")
+    if (!userSettings?.fullAccess && userSettings?.remainingVideos <= 0) {
+      toast.error('You have reached the limit of free videos.')
       return
     }
 
-    if(isVideoTour && activeTourStepIndex === 11) {
-      console.log("icon is clicked form the video tour 11");
-      renderNext();
+    if (isVideoTour && activeTourStepIndex === 11) {
+      console.log('icon is clicked form the video tour 11')
+      renderNext()
     }
     setIsRecordStart(true)
     setIsVideo(true)
@@ -316,7 +319,7 @@ const{userSettings}=useUserSettings();
     }
     setLatestVideo(null)
     setLatestBlob(null)
-    sendMessageToContentScript({action:"savePosition"})
+    sendMessageToContentScript({ action: 'savePosition' })
     if (isScreenRecording) {
       expandMinimizeExtension()
       sendMessageToBackgroundScript(
@@ -329,18 +332,13 @@ const{userSettings}=useUserSettings();
         },
         handleVideoBlob
       )
-      sendMessageToContentScript({action:"changePosition",left:"20px",top:"20px"})
-      chrome.storage.sync.set({ recordingType: "screen" });
+      sendMessageToContentScript({ action: 'changePosition', left: '20px', top: '20px' })
+      chrome.storage.sync.set({ recordingType: 'screen' })
     } else {
-      
-      
       navigateToPage('RecordVideo')
-      sendMessageToContentScript({action:"changePosition",left:"50%",top:"50%"})
-      chrome.storage.sync.set({ recordingType: "candid" });
+      sendMessageToContentScript({ action: 'changePosition', left: '50%', top: '50%' })
+      chrome.storage.sync.set({ recordingType: 'candid' })
     }
-
-
-
   }
 
   const toggleStop = () => {
@@ -387,14 +385,22 @@ const{userSettings}=useUserSettings();
       <div id="recording-container">
         <div class="container">
           {isRecordStart && <RecordStart onRestart={toggleRestart} onStop={toggleStop} />}
-          <div  class="row justify-content-center px-3 gx-3">
+          <div class="row justify-content-center px-3 gx-3">
             {!isRecordStart && (
               <div id="video-recording-button" class="col-auto position-relative">
                 <div id="activate-screen-recording" class="position-absolute end-0 me-2 screen-recording-icon" onClick={() => setIsScreenRecording((prevState) => !prevState)}>
                   <LuScreenShare className="bold-icon" color={isScreenRecording ? '#32CD32' : '#2D68C4'} title="Activate screen recording" />
                 </div>
                 <div className={`d-flex flex-column align-items-center ${isScreenRecording ? 'screen-recording-active' : ''}`}>
-                  <div ref={recordVideoBtnRef} className={`d-flex flex-column ${isScreenRecording ? 'screen-recording-active' : ''}`} onClick={(e) => startVideoCapture(e)} size="small" disabled={isUploading} title="Record Video" id="skoop_record_button">
+                  <div
+                    ref={recordVideoBtnRef}
+                    className={`d-flex flex-column ${isScreenRecording ? 'screen-recording-active' : ''}`}
+                    onClick={(e) => startVideoCapture(e)}
+                    size="small"
+                    disabled={isUploading}
+                    title="Record Video"
+                    id="skoop_record_button"
+                  >
                     <span class="icon">
                       {capturing ? (
                         <svg width="12" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -506,9 +512,7 @@ const{userSettings}=useUserSettings();
                     autoPlay
                     muted
                     playsInline
-                    ref={(el) => {
-                      if (el) el.srcObject = videoStream
-                    }}
+                    ref={videoRef}
                   />
                 </div>
               </div>

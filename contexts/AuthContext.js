@@ -124,7 +124,7 @@ export const AuthProvider = ({ children }) => {
           version: version,
           type: activePage == 'SignUp' || activePage == 'WelcomeAppsumo' || activePage == 'WelcomeStripe' ? 'register' : 'sign-in',
           subscriptionType,
-          coupon,
+          coupon:coupon.trim(),
         }),
       })
 
@@ -316,7 +316,7 @@ export const AuthProvider = ({ children }) => {
           timezone: timezone,
           version: version,
           subscriptionType,
-          coupon,
+          coupon:coupon.trim(),
         }),
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
