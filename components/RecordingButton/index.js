@@ -24,6 +24,7 @@ import { useRecording } from '../../contexts/RecordingContext.js'
 import { sendMessageToBackgroundScript, sendMessageToContentScript } from '../../lib/sendMessageToBackground.js'
 import ScreenContext from '../../contexts/ScreenContext.js'
 import { useUserSettings } from '../../contexts/UserSettingsContext.js'
+import TourContext from '../../contexts/TourContext.js'
 
 const RecordingButton = () => {
   const {
@@ -59,7 +60,7 @@ const RecordingButton = () => {
     handleVideoBlob,
   } = useRecording()
   const { setGlobalRefresh, setLatestVideo, setLatestBlob, expandMinimizeExtension, setExpand, tabId } = useContext(GlobalStatesContext)
-
+  const { recordVideoBtnRef, componentsVisible, isVideoTour, activeTourStepIndex, renderNext } = useContext(TourContext);
   const { addToMessage } = useContext(MessageContext)
   const [videoDevices, setVideoDevices] = useState([])
   const [audioDevices, setAudioDevices] = useState([])
@@ -245,21 +246,32 @@ const{userSettings}=useUserSettings();
   }, [])
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      // Check if the click is inside the select dropdowns
-      const isSelectDropdownClick = event.target.closest('#videoSource') || event.target.closest('#audioSource')
-      // Close the modal only if the click is not inside the dropdowns and not inside the modal
-      if (videoSettingsOpen && !isSelectDropdownClick && !event.target.closest('.modal-content')) {
-        setVideoSettingsOpen(false)
+    if(isVideoTour) {
+      if(componentsVisible?.renderItem === 12) {
+        console.log("component visible is also called 12");
+        console.log("recordVideoBtnRef", recordVideoBtnRef.current);
+        recordVideoBtnRef.current.click();
+        renderNext();
       }
     }
+  }, [componentsVisible])
 
-    document.addEventListener('click', handleClickOutside)
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     // Check if the click is inside the select dropdowns
+  //     const isSelectDropdownClick = event.target.closest('#videoSource') || event.target.closest('#audioSource')
+  //     // Close the modal only if the click is not inside the dropdowns and not inside the modal
+  //     if (videoSettingsOpen && !isSelectDropdownClick && !event.target.closest('.modal-content')) {
+  //       setVideoSettingsOpen(false)
+  //     }
+  //   }
 
-    return () => {
-      document.removeEventListener('click', handleClickOutside)
-    }
-  }, [videoSettingsOpen])
+  //   document.addEventListener('click', handleClickOutside)
+
+  //   return () => {
+  //     document.removeEventListener('click', handleClickOutside)
+  //   }
+  // }, [videoSettingsOpen])
   const handleIconClick = (event) => {
     event.stopPropagation()
     toggleVideoSettings()
@@ -290,6 +302,10 @@ const{userSettings}=useUserSettings();
       return
     }
 
+    if(isVideoTour && activeTourStepIndex === 11) {
+      console.log("icon is clicked form the video tour 11");
+      renderNext();
+    }
     setIsRecordStart(true)
     setIsVideo(true)
     if (event) {
@@ -371,14 +387,14 @@ const{userSettings}=useUserSettings();
       <div id="recording-container">
         <div class="container">
           {isRecordStart && <RecordStart onRestart={toggleRestart} onStop={toggleStop} />}
-          <div class="row justify-content-center px-3 gx-3">
+          <div  class="row justify-content-center px-3 gx-3">
             {!isRecordStart && (
-              <div class="col-auto position-relative">
-                <div class="position-absolute end-0 pe-2 screen-recording-icon" onClick={() => setIsScreenRecording((prevState) => !prevState)}>
+              <div id="video-recording-button" class="col-auto position-relative">
+                <div id="activate-screen-recording" class="position-absolute end-0 me-2 screen-recording-icon" onClick={() => setIsScreenRecording((prevState) => !prevState)}>
                   <LuScreenShare className="bold-icon" color={isScreenRecording ? '#32CD32' : '#2D68C4'} title="Activate screen recording" />
                 </div>
                 <div className={`d-flex flex-column align-items-center ${isScreenRecording ? 'screen-recording-active' : ''}`}>
-                  <div className={`d-flex flex-column ${isScreenRecording ? 'screen-recording-active' : ''}`} onClick={(e) => startVideoCapture(e)} size="small" disabled={isUploading} title="Record Video" id="skoop_record_button">
+                  <div ref={recordVideoBtnRef} className={`d-flex flex-column ${isScreenRecording ? 'screen-recording-active' : ''}`} onClick={(e) => startVideoCapture(e)} size="small" disabled={isUploading} title="Record Video" id="skoop_record_button">
                     <span class="icon">
                       {capturing ? (
                         <svg width="12" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -415,7 +431,7 @@ const{userSettings}=useUserSettings();
                     ) : (
                       'Record Video'
                     )}{' '}
-                    <div className="d-flex flex-column justify-content-center ps-1 cursor-pointer" onClick={handleIconClick}>
+                    <div id="video-setting" className="d-flex flex-column justify-content-center ms-1 cursor-pointer" onClick={handleIconClick}>
                       <svg width="16" height="16" viewBox="0 0 18 18" fill={isScreenRecording ? '#32CD32' : 'none'} xmlns="http://www.w3.org/2000/svg">
                         <path
                           d="M15 16.5H10.5C10.2875 16.5 10.1094 16.4281 9.96565 16.2844C9.8219 16.1406 9.75002 15.9625 9.75002 15.75V11.25C9.75002 11.0375 9.8219 10.8594 9.96565 10.7156C10.1094 10.5719 10.2875 10.5 10.5 10.5H15C15.2125 10.5 15.3906 10.5719 15.5344 10.7156C15.6782 10.8594 15.75 11.0375 15.75 11.25V12.75L17.25 11.25V15.75L15.75 14.25V15.75C15.75 15.9625 15.6782 16.1406 15.5344 16.2844C15.3906 16.4281 15.2125 16.5 15 16.5ZM9.03752 6.375C8.31252 6.375 7.69377 6.63125 7.18127 7.14375C6.66877 7.65625 6.41252 8.275 6.41252 9C6.41252 9.6 6.58127 10.125 6.91877 10.575C7.25627 11.025 7.70002 11.3375 8.25002 11.5125V9.825C8.15002 9.725 8.06877 9.59688 8.00627 9.44063C7.94377 9.28438 7.91252 9.1375 7.91252 9C7.91252 8.6875 8.0219 8.42188 8.24065 8.20313C8.4594 7.98438 8.72502 7.875 9.03752 7.875C9.35002 7.875 9.61252 7.98438 9.82502 8.20313C10.0375 8.42188 10.1438 8.6875 10.1438 9H11.6625C11.6625 8.275 11.4063 7.65625 10.8938 7.14375C10.3813 6.63125 9.76252 6.375 9.03752 6.375ZM6.93752 16.5L6.63752 14.1C6.47502 14.0375 6.3219 13.9625 6.17815 13.875C6.0344 13.7875 5.89377 13.6938 5.75627 13.5938L3.52502 14.5313L1.46252 10.9688L3.39377 9.50625C3.38127 9.41875 3.37502 9.33438 3.37502 9.25313V8.74688C3.37502 8.66563 3.38127 8.58125 3.39377 8.49375L1.46252 7.03125L3.52502 3.46875L5.75627 4.40625C5.89377 4.30625 6.03752 4.2125 6.18752 4.125C6.33752 4.0375 6.48752 3.9625 6.63752 3.9L6.93752 1.5H11.0625L11.3625 3.9C11.525 3.9625 11.6782 4.0375 11.8219 4.125C11.9656 4.2125 12.1063 4.30625 12.2438 4.40625L14.475 3.46875L16.5375 7.03125L14.6063 8.49375C14.6188 8.58125 14.625 8.66563 14.625 8.74688V9H13.125C13.1125 8.7625 13.0938 8.55313 13.0688 8.37188C13.0438 8.19063 13.0063 8.01875 12.9563 7.85625L14.5688 6.6375L13.8375 5.3625L11.9813 6.15C11.7063 5.8625 11.4031 5.62188 11.0719 5.42813C10.7407 5.23438 10.3813 5.0875 9.99377 4.9875L9.75002 3H8.26877L8.00627 4.9875C7.61877 5.0875 7.2594 5.23438 6.92815 5.42813C6.5969 5.62188 6.29377 5.85625 6.01877 6.13125L4.16252 5.3625L3.43127 6.6375L5.04377 7.8375C4.98127 8.025 4.93752 8.2125 4.91252 8.4C4.88752 8.5875 4.87502 8.7875 4.87502 9C4.87502 9.2 4.88752 9.39375 4.91252 9.58125C4.93752 9.76875 4.98127 9.95625 5.04377 10.1438L3.43127 11.3625L4.16252 12.6375L6.01877 11.85C6.31877 12.1625 6.65627 12.425 7.03127 12.6375C7.40627 12.85 7.81252 12.9875 8.25002 13.05V16.5H6.93752Z"
@@ -438,13 +454,13 @@ const{userSettings}=useUserSettings();
           <div className="modal-content mx-4 justify-content-center align-items-center">
             <div className="modal-header d-flex justify-content-between w-100 px-3 pt-3 pb-2">
               Video settings
-              <button type="button" className="custom-close-button" onClick={() => setVideoSettingsOpen(false)} aria-label="Close">
+              <button type="button" id="close-video-dialog" className="custom-close-button" onClick={() => setVideoSettingsOpen(false)} aria-label="Close">
                 <IoMdClose size={16} />
               </button>
             </div>
             <div className="modal-body align-items-center justify-content-center">
               <div className="flex">
-                <div className="d-flex flex-row">
+                <div id="camera-orientation" className="d-flex flex-row">
                   <div className="text-center">
                     <div className={` mx-3 p-2 border-video-selector ${selectedVideoStyle == 'Vertical Mode' ? 'bg-selected-videoMode' : ''}`} onClick={() => handleVideoStyleSelect('Vertical Mode')}>
                       <Vertical />

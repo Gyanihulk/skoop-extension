@@ -42,7 +42,7 @@ function createButton() {
   buttonContainer.style.top = '10px'
   buttonContainer.style.right = '0px'
   buttonContainer.style.width = '73px'
-  buttonContainer.style.height = '37px'
+  buttonContainer.style.height = '49px'
   buttonContainer.style.backgroundImage = 'url("' + chrome.runtime.getURL('/icons/RegularExtensionIcon.png') + '")'
   buttonContainer.style.backgroundSize = 'cover'
   buttonContainer.style.backgroundPosition = 'center'
@@ -54,12 +54,12 @@ function createButton() {
   buttonContainer.style.cursor = 'pointer'
   buttonContainer.setAttribute('tabindex', '0');
   buttonContainer.style.transition = 'all 0.3s ease';
-  buttonContainer.style.transform = "translateX(18px)";
 
   // Add click event listener to the button
   buttonContainer.addEventListener('click', handleInjectIframe)
   let isDragging = false;
   let dragStartY;
+  let dragOffsetY = 0;
   let initialTop = parseInt(buttonContainer.style.top, 10);
   var clickDisabled = false;
 
@@ -87,12 +87,10 @@ function createButton() {
 
   const handleFocus = () => {
        buttonContainer.style.backgroundImage = 'url("' + chrome.runtime.getURL('/icons/HoverExtensionIcon.png') + '")'
-       buttonContainer.style.transform = "translateX(0px)";
   };
   
   const handleBlur = () => {
       buttonContainer.style.backgroundImage = 'url("' + chrome.runtime.getURL('/icons/RegularExtensionIcon.png') + '")';
-      buttonContainer.style.transform = "translateX(18px)";
   };
 
   // Add hover effect using pointer events
@@ -108,6 +106,11 @@ function createButton() {
     initialTop = parseInt(buttonContainer.style.top, 10);
     isDragging = true;
     dragStartY = e.clientY;
+
+    const rect = buttonContainer.getBoundingClientRect();
+  dragOffsetY = e.clientY - rect.top;
+  
+  buttonContainer.style.transition = 'none';
     document.addEventListener('pointermove', dragMove);
     document.addEventListener('pointerup', dragEnd);
     document.addEventListener('pointerleave', dragEnd); 
@@ -124,7 +127,7 @@ function createButton() {
       const viewportHeight = window.innerHeight;
       const containerHeight = buttonContainer.offsetHeight;
       let deltaY = e.clientY - dragStartY;
-      let newTop = initialTop + deltaY;
+      let newTop = e.clientY - dragOffsetY;
       newTop = Math.max(newTop, 0);
       newTop = Math.min(newTop, viewportHeight - containerHeight);
       buttonContainer.style.top = `${newTop}px`;
@@ -135,6 +138,7 @@ function createButton() {
     e.preventDefault();
     isDragging = false;
     enableTextSelection();
+    buttonContainer.style.transition = 'all 0.3s ease';
     document.removeEventListener('pointermove', dragMove);
     document.removeEventListener('pointerup', dragEnd);
     document.removeEventListener('pointerleave', dragEnd); 

@@ -1,8 +1,10 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import ScreenContext from '../contexts/ScreenContext'
+import GlobalStatesContext from '../contexts/GlobalStates';
 import BackButton from '../components/BackButton'
 import { FaPlay } from 'react-icons/fa'
 import { sendMessageToBackgroundScript } from '../lib/sendMessageToBackground'
+import AuthContext from '../contexts/AuthContext';
 
 const MiddleSection = ({ detail, openModal }) => {
   const addModules = detail.map(({ imgSrc, videoSrc, alt, text }, index) => {
@@ -147,7 +149,14 @@ const info = [
 const HelperVideos = ({ navigateTo }) => {
   const [playingVideo, setPlayingVideo] = useState(false)
   const { navigateToPage } = useContext(ScreenContext)
+  const { enableTutorialScreen, setEnableTutorialScreen } = useContext(GlobalStatesContext);
+  const { updateUserSettings } = useContext(AuthContext);
+  const [switchUpdated, setSwitchUpdated] = useState(false);
 
+  const handleSwitchChange = (event) => {
+    setSwitchUpdated(true);
+    setEnableTutorialScreen(!enableTutorialScreen);
+  }
   const openPopUp = (src, event) => {
     if (event) {
       event.stopPropagation()
@@ -169,6 +178,18 @@ const HelperVideos = ({ navigateTo }) => {
     setShowModal(false)
   }
 
+  const toggleSwitch = () => {
+    setSwitchUpdated(false);
+  }
+
+  useEffect(()=> {
+    if(switchUpdated) {
+      updateUserSettings({show_tutorials: enableTutorialScreen});
+      toggleSwitch();
+    }
+ }, [switchUpdated])
+  
+
   const videomodules = info.map((detail, index) => {
     return <SmallVideoModule detail={detail} key={index} openModal={openPopUp} />
   })
@@ -178,7 +199,25 @@ const HelperVideos = ({ navigateTo }) => {
         <div className="lighter-pink">
           <div>
             <div className="pt-3 mb-4">
-              <BackButton navigateTo={navigateTo} />
+            <div className='d-flex justify-content-between align-items-center'>
+            <BackButton navigateTo={navigateTo} />
+            <div className='d-flex align-items-center tutorial-dialog'>
+              <h4 className="profile-name mb-0 pb-0">Enable tutorial screen</h4>
+              <div className="switch-container mt-2 relative d-flex align-items-center">
+                <div className="form-check form-switch switch-button-container">
+                  <input
+                    className="form-check-input custom-switch switch-sm"
+                    name="toggle-modal"
+                    type="checkbox"
+                    role="switch"
+                    checked={enableTutorialScreen}
+                    onChange={handleSwitchChange}
+                  />
+                </div>
+              </div>
+            </div>
+
+            </div>
             </div>
           </div>
           <div className="px-4-2">

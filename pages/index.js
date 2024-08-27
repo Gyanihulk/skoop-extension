@@ -28,6 +28,7 @@ import { sendMessageToBackgroundScript } from '../lib/sendMessageToBackground'
 import { CameraScreen } from '../Screens/CameraScreen'
 import { useTimer } from '../contexts/TimerContext'
 import VideoRecording from '../Screens/VideoRecording'
+import TutorialDialog from "../components/TutorialDialog"
 import { useUserSettings } from '../contexts/UserSettingsContext'
 import WelcomeAppsumo from '../Screens/WelcomeAppsumo'
 import WelcomeStripe from '../Screens/WelcomeStripe'
@@ -274,6 +275,7 @@ if(isAuthenticated){
             {activePage == 'SignInIntro' && <SignInWith />}
           </>
         )}
+      <TutorialDialog />
       </div>
     </>
   )

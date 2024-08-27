@@ -8,6 +8,7 @@ import { AuthProvider } from '../contexts/AuthContext'
 import { MediaUtilsProvider } from '../contexts/MediaUtilsContext'
 import { Toaster } from 'react-hot-toast'
 import { MessageProvider } from '../contexts/MessageContext'
+import { TourContextProvider } from '../contexts/TourContext'
 
 import { AppProps } from 'next/app'
 
@@ -27,6 +28,7 @@ export default function App({ Component, pageProps }) {
           <GlobalStatesProvider>
             <ScreenProvider>
               <AuthProvider>
+               <TourContextProvider>
                 <MessageProvider>
                   <RecordingProvider>
                     <UserSettingsProvider>
@@ -43,6 +45,7 @@ export default function App({ Component, pageProps }) {
                       </UserSettingsProvider>
                   </RecordingProvider>
                 </MessageProvider>
+                </TourContextProvider>
               </AuthProvider>
             </ScreenProvider>
           </GlobalStatesProvider>

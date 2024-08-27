@@ -192,7 +192,7 @@ export const VideoPreview = () => {
                     <Form.Check type="switch" checked={showBookingLink} onChange={handleSwitchChange} className="small-switch video-preview-icon" id="video-container-switch" />
                   </Form>
                 </div>
-                <BsThreeDotsVertical title="Menu" className="video-preview-icon" size={12} onClick={() => setShowVideoOptionsDialog(!showVideoOptionsDialog)} color="white" />
+                <BsThreeDotsVertical id="video-menu" title="Menu" className="video-preview-icon" size={12} onClick={() => setShowVideoOptionsDialog(!showVideoOptionsDialog)} color="white" />
               </div>
             </div>
             <img

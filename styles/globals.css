@@ -9,6 +9,8 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
 /* variables */
 :root {
   /* colors */
@@ -24,6 +26,10 @@
 }
 .lighter-pink {
   background-color: var(--lighter-pink);
+}
+
+.mt-0-2 {
+  margin-top: 2px !important
 }
 
 .py-4-5 {
@@ -53,6 +59,10 @@
   margin-left: 4px;
 }
 
+.ml-0-5 {
+  margin-left: 5px;
+}
+
 .px-4-2 {
   padding-left: 32px;
   padding-right: 32px;
@@ -76,6 +86,29 @@
 
 .mt-1-2 {
   margin-top: 12px;
+}
+
+.mt--7 {
+  margin-top: -7px;
+}
+
+.mt-0-8 {
+  margin-top: 8px;
+}
+
+.fw-500 {
+  font-weight: 500;
+}
+
+.lh-0 {
+  line-height: 0 !important;
+}
+
+.text-decoration-thickness {
+  text-decoration-thickness: 2px;
+}
+.light-grey {
+    color: #6b6b6b;
 }
 
 .navbar {
@@ -2011,6 +2044,10 @@ img.icon-style-normal {
   justify-content: space-between;
   align-items: center;
 }
+.dropdown-item-hover.active {
+  background-color: var(--main-color) !important;
+  color: white !important;
+}
 
 .dropdown-item {
   font-size: 12px;
@@ -2039,6 +2076,7 @@ img.icon-style-normal {
   fill: #ffffff;
 }
 
+#messages-dropdown,
 #gpt-dropdown {
   width: 18.5rem;
   height: 1.6rem;
@@ -2842,6 +2880,61 @@ img.icon-style-normal {
   }
 }
 
+.tutorial-list .active {
+  background-color: #2d68c4;
+  color:#ffffff;
+  border-radius: 8px;
+}
+
+.tutorial-dialog h4 {
+   margin-right: 58px !important;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.tutorial-dialog-text {
+  font-size: 8px;
+  margin-top: 4px;
+  font-family: Montserrat, sans-serif;
+}
+
+.tutorial-icon-box {
+  padding: 11px 0px;
+}
+
+.switch-sm {
+  transform: scale(1.2) !important;
+}
+
+.toor-para {
+  font-size: 13px;
+  font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  font-weight:450;
+  color:#a5a2a2;
+}
+
+.toor-heading {
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  color: #59d522;
+  font-weight: 500;
+}
+
+.toor-span {
+  display: inline-block;
+  font-size: 13px;
+  font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
+  font-weight:450;
+  color:#a5a2a2;
+}
 .video-title {
   width:80%;
   text-overflow: inherit;
@@ -2894,3 +2987,30 @@ img.icon-style-normal {
   width: 100%;
   margin-top: 4px !important;
 }
+
+.switch-button-container.form-switch .form-check-input {
+  --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='black'/%3e%3c/svg%3e") !important;
+  background-color: #ffffff !important;
+  border: 1px solid #000000 !important;
+}
+.switch-button-container.form-switch .form-check-input:checked {
+  background-position: 100%;
+  --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e") !important;
+  background-color: #0d6efd !important;
+  border-color: #0d6efd !important;
+}
+.switch-button-container .form-check-input:checked {
+  background-color: #0d6efd !important;
+  border-color: #0d6efd !important;
+}
+.expand-video-button {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  bottom: 69px;
+  right: 30px;
+  cursor: pointer;
+  z-index: 1000000;
+  
+}
+

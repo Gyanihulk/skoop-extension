@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import API_ENDPOINTS from '../components/apiConfig'
 import ScreenContext from './ScreenContext'
+import GlobalStatesContext from './GlobalStates'
 import toast from 'react-hot-toast'
 import { sendMessageToBackgroundScript } from '../lib/sendMessageToBackground'
 import { constants } from '../lib/constants'
@@ -12,6 +13,7 @@ export const AuthProvider = ({ children }) => {
   const [isPro, setIsPro] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   const { navigateToPage, activePage } = useContext(ScreenContext)
+  const { userSetting, setUserSetting, setEnableTutorialScreen } = useContext(GlobalStatesContext)
   const [newUser, setNewUser] = useState(false)
   const [loadingAuthState, setLoadingAuthState] = useState(true)
   const [version, setVersion] = useState('0.0.0')
@@ -25,6 +27,7 @@ export const AuthProvider = ({ children }) => {
   const [gracePeriod, setGracePeriod] = useState(0)
   const [userProfileDetail, setUserProfileDetail] = useState(null)
   const [sessionDeletionToken, setSessionDeletionToken] = useState(null)
+  const [isSignupOrLogin, setIsSignupOrLogin] = useState(false)
   const [showVersionNotification, setShowVersionNotification] = useState(false)
   const [coupon, setCoupon] = useState('')
   const [couponValid, setCouponValid] = useState(false)
@@ -42,12 +45,16 @@ export const AuthProvider = ({ children }) => {
       const responseData = await response.json()
       if (response.ok) {
         setUserProfileDetail(responseData)
+        if (responseData?.user_setting) {
+          setUserSetting(responseData.user_setting)
+        }
         return responseData
       } else {
         return null
       }
     } catch (err) {
       console.error('could not get profile details', err)
+      return null
     }
   }
 
@@ -85,11 +92,11 @@ export const AuthProvider = ({ children }) => {
           token: resjson.accessToken,
         })
         setIsAuthenticated(true)
+        setIsSignupOrLogin(true)
         setGracePeriod(resjson.gracePeriod)
         navigateToPage('Home')
 
-        setShowVersionNotification(resjson?.showVersionNotification || false);
-
+        setShowVersionNotification(resjson?.showVersionNotification || false)
       } else if (response.status == 401) {
         setShowClearSessionDialog(true)
       } else {
@@ -116,22 +123,22 @@ export const AuthProvider = ({ children }) => {
           timezone,
           version: version,
           type: activePage == 'SignUp' || activePage == 'WelcomeAppsumo' || activePage == 'WelcomeStripe' ? 'register' : 'sign-in',
-          subscriptionType,coupon
+          subscriptionType,
+          coupon,
         }),
       })
 
       let result = await response.json()
       if (Number(response.status) === 200) {
         console.log(result)
-        
-       
+        setIsSignupOrLogin(true)
         localStorage.setItem('accessToken', JSON.stringify(result.accessToken))
         localStorage.setItem('skoopUsername', JSON.stringify(result.skoopUsername))
         sendMessageToBackgroundScript({
           action: 'storeToken',
           token: result.accessToken,
         })
-        if(result?.paymentUrl){
+        if (result?.paymentUrl) {
           chrome.identity.launchWebAuthFlow({ url: result?.paymentUrl, interactive: true }, async function (redirectUrl) {
             if (chrome.runtime.lastError || !redirectUrl) {
               // Handle errors or user cancellation here
@@ -143,7 +150,7 @@ export const AuthProvider = ({ children }) => {
                   authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
                 },
               })
-  
+
               setIsAuthenticated(false)
               navigateToPage('SignInIntro')
               return
@@ -156,21 +163,18 @@ export const AuthProvider = ({ children }) => {
           })
           setCouponValid(false)
           setCouponInfo()
-          setCoupon("")
+          setCoupon('')
           return
-        }else{
-          setIsAuthenticated(true)
- if (result.newUser) {
-          setNewUser(true)
-       
         } else {
-          navigateToPage('Home')
+          setIsAuthenticated(true)
+          if (result.newUser) {
+            setNewUser(true)
+          } else {
+            navigateToPage('Home')
+          }
         }
-        }
-       
 
-        setShowVersionNotification(result?.showVersionNotification || false);
-
+        setShowVersionNotification(result?.showVersionNotification || false)
       } else if (response.status == 401) {
         setShowClearSessionDialog(true)
         setSessionDeletionToken(result.sessionDeletionToken)
@@ -219,7 +223,7 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({
           code: authCode,
           type,
-          version
+          version,
         }),
       })
       if (Number(response.status) === 200) {
@@ -298,8 +302,6 @@ export const AuthProvider = ({ children }) => {
 
   const handleRegister = async (fullname, email, password, timezone) => {
     try {
-    
-      
       if (!validatePassword(password) && !couponValid) {
         toast.error('Password should contain minimum 8 characters, at least one uppercase letter, and one special character')
         return
@@ -313,7 +315,8 @@ export const AuthProvider = ({ children }) => {
           password: password,
           timezone: timezone,
           version: version,
-          subscriptionType,coupon
+          subscriptionType,
+          coupon,
         }),
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
@@ -331,8 +334,8 @@ export const AuthProvider = ({ children }) => {
           action: 'storeToken',
           token: resjson.accessToken,
         })
-        
-        if(couponValid && resjson?.paymentUrl){
+
+        if (couponValid && resjson?.paymentUrl) {
           chrome.identity.launchWebAuthFlow({ url: resjson?.paymentUrl, interactive: true }, async function (redirectUrl) {
             if (chrome.runtime.lastError || !redirectUrl) {
               // Handle errors or user cancellation here
@@ -344,7 +347,7 @@ export const AuthProvider = ({ children }) => {
                   authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
                 },
               })
-  
+
               setIsAuthenticated(false)
               navigateToPage('SignInIntro')
               return
@@ -353,19 +356,23 @@ export const AuthProvider = ({ children }) => {
             if (sessionId) {
               setIsPro(true)
               setNewUser(true)
+              navigateToPage('ThankYouScreen')
             }
           })
           setCouponValid(false)
           setCouponInfo()
-          setCoupon("")
+          setCoupon('')
           return
-
-        }else{
+        } else if(couponValid && subscriptionType=="appsumo"){
+          setIsAuthenticated(true)
+          navigateToPage('ThankYouScreen')
+        }
+          else {
           setIsAuthenticated(true)
           navigateToPage('Home')
         }
-      
-        setShowVersionNotification(resjson?.showVersionNotification || false);
+
+        setShowVersionNotification(resjson?.showVersionNotification || false)
       } else
         toast.error('Email already exists ', {
           id: toastId,
@@ -388,7 +395,7 @@ export const AuthProvider = ({ children }) => {
       if (res.ok) {
         if (response?.isPro) {
           setIsPro(response.isPro)
-          setShowVersionNotification(response?.showVersionNotification || false);
+          setShowVersionNotification(response?.showVersionNotification || false)
         }
         setGracePeriodCompletion(response.gracePeriodCompleted)
         setGracePeriod(response.gracePeriod)
@@ -524,10 +531,10 @@ export const AuthProvider = ({ children }) => {
       let response = await res.json()
 
       if (res.ok) {
-        if(subscriptionType==='freeTrial'){
+        if (subscriptionType === 'freeTrial') {
           setIsPro(true)
           navigateToPage('ThankYouScreen')
-        }else{
+        } else {
           chrome.identity.launchWebAuthFlow({ url: response.url, interactive: true }, async function (redirectUrl) {
             if (chrome.runtime.lastError || !redirectUrl) {
               // Handle errors or user cancellation here
@@ -539,7 +546,7 @@ export const AuthProvider = ({ children }) => {
                   authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
                 },
               })
-  
+
               setIsAuthenticated(false)
               navigateToPage('SignInIntro')
               return
@@ -547,11 +554,10 @@ export const AuthProvider = ({ children }) => {
             const sessionId = new URL(redirectUrl).searchParams.get('session_id')
             if (sessionId) {
               setIsPro(true)
-              navigateToPage('Home')
+              navigateToPage('ThankYouScreen')
             }
           })
         }
-        
 
         toast.success('Please complete payment.', {
           id: toastId,
@@ -666,6 +672,7 @@ export const AuthProvider = ({ children }) => {
     })
     localStorage.setItem('accessToken', JSON.stringify('none'))
     setIsAuthenticated(false)
+    setIsSignupOrLogin(false)
     setIsPro(false)
     setNewUser(false)
     navigateToPage('SignInIntro')
@@ -751,6 +758,39 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const updateUserSettings = async (settingData) => {
+    try {
+      let id = null
+      if (!userSetting) {
+        let user = await getProfileDetails()
+        id = user?.user_setting?.id || null
+      } else {
+        id = userSetting?.id || null
+      }
+
+      let query = id ? `/${id}` : ''
+      let res = await fetch(API_ENDPOINTS.updateUserSetting + query, {
+        method: 'PUT',
+        body: JSON.stringify(settingData),
+        headers: {
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+      })
+      let response = await res.json()
+      if (res.ok) {
+        setUserSetting(response.data)
+        setEnableTutorialScreen(response.data.show_tutorials)
+        toast.success(response.message)
+      } else {
+        throw new Error(response.message)
+      }
+    } catch (err) {
+      console.error('API call failed:', err)
+      toast.error(err.message)
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -801,9 +841,26 @@ export const AuthProvider = ({ children }) => {
         userProfileDetail,
         setUserProfileDetail,
         getProfileDetails,
-        getCtaInfo,coupon, setCoupon,couponInfo, setCouponInfo,couponValid, setCouponValid,
-        showVersionNotification, 
-        setShowVersionNotification,subscriptionType, setSubscriptionType
+        getCtaInfo,
+        coupon,
+        setCoupon,
+        couponInfo,
+        setCouponInfo,
+        couponValid,
+        setCouponValid,
+        showVersionNotification,
+        setShowVersionNotification,
+        subscriptionType,
+        setSubscriptionType,
+        updateUserSettings,
+        isSignupOrLogin,
+        setIsSignupOrLogin,
+     
+      
+    
+       
+
+
       }}
     >
       {children}

@@ -8,6 +8,7 @@ import ScreenContext from '../contexts/ScreenContext'
 import GlobalStatesContext from '../contexts/GlobalStates'
 import { sendMessageToContentScript } from '../lib/sendMessageToBackground'
 import { useUserSettings } from '../contexts/UserSettingsContext'
+import TourContext from '../contexts/TourContext.js'
 
 export const VideoRecording = () => {
   const { setIsRecording, setIsRecordStart, height, width, videoStream, setVideoStream, stopMediaStreams, handleVideoBlob ,captureCameraWithScreen,isRecording} = useRecording()
@@ -19,6 +20,7 @@ export const VideoRecording = () => {
   const isRestartingRef = useRef(false)
   const [countdown, setCountdown] = useState(null)
   const {fetchMySettings}=useUserSettings();
+  const { recordVideoBtnRef, componentsVisible, isVideoTour, activeTourStepIndex, renderNext } = useContext(TourContext);
   useEffect(()=>{console.log(captureCameraWithScreen,seconds,isRecording)
     if(seconds>=120 && isRecording){
       toggleStop();
@@ -134,6 +136,12 @@ export const VideoRecording = () => {
     chrome.storage.sync.remove('recordingType', function() {
       console.log('recordingType has been removed from Chrome storage');
     })
+
+    if(isVideoTour && activeTourStepIndex === 12) {
+      console.log("icon is clicked form the video tour 12");
+      renderNext();
+    }
+    
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
       mediaRecorderRef.current.stop()
       stopMediaStreams()
@@ -197,13 +205,13 @@ export const VideoRecording = () => {
       )}
       <TimerDisplay />
       <div className="recording-action-container position-absolute">
-        <button className="camera-record-btn" onClick={toggleRestart}>
+        <button id="video-restart-btn" className="camera-record-btn rec-restart-btn" onClick={toggleRestart}>
           <MdOutlineRestartAlt className="icon" />
         </button>
-        <button className="camera-record-btn camera-rec-stop-btn" onClick={toggleStop}>
+        <button id="video-stop-btn" className="camera-record-btn camera-rec-stop-btn" onClick={toggleStop}>
           <FaStop className="icon" />
         </button>
-        <button className="camera-record-btn rec-pause-btn" onClick={pauseRecording}>
+        <button id="video-pause-btn" className="camera-record-btn rec-pause-btn" onClick={pauseRecording}>
           {isPaused ? <FaPlay className="icon" /> : <FaPause className="icon" />}
         </button>
       </div>

@@ -241,7 +241,7 @@ export default function Header() {
       )}
       { showVersionNotification && <div className="version-notification">
          <a href={appChromeWebStoreLink} target="_blank" rel="noreferrer">
-        <h6>New version available, please click here to update</h6>
+        <h6>New version available, please <span className='text-decoration-underline mx-1 text-decoration-thickness'>click here</span> to update</h6>
         </a>
       </div>}
     </>

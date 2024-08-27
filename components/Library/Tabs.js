@@ -21,7 +21,7 @@ const Tabs = ({ activeTab, handleTabChange, handleNewTab, folders }) => (
 
       {/* New tab (folder) button */}
       <li className="custom-video-nav-item">
-        <LuPlus onClick={handleNewTab} />
+        <LuPlus id="create-video-folder" onClick={handleNewTab} />
       </li>
     </ul>
   </div>

@@ -37,7 +37,7 @@ const MessageWindow = ({ flashTrigger }) => {
     setMessage(event.target.value)
   }
   return (
-    <div className="textarea-container">
+    <div id="main-message-window" className="textarea-container">
       <textarea
         ref={textareaRef}
         rows="4"

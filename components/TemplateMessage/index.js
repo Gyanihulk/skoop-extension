@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext, useRef } from 'react'
 import API_ENDPOINTS from '../apiConfig'
 import toast from 'react-hot-toast'
 import { IoMdClose } from 'react-icons/io'
@@ -13,6 +13,7 @@ import Tooltip from 'react-bootstrap/Tooltip'
 import { closestCenter, DndContext, DragOverlay, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import TourContext from '../../contexts/TourContext'
 
 const renderTooltip = (props) => (
   <Tooltip id="button-tooltip" {...props}>
@@ -20,7 +21,7 @@ const renderTooltip = (props) => (
   </Tooltip>
 )
 
-const SortableMessages = ({ message, orderId, heading, children }) => {
+const SortableMessages = ({ message, orderId, heading, children, newMessage }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: orderId,
   })
@@ -31,7 +32,7 @@ const SortableMessages = ({ message, orderId, heading, children }) => {
   }
 
   return (
-    <Dropdown.Item ref={setNodeRef} style={style} eventKey={message.id} className="dropdown-item-hover">
+    <Dropdown.Item ref={setNodeRef} style={style} eventKey={message.id} className={`dropdown-item-hover ${newMessage? 'active' : ''}`} id={newMessage? 'new-template-message' : ''}>
       <div className="dropdown-child">
         <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={renderTooltip}>
           <button {...attributes} {...listeners} type="button" className="custom-close-button" aria-label="Close">
@@ -62,12 +63,17 @@ const SavedMessages = ({ appendToBody, close }) => {
   const [isDeleteModal, setIsDeleteModal] = useState(false)
   const [deleteTemplate, setDeleteTemplate] = useState()
   const [isDragging, setIsDragging] = useState(false)
+  const [toggleSelect, setToggleSelect] = useState(false)
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   )
+  const [isPromptAdded, setIsPromptAdded] = useState(false);
+  const { addMessageRef, tours, isVideoTour, setMessagesTemplateHeight, addNewClicked, setAddNewClicked, selectMessage, setSelectMessage,
+    setTours, showMessageModal, setShowMessageModal, isMessageTour, activeTourStepIndex, setStepIndex, openSelect, setOpenSelect, setIsNextDisabled, saveMessageRef, joyrideRef, saveMessagewithNext, componentsVisible, renderNext, setDisableBtnForDes, setIsAlreadySaved, isAlreadySaved, setIsSelectOpened, isSelectOpened  } = useContext(TourContext);
 
   const handleDropdownChange = (event) => {
     const value = event
@@ -76,8 +82,11 @@ const SavedMessages = ({ appendToBody, close }) => {
       setSelectedOption('Select prompt')
       setIsEditing(false)
       setEditingPrompt(null)
+      if(isMessageTour && activeTourStepIndex === 2) {
+        setAddNewClicked(true);
+        renderNext();
+      }
     } else {
-      // setShowModal(false);
       setSelectedOption(value)
       const selectedPrompt = messageOptions.find((option) => option.id === parseInt(value, 10))
 
@@ -86,6 +95,63 @@ const SavedMessages = ({ appendToBody, close }) => {
       } else {
         console.error('Selected prompt not found')
       }
+    }
+
+    if(isMessageTour && activeTourStepIndex === 9 ) {
+      if(selectedOption?.length > 0 && selectedOption !== 'AddPrompt') {
+        setIsNextDisabled(false);
+      }
+      else {
+        setIsNextDisabled(true);
+      }
+    }
+
+    if(isVideoTour && activeTourStepIndex === 7 ) {
+      if(selectedOption?.length > 0 && selectedOption !== 'AddPrompt') {
+        setIsNextDisabled(false);
+      }
+      else {
+        setIsNextDisabled(true);
+      }
+    }
+  }
+
+  function handleOpenSelect () {
+    if(isMessageTour) {
+      setOpenSelect(!openSelect); 
+      if(!openSelect) {
+        if(activeTourStepIndex === 1) {
+          setStepIndex(2);
+        }
+        if(activeTourStepIndex === 6) {
+          console.log("handle open select for the 6");
+          setSelectMessage(true);
+          setStepIndex(7);
+        }
+        if(activeTourStepIndex === 8) {
+          setOpenSelect(true);
+          renderNext();
+        }
+      }
+      if(isMessageTour && activeTourStepIndex === 9) {
+        renderNext();
+      }
+    } 
+    else if(isVideoTour) {
+      console.log("I am inside handleOpenSelect", openSelect);
+      setOpenSelect(!openSelect); 
+      if(!openSelect) {
+        if(activeTourStepIndex === 6) {
+          console.log("I am inside handleOpenSelect for 6 ", openSelect);
+          renderNext();
+        }
+      }
+      if(isVideoTour && activeTourStepIndex === 7) {
+        renderNext();
+      }
+    }
+    else {
+      setToggleSelect(!toggleSelect);
     }
   }
 
@@ -97,9 +163,21 @@ const SavedMessages = ({ appendToBody, close }) => {
     } else if (name === 'prompt') {
       setPrompt(value)
     } else if (name === 'title') {
+      if(value.length > 0) {
+        setIsNextDisabled(false);
+      }
+      else {
+        setIsNextDisabled(true);
+      }
       setNewPrompt({ ...newPrompt, heading: value })
       setTitleError(value ? '' : 'Title is required')
     } else if (name === 'description') {
+      if(value.length > 0) {
+        setDisableBtnForDes(false);
+      }
+      else {
+        setDisableBtnForDes(true);
+      }
       setNewPrompt({ ...newPrompt, description: value })
       setDescriptionError(value ? '' : 'Description is required')
     }
@@ -135,6 +213,10 @@ const SavedMessages = ({ appendToBody, close }) => {
     setNewPrompt(prompt)
   }, [prompt])
 
+  useEffect(() => {
+      setShowModal(showMessageModal);
+  }, [showMessageModal])
+
   const fetchPrompts = async () => {
     try {
       const response = await fetch(API_ENDPOINTS.CrmPreloadedResponses, {
@@ -145,6 +227,13 @@ const SavedMessages = ({ appendToBody, close }) => {
         },
       })
       const data = await response.json()
+      if((isMessageTour || isVideoTour) && data.length > 0) {
+        data[0].newMessage = true;
+        const lengthOfData = data.length;
+        const heightOfMenu = lengthOfData <= 11 ? "100%" : parseInt(715 + ((lengthOfData - 11)*28)) + "px";
+        console.log("heightOfMenu", heightOfMenu);
+        setMessagesTemplateHeight(heightOfMenu);
+      }
       setMessageOptions(data)
     } catch (error) {
       toast.error('Error fetching Messages')
@@ -153,6 +242,7 @@ const SavedMessages = ({ appendToBody, close }) => {
 
   useEffect(() => {
     fetchPrompts()
+    setIsPromptAdded(false);
   }, [])
 
   const addNewPrompt = async () => {
@@ -171,6 +261,7 @@ const SavedMessages = ({ appendToBody, close }) => {
         })
         setShowModal(false)
         setNewPrompt({ heading: '', description: '' })
+        setIsPromptAdded(true);
         fetchPrompts()
         toast.success('New Message added successfully!')
       } else {
@@ -200,6 +291,7 @@ const SavedMessages = ({ appendToBody, close }) => {
       }
 
       fetchPrompts()
+      setIsPromptAdded(false);
       toast.success('Message deleted successfully!')
     } catch (error) {
       toast.error('Error deleting Message')
@@ -254,40 +346,37 @@ const SavedMessages = ({ appendToBody, close }) => {
     }
   }
 
-  const updateOrder = async (oldindex, newIndex, oldMessageOptions) => {
+  const updateOrder = async (oldIndex, newIndex, oldMessageOptions) => {
     if (!messageOptions || messageOptions.length === 0) {
-      return
+      return;
     }
+  
+    let orderData = [...oldMessageOptions];
+    let startIndex = Math.min(oldIndex, newIndex);
+    let endIndex = Math.max(oldIndex, newIndex);
 
-    let orderData = [...oldMessageOptions]
-    let startIndex = oldindex
-    let endIndex = newIndex
-
-    if (startIndex > endIndex) {
-      let temp = startIndex
-      startIndex = endIndex
-      endIndex = temp
-    }
-
-    orderData.splice(oldindex, 1)
-    orderData.splice(newIndex, 0, oldMessageOptions[oldindex])
-
-    let splitedOrderData = orderData.slice(startIndex, endIndex + 1)
-
-    const updatedOrderDetails = []
+    const [movedItem] = orderData.splice(oldIndex, 1);
+    orderData.splice(newIndex, 0, movedItem);
+  
+    let splitedOrderData = orderData.slice(startIndex, endIndex + 1);
+  
+    const updatedOrderDetails = [];
     let updatedSplitedOrder = splitedOrderData.map((item, index) => {
+      const newOrderId = orderData.length - (startIndex + index);
       updatedOrderDetails.push({
         id: item.id,
-        orderId: startIndex + index + 1,
-      })
+        orderId: newOrderId,
+      });
       return {
         ...item,
-        order_id: startIndex + index + 1,
-      }
-    })
-
-    orderData.splice(startIndex, endIndex - startIndex + 1, ...updatedSplitedOrder)
-    setMessageOptions(orderData)
+        order_id: newOrderId,
+      };
+    });
+  
+    // Replace the affected portion with the updated list
+    orderData.splice(startIndex, endIndex - startIndex + 1, ...updatedSplitedOrder);
+    setMessageOptions(orderData);
+  
     try {
       let response = await fetch(`${API_ENDPOINTS.skoopCrmAddPreloadedResponsesOrderIdUpdate}`, {
         method: 'POST',
@@ -298,17 +387,19 @@ const SavedMessages = ({ appendToBody, close }) => {
         body: JSON.stringify({
           orderData: updatedOrderDetails,
         }),
-      })
+      });
       if (response.ok) {
-        toast.success('Message preferences updated successfully')
-      }
-      if (!response.ok) {
-        const errorMessage = await response.json()
+        toast.success('Message preferences updated successfully');
+      } else {
+        const errorMessage = await response.json();
+        console.error(errorMessage);
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
+  
+  
 
   const handleClose = () => {
     setShowModal(false)
@@ -320,20 +411,85 @@ const SavedMessages = ({ appendToBody, close }) => {
   }
 
   const handleDragEnd = (event) => {
-    setIsDragging(false)
-
-    const { active, over } = event
+    setIsDragging(false);
+  
+    const { active, over } = event;
     if (active.id === over.id) {
-      return
+      return;
     }
-    const oldMessageData = [...messageOptions]
+  
+    const oldMessageData = [...messageOptions];
     setMessageOptions((message) => {
-      const oldIndex = message.findIndex((item) => item.id == active.id)
-      const newIndex = message.findIndex((item) => item.id == over.id)
-      updateOrder(oldIndex, newIndex, oldMessageData)
-      return arrayMove(message, oldIndex, newIndex)
-    })
+      const oldIndex = message.findIndex((item) => item.id == active.id);
+      const newIndex = message.findIndex((item) => item.id == over.id);
+      updateOrder(oldIndex, newIndex, oldMessageData);
+  
+      // Simply move the item in the array without adjusting for order
+      return arrayMove(message, oldIndex, newIndex);
+    });
+  };
+  
+
+  function handleSaveMessage () {
+    if (newPrompt.heading) {
+     if (isEditing) {
+       updatePrompt()
+     } else {
+       addNewPrompt()
+       setOpenSelect(false);
+       setShowMessageModal(false);
+       if(!isAlreadySaved){
+        setIsAlreadySaved(true);
+         renderNext();
+       }
+     }
+   }
   }
+
+  useEffect(() => {
+    if(isMessageTour) {
+      if(componentsVisible?.renderItem === 2 && !isSelectOpened) {
+        setOpenSelect(true);
+        setIsSelectOpened(true);
+        renderNext();
+      }
+      if(componentsVisible?.renderItem === 3 && !addNewClicked) {
+        setIsNextDisabled(true);
+        setShowMessageModal(true);
+        setOpenSelect(false);
+        renderNext();
+      }
+  
+      if(componentsVisible?.renderItem === 7) {
+        console.log("component visible 7 called");
+        setOpenSelect(true);
+        if( !selectMessage) {
+          renderNext();
+        }
+      }
+      if(componentsVisible?.renderItem === 9) {
+        setOpenSelect(true);
+      }
+    }
+
+    if(isVideoTour) {
+      console.log("componentsVisible", componentsVisible, "isSelectOpened", isSelectOpened);
+      if(componentsVisible?.renderItem == 7 && !isSelectOpened) {
+        console.log("open Select is ", openSelect);
+        console.log("open the select box");
+        setOpenSelect(true);
+        setIsSelectOpened(true);
+        setIsNextDisabled(true);
+        renderNext();
+      }
+    }
+  }, [componentsVisible])
+
+  useEffect(() => {
+    if(saveMessagewithNext) {
+      handleSaveMessage();
+    }
+  }, [saveMessagewithNext])
 
   return (
     <div>
@@ -350,7 +506,7 @@ const SavedMessages = ({ appendToBody, close }) => {
         </div>
         <div className="form-group mt-2">
           <div className="row">
-            <div>
+            <div id="messages-select-box">
               {/* <select
                                 className="form-select"
                                 value={selectedOption}
@@ -366,8 +522,8 @@ const SavedMessages = ({ appendToBody, close }) => {
                                     </option>
                                 ))}
                             </select> */}
-              <DropdownButton as={ButtonGroup} size="sm" title="Select Message" id="gpt-dropdown" value={selectedOption} onSelect={handleDropdownChange}>
-                <Dropdown.Item eventKey="AddPrompt">
+              <DropdownButton as={ButtonGroup} size="sm" title="Select Message" id="messages-dropdown" value={selectedOption} onSelect={handleDropdownChange} show={( isMessageTour|| isVideoTour ) ? openSelect : toggleSelect} onClick={handleOpenSelect}>
+                <Dropdown.Item eventKey="AddPrompt" id="add-message" >
                   {/* <TbArrowsDiagonal size={16} className='expand-icon' onClick= /> */}
                   <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg" className="me-2 ml-0-7">
                     <path
@@ -383,7 +539,7 @@ const SavedMessages = ({ appendToBody, close }) => {
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                   <SortableContext items={messageOptions} strategy={verticalListSortingStrategy}>
                     {messageOptions.map((option, index) => (
-                      <SortableMessages key={option.id} message={option} orderId={option?.id} heading={option.heading}>
+                      <SortableMessages key={option.id} message={option} orderId={option?.id} heading={option.heading} newMessage={(option.newMessage) ? true : false}>
                         <div>
                           <svg
                             width="20"
@@ -432,7 +588,7 @@ const SavedMessages = ({ appendToBody, close }) => {
             </div>
           </div>
         </div>
-        <div className="modal" tabIndex="-1" role="dialog" style={{ display: showModal ? 'block' : 'none' }}>
+        <div ref={addMessageRef} className="modal" tabIndex="-1" role="dialog" style={{ display: showModal ? 'block' : 'none' }}>
           <div className="modal-overlay  modal-dialog-centered" role="document">
             <div className="modal-content mx-2">
               <div className="modal-header d-flex flex-row justify-content-between px-3 pt-3 pb-2 border-0">
@@ -441,10 +597,11 @@ const SavedMessages = ({ appendToBody, close }) => {
                   <IoMdClose size={16} />
                 </button>
               </div>
-              <div className="modal-body">
+              <div className="modal-body" id="message-template-body">
                 <input
                   type="text"
                   required
+                  id="message-template-title"
                   className="form-control custom-input-global"
                   value={newPrompt.heading}
                   placeholder="Enter title"
@@ -458,6 +615,7 @@ const SavedMessages = ({ appendToBody, close }) => {
 
                 <textarea
                   rows="3"
+                  id="message-template-description"
                   className="form-control mt-2 custom-textarea-global"
                   value={newPrompt.description}
                   placeholder="Enter description"
@@ -471,17 +629,11 @@ const SavedMessages = ({ appendToBody, close }) => {
               </div>
               <div className="modal-footer border-0 py-1">
                 <button
+                  ref={saveMessageRef}
+                  id="add-message-template-btn"
                   type="button"
                   className="modal-btn"
-                  onClick={() => {
-                    if (newPrompt.heading) {
-                      if (isEditing) {
-                        updatePrompt()
-                      } else {
-                        addNewPrompt()
-                      }
-                    }
-                  }}
+                  onClick={handleSaveMessage}
                 >
                   {isEditing ? 'Update' : 'Save'}
                 </button>

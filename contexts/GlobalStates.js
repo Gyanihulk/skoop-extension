@@ -24,7 +24,12 @@ export const GlobalStatesProvider = ({ children }) => {
   const [postCommentSelected, setPostCommentSelected] = useState(false)
   const [postCommentElement, setPostCommentElement] = useState(null)
   const [tabId, setTabId] = useState(null)
-  const [isMatchingUrl, setIsMatchingUrl] = useState(false)
+  const [isMatchingUrl, setIsMatchingUrl] = useState(false);
+  const [selectedTutorial, setSelectedTutorial] = useState('')
+  const [enableTutorialScreen, setEnableTutorialScreen] = useState(false)
+  const [userSetting, setUserSetting] = useState(null)
+  const [targetedTourElement, setTargetedTourElement] = useState(null);
+  
   useEffect(() => {}, [globalRefresh])
   const getToggleButton = () => {
     try {
@@ -120,6 +125,14 @@ export const GlobalStatesProvider = ({ children }) => {
         expandExtension,
         isGmail,
         setIsGmail,
+        selectedTutorial, 
+        setSelectedTutorial,
+        enableTutorialScreen, 
+        setEnableTutorialScreen,
+        userSetting, 
+        setUserSetting,
+        targetedTourElement, 
+        setTargetedTourElement
       }}
     >
       {children}

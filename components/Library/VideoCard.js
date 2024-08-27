@@ -171,7 +171,11 @@ const VideoCard = ({ video, handleLinkInsertion, deleteVideo, toggleFavourite, f
             <button title={video.is_favourite ? 'Remove from favorites' : 'Add to favorites'} className="btn btn-link btn-sm video-card-footer-button" onClick={handleToggleFavouriteClick}>
               {video.is_favourite ? <FaStar className="text-primary" size={10} /> : <FaRegStar size={10} />}
             </button>
-            <button title="Move video to another folder" className="btn btn-link btn-sm video-card-footer-button" onClick={handleMoveClick}>
+
+            <button title="Rename video" className="btn btn-link btn-sm video-card-footer-button" onClick={handleRenameClick}>
+              <FaPencilAlt size={10} />
+            </button>
+            <button id="move-video-btn" title="Move video to another folder" className="btn btn-link btn-sm video-card-footer-button" onClick={handleMoveClick}>
               <MdMoveUp size={10} />
             </button>
             <button title="Download video" className="btn btn-link btn-sm video-card-footer-button" onClick={downloadVideo}>

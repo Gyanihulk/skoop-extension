@@ -479,7 +479,7 @@ const ChatGpt = ({ appendToBody, close }) => {
             <div className="d-flex justify-content-between">
               {' '}
               <div className="heading">{userSettings.fullAccess?"":`Remaining Prompt:${userSettings.remainingPrompts}`}</div>
-              <button type="button" className="generate-response" onClick={generateResponse}>
+              <button id="chatgpt-generate-response" type="button" className="generate-response" onClick={generateResponse}>
                 {' '}
                 Generate response{' '}
               </button>{' '}

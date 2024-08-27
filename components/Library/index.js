@@ -264,7 +264,7 @@ const Library = (props) => {
   }, [globalRefresh])
 
   return (
-    <div>
+    <div id="library-container">
       <Tabs activeTab={activeTab} handleTabChange={handleTabChange} handleNewTab={handleNewTab} folders={folders} />
 
       {/* User Input Modals */}

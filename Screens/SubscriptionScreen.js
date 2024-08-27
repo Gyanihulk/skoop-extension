@@ -13,6 +13,7 @@ const SubscriptionScreen = () => {
 
   const [sessionUrl, setSessionUrl] = useState('')
   const handleSubscriptionChange = (type) => {
+    console.log(type)
     setSubscriptionType(type)
   }
 

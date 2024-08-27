@@ -21,6 +21,7 @@ import { MdOutlineFileUpload } from 'react-icons/md'
 import { useRecording } from '../../contexts/RecordingContext.js'
 import { FaRegClipboard } from 'react-icons/fa'
 import { MdCallToAction } from 'react-icons/md'
+import TourContext from '../../contexts/TourContext.js'
 const MessageComposer = () => {
   const [displayComp, setDisplayComp] = useState('')
   const [activateCalenderLink, setActivateCalenderLink] = useState(false)
@@ -33,12 +34,29 @@ const MessageComposer = () => {
   const { addToMessage } = useContext(MessageContext)
   const { navigateToPage, activePage } = useContext(ScreenContext)
   const { isRecordStart } = useRecording()
+  const { messageRef, isVideoTour, isMessageSended, setIsMessageSended, setSendMessages, isMessageTour, activeTourStep, activeTourStepIndex,componentsVisible, renderNext, activeTourName, sendMessages  } = useContext(TourContext);
+
 
   const handleInsertion = (text) => {
     const newText = text + ' \n '
     addMessage(newText)
     window.scrollTo(0, document.body.scrollHeight)
   }
+
+  useEffect(() => {
+    if(isMessageTour) {
+      if([0, 1].includes(componentsVisible?.renderItem)) {
+        setDisplayComp('Message');
+        renderNext();
+      }
+    }
+
+    if(isVideoTour && [5, 6].includes(componentsVisible?.renderItem)) {
+      setDisplayComp('Message');
+      console.log("i am called inside componentsVisible 6");
+        renderNext();
+    }
+  }, [componentsVisible])
 
   useEffect(() => {
     if (latestBlob) {
@@ -75,7 +93,38 @@ const MessageComposer = () => {
   const handleIconClick = async (eventKey) => {
     setLatestBlob()
     setLatestVideo()
-    if (eventKey === 'CTA Link') {
+    console.log("active tour name", activeTourStepIndex, isVideoTour);
+    if( isMessageTour && [0, 6].includes(activeTourStepIndex)) {
+        renderNext();
+    }
+
+    else if( isVideoTour && activeTourStepIndex === 5 ) {
+      console.log("next is called");
+      renderNext();
+    }
+
+    // if(isMessageTour && (activeTourStepIndex === 0 || activeTourStepIndex === 6 ) && eventKey !== 'Message') {
+    //   if( activeTourStepIndex === 0) {
+    //     renderNext();
+    //   }
+    //   else if( activeTourStepIndex === 6) {
+    //     renderNext();
+    //   }
+    // }
+    // else if( isVideoTour && activeTourStepIndex === 5 ) {
+    //   console.log("next is called");
+    //   renderNext();
+    // }
+    // else {
+    //   if( activeTourStepIndex === 0) {
+    //     renderNext();
+    //   }
+    //   else if( activeTourStepIndex === 6) {
+    //     renderNext();
+    //   }
+    // }
+
+    if (eventKey === 'CTA-Link') {
       if (await checkForUserPreferences()) {
         setDisplayComp(eventKey)
         addMeetSchedulingLink()
@@ -100,14 +149,16 @@ const MessageComposer = () => {
     }
   }
 
-  const renderNavItem = (eventKey, icon, tooltipText) => (
-    <li key={eventKey} className="cursor-pointer">
+  const renderNavItem = (eventKey, icon, tooltipText) => {
+    return (
+      <li key={eventKey} className="cursor-pointer">
       <a className={`px-1 ${displayComp === eventKey ? 'text-black' : 'text-white'}`} onClick={() => handleIconClick(eventKey)} data-bs-toggle="tooltip" data-bs-placement="bottom" title={tooltipText}>
         {React.cloneElement(icon, { size: 20 })}
         <span className="d-none d-sm-inline">{tooltipText}</span>
       </a>
     </li>
-  )
+    )
+  }
 
   const handleSend = () => {
     const clickSendButtons = (arr) => {
@@ -183,15 +234,25 @@ const MessageComposer = () => {
   }
 
   const handleInsertionToWebsite = async () => {
+
     if (message === null || message === undefined) {
       toast.error('Please add message!!')
       return
     }
+    console.log("active tour name", activeTourStep);
+    if(isMessageTour && activeTourName === 'messages' && activeTourStep?.level === 13) {
+      console.log("rendering next");
+      setSendMessages(true);
+      setIsMessageSended(true);
+      renderNext();
+   }
+
     if (isLinkedin) {
       if (!postCommentSelected && selectedChatWindows?.length === 0) {
         toast.error('Please select a recipient')
         return
       }
+
       for (const item of selectedChatWindows) {
         if (hasDatasetProperty(item)) {
           try {
@@ -266,9 +327,9 @@ const MessageComposer = () => {
       toast.error('Failed to add as template message. Please try again.')
     }
   }
-  const renderNavButtonItem = (eventKey, icon, tooltipText) => (
-    <li key={eventKey} className={`rounded-1 p-1 ${displayComp === eventKey ? 'bg-active active ' : ''}`}>
-      <a className={`text-decoration-none ${displayComp === eventKey ? 'text-white' : 'text-black'}`} onClick={() => handleIconClick(eventKey)} data-bs-toggle="tooltip" data-bs-placement="bottom" title={tooltipText}>
+  const renderNavButtonItem = (eventKey, icon, tooltipText, itemReference=null) => (
+    <li id={eventKey} key={eventKey} className={`rounded-1 p-1 ${displayComp === eventKey ? 'bg-active active ' : ''}`}>
+      <a ref={itemReference} className={`text-decoration-none ${displayComp === eventKey ? 'text-white' : 'text-black'}`} onClick={() => handleIconClick(eventKey)} data-bs-toggle="tooltip" data-bs-placement="bottom" title={tooltipText}>
         <div className="d-flex flex-column align-items-center justify-content-center">
           {React.cloneElement(icon, {
             className: `svg-icon ${displayComp === eventKey ? 'active-path' : 'default-path'}`,
@@ -343,10 +404,26 @@ const MessageComposer = () => {
     setFlashTrigger((prevCount) => prevCount + 1)
   }
   function handleCopy() {
-    handleCopyToClipboard(message)
-    toast.success('Message copied.')
+    handleCopyToClipboard(message);
+    toast.success('Message copied.');
     triggerFunction()
+    if(isMessageTour && activeTourName === 'messages' && activeTourStep?.level === 13) {
+      renderNext();
+   }
   }
+
+  useEffect(() => {
+    console.log("sendmessage useeffect called");
+      if(isMessageTour && sendMessages && !isMessageSended) {
+        
+        if( isMatchingUrl) {
+          console.log("called from useeffect for 12");
+          handleInsertionToWebsite();
+        } else {
+          handleCopy();
+        }
+      }
+  }, [sendMessages])
 
   return (
     <>
@@ -365,7 +442,8 @@ const MessageComposer = () => {
                     fill="#2A2B39"
                   />
                 </svg>,
-                'Send predetermined custom message responses.'
+                'Send predetermined custom message responses.',
+                messageRef
               )}
               {renderNavButtonItem(
                 'ChatGpt',
@@ -402,7 +480,7 @@ const MessageComposer = () => {
                 'Send any recorded video or audio file'
               )}
               {renderNavButtonItem(
-                'CTA Link',
+                'CTA-Link',
                 <svg fill="#000000" width="800px" height="800px" viewBox="0 0 32 32" id="Outlined" xmlns="http://www.w3.org/2000/svg">
                   <title />
 
@@ -416,10 +494,12 @@ const MessageComposer = () => {
           </div>
         </nav>
       ) : null}
-      <div className="container bg-white">
+      <div className="container bg-white" >
         {displayComp === 'Message' && <MessageTemplate appendToBody={handleInsertion} />}
         {displayComp === 'ChatGpt' && <ChatGpt appendToBody={handleInsertion} close={setDisplayComp} />}
+        <div id="preview-uploaded-video">
         <VideoPreview />
+        </div>
       </div>
       {!expand && (
         <div id="footermessage" className=" w-full">
@@ -430,24 +510,24 @@ const MessageComposer = () => {
           {displayComp === 'Giphy' && <GiphyWindow appendToBody={handleInsertion} />}
           {displayComp === 'Emoji' && <EmojiPicker onEmojiClick={onEmojiClick} searchDisabled />}
           <nav className="navbar px-2" id="messageFooter">
-            <div class="navbar-brand d-flex flex-row">
+            <div class="navbar-brand lh-0 py-0 d-flex flex-row">
               <ul className="nav">
-                {renderNavItem('Giphy', <HiMiniGif />, 'Send your favorite GIFs to Mail')}
+                {renderNavItem('Giphy', <HiMiniGif id="giphy" />, 'Send your favorite GIFs to Mail')}
 
                 {renderNavItem(
                   'Emoji',
                   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
+                    <path id="emoji"
                       d="M11.625 8.25C11.9375 8.25 12.2031 8.14063 12.4219 7.92188C12.6406 7.70312 12.75 7.4375 12.75 7.125C12.75 6.8125 12.6406 6.54688 12.4219 6.32812C12.2031 6.10937 11.9375 6 11.625 6C11.3125 6 11.0469 6.10937 10.8281 6.32812C10.6094 6.54688 10.5 6.8125 10.5 7.125C10.5 7.4375 10.6094 7.70312 10.8281 7.92188C11.0469 8.14063 11.3125 8.25 11.625 8.25ZM6.375 8.25C6.6875 8.25 6.95312 8.14063 7.17188 7.92188C7.39063 7.70312 7.5 7.4375 7.5 7.125C7.5 6.8125 7.39063 6.54688 7.17188 6.32812C6.95312 6.10937 6.6875 6 6.375 6C6.0625 6 5.79688 6.10937 5.57812 6.32812C5.35937 6.54688 5.25 6.8125 5.25 7.125C5.25 7.4375 5.35937 7.70312 5.57812 7.92188C5.79688 8.14063 6.0625 8.25 6.375 8.25ZM9 13.125C9.85 13.125 10.6219 12.8844 11.3156 12.4031C12.0094 11.9219 12.5125 11.2875 12.825 10.5H5.175C5.4875 11.2875 5.99062 11.9219 6.68437 12.4031C7.37812 12.8844 8.15 13.125 9 13.125ZM9 16.5C7.9625 16.5 6.9875 16.3031 6.075 15.9094C5.1625 15.5156 4.36875 14.9813 3.69375 14.3063C3.01875 13.6313 2.48438 12.8375 2.09063 11.925C1.69687 11.0125 1.5 10.0375 1.5 9C1.5 7.9625 1.69687 6.9875 2.09063 6.075C2.48438 5.1625 3.01875 4.36875 3.69375 3.69375C4.36875 3.01875 5.1625 2.48438 6.075 2.09063C6.9875 1.69687 7.9625 1.5 9 1.5C10.0375 1.5 11.0125 1.69687 11.925 2.09063C12.8375 2.48438 13.6313 3.01875 14.3063 3.69375C14.9813 4.36875 15.5156 5.1625 15.9094 6.075C16.3031 6.9875 16.5 7.9625 16.5 9C16.5 10.0375 16.3031 11.0125 15.9094 11.925C15.5156 12.8375 14.9813 13.6313 14.3063 14.3063C13.6313 14.9813 12.8375 15.5156 11.925 15.9094C11.0125 16.3031 10.0375 16.5 9 16.5ZM9 15C10.675 15 12.0938 14.4188 13.2563 13.2563C14.4188 12.0938 15 10.675 15 9C15 7.325 14.4188 5.90625 13.2563 4.74375C12.0938 3.58125 10.675 3 9 3C7.325 3 5.90625 3.58125 4.74375 4.74375C3.58125 5.90625 3 7.325 3 9C3 10.675 3.58125 12.0938 4.74375 13.2563C5.90625 14.4188 7.325 15 9 15Z"
                       fill="white"
                     />
                   </svg>,
                   'Add emotions'
                 )}
-                {renderNavItem('Upload Video', <MdOutlineFileUpload color="white" />, 'Upload video from your device (80mb max limit)')}
+                {renderNavItem('Upload Video', <MdOutlineFileUpload id="upload-video" color="white" />, 'Upload video from your device (80mb max limit)')}
 
                 {message && (
-                  <li className="cursor-pointer" onClick={() => saveMessageAsTemplate()}>
+                  <li id="save-custom-message" className="cursor-pointer" onClick={() => saveMessageAsTemplate()}>
                     <a className={'px-1text-white'} data-bs-toggle="tooltip" data-bs-placement="bottom" title="Save the customized message as template.">
                       <svg className="mt-1 mx-2" width="16" height="16" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M6 8H0V6H6V0H8V6H14V8H8V14H6V8Z" fill="white" />
@@ -460,11 +540,11 @@ const MessageComposer = () => {
             </div>
             <div className="d-flex flex-row  align-items-right me-2">
               {isMatchingUrl && (
-                <button className="copy-icon" onClick={handleCopy} title="Copy the message">
+                <button id="copy-message" className="copy-icon" onClick={handleCopy} title="Copy the message">
                   <FaRegClipboard title="Copy the message" />
                 </button>
               )}
-              <button className="btn send-button d-flex me-2 align-items-center justify-content-center" type="button" onClick={isMatchingUrl ? handleInsertionToWebsite : handleCopy}>
+              <button id="send-button" className="btn send-button d-flex me-2 align-items-center justify-content-center" type="button" onClick={isMatchingUrl ? handleInsertionToWebsite : handleCopy}>
                 {isMatchingUrl ? 'Send' : 'Copy'}
               </button>
             </div>

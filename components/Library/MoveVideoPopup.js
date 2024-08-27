@@ -73,7 +73,7 @@ const MoveVideoPopup = ({ videoId, onClose, onMove, fetchVideos }) => {
             {loading ? (
               <p>Loading folders...</p>
             ) : (
-              <div className="list-group">
+              <div id="video-folder-list" className="list-group">
                 {folders.length > 0 &&
                   folders.map(
                     (folder, index) =>

@@ -1,5 +1,5 @@
-// const backendUrl = "https://skoop.sumits.in"; //test
-const backendUrl = 'http://localhost:4000' //local
+const backendUrl = "https://skoop.sumits.in"; //test
+// const backendUrl = 'http://localhost:4000' //local
 // const backendUrl = "https://api.skoopapp.com"; //prod
 const API_ENDPOINTS = {
   backendUrl,
@@ -64,6 +64,7 @@ const API_ENDPOINTS = {
   skoopCrmAddPreloadedResponsesOrderIdUpdate: `${backendUrl}/skoopCrmAddPreloadedResponsesOrderIdUpdate`, //POST
   chatgptpromptorderidupdate: `${backendUrl}/chatgptpromptorderidupdate`, //Post,
   jwtSocialSessions: `${backendUrl}/jwtsession/jwtsocialsessions`,
+  updateUserSetting: `${backendUrl}/user-settings`,
   getMyUserSettings: `${backendUrl}/user-settings/mysettings`,
 }
 
