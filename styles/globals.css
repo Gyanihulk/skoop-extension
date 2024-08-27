@@ -2405,7 +2405,7 @@ img.icon-style-normal {
 .media-count {
   font-size: 14px;
   font-family: 'Montserrat';
-  font-weight: 500;
+  font-weight: 500;    text-align: center;
 }
 
 .custom-toast {

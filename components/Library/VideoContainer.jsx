@@ -3,12 +3,13 @@ import API_ENDPOINTS from '../apiConfig'
 import VideoCard from './VideoCard'
 import Pagination from './Pagination'
 import GlobalStatesContext from '../../contexts/GlobalStates'
+import { useUserSettings } from '../../contexts/UserSettingsContext'
 
 const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFavourite, currentPage, handlePageChange }) => {
   const { setTotalMediaCount } = useContext(GlobalStatesContext)
   const [totalPages, setTotalPages] = useState()
   const [videos, setVideos] = useState([])
-
+  const { userSettings } = useUserSettings()
   const fetchVideos = async () => {
     try {
       const response = await fetch(`${API_ENDPOINTS.linkData}directory=${folderName}&page=${currentPage}&limit=${4}`, {
@@ -51,6 +52,7 @@ const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFa
       <div className="d-flex justify-content-center my-2">
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
       </div>
+      <div className="mx-1 media-count">{userSettings.fullAccess?"":`Remaining Videos:${userSettings.remainingVideos}`}</div>
     </div>
   )
 }
