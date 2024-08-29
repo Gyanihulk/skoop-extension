@@ -1,5 +1,5 @@
-const backendUrl = "https://skoop.sumits.in"; //test
-// const backendUrl = 'http://localhost:4000' //local
+// const backendUrl = "https://skoop.sumits.in"; //test
+const backendUrl = 'http://localhost:4000' //local
 // const backendUrl = "https://api.skoopapp.com"; //prod
 const API_ENDPOINTS = {
   backendUrl,
@@ -66,6 +66,7 @@ const API_ENDPOINTS = {
   jwtSocialSessions: `${backendUrl}/jwtsession/jwtsocialsessions`,
   updateUserSetting: `${backendUrl}/user-settings`,
   getMyUserSettings: `${backendUrl}/user-settings/mysettings`,
+  appSettings: `${backendUrl}/app-config`,
 }
 
 // with POST or PATCH apis body is sent in JSON

@@ -123,7 +123,7 @@ const RecordingButton = () => {
               })
             })
             .catch((err) => {
-              console.log(err.name + ': ' + err.message)
+              console.error(err.name + ': ' + err.message)
             })
 
           const videoStream = await navigator.mediaDevices.getUserMedia({
@@ -132,7 +132,6 @@ const RecordingButton = () => {
           const audioStream = await navigator.mediaDevices.getUserMedia({
             audio: { deviceId: selectedAudioDevice },
           })
-          console.log(selectedVideoDevice,selectedAudioDevice,videoStream)
           if (videoRef.current) {
             videoRef.current.srcObject = videoStream;
           }
@@ -196,7 +195,6 @@ const RecordingButton = () => {
   const saveSelectedDevice = (deviceType, label) => {
     const key = deviceType === 'video' ? 'selectedVideoLabel' : 'selectedAudioLabel'
     chrome.storage.sync.set({ [key]: label }, () => {
-      // console.log(`${key} saved to Chrome storage: ${label}`);
     })
   }
 
@@ -252,8 +250,7 @@ const RecordingButton = () => {
   useEffect(() => {
     if (isVideoTour) {
       if (componentsVisible?.renderItem === 12) {
-        console.log('component visible is also called 12')
-        console.log('recordVideoBtnRef', recordVideoBtnRef.current)
+
         recordVideoBtnRef.current.click()
         renderNext()
       }
@@ -306,7 +303,7 @@ const RecordingButton = () => {
     }
 
     if (isVideoTour && activeTourStepIndex === 11) {
-      console.log('icon is clicked form the video tour 11')
+
       renderNext()
     }
     setIsRecordStart(true)

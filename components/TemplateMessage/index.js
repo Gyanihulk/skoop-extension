@@ -125,7 +125,6 @@ const SavedMessages = ({ appendToBody, close }) => {
           setStepIndex(2);
         }
         if(activeTourStepIndex === 6) {
-          console.log("handle open select for the 6");
           setSelectMessage(true);
           setStepIndex(7);
         }
@@ -139,11 +138,11 @@ const SavedMessages = ({ appendToBody, close }) => {
       }
     } 
     else if(isVideoTour) {
-      console.log("I am inside handleOpenSelect", openSelect);
+ 
       setOpenSelect(!openSelect); 
       if(!openSelect) {
         if(activeTourStepIndex === 6) {
-          console.log("I am inside handleOpenSelect for 6 ", openSelect);
+
           renderNext();
         }
       }
@@ -232,7 +231,7 @@ const SavedMessages = ({ appendToBody, close }) => {
         data[0].newMessage = true;
         const lengthOfData = data.length;
         const heightOfMenu = lengthOfData <= 11 ? "100%" : parseInt(715 + ((lengthOfData - 11)*28)) + "px";
-        console.log("heightOfMenu", heightOfMenu);
+
         setMessagesTemplateHeight(heightOfMenu);
       }
       setMessageOptions(data)
@@ -462,7 +461,7 @@ const SavedMessages = ({ appendToBody, close }) => {
       }
   
       if(componentsVisible?.renderItem === 7) {
-        console.log("component visible 7 called");
+
         setOpenSelect(true);
         if( !selectMessage) {
           renderNext();
@@ -474,10 +473,9 @@ const SavedMessages = ({ appendToBody, close }) => {
     }
 
     if(isVideoTour) {
-      console.log("componentsVisible", componentsVisible, "isSelectOpened", isSelectOpened);
+
       if(componentsVisible?.renderItem == 7 && !isSelectOpened) {
-        console.log("open Select is ", openSelect);
-        console.log("open the select box");
+
         setOpenSelect(true);
         setIsSelectOpened(true);
         setIsNextDisabled(true);

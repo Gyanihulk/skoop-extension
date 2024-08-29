@@ -53,7 +53,6 @@ const MessageComposer = () => {
 
     if(isVideoTour && [5, 6].includes(componentsVisible?.renderItem)) {
       setDisplayComp('Message');
-      console.log("i am called inside componentsVisible 6");
         renderNext();
     }
   }, [componentsVisible])
@@ -93,36 +92,15 @@ const MessageComposer = () => {
   const handleIconClick = async (eventKey) => {
     setLatestBlob()
     setLatestVideo()
-    console.log("active tour name", activeTourStepIndex, isVideoTour);
     if( isMessageTour && [0, 6].includes(activeTourStepIndex)) {
         renderNext();
     }
 
     else if( isVideoTour && activeTourStepIndex === 5 ) {
-      console.log("next is called");
       renderNext();
     }
 
-    // if(isMessageTour && (activeTourStepIndex === 0 || activeTourStepIndex === 6 ) && eventKey !== 'Message') {
-    //   if( activeTourStepIndex === 0) {
-    //     renderNext();
-    //   }
-    //   else if( activeTourStepIndex === 6) {
-    //     renderNext();
-    //   }
-    // }
-    // else if( isVideoTour && activeTourStepIndex === 5 ) {
-    //   console.log("next is called");
-    //   renderNext();
-    // }
-    // else {
-    //   if( activeTourStepIndex === 0) {
-    //     renderNext();
-    //   }
-    //   else if( activeTourStepIndex === 6) {
-    //     renderNext();
-    //   }
-    // }
+   
 
     if (eventKey === 'CTA-Link') {
       if (await checkForUserPreferences()) {
@@ -239,9 +217,8 @@ const MessageComposer = () => {
       toast.error('Please add message!!')
       return
     }
-    console.log("active tour name", activeTourStep);
+
     if(isMessageTour && activeTourName === 'messages' && activeTourStep?.level === 13) {
-      console.log("rendering next");
       setSendMessages(true);
       setIsMessageSended(true);
       renderNext();
@@ -413,11 +390,9 @@ const MessageComposer = () => {
   }
 
   useEffect(() => {
-    console.log("sendmessage useeffect called");
       if(isMessageTour && sendMessages && !isMessageSended) {
         
         if( isMatchingUrl) {
-          console.log("called from useeffect for 12");
           handleInsertionToWebsite();
         } else {
           handleCopy();

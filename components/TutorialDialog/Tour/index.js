@@ -15,9 +15,6 @@ const AppTour = () => {
     }
   }, [selectedTutorial])
 
-  // useEffect(() => {
-  //   console.log("active tour step", activeTourStep);
-  // }, [activeTourStep])
 
   return (
     <div>

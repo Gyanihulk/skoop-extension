@@ -18,6 +18,7 @@ import { TbArrowsDiagonal } from 'react-icons/tb'
 import { RiDashboard2Line } from 'react-icons/ri'
 import { useRecording } from '../../contexts/RecordingContext.js'
 import { appChromeWebStoreLink } from "../../constants.js"
+import { useUserSettings } from '../../contexts/UserSettingsContext.js'
 
 export default function Header() {
   const { isAuthenticated, handleLogOut, isPro, gracePeriodCompletion, gracePeriod, showVersionNotification } = useContext(AuthContext)
@@ -31,6 +32,7 @@ export default function Header() {
 
     isScreenRecording,
   } = useRecording()
+  const { userSettings } = useUserSettings()
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (profileOpen && !event.target.closest('.custom')) {
@@ -243,6 +245,11 @@ export default function Header() {
          <a href={appChromeWebStoreLink} target="_blank" rel="noreferrer">
         <h6>New version available, please <span className='text-decoration-underline mx-1 text-decoration-thickness'>click here</span> to update</h6>
         </a>
+      </div>}
+      { !userSettings?.fullAccess && <div className="notification-container">
+        
+        <div class="notification-div">Trial days remaining : {userSettings?.remainingDays}</div>
+
       </div>}
     </>
   )

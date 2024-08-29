@@ -34,6 +34,11 @@ export const AuthProvider = ({ children }) => {
   const [couponValid, setCouponValid] = useState(false)
   const [couponInfo, setCouponInfo] = useState()
   const [subscriptionType, setSubscriptionType] = useState('monthly')
+  const [appConfig, setAppConfig] = useState({
+    max_prompts: '50',
+    max_videos: '15',
+    trial_period_days: '30'
+  })
   const getProfileDetails = async () => {
     try {
       const response = await fetch(API_ENDPOINTS.profileDetails, {
@@ -58,7 +63,31 @@ export const AuthProvider = ({ children }) => {
       return null
     }
   }
+  const getAppConfig = async () => {
+    try {
+      const response = await fetch(API_ENDPOINTS.appSettings, {
+        method: 'GET',
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+      })
+      const responseData = await response.json()
+      if (response.ok) {
+        const result = responseData.data.reduce((obj, item) => {
+          obj[item.label] = item.value;
+          return obj;
+        }, {});
 
+        setAppConfig(result)
+        return responseData.data
+      } else {
+        return null
+      }
+    } catch (err) {
+      console.error('Could not get app config', err)
+      return null
+    }
+  }
   const validatePassword = (password) => {
     if (!password) {
       return false
@@ -520,7 +549,10 @@ const handleRegister = async (fullname, email, password, timezone) => {
   }
   const createSubscription = async (subscriptionData) => {
     const toastId = toast.loading('Processing Subscription...')
-    navigateToPage('PaymentScreen')
+    if(subscriptionType!='freeTrial'){
+
+      navigateToPage('PaymentScreen')
+    }
     try {
       let res = await fetch(API_ENDPOINTS.createSubscription, {
         method: 'POST',
@@ -856,6 +888,8 @@ const handleRegister = async (fullname, email, password, timezone) => {
         setShowVersionNotification,
         subscriptionType,
         setSubscriptionType,
+        getAppConfig,
+        appConfig
       }}
     >
       {children}

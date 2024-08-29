@@ -9,11 +9,11 @@ import ConfirmationModal from '../components/ConfirmationModal'
 
 const SubscriptionScreen = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
-  const { createSubscription, verifyCoupon, getMySubscription, subscriptionType, setSubscriptionType } = useContext(AuthContext)
-
+  const { createSubscription, verifyCoupon, getMySubscription, subscriptionType, setSubscriptionType ,appConfig,getAppConfig} = useContext(AuthContext)
+  const { navigateToPage } = useContext(ScreenContext)
   const [sessionUrl, setSessionUrl] = useState('')
   const handleSubscriptionChange = (type) => {
-    console.log(type)
+
     setSubscriptionType(type)
   }
 
@@ -34,13 +34,15 @@ const SubscriptionScreen = () => {
     setSessionUrl(session.url)
   }
 
-  const { navigateToPage } = useContext(ScreenContext)
+
   useEffect(() => {
     ;(async () => {
+  await getAppConfig()
+    
       const subcription = await getMySubscription()
-      if (subcription) {
-        navigateToPage('PaymentScreen')
-      }
+      // if (subcription) {
+      //   navigateToPage('PaymentScreen')
+      // }
     })()
   }, [])
   // A function to handle changes to the input field
@@ -65,6 +67,20 @@ const SubscriptionScreen = () => {
     // Update the 'couponCode' state with the input's current value
     setCouponCode(event.target.value)
   }
+  const monthlyPrice = 47 // Original monthly price
+  const yearlyPrice = 451
+  // Calculate discounted prices
+  const discountedMonthlyPrice = couponInfo?.discount?.percent_off
+    ? ((monthlyPrice * (100 - couponInfo?.discount?.percent_off)) / 100).toFixed(2)
+    : couponInfo?.discount?.amount_off
+      ? (monthlyPrice - couponInfo?.discount?.amount_off).toFixed(2)
+      : monthlyPrice
+
+  const discountedYearlyPrice = couponInfo?.discount?.percent_off
+    ? ((yearlyPrice * (100 - couponInfo?.discount?.percent_off)) / 100).toFixed(2)
+    : couponInfo?.discount?.amount_off
+      ? (yearlyPrice - couponInfo?.discount?.amount_off).toFixed(2)
+      : yearlyPrice
   return (
     <>
       {' '}
@@ -98,26 +114,17 @@ const SubscriptionScreen = () => {
           <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
             <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'freeTrial'} onChange={() => handleSubscriptionChange('freeTrial')} />
             <div className="ps-4">
-              <h5>30-day Free trial</h5>
-              <p>Limited to 30 videos and 50 AI responses.<br/>No credit card Required .</p>
+              <h5>{appConfig.trial_period_days}-day Free trial</h5>
+              <p>Limited to {appConfig.max_videos} videos and {appConfig.max_prompts} AI responses.<br/>No credit card Required .</p>
              
             </div>
           </div>
+         
           <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
             <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'monthly'} onChange={() => handleSubscriptionChange('monthly')} />
-            <div className="ps-4">
-              <h5>Monthly</h5>
-              <p>
-                 $
-                {couponInfo && subscriptionType === 'monthly'
-                  ? couponInfo?.discount?.percent_off
-                    ? ((47 * (100 - couponInfo?.discount?.percent_off)) / 100).toFixed(2)
-                    : couponInfo?.discount?.amount_off
-                      ? (47 - couponInfo?.discount?.amount_off).toFixed(2)
-                      : 47
-                  : 47}
-                /month
-              </p>
+            <div className="ps-4 pt-2">
+              <h5>$ {discountedMonthlyPrice} Monthly</h5>
+              {couponInfo && <p>Original Price : $ {monthlyPrice} /month</p>}
             </div>
           </div>
           <div className="subscription-option d-flex flex-row align-items-center bg-yearly">
@@ -125,31 +132,22 @@ const SubscriptionScreen = () => {
               <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'yearly'} onChange={() => handleSubscriptionChange('yearly')} />
             </div>
 
-            <div className="ps-4">
-              <h5>
-                Yearly <span className="badge rounded-pill bg-warning text-dark">SAVE 20% </span>
-              </h5>
-              <p>
-                 $
-                {couponInfo && subscriptionType === 'yearly'
-                  ? couponInfo?.discount?.percent_off
-                    ? ((451 * (100 - couponInfo?.discount?.percent_off)) / 100).toFixed(2)
-                    : couponInfo?.discount?.amount_off
-                      ? (451 - couponInfo?.discount?.amount_off).toFixed(2)
-                      : 451
-                  : 451}
-                /year
-              </p>
+            <div className="ps-4 pt-2">
+              <h5>$ {discountedYearlyPrice} Yearly</h5>
+              {couponInfo && <p>Original Price : $ {yearlyPrice} /year</p>}
+              
             </div>
           </div>
         </div>
-
+        <div className="subscription-options align-items-center">
+      
+        </div>
         <div className="d-flex flex-column">
           <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="Have Coupon!" aria-label="Have Coupon!" value={couponCode} onChange={handleInputChange} />
             <span class="input-group-text cursor-pointer" id="basic-addon2" onClick={handleCouponValidation}>
               <FaCheckCircle color={!couponValid ? 'red' : 'green'} />
-              Apply
+              {couponInfo && couponValid ?"Applied":"Apply"}
             </span>
           </div>
           {couponInfo && couponValid && <span className="badge rounded-pill bg-warning text-dark ">Coupon Applied.</span>}

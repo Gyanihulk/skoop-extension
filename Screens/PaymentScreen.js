@@ -10,7 +10,7 @@ export const PaymentScreen = () => {
           <div class="confirmation-container text-center">
             <img className="credit-card" src="/images/credit-card.png" alt="credit card" />
             <div class="confirmation-title">Please complete Payment!</div>
-            <p>Please add you card details to sucessfully complete the free trial process of skoop application.</p>
+            <p>Please add your card details to sucessfully complete activation of account for SKOOP application.</p>
           </div>
         </div>
       </div>
