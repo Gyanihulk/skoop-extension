@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
   const [isPro, setIsPro] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   const { navigateToPage, activePage } = useContext(ScreenContext)
-  const { userSetting, setUserSetting, setEnableTutorialScreen } = useContext(GlobalStatesContext)
+  const { userSetting, setUserSetting, setEnableTutorialScreen, setLatestVideo, setLatestBlob } = useContext(GlobalStatesContext)
   const [newUser, setNewUser] = useState(false)
   const [loadingAuthState, setLoadingAuthState] = useState(true)
   const [version, setVersion] = useState('0.0.0')
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
   const [appConfig, setAppConfig] = useState({
     max_prompts: '50',
     max_videos: '15',
-    trial_period_days: '30'
+    trial_period_days: '30',
   })
   const getProfileDetails = async () => {
     try {
@@ -51,9 +51,6 @@ export const AuthProvider = ({ children }) => {
       const responseData = await response.json()
       if (response.ok) {
         setUserProfileDetail(responseData)
-        if (responseData?.user_setting) {
-          setUserSetting(responseData.user_setting)
-        }
         return responseData
       } else {
         return null
@@ -74,9 +71,9 @@ export const AuthProvider = ({ children }) => {
       const responseData = await response.json()
       if (response.ok) {
         const result = responseData.data.reduce((obj, item) => {
-          obj[item.label] = item.value;
-          return obj;
-        }, {});
+          obj[item.label] = item.value
+          return obj
+        }, {})
 
         setAppConfig(result)
         return responseData.data
@@ -154,7 +151,7 @@ export const AuthProvider = ({ children }) => {
           version: version,
           type: activePage == 'SignUp' || activePage == 'WelcomeAppsumo' || activePage == 'WelcomeStripe' ? 'register' : 'sign-in',
           subscriptionType,
-          coupon:coupon.trim(),
+          coupon: coupon.trim(),
         }),
       })
 
@@ -190,10 +187,11 @@ export const AuthProvider = ({ children }) => {
               setIsPro(true)
               navigateToPage('Home')
             }
+            setCouponValid(false)
+            setCouponInfo()
+            setCoupon('')
           })
-          setCouponValid(false)
-          setCouponInfo()
-          setCoupon('')
+
           return
         } else {
           setIsAuthenticated(true)
@@ -329,7 +327,7 @@ export const AuthProvider = ({ children }) => {
       })
     }
   }
-const handleRegister = async (fullname, email, password, timezone) => {
+  const handleRegister = async (fullname, email, password, timezone) => {
     try {
       if (!validatePassword(password) && !couponValid) {
         toast.error('Password should contain minimum 8 characters, at least one uppercase letter, and one special character')
@@ -345,7 +343,7 @@ const handleRegister = async (fullname, email, password, timezone) => {
           timezone: timezone,
           version: version,
           subscriptionType,
-          coupon:coupon.trim(),
+          coupon: coupon.trim(),
         }),
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
@@ -387,16 +385,16 @@ const handleRegister = async (fullname, email, password, timezone) => {
               setNewUser(true)
               navigateToPage('ThankYouScreen')
             }
+            setCouponValid(false)
+            setCouponInfo()
+            setCoupon('')
           })
-          setCouponValid(false)
-          setCouponInfo()
-          setCoupon('')
+
           return
-        } else if(couponValid && subscriptionType=="appsumo"){
+        } else if (couponValid && subscriptionType == 'appsumo') {
           setIsAuthenticated(true)
           navigateToPage('ThankYouScreen')
-        }
-          else {
+        } else {
           setIsAuthenticated(true)
           setIsSignupOrLogin(true)
           navigateToPage('Home')
@@ -549,8 +547,7 @@ const handleRegister = async (fullname, email, password, timezone) => {
   }
   const createSubscription = async (subscriptionData) => {
     const toastId = toast.loading('Processing Subscription...')
-    if(subscriptionType!='freeTrial'){
-
+    if (subscriptionType != 'freeTrial') {
       navigateToPage('PaymentScreen')
     }
     try {
@@ -710,6 +707,8 @@ const handleRegister = async (fullname, email, password, timezone) => {
     setIsPro(false)
     setNewUser(false)
     navigateToPage('SignInIntro')
+    setLatestVideo(null)
+    setLatestBlob(null)
   }
   const getMySubscription = async (videoId) => {
     try {
@@ -889,7 +888,7 @@ const handleRegister = async (fullname, email, password, timezone) => {
         subscriptionType,
         setSubscriptionType,
         getAppConfig,
-        appConfig
+        appConfig,
       }}
     >
       {children}

@@ -6,6 +6,7 @@ import API_ENDPOINTS from '../components/apiConfig'
 import MessageContext from './MessageContext'
 import MediaUtilsContext from './MediaUtilsContext'
 import { sendMessageToContentScript } from '../lib/sendMessageToBackground'
+import { useUserSettings } from './UserSettingsContext'
 
 const RecordingContext = createContext()
 export const useRecording = () => {
@@ -45,6 +46,7 @@ export const RecordingProvider = ({ children }) => {
   const { setGlobalRefresh, setLatestVideo, setLatestBlob } = useContext(GlobalStatesContext)
   const { addToMessage } = useContext(MessageContext)
   const [videoStream, setVideoStream] = useState(null)
+  const { userSettings } = useUserSettings()
   const stopAudioRecording = () => {
     mediaRecorder.stop()
     setIsRecordStart(false)
@@ -55,6 +57,10 @@ export const RecordingProvider = ({ children }) => {
   }
   const startRecordingAudio = async () => {
     try {
+      if (!userSettings?.fullAccess && userSettings?.remainingVideos <= 0) {
+        toast.error('You have reached the limit of free videos.')
+        return
+      }
       const micStream = await navigator.mediaDevices.getUserMedia({
         audio: true,
         video: false,
@@ -162,7 +168,7 @@ export const RecordingProvider = ({ children }) => {
       setIsUploading(false)
       setCapturing(false)
     }
-  
+
     if (response.videoBlob) {
       console.log(response)
       getBlobFromUrl(response.url).then(async (blob) => {
