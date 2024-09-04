@@ -32,6 +32,7 @@ import TutorialDialog from "../components/TutorialDialog"
 import { useUserSettings } from '../contexts/UserSettingsContext'
 import WelcomeAppsumo from '../Screens/WelcomeAppsumo'
 import WelcomeStripe from '../Screens/WelcomeStripe'
+import API_ENDPOINTS from '../components/apiConfig'
 export default function Home() {
   const { setTabId, expandExtension, tabId, setIsMatchingUrl, setExpand, setIsLinkedin, setIsGmail, setIsProfilePage } = useContext(GlobalStatesContext)
   const {
@@ -232,6 +233,49 @@ if(isAuthenticated){
   // let activePage = 'ThankYouScreen';
   // let isPro = true;
   // //   Log when data is being loaded
+
+  const messageHandler = async (message, sender, sendResponse) => {
+    if (message.action === "generateCommentCGPT") {
+      getCGptResponse(message).then(response => {
+        console.log("Sending response back to content script:", response);
+        sendResponse(response);
+      }).catch(error => {
+        console.error("Error processing message:", error);
+        sendResponse(null); // Ensure a response is always sent
+      });
+      return true; 
+    }
+    return true;
+  };
+
+  async function getCGptResponse(message){
+      const updatedQuery = message.query + '\n\n Above is the description for linkedIn post, generate a short comment for it.'
+      const response = await fetch(
+        API_ENDPOINTS.cgpt + new URLSearchParams({ input: updatedQuery }),
+        {
+          method: 'GET',
+          headers: {
+            authorization: `Bearer ${JSON.parse(
+              localStorage.getItem('accessToken')
+            )}`,
+          },
+        }
+      )
+      let data = await response.json()
+      return data.choices[0].message.content
+  }
+
+  useEffect(() => {
+    if (chrome.runtime.onMessage) {
+      chrome.runtime.onMessage.addListener(messageHandler);
+    }
+    return () => {
+      if (chrome.runtime.onMessage) {
+        chrome.runtime.onMessage.removeListener(messageHandler);
+      }
+    };
+  }, []);
+
 
   return (
     <>
