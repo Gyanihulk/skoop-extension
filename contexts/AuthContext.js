@@ -396,8 +396,8 @@ export const AuthProvider = ({ children }) => {
           navigateToPage('ThankYouScreen')
         } else {
           setIsAuthenticated(true)
-          setIsSignupOrLogin(true)
           navigateToPage('Home')
+          setIsSignupOrLogin(true)
         }
 
         setShowVersionNotification(resjson?.showVersionNotification || false)
@@ -707,8 +707,8 @@ export const AuthProvider = ({ children }) => {
     setIsPro(false)
     setNewUser(false)
     navigateToPage('SignInIntro')
-    setLatestVideo(null)
-    setLatestBlob(null)
+    setLatestVideo(null);
+    setLatestBlob(null);
   }
   const getMySubscription = async (videoId) => {
     try {

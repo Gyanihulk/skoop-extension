@@ -7,7 +7,7 @@ import { defaultOptions, buttonNext, buttonBack, buttonClose, spotlight, buttonS
 
 const AppTour = () => {
   const { tours, isMessageTour, messagesTemplateHeight, activeTourStep, stepIndex, handleJoyrideCallback, startTour, activeTourStepIndex, isNextDisabled, disableBtnForDes, isVideoTour } = useContext(TourContext)
-  const { selectedTutorial } = useContext(GlobalStatesContext)
+  const { selectedTutorial, expand } = useContext(GlobalStatesContext)
 
   useEffect(() => {
     if (selectedTutorial) {
@@ -20,7 +20,6 @@ const AppTour = () => {
     <div>
       {tours.map((tour, index) => (
         <div key={index}>
-          {/* <button onClick={()=>startTour(tour.name)}>{tour.name}</button> */}
           <Joyride
             continuous={true}
             run={tour.run}
@@ -30,18 +29,19 @@ const AppTour = () => {
             steps={tour.steps}
             stepIndex={stepIndex}
             spotlightClicks={true}
+            disableOverlayClose={true} 
             callback={handleJoyrideCallback}
             disableScrolling={true}
             locale={{
-    close: 'Exit Tutorial',
-    last: 'End Tutorial',
-    next: 'Next',
-}}
+              close: 'Exit Tutorial',
+              last: 'End Tutorial',
+              next: 'Next',
+            }}
             styles={{
               options: {
                 zIndex: 10000,
               },
-              overlay: {...(isMessageTour && [2, 7, 9].includes(activeTourStepIndex) ? { height: messagesTemplateHeight || '100%' } : { height:'100%' })},
+              overlay: { ...((isMessageTour && [2, 7, 9].includes(activeTourStepIndex)) || (isVideoTour && [7].includes(activeTourStepIndex)) ? (expand ? { height: '100%' } : { height: messagesTemplateHeight || '100%' }) : { height:'100%' })},
               buttonNext: { ...buttonNext, ...(isMessageTour &&isNextDisabled && (activeTourStepIndex === 3 || activeTourStepIndex === 9) ? { pointerEvents: 'none', opacity: 0.5 } : {}), ...(isMessageTour && disableBtnForDes && activeTourStepIndex === 4 ? { pointerEvents: 'none', opacity: 0.5 } : {}), ...(isVideoTour &&isNextDisabled && (activeTourStepIndex === 7) ? { pointerEvents: 'none', opacity: 0.5 } : {}) },
               buttonBack: buttonBack,
               buttonClose: buttonClose,

@@ -2048,6 +2048,9 @@ img.icon-style-normal {
   background-color: var(--main-color) !important;
   color: white !important;
 }
+.dropdown-item-hover.active .drag-drop-icon {
+  fill: #ffffff;
+}
 
 .dropdown-item {
   font-size: 12px;
@@ -2411,6 +2414,8 @@ img.icon-style-normal {
 .custom-toast {
   font-size: 12px;
   font-family: 'Montserrat' sans-serif;
+  padding: 2.4px 7px !important;
+  padding-right: 0 !important;
 }
 
 .custom-input-global {
@@ -2581,7 +2586,7 @@ img.icon-style-normal {
 
 #skoop-extension-body {
   position: relative;
-  min-width: 355px;
+  /* min-width: 355px; */
   overflow-x: hidden;
   height: 100vh;
 }
@@ -2900,15 +2905,11 @@ img.icon-style-normal {
   font-family: Montserrat, sans-serif;
 }
 
-.tutorial-icon-box {
-  padding: 11px 0px;
-}
-
 .switch-sm {
   transform: scale(1.2) !important;
 }
 
-.toor-para {
+.tour-para {
   font-size: 13px;
   font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
   display: flex;
@@ -2918,7 +2919,7 @@ img.icon-style-normal {
   color:#a5a2a2;
 }
 
-.toor-heading {
+.tour-heading {
   font-size: 14px;
   display: flex;
   justify-content: center;
@@ -2935,8 +2936,21 @@ img.icon-style-normal {
   font-weight:450;
   color:#a5a2a2;
 }
+.tour-img {
+  width: 100%;
+  height: 140px;
+  margin: 0 0 1rem;
+  overflow: hidden;
+}
+
+.tour-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+}
 .video-title {
-  width:80%;
+  width:90%;
   text-overflow: inherit;
   white-space: wrap;
   overflow: hidden;
@@ -3022,4 +3036,27 @@ img.icon-style-normal {
 .padding-1-2 {
   padding: 0 7px !important;
 }
+.custom-toast-container {
+  z-index: 1000000 !important;
+  top: 46px !important;
+  right: 9px !important;
+}
+.tutorial-image-container {
+  overflow: hidden;
+  border-radius: 8px;
+  max-width: 300px;
+  width: 100%;
+  height: 100px;
+}
+.tutorial-image {
+  width:100%;
+  object-fit:fill;
+}
+.drop-down-btn {
+  pointer-events: all;
+  position: relative;
+  z-index: 100000;
+}
+
+
 

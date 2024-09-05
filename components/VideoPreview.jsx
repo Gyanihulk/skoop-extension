@@ -12,6 +12,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs'
 import MessageContext from '../contexts/MessageContext'
 import DeleteModal from './DeleteModal'
 import ScreenContext from '../contexts/ScreenContext'
+import TourContext from '../contexts/TourContext.js'
 
 export const VideoPreview = () => {
   const [thumbnailImage, setThumbnailImage] = useState('/images/videoProcessing.png')
@@ -25,6 +26,7 @@ export const VideoPreview = () => {
   const [isDeleteModal, setIsDeleteModal] = useState(false)
   const { activePage } = useContext(ScreenContext)
   const { getDownloadLink, getThumbnail } = useContext(MediaUtilsContext)
+  const { componentsVisible, isVideoTour, activeTourStepIndex, initializeTour, startTour, setStepIndex} = useContext(TourContext)
   useEffect(() => {
     if (latestVideo?.urlForThumbnail) {
       setThumbnailImage(latestVideo?.urlForThumbnail)
@@ -34,6 +36,27 @@ export const VideoPreview = () => {
       setThumbnailImage('/images/videoProcessing.png')
     }
   }, [latestVideo])
+
+  useEffect(() => {
+    let timer;
+  
+    if (isVideoTour && latestVideo) {
+  
+      if (activeTourStepIndex === 13) {
+
+        initializeTour();
+  
+        startTour("videos");
+        timer = setTimeout(() => {
+          setStepIndex(13);
+        }, 300);
+      }
+    }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [latestVideo]);
+  
 
   useEffect(() => {}, [latestBlob, thumbnailImage, , showRenamePopup, showVideoOptionsDialog])
   const UpdateThumbnail = async (event) => {

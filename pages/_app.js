@@ -28,24 +28,23 @@ export default function App({ Component, pageProps }) {
           <GlobalStatesProvider>
             <ScreenProvider>
               <AuthProvider>
-                <TourContextProvider>
-                  <MessageProvider>
-                    <UserSettingsProvider>
-                      <RecordingProvider>
+                <MessageProvider>
+                  <UserSettingsProvider>
+                    <RecordingProvider>
+                      <TourContextProvider>
                         <Toaster
                           position="top-right"
                           toastOptions={{
                             className: 'custom-toast',
                             duration: 3000,
                           }}
-                          containerClassName="custom-toast-container"
                         />
 
                         <Component {...pageProps} />
-                      </RecordingProvider>
-                    </UserSettingsProvider>
-                  </MessageProvider>
-                </TourContextProvider>
+                      </TourContextProvider>
+                    </RecordingProvider>
+                  </UserSettingsProvider>
+                </MessageProvider>
               </AuthProvider>
             </ScreenProvider>
           </GlobalStatesProvider>

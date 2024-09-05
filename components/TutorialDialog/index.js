@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useEffect, useState } from 'react'
 import GlobalStatesContext from '../../contexts/GlobalStates.js'
-import AuthContext from '../../contexts/AuthContext.js';
+import AuthContext from '../../contexts/AuthContext.js'
 import { IoMdClose } from 'react-icons/io'
 import { TbMessage2Plus } from 'react-icons/tb'
 import { BiSolidVideoRecording } from 'react-icons/bi'
@@ -8,199 +8,179 @@ import { FaCalendarDay } from 'react-icons/fa6'
 import Tutorial from '../SVG/Tutorial.jsx'
 import Tour from './Tour'
 import { sendMessageToBackgroundScript } from '../../lib/sendMessageToBackground.js'
-import { FaExpand } from "react-icons/fa";
+import { FaExpand } from 'react-icons/fa'
 import { useUserSettings } from '../../contexts/UserSettingsContext'
 
 const videoUrls = {
-   messages: {
-      path: "https://play.vidyard.com/jZHDP7zXEfBXoSHqmkgDNF?",
-      title: "Customize Messages and Save as Template",
-   },
-   videos: {
-      path: "https://play.vidyard.com/J4mxeP18eH81nXf9GhLfPF?",
-      title: "Record Videos with Professional Techniques",
-   }
-
+  messages: {
+    path: 'https://play.vidyard.com/jZHDP7zXEfBXoSHqmkgDNF?',
+    title: 'Customize Messages and Save as Template',
+  },
+  videos: {
+    path: 'https://play.vidyard.com/J4mxeP18eH81nXf9GhLfPF?',
+    title: 'Record Videos with Professional Techniques',
+  },
 }
 
 const TutorialDialog = () => {
-  const { selectedTutorial, setSelectedTutorial, setEnableTutorialScreen, enableTutorialScreen  } = useContext(GlobalStatesContext);
-  const { getProfileDetails,  isPro, isSignupOrLogin } = useContext(AuthContext);
-  const iframeRef = useRef(null);
-  const [iframeLoaded, setIframeLoaded] = useState(false); // Track iframe loading
+  const { selectedTutorial, setSelectedTutorial, setEnableTutorialScreen, enableTutorialScreen } = useContext(GlobalStatesContext)
+  const { isPro, isSignupOrLogin } = useContext(AuthContext)
+  const iframeRef = useRef(null)
+  const [iframeLoaded, setIframeLoaded] = useState(false) // Track iframe loading
   const modalRef = useRef(null)
-  const [popUp, setPopUp] = useState(false);
-  const [isInitialState, setIsInitialState] = useState(true);
-  const [toggleTutorial, setToggleTutorial] = useState(false);
-  const [activeTutorial, setActiveTutorial] = useState(null);
-  const [showTutorialVideo, setShowTutorialVideo] = useState(false);
-  const [isVideoVisible, setIsVideoVisible] = useState(false);
-  const [isVideoFrameClicked, setIsVideoFrameClicked] = useState(false);
-  const {fetchMySettings, userSettings, updateUserSettings}=useUserSettings();
-
+  const [popUp, setPopUp] = useState(false)
+  const [isInitialState, setIsInitialState] = useState(true)
+  const [toggleTutorial, setToggleTutorial] = useState(false)
+  const [activeTutorial, setActiveTutorial] = useState(null)
+  const [showTutorialVideo, setShowTutorialVideo] = useState(false)
+  const { fetchMySettings, updateUserSettings, userSettings } = useUserSettings()
+  const [reloadIframe, setReloadIframe] = useState(false);
   const handlePopUpChange = () => {
-    setIsInitialState(false);
-    setPopUp(!popUp);
+    setIsInitialState(false)
+    setPopUp(!popUp)
   }
 
-  const handleOverlayClick = (e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-      setToggleTutorial(false)
-      setSelectedTutorial('');
-      setIframeLoaded(false)
-      setIsVideoFrameClicked(false)
-    }
+  const handleClose = () => {
+    setToggleTutorial(false)
+    setSelectedTutorial('')
+    setIframeLoaded(false)
+    setShowTutorialVideo(false)
   }
 
   const handleSelectedTutorial = (tutorial) => {
-      setShowTutorialVideo(true);
-      setActiveTutorial(tutorial);
+    setShowTutorialVideo(true)
+    setActiveTutorial(tutorial)
   }
 
   const handleTourStart = () => {
-    setSelectedTutorial(activeTutorial);
-      setToggleTutorial(false);
-      setShowTutorialVideo(false);
-      setActiveTutorial(null);
-      setIframeLoaded(false);
-      setIsVideoFrameClicked(false);
+    setSelectedTutorial(activeTutorial)
+    setToggleTutorial(false)
+    setShowTutorialVideo(false)
+    setActiveTutorial(null)
+    setIframeLoaded(false)
   }
 
   const handleIframeLoad = () => {
-    setIframeLoaded(true); // Set to true when iframe is loaded
-  };
-
-  const handleIframeClicked = (e) => {
-    e.stopPropagation();
-    setIsVideoFrameClicked(true);
+    setIframeLoaded(true)
   }
 
   useEffect(() => {
-    if(isSignupOrLogin && isPro) {
-      (async () => {
-        if(userSettings) {
-          const { show_tutorials } = userSettings;
-          setToggleTutorial(show_tutorials);
-          setEnableTutorialScreen(show_tutorials);
-          setPopUp(!show_tutorials);
+    if (userSettings) {
+      setEnableTutorialScreen(userSettings?.show_tutorials);
+    }
+  }, [userSettings])
+
+  useEffect(() => {
+    if (isSignupOrLogin && isPro) {
+      (async () => { 
+        let userSettingsData = await fetchMySettings();
+        if (userSettingsData) {
+          const { show_tutorials } = userSettingsData;
+          setToggleTutorial(show_tutorials)
+          setEnableTutorialScreen(show_tutorials)
+          setPopUp(!show_tutorials)
         } else {
-          setToggleTutorial(true);
-          setPopUp(false);
-          setEnableTutorialScreen(true);
+          setToggleTutorial(true)
+          setPopUp(false)
+          setEnableTutorialScreen(true)
         }
       })()
     }
-    setSelectedTutorial('');
+    setSelectedTutorial('')
   }, [isSignupOrLogin, isPro])
 
   useEffect(() => {
-    if (toggleTutorial) {
-      document.addEventListener('mousedown', handleOverlayClick)
-    } else {
-      document.removeEventListener('mousedown', handleOverlayClick)
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        handleClose();
+      }
     }
 
-    return () => {
-      document.removeEventListener('mousedown', handleOverlayClick)
+    document.addEventListener('keydown', handleKeyDown);
+    return ()=> {
+      document.removeEventListener('keydown', handleKeyDown);
     }
-  }, [toggleTutorial])
+   }, [])
 
-  useEffect(()=> {
-     if(!isInitialState) {
-      updateUserSettings({show_tutorials: !popUp}) 
-     }
+  useEffect(() => {
+    if (!isInitialState) {
+      updateUserSettings({ show_tutorials: !popUp })
+    }
   }, [popUp])
 
   const handleExpandVideo = (e) => {
-      e.preventDefault();
-      const src = videoUrls[activeTutorial]?.path;
+    e.preventDefault()
+    setReloadIframe(true);
+    setTimeout(()=>{
+      setReloadIframe(false);
+    }, 100);
+    const src = videoUrls[activeTutorial]?.path
 
-      const height = 322 * 2
-      const width = 574 * 2
-  
-      sendMessageToBackgroundScript({
-        action: 'startPlayingVideo',
-        height,
-        width,
-        src,
-      })
+    const height = 322 * 2
+    const width = 574 * 2
+
+    sendMessageToBackgroundScript({
+      action: 'startPlayingVideo',
+      height,
+      width,
+      src,
+    })
   }
 
   return (
     <>
-      {toggleTutorial && (
+      {toggleTutorial ? (
         <div className="modal" style={{ display: 'block' }}>
           <div className="modal-overlay modal-dialog-centered" role="document">
             <div className="modal-content mx-4 justify-content-center align-items-center" ref={modalRef}>
               <div className="modal-header d-flex justify-content-between align-items-start fw-500 mt--7 w-100 px-3 pt-3 pb-2">
-                { showTutorialVideo ? videoUrls[activeTutorial]?.title : "Our Step-by-Step Guides"}
-                <button type="button" className="custom-close-button px-0 mx-0 mt-0-2 d-flex align-items-center justify-content-center" onClick={() => { setSelectedTutorial(''); setToggleTutorial(false)}} aria-label="Close">
+                {showTutorialVideo ? videoUrls[activeTutorial]?.title : 'Our Step-by-Step Guides'}
+                <button
+                  type="button" title="Close"
+                  className="custom-close-button px-0 mx-0 mt-0-2 d-flex align-items-center justify-content-center"
+                  onClick={handleClose}
+                  aria-label="Close"
+                >
                   <IoMdClose size={16} />
                 </button>
               </div>
-              <div className="modal-body align-items-center justify-content-center">
+              <div className="modal-content mx-4 justify-content-center align-items-center">
+              <div className="modal-body align-items-center justify-content-center w-100">
                 <div className="flex">
-                  {!showTutorialVideo ? (<div className="d-flex flex-row space-between gap-2">
-                    <div className="text-center flex-1">
+                  {!showTutorialVideo ? (
+                    <div className="d-flex flex-column align-items-center gap-2">
                       <div
-                        className={`cursor-pointer tutorial-icon-box d-flex align-items-center justify-content-center border-video-selector ${selectedTutorial == 'messages' ? 'bg-selected-videoMode' : ''}`}
+                        className={`cursor-pointer d-flex align-items-center justify-content-center tutorial-image-container ${selectedTutorial == 'messages' ? 'bg-selected-videoMode' : ''}`}
                         onClick={() => handleSelectedTutorial('messages')}
                       >
-                        <Tutorial>
-                          <TbMessage2Plus size={20} color="white" />
-                        </Tutorial>
+                        <img src="/images/tutorial1.png" alt="messages" className='tutorial-image' />
                       </div>
-                      <p className="tutorial-dialog-text fw-500 light-grey mb-0">Customize Messages and Save as Template</p>
-                    </div>
-                    <div className="text-center flex-1">
                       <div
-                        className={`cursor-pointer tutorial-icon-box d-flex align-items-center justify-content-center border-video-selector ${selectedTutorial == 'videos' ? 'bg-selected-videoMode' : ''}`}
+                        className={`cursor-pointer d-flex align-items-center justify-content-center tutorial-image-container ${selectedTutorial == 'videos' ? 'bg-selected-videoMode' : ''}`}
                         onClick={() => handleSelectedTutorial('videos')}
                       >
-                        <Tutorial>
-                          <BiSolidVideoRecording size={20} color="white" className="ml-0-5" />
-                        </Tutorial>
-                      </div>
-                      <p className="tutorial-dialog-text fw-500 light-grey mb-0">Record Videos with Professional Techniques</p>
-                    </div>
-                    <div className="text-center flex-1">
-                      <div className={`cursor-pointer tutorial-icon-box d-flex align-items-center justify-content-center border-video-selector ${selectedTutorial == 'Square' ? 'bg-selected-videoMode' : ''}`} onClick={() => handleSelectedTutorial('Square')}>
-                        <Tutorial>
-                          <FaCalendarDay size={16} color="white" className="ml-0-5" />
-                        </Tutorial>
-                      </div>
-                      <div className="d-flex flex-column">
-                        <p className="tutorial-dialog-text fw-500 light-grey mb-0">Optimize Scheduling</p>
-                        <p className="mt-0 tutorial-dialog-text fw-500 light-grey mb-0">with the Skoop</p>
-                        <p className="mt-0 tutorial-dialog-text fw-500 light-grey mb-0 d-flex no-wrap">Appointment System</p>
+                        <img src="/images/tutorial2.png" alt="messages" className='tutorial-image' />
                       </div>
                     </div>
-                  </div>)
-                  :(
+                  ) : (
                     <>
-              <div className="embed-responsive embed-responsive-16by9">
-              <iframe
-                className="embed-responsive-item tutorial-video-frame"
-                src={videoUrls[activeTutorial]?.path}
-                ref={iframeRef}
-                allow="autoplay; fullscreen; picture-in-picture"
-                onLoad={handleIframeLoad}
-                onClick={handleIframeClicked}
-              />
-              {iframeLoaded && (
-        <div className="expand-video-button d-flex justify-content-center align-items-center" onClick={handleExpandVideo}>
-          <FaExpand className="expand-icon" size={18} />
-        </div>
-      )}
-            </div>
-            <div class="mt-2 d-flex justify-content-center">
-                  <button type="button" class="card-btn" onClick={handleTourStart}>
-                    Start
-                  </button>
-                </div>
-            </>
+                      <div className="embed-responsive embed-responsive-16by9">
+                        {!reloadIframe  && (<iframe className="embed-responsive-item tutorial-video-frame" src={videoUrls[activeTutorial]?.path} ref={iframeRef} allow="autoplay; fullscreen; picture-in-picture" onLoad={handleIframeLoad} />)}
+                        {iframeLoaded && (
+                          <div className="expand-video-button d-flex justify-content-center align-items-center" onClick={handleExpandVideo}>
+                            <FaExpand className="expand-icon" size={18} />
+                          </div>
+                        )}
+                      </div>
+                      <div class="mt-2 d-flex justify-content-center">
+                        <button type="button" class="card-btn" onClick={handleTourStart}>
+                          Start
+                        </button>
+                      </div>
+                    </>
                   )}
                 </div>
+              </div>
               </div>
               <div className="modal-footer">
                 <div className="d-flex">
@@ -215,8 +195,8 @@ const TutorialDialog = () => {
             </div>
           </div>
         </div>
-      )}
-      <Tour/>
+      ): null}
+      <Tour />
     </>
   )
 }

@@ -151,7 +151,7 @@ const HelperVideos = ({ navigateTo }) => {
   const [playingVideo, setPlayingVideo] = useState(false)
   const { navigateToPage } = useContext(ScreenContext)
   const { enableTutorialScreen, setEnableTutorialScreen } = useContext(GlobalStatesContext);
-  const {updateUserSettings}=useUserSettings();
+  const {updateUserSettings, userSettings}=useUserSettings();
   const [switchUpdated, setSwitchUpdated] = useState(false);
 
   const handleSwitchChange = (event) => {
