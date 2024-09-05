@@ -134,7 +134,7 @@ const TutorialDialog = () => {
           <div className="modal-overlay modal-dialog-centered" role="document">
             <div className="modal-content mx-4 justify-content-center align-items-center" ref={modalRef}>
               <div className="modal-header d-flex justify-content-between align-items-start fw-500 mt--7 w-100 px-3 pt-3 pb-2">
-                {showTutorialVideo ? videoUrls[activeTutorial]?.title : 'Our Step-by-Step Guides'}
+                {showTutorialVideo ? videoUrls[activeTutorial]?.title : 'Get Started - with Step-by-Step Guides'}
                 <button
                   type="button" title="Close"
                   className="custom-close-button px-0 mx-0 mt-0-2 d-flex align-items-center justify-content-center"
@@ -186,10 +186,10 @@ const TutorialDialog = () => {
                 <div className="d-flex">
                   <div className="ms-5 mt-0-8 switch-container">
                     <div className=" form-check form-switch switch-button-container">
-                      <input className="form-check-input custom-switch switch-sm" name="toggle-modal" type="checkbox" role="switch" checked={popUp} onChange={handlePopUpChange} />
+                      <input className="form-check-input custom-switch switch-sm" name="toggle-modal" type="checkbox" role="switch" checked={!popUp} onChange={handlePopUpChange} />
                     </div>
                   </div>
-                  <p className="tutorial-dialog-text mt-0 mb-0 fw-500">Don't show the tutorial popup again on next login. You can re-enable it from the top of the helper section.</p>
+                  <p className="tutorial-dialog-text mt-0 mb-0 fw-500">Keep enabled to show the guides on next login or refresh. You can change this setting from the top of the helper section.</p>
                 </div>
               </div>
             </div>
