@@ -9,11 +9,10 @@ import ConfirmationModal from '../components/ConfirmationModal'
 
 const SubscriptionScreen = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
-  const { createSubscription, verifyCoupon, getMySubscription, subscriptionType, setSubscriptionType ,appConfig,getAppConfig} = useContext(AuthContext)
+  const { createSubscription, verifyCoupon, getMySubscription, subscriptionType, setSubscriptionType, appConfig, getAppConfig } = useContext(AuthContext)
   const { navigateToPage } = useContext(ScreenContext)
   const [sessionUrl, setSessionUrl] = useState('')
   const handleSubscriptionChange = (type) => {
-
     setSubscriptionType(type)
   }
 
@@ -28,17 +27,16 @@ const SubscriptionScreen = () => {
       plan_type: subscriptionType,
     }
     if (couponCode.length >= 3 && couponValid) {
-      subsData.coupon = couponCode
+      subsData.coupon = couponCode.trim()
     }
     const session = await createSubscription(subsData)
     setSessionUrl(session.url)
   }
 
-
   useEffect(() => {
     ;(async () => {
-  await getAppConfig()
-    
+      await getAppConfig()
+
       const subcription = await getMySubscription()
       // if (subcription) {
       //   navigateToPage('PaymentScreen')
@@ -81,6 +79,8 @@ const SubscriptionScreen = () => {
     : couponInfo?.discount?.amount_off
       ? (yearlyPrice - couponInfo?.discount?.amount_off).toFixed(2)
       : yearlyPrice
+
+  console.log(couponInfo, couponValid, couponCode)
   return (
     <>
       {' '}
@@ -110,44 +110,57 @@ const SubscriptionScreen = () => {
           <line y1="0.5" x2="315" y2="0.5" stroke="black" stroke-opacity="0.2" />
         </svg>
 
-        <div className="subscription-options align-items-center">
-          <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
-            <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'freeTrial'} onChange={() => handleSubscriptionChange('freeTrial')} />
-            <div className="ps-4">
-              <h5>{appConfig.trial_period_days}-day Free trial</h5>
-              <p>Limited to {appConfig.max_videos} videos and {appConfig.max_prompts} AI responses.<br/>No credit card Required .</p>
-             
-            </div>
-          </div>
-         
-          <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
-            <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'monthly'} onChange={() => handleSubscriptionChange('monthly')} />
-            <div className="ps-4 pt-2">
-              <h5>$ {discountedMonthlyPrice} Monthly</h5>
-              {couponInfo && <p>Original Price : $ {monthlyPrice} /month</p>}
-            </div>
-          </div>
-          <div className="subscription-option d-flex flex-row align-items-center bg-yearly">
-            <div>
-              <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'yearly'} onChange={() => handleSubscriptionChange('yearly')} />
+        {couponValid && (couponInfo?.lifeTimeCoupon || couponInfo?.appSumoCoupon) ? (
+          <></>
+        ) : (
+          <div className="subscription-options align-items-center">
+            <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
+              <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'freeTrial'} onChange={() => handleSubscriptionChange('freeTrial')} />
+              <div className="ps-4">
+                <h5>{appConfig.trial_period_days}-day Free trial</h5>
+                <p>
+                  Limited to {appConfig.max_videos} videos and {appConfig.max_prompts} AI responses.
+                  <br />
+                  No credit card Required .
+                </p>
+              </div>
             </div>
 
-            <div className="ps-4 pt-2">
-              <h5>$ {discountedYearlyPrice} Yearly</h5>
-              {couponInfo && <p>Original Price : $ {yearlyPrice} /year</p>}
-              
+            <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
+              <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'monthly'} onChange={() => handleSubscriptionChange('monthly')} />
+              <div className="ps-4 pt-2">
+                <h5>$ {discountedMonthlyPrice} Monthly</h5>
+                {couponInfo && <p>Original Price : $ {monthlyPrice} /month</p>}
+              </div>
+            </div>
+            <div className="subscription-option d-flex flex-row align-items-center bg-yearly">
+              <div>
+                <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'yearly'} onChange={() => handleSubscriptionChange('yearly')} />
+              </div>
+
+              <div className="ps-4 pt-2">
+                <h5>$ {discountedYearlyPrice} Yearly</h5>
+                {couponInfo && <p>Original Price : $ {yearlyPrice} /year</p>}
+              </div>
             </div>
           </div>
-        </div>
-        <div className="subscription-options align-items-center">
-      
-        </div>
+        )}
+        {couponValid && (couponInfo?.lifeTimeCoupon || couponInfo?.appSumoCoupon) && (
+          <div className="subscription-options align-items-center">
+            <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
+              <div className="pt-2 text-center">
+                <h5>Welcome,{couponInfo?.appSumoCoupon && 'AppSumo'} User!</h5>
+                <p>Congratulations on activating your lifetime deal!</p>
+              </div>
+            </div>
+          </div>
+        )}
         <div className="d-flex flex-column">
           <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="Have Coupon!" aria-label="Have Coupon!" value={couponCode} onChange={handleInputChange} />
             <span class="input-group-text cursor-pointer" id="basic-addon2" onClick={handleCouponValidation}>
               <FaCheckCircle color={!couponValid ? 'red' : 'green'} />
-              {couponInfo && couponValid ?"Applied":"Apply"}
+              {couponInfo && couponValid ? 'Applied' : 'Apply'}
             </span>
           </div>
           {couponInfo && couponValid && <span className="badge rounded-pill bg-warning text-dark ">Coupon Applied.</span>}
@@ -165,15 +178,21 @@ const SubscriptionScreen = () => {
               }
             }}
           >
-            {subscriptionType === 'freeTrial' ?"Start" :"Make Payment"} 
+            {subscriptionType === 'freeTrial' ? 'Start' : couponValid && (couponInfo?.lifeTimeCoupon || couponInfo?.appSumoCoupon) ? 'Activate' : 'Make Payment'}
           </button>
         </div>
-        {subscriptionType !== 'freeTrial' && <><p className="small-bold-text">Credit Card/Debit Card information is required.</p> <p className="small-bold-text">
-          <LockIcon />
-          Guaranteed safe & secure checkout <img src="/images/stripe.png" />
-        </p></>}
+        {subscriptionType === 'freeTrial' || (couponValid && (couponInfo?.lifeTimeCoupon || couponInfo?.appSumoCoupon)) ? (
+          <></>
+        ) : (
+          <>
+            <p className="small-bold-text">Credit Card/Debit Card information is required.</p>{' '}
+            <p className="small-bold-text">
+              <LockIcon />
+              Guaranteed safe & secure checkout <img src="/images/stripe.png" />
+            </p>
+          </>
+        )}
         {/* <br/> */}
-       
       </div>
     </>
   )

@@ -328,12 +328,14 @@ const MessageComposer = () => {
   const uploadVideoHandler = async (event) => {
     const file = event.target.files[0]
     event.target.value = null
+    
     if (file) {
       let fileSizeInMB = file.size / (1024 * 1024)
       fileSizeInMB = fileSizeInMB.toFixed(2)
+      console.log(file,fileSizeInMB,"file size")
       if (fileSizeInMB > 80) {
         toast.error('Video size should not be more than 50 mb.')
-        return
+        // return
       }
       const videoTitle = 'MyVideoTitle'
       const directoryName = 'New'

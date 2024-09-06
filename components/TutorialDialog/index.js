@@ -18,7 +18,7 @@ const videoUrls = {
   },
   videos: {
     path: 'https://play.vidyard.com/J4mxeP18eH81nXf9GhLfPF?',
-    title: 'Record Videos with Professional Techniques',
+    title: 'Creating your first Candid Video on LinkedIn',
   },
 }
 
@@ -67,6 +67,7 @@ const TutorialDialog = () => {
   useEffect(() => {
     if (userSettings) {
       setEnableTutorialScreen(userSettings?.show_tutorials);
+      setToggleTutorial(userSettings?.show_tutorials)
     }
   }, [userSettings])
 

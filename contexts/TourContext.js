@@ -282,7 +282,7 @@ const tourConfigs = [
             <div className="tour-img">
                 <img src="/images/step 4.gif" alt="image related to linkedin message tab" />
               </div>
-              <h6 className="tour-heading mt-1">Scroll down to find connections at least a day or older.</h6>
+              <h6 className="tour-heading mt-1">Scroll down to find connections at least 1 day or older.</h6>
               <p className="tour-para mt-1">Generally, you do not want to reply right after you connect. It is best to give them some room to breathe. So wait at least 1 to 3 days before sending a message.</p>
             </div>
           </>
@@ -299,7 +299,7 @@ const tourConfigs = [
               <div className="tour-img">
                 <img src="/images/step 5.gif" alt="image related to linkedin message tab" />
               </div>
-              <h6 className="tour-heading mt-1">Click the message button so the SKOOP App can see who you want to send a video message to.</h6>
+              <h6 className="tour-heading mt-1">From LinkedIn click the message button so the SKOOP App can see who you want to send a video message to.</h6>
             </div>
           </>
         ),

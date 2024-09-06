@@ -263,6 +263,7 @@ if(isAuthenticated){
         {activePage === 'RecordVideo' && <VideoRecording />}
         {isAuthenticated & isPro ? (
           <>
+           {!['Welcome', 'SignInIntro', 'Subscription','SignIn', 'ContactUs','ReportBug','PaymentScreen','SignUp', ' ', 'RecordVideo', 'ForgotPassword', 'CantUseScreen', 'Camera'].includes(activePage) && <TutorialDialog />}
             {activePage === 'Home' && <Homepage />}
             {activePage === 'RecordVideos' && <RecordVideos />}
             {activePage === 'HelperVideos' && <HelperVideos navigateTo={'Home'} />}
@@ -295,7 +296,8 @@ if(isAuthenticated){
             {activePage == 'SignInIntro' && <SignInWith />}
           </>
         )}
-      <TutorialDialog />
+        
+      
       </div>
     </>
   )

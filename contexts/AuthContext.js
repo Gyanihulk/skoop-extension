@@ -547,7 +547,7 @@ export const AuthProvider = ({ children }) => {
   }
   const createSubscription = async (subscriptionData) => {
     const toastId = toast.loading('Processing Subscription...')
-    if (subscriptionType != 'freeTrial') {
+    if (subscriptionType == 'monthly'|| subscriptionType == 'yearly') {
       navigateToPage('PaymentScreen')
     }
     try {
@@ -560,12 +560,14 @@ export const AuthProvider = ({ children }) => {
         },
       })
       let response = await res.json()
-
       if (res.ok) {
         if (subscriptionType === 'freeTrial') {
           setIsPro(true)
           navigateToPage('ThankYouScreen')
-        } else {
+        } else if(response?.lifeTimeDealActivated){
+          setIsPro(true)
+          navigateToPage('Home')
+        }else {
           chrome.identity.launchWebAuthFlow({ url: response.url, interactive: true }, async function (redirectUrl) {
             if (chrome.runtime.lastError || !redirectUrl) {
               // Handle errors or user cancellation here
@@ -593,6 +595,7 @@ export const AuthProvider = ({ children }) => {
         toast.success('Please complete payment.', {
           id: toastId,
         })
+        setSubscriptionType('')
         return response
       } else {
         toast.error('Your trial subscription is already finished', {

@@ -4,11 +4,14 @@ import VideoCard from './VideoCard'
 import Pagination from './Pagination'
 import GlobalStatesContext from '../../contexts/GlobalStates'
 import { useUserSettings } from '../../contexts/UserSettingsContext'
+import AuthContext from '../../contexts/AuthContext'
 
 const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFavourite, currentPage, handlePageChange }) => {
-  const { setTotalMediaCount } = useContext(GlobalStatesContext)
+  const { setTotalMediaCount ,totalMediaCount} = useContext(GlobalStatesContext)
+
   const [totalPages, setTotalPages] = useState()
   const [videos, setVideos] = useState([])
+  const {appConfig}=useContext(AuthContext);
   const { userSettings } = useUserSettings()
   const fetchVideos = async () => {
     try {
@@ -52,7 +55,7 @@ const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFa
       <div className="d-flex justify-content-center my-2">
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
       </div>
-      <div className="mx-1 media-count">{userSettings.fullAccess?"":`Remaining Videos:${userSettings.remainingVideos}`}</div>
+      <div className="mx-1 media-count">{userSettings.fullAccess?"":`Remaining Videos:${appConfig.max_videos-totalMediaCount}`}</div>
     </div>
   )
 }

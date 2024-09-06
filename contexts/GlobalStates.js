@@ -17,7 +17,7 @@ export const GlobalStatesProvider = ({ children }) => {
   const [latestBlob, setLatestBlob] = useState()
   const [newTitle, setNewTitle] = useState()
   
-  const [totalMediaCount, setTotalMediaCount] = useState()
+  const [totalMediaCount, setTotalMediaCount] = useState(0)
   const [isVideoContainer, setIsVideoContainer] = useState(false)
   const [isTimezoneScreen, setIsTimezoneScreen] = useState(false)
   const [isPostCommentAvailable, setIsPostCommentAvailable] = useState(false)
