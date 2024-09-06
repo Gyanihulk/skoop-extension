@@ -36,3 +36,51 @@
   font-weight: 300;
   font-style: normal;
 }
+
+/* Default button styles */
+.skoop-comment-section {
+  margin: 5px 20px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.rounded-button {
+  border-radius: 15px;
+  height: 30px;
+  padding: 0 15px;
+  border: 1px solid;
+  background-color: #2d68c4;
+  cursor: pointer;
+  outline: none;
+  color: white;
+  font-size: 12px; /* Default font size */
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+/* Responsive styles */
+@media (max-width: 600px) {
+  .rounded-button {
+      font-size: 10px; /* Smaller font size on small screens */
+      padding: 0 10px; /* Adjust padding for smaller screens */
+      height: 25px; /* Smaller height for smaller screens */
+  }
+
+  .skoop-comment-section {
+      margin: 5px 10px; /* Adjust margins for smaller screens */
+      gap: 8px; /* Adjust gap between buttons */
+  }
+}
+
+@media (max-width: 400px) {
+  .rounded-button {
+      font-size: 8px; /* Further decrease font size on very small screens */
+      padding: 0 8px; /* Adjust padding for very small screens */
+      height: 20px; /* Smaller height for very small screens */
+  }
+
+  .skoop-comment-section {
+      margin: 5px 5px; /* Further adjust margins */
+      gap: 5px; /* Adjust gap between buttons */
+  }
+}

@@ -28,7 +28,7 @@ import { sendMessageToBackgroundScript } from '../lib/sendMessageToBackground'
 import { CameraScreen } from '../Screens/CameraScreen'
 import { useTimer } from '../contexts/TimerContext'
 import VideoRecording from '../Screens/VideoRecording'
-import TutorialDialog from "../components/TutorialDialog"
+import TutorialDialog from '../components/TutorialDialog'
 import { useUserSettings } from '../contexts/UserSettingsContext'
 import WelcomeAppsumo from '../Screens/WelcomeAppsumo'
 import WelcomeStripe from '../Screens/WelcomeStripe'
@@ -124,10 +124,11 @@ export default function Home() {
             // console.log(response)
           })
         })
-      } else if (request.action == 'closeWebcam') {
+      } else if (request.action === 'closeWebcam') {
         stopMediaStreams()
         navigateToPage('Home')
       }
+      return true
     }
 
     // Add the message listener with the newly defined handler
@@ -181,7 +182,7 @@ export default function Home() {
         }
       )
     }
-  })
+  }, [])
 
   useEffect(() => {
     ;(async () => {
@@ -235,47 +236,52 @@ if(isAuthenticated){
   // //   Log when data is being loaded
 
   const messageHandler = async (message, sender, sendResponse) => {
-    if (message.action === "generateCommentCGPT") {
-      getCGptResponse(message).then(response => {
-        console.log("Sending response back to content script:", response);
-        sendResponse(response);
-      }).catch(error => {
-        console.error("Error processing message:", error);
-        sendResponse(null); // Ensure a response is always sent
-      });
-      return true; 
+    if (message.action === 'generateCommentCGPT') {
+      const res = await verifyToken();
+      // Check if accessToken is valid or not.
+      if (!res.ok) {
+        sendResponse('Please login or register to use Skoop extension.');
+        return true;
+      }
+      try {
+        const response = await getCGptResponse(message)
+        sendResponse(response)
+      } catch (error) {
+        console.error('Error processing message:', error)
+        sendResponse(null)
+      }
     }
-    return true;
-  };
+    return true
+  }
 
-  async function getCGptResponse(message){
-      const updatedQuery = message.query + '\n\n Above is the description for linkedIn post, generate a short comment for it.'
-      const response = await fetch(
-        API_ENDPOINTS.cgpt + new URLSearchParams({ input: updatedQuery }),
-        {
-          method: 'GET',
-          headers: {
-            authorization: `Bearer ${JSON.parse(
-              localStorage.getItem('accessToken')
-            )}`,
-          },
-        }
-      )
-      let data = await response.json()
-      return data.choices[0].message.content
+  const getCGptResponse = async (message) => {
+    const updatedQuery = {
+      prompt: `${message.query}\n\n Above is the description for LinkedIn post, generate a short ${message.type} comment for it.\n\nPlease generate a LinkedIn comment that is concise, no more than 4 lines, and directly related to the post.`,
+    }
+
+    const response = await fetch(API_ENDPOINTS.aiInteractions, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+      },
+      body: JSON.stringify(updatedQuery),
+    })
+
+    const data = await response.json()
+    if (data?.response?.candidates?.[0]?.content?.parts?.[0]?.text) {
+      return data.response.candidates[0].content.parts[0].text
+    } else {
+      throw new Error('Invalid response format from AI service')
+    }
   }
 
   useEffect(() => {
-    if (chrome.runtime.onMessage) {
-      chrome.runtime.onMessage.addListener(messageHandler);
-    }
+    chrome.runtime.onMessage.addListener(messageHandler)
     return () => {
-      if (chrome.runtime.onMessage) {
-        chrome.runtime.onMessage.removeListener(messageHandler);
-      }
-    };
-  }, []);
-
+      chrome.runtime.onMessage.removeListener(messageHandler)
+    }
+  }, [])
 
   return (
     <>

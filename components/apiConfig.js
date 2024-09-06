@@ -67,6 +67,7 @@ const API_ENDPOINTS = {
   updateUserSetting: `${backendUrl}/user-settings`,
   getMyUserSettings: `${backendUrl}/user-settings/mysettings`,
   appSettings: `${backendUrl}/app-config`,
+  aiInteractions: `${backendUrl}/prompt/generate`, //Post
 }
 
 // with POST or PATCH apis body is sent in JSON
