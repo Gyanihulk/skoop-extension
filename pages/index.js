@@ -35,6 +35,7 @@ import WelcomeStripe from '../Screens/WelcomeStripe'
 export default function Home() {
   const { setTabId, expandExtension, tabId, setIsMatchingUrl, setExpand, expand, setIsLinkedin, setIsGmail, setIsProfilePage } = useContext(GlobalStatesContext)
   const {
+    capturing,
     height,
     setHeight,
     width,
@@ -49,7 +50,7 @@ export default function Home() {
     setIsScreenRecording,
     setCaptureCameraWithScreen,
     handleScreenVideoBlob,
-    stopMediaStreams,
+    stopMediaStreams,isRecording
   } = useRecording()
   const { startCountdown } = useTimer()
   const { verifyToken, isAuthenticated, newUser, isPro, setVersion, createUserDevice, ipAddress, operatingSystem, fingerPrint } = useContext(AuthContext)
@@ -79,7 +80,7 @@ export default function Home() {
         skoopExtensionBody.style.backgroundColor = 'transparent'
         document.body.style.backgroundColor = 'var(--bs-body-bg)'
         chrome.runtime.sendMessage({ action: 'resizeIframe', reset: true }, function (response) {
-          // console.log(response)
+          // console.info(response)
         })
       } else if (request.action == 'screenRecordingStarted') {
         setIsRecordStart(true)
@@ -103,7 +104,7 @@ export default function Home() {
         setCaptureCameraWithScreen(request.captureCameraWithScreen)
         const message = { action: 'resizeIframe', width: request.captureCameraWithScreen ? request.width : '355', height: request.captureCameraWithScreen ? request.height : '100' }
         chrome.runtime.sendMessage(message, function (response) {
-          // console.log(response)
+          // console.info(response)
         })
       } else if (request.action == 'showWebcam') {
         chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
@@ -120,7 +121,7 @@ export default function Home() {
           }
           const message = { action: 'resizeIframe', width: request.captureCameraWithScreen ? request.width : '355', height: request.captureCameraWithScreen ? request.height : '100' }
           chrome.runtime.sendMessage(message, function (response) {
-            // console.log(response)
+            // console.info(response)
           })
         })
       } else if (request.action == 'closeWebcam') {
@@ -263,7 +264,7 @@ if(isAuthenticated){
         {activePage === 'RecordVideo' && <VideoRecording />}
         {isAuthenticated & isPro ? (
           <>
-           {!['Welcome', 'SignInIntro', 'Subscription','SignIn', 'ContactUs','ReportBug','PaymentScreen','SignUp', ' ', 'RecordVideo', 'ForgotPassword', 'CantUseScreen', 'Camera'].includes(activePage) && <TutorialDialog />}
+           {!['Welcome', 'CalendarSync','SignInIntro', 'Subscription','SignIn', 'ContactUs','ReportBug','PaymentScreen','SignUp', ' ', 'RecordVideo', 'ForgotPassword', 'CantUseScreen', 'Camera',"ThankYouScreen"].includes(activePage) && !isRecordStart && <TutorialDialog />}
             {activePage === 'Home' && <Homepage />}
             {activePage === 'RecordVideos' && <RecordVideos />}
             {activePage === 'HelperVideos' && <HelperVideos navigateTo={'Home'} />}

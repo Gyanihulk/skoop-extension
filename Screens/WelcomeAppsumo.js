@@ -15,6 +15,7 @@ const WelcomeAppsumo = () => {
   const [email, setEmail] = useState('')
 
   const handleEmailButtonClick = async () => {
+   
     if (!showEmailInput) {
       // If the input box is not shown yet, show it
       setShowEmailInput(true)

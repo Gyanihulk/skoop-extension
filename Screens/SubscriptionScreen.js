@@ -80,7 +80,7 @@ const SubscriptionScreen = () => {
       ? (yearlyPrice - couponInfo?.discount?.amount_off).toFixed(2)
       : yearlyPrice
 
-  console.log(couponInfo, couponValid, couponCode)
+
   return (
     <>
       {' '}

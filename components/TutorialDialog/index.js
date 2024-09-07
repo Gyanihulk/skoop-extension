@@ -10,6 +10,7 @@ import Tour from './Tour'
 import { sendMessageToBackgroundScript } from '../../lib/sendMessageToBackground.js'
 import { FaExpand } from 'react-icons/fa'
 import { useUserSettings } from '../../contexts/UserSettingsContext'
+import TourContext from '../../contexts/TourContext.js'
 
 const videoUrls = {
   messages: {
@@ -35,6 +36,8 @@ const TutorialDialog = () => {
   const [showTutorialVideo, setShowTutorialVideo] = useState(false)
   const { fetchMySettings, updateUserSettings, userSettings } = useUserSettings()
   const [reloadIframe, setReloadIframe] = useState(false);
+  let { latestBlob } = useContext(GlobalStatesContext)
+  const {  setIsToorActive } = useContext(TourContext);
   const handlePopUpChange = () => {
     setIsInitialState(false)
     setPopUp(!popUp)
@@ -45,6 +48,7 @@ const TutorialDialog = () => {
     setSelectedTutorial('')
     setIframeLoaded(false)
     setShowTutorialVideo(false)
+    setIsToorActive(false)
   }
 
   const handleSelectedTutorial = (tutorial) => {
@@ -130,7 +134,7 @@ const TutorialDialog = () => {
 
   return (
     <>
-      {toggleTutorial ? (
+      {toggleTutorial && !latestBlob ? (
         <div className="modal" style={{ display: 'block' }}>
           <div className="modal-overlay modal-dialog-centered" role="document">
             <div className="modal-content mx-4 justify-content-center align-items-center" ref={modalRef}>

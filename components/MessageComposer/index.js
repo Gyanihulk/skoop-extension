@@ -4,7 +4,6 @@ import { HiMiniGif } from 'react-icons/hi2'
 import EmojiPicker from 'emoji-picker-react'
 import ChatGpt from '../Chatgpt/index.js'
 import GiphyWindow from '../Gif/index.js'
-import Library from '../Library/index.js'
 import MessageTemplate from '../TemplateMessage/index.js'
 import { handleCopyToClipboard, insertHtmlAtPositionInMail, insertIntoLinkedInMessageWindow } from '../../utils/index.js'
 import GlobalStatesContext from '../../contexts/GlobalStates.js'
@@ -332,7 +331,7 @@ const MessageComposer = () => {
     if (file) {
       let fileSizeInMB = file.size / (1024 * 1024)
       fileSizeInMB = fileSizeInMB.toFixed(2)
-      console.log(file,fileSizeInMB,"file size")
+      
       if (fileSizeInMB > 80) {
         toast.error('Video size should not be more than 50 mb.')
         // return

@@ -253,7 +253,7 @@ function saveRecordingChunk(blob) {
       const newChunks = [...result.recordedChunks, base64data]
       // Save the updated array back to storage
       chrome.storage.local.set({ recordedChunks: newChunks }, function () {
-        // console.log('Recording chunk saved', newChunks.length, newChunks)
+   
       })
     })
   }

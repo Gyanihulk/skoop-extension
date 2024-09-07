@@ -847,7 +847,7 @@ export const TourContextProvider = ({ children }) => {
         }
       }
     } catch (error) {
-      console.log('error', error)
+      console.error('error', error)
     }
   }
 

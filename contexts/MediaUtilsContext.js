@@ -46,7 +46,7 @@ export const MediaUtilsProvider = ({ children }) => {
         anchor.href = response.downloadLink
         anchor.target = '_blank'
         anchor.download = 'video.mp4'
-        console.log(anchor)
+     
 
         // Append anchor to the body
         document.body.appendChild(anchor)

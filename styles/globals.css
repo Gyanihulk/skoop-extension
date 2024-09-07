@@ -2612,7 +2612,6 @@ img.icon-style-normal {
 }
 
 .notification-container {
-  display: flex;
   flex-direction: column; /* Stack children vertically */
   align-items: center; /* Center content horizontally */
   width: 100%; /* Full width of the container */
@@ -2621,7 +2620,7 @@ img.icon-style-normal {
 .notification-div {
   background-color: #fff3cd;
   color: #f40606;
-  font-size: 12px;
+  font-size: 11px;
   display: flex;
   justify-content: center;
   align-items: center; /* Center text vertically and horizontally */
