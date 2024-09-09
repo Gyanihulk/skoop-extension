@@ -256,7 +256,7 @@ if(isAuthenticated){
 
   const getCGptResponse = async (message) => {
     const updatedQuery = {
-      prompt: `${message.query}\n\n Above is the description for LinkedIn post, generate a short ${message.type} comment for it.\n\nPlease generate a LinkedIn comment that is concise, no more than 4 lines, and directly related to the post.`,
+      prompt: `${message.query}`,
     }
 
     const response = await fetch(API_ENDPOINTS.aiInteractions, {
