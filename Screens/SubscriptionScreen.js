@@ -80,7 +80,7 @@ const SubscriptionScreen = () => {
       ? (yearlyPrice - couponInfo?.discount?.amount_off).toFixed(2)
       : yearlyPrice
 
-  console.log(couponInfo, couponValid, couponCode)
+
   return (
     <>
       {' '}
@@ -114,7 +114,7 @@ const SubscriptionScreen = () => {
           <></>
         ) : (
           <div className="subscription-options align-items-center">
-            <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
+            {!couponValid && <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
               <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'freeTrial'} onChange={() => handleSubscriptionChange('freeTrial')} />
               <div className="ps-4">
                 <h5>{appConfig.trial_period_days}-day Free trial</h5>
@@ -124,7 +124,7 @@ const SubscriptionScreen = () => {
                   No credit card Required .
                 </p>
               </div>
-            </div>
+            </div>}
 
             <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
               <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'monthly'} onChange={() => handleSubscriptionChange('monthly')} />

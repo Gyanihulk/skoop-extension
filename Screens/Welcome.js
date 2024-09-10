@@ -25,7 +25,7 @@ const Welcome = () => {
 
     toast.success('Coupon Is Valid')
     const response = await couponValidation.json()
-    console.log(couponValidation,response)
+
     // navigateToPage('Welcome')
     setCouponInfo(response)
     setCouponValid(true)

@@ -60,7 +60,7 @@ const RecordingButton = () => {
     handleVideoBlob,
   } = useRecording()
   const { setGlobalRefresh, setLatestVideo, setLatestBlob, expandMinimizeExtension, setExpand, tabId } = useContext(GlobalStatesContext)
-  const { recordVideoBtnRef, componentsVisible, isVideoTour, activeTourStepIndex, renderNext} = useContext(TourContext)
+  const { recordVideoBtnRef, componentsVisible, isVideoTour, activeTourStepIndex, renderNext } = useContext(TourContext)
   const { addToMessage } = useContext(MessageContext)
   const [videoDevices, setVideoDevices] = useState([])
   const [audioDevices, setAudioDevices] = useState([])
@@ -133,7 +133,7 @@ const RecordingButton = () => {
             audio: { deviceId: selectedAudioDevice },
           })
           if (videoRef.current) {
-            videoRef.current.srcObject = videoStream;
+            videoRef.current.srcObject = videoStream
           }
           setVideoStream(videoStream)
           setAudioStream(audioStream)
@@ -156,46 +156,22 @@ const RecordingButton = () => {
       stopMediaStreams()
     }
   }, [selectedVideoDevice, selectedAudioDevice, videoSettingsOpen])
-  // useEffect(() => {
-  //   // Request permission to access media devices and enumerate them
-  //   navigator.mediaDevices
-  //     .getUserMedia({ video: true, audio: true })
-  //     .then((stream) => {
-  //       // Stop the stream to avoid using the camera/microphone
-  //       stream.getTracks().forEach((track) => track.stop())
-  //       // Enumerate devices after permission has been granted
-  //       return navigator.mediaDevices.enumerateDevices()
-  //     })
-  //     .then((devices) => {
-  //       setVideoDevices(devices.filter((device) => device.kind === 'videoinput'))
-  //       setAudioDevices(devices.filter((device) => device.kind === 'audioinput'))
-
-  //       // Load saved device labels and select corresponding devices
-  //       chrome.storage.sync.get(['selectedVideoLabel', 'selectedAudioLabel'], (result) => {
-  //         const savedVideoLabel = result.selectedVideoLabel
-  //         const savedAudioLabel = result.selectedAudioLabel
-
-  //         const videoDevice = devices.find((device) => device.label === savedVideoLabel)
-  //         const audioDevice = devices.find((device) => device.label === savedAudioLabel)
-
-  //         if (videoDevice) {
-  //           setSelectedVideoDevice(videoDevice.deviceId)
-  //         }
-
-  //         if (audioDevice) {
-  //           setSelectedAudioDevice(audioDevice.deviceId)
-  //         }
-  //       })
-  //     })
-  //     .catch((err) => {
-  //       console.log(err.name + ': ' + err.message)
-  //     })
-  // }, [])
+  useEffect(() => {
+    const permissionsNotificationShown = localStorage.getItem('permissionsNotificationShown')
+    if (!permissionsNotificationShown) {
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+        // Stop the stream to avoid using the camera/microphone
+        stream.getTracks().forEach((track) => track.stop())
+        // Enumerate devices after permission has been granted
+        return navigator.mediaDevices.enumerateDevices()
+      })
+      localStorage.setItem('permissionsNotificationShown',true)
+    }
+  }, [])
 
   const saveSelectedDevice = (deviceType, label) => {
     const key = deviceType === 'video' ? 'selectedVideoLabel' : 'selectedAudioLabel'
-    chrome.storage.sync.set({ [key]: label }, () => {
-    })
+    chrome.storage.sync.set({ [key]: label }, () => {})
   }
 
   const handleVideoChange = (event) => {
@@ -301,7 +277,7 @@ const RecordingButton = () => {
     }
 
     if (isVideoTour && activeTourStepIndex === 11) {
-        renderNext()
+      renderNext()
     }
     setIsRecordStart(true)
     setIsVideo(true)
@@ -312,7 +288,7 @@ const RecordingButton = () => {
       return
     }
     setLatestVideo(null)
-    setLatestBlob(null)
+    setLatestBlob({})
     sendMessageToContentScript({ action: 'savePosition' })
     if (isScreenRecording) {
       expandMinimizeExtension()
@@ -502,12 +478,7 @@ const RecordingButton = () => {
                   <canvas ref={canvasRef} width="200" height="50" />
                 </div>
                 <div className="video-stream-container">
-                  <video
-                    autoPlay
-                    muted
-                    playsInline
-                    ref={videoRef}
-                  />
+                  <video autoPlay muted playsInline ref={videoRef} />
                 </div>
               </div>
             </div>

@@ -79,7 +79,7 @@ export const CameraScreen = () => {
     }
     sendMessageToContentScript({action:"moveToPosition"})
     chrome.storage.sync.remove('recordingType', function() {
-      console.log('recordingType has been removed from Chrome storage');
+      console.info('recordingType has been removed from Chrome storage');
     })
     stopMediaStreams()
     sendMessageToBackgroundScript(message)

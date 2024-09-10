@@ -112,11 +112,11 @@ function injectIframe() {
           storageObject[positionKey] = position;
     
           chrome.storage.sync.set(storageObject, () => {
-            console.log(`${positionKey} saved:`, position);
+          
           });
         }
       } else {
-        console.log('No recordingType found.');
+        console.error('No recordingType found.');
       }
     });
     chrome.storage.sync.set({ 'containerPosition': { left: container.style.left, top: container.style.top } });
@@ -314,7 +314,7 @@ function changeContainerPosition(left, top) {
     const viewportHeight = window.innerHeight;
     const containerHeight = container.offsetHeight;
     const centeredTop = (viewportHeight - containerHeight) * (parseFloat(topPercentage) / 100);
-    console.log(centeredTop)
+
     container.style.top = `${centeredTop}px`;
   }
   
@@ -350,7 +350,7 @@ function saveContainerPosition() {
 
   // Save the position to Chrome storage
   chrome.storage.sync.set({ 'lastExtensionPositionBeforeRecording': { left: left, top: top } }, function() {
-    console.log('Container position has been saved:', { left: left, top: top });
+    console.info('Container position has been saved:', { left: left, top: top });
   });
 }
 
@@ -362,7 +362,7 @@ function moveContainerToLastSavedPosition() {
       container.style.left = result.lastExtensionPositionBeforeRecording.left;
       container.style.top = result.lastExtensionPositionBeforeRecording.top;
     } else {
-      console.log('No saved container position found. Keeping current position or setting default.');
+      console.info('No saved container position found. Keeping current position or setting default.');
     }
   });
 }
@@ -396,7 +396,7 @@ function moveCameraToStoredPosition(request) {
         });
       }
     } else {
-      console.log('No recordingType found.');
+      console.error('No recordingType found.');
     }
   });
 }
@@ -421,6 +421,6 @@ function moveCamera(left, top) {
     // Log computed styles for additional debugging
     const computedStyles = window.getComputedStyle(container);
   } else {
-    console.log("Container not found");
+    console.error("Container not found");
   }
 }

@@ -96,7 +96,7 @@ function createWebcamContainer(height, width, stream = true) {
         top: container.style.top,
       }
       chrome.storage.local.set({ webcamPosition: position }, () => {
-        // console.log('Position saved:', position)
+        // console.info('Position saved:', position)
       })
       document.removeEventListener('mousemove', dragMove)
       document.removeEventListener('mouseup', dragEnd)

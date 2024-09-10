@@ -142,7 +142,7 @@ export const VideoPreview = () => {
     try {
       await deleteVideo(latestVideo.id)
       setLatestVideo()
-      setLatestBlob()
+      setLatestBlob({})
     } catch (error) {
       toast.error('Failed to delete video')
     }
@@ -153,7 +153,6 @@ export const VideoPreview = () => {
   }
   const onDeleteVideo = () => {
     handleDeleteClick()
-    setLatestVideo()
   }
 
   const handleIconClick = (eventKey) => {
@@ -196,7 +195,7 @@ export const VideoPreview = () => {
       )}
       <input id="file-upload" type="file" style={{ display: 'none' }} onChange={UpdateThumbnail} accept="image/*" />
 
-      {(latestVideo || latestBlob) && (
+      {latestVideo && (latestBlob instanceof Blob && latestBlob) && (
         <div className="container" id="video-Preview">
           <div className="card d-flex flex-row align-items-center">
             <div className="d-flex justify-content-between px-2" id="video-preview-top-content">

@@ -13,7 +13,7 @@ export const ThankYouScreen = () => {
   const threeDaysFromToday = new Date(today.setDate(today.getDate() + 3))
   const options = { day: 'numeric', month: 'long', year: 'numeric' }
   const startDate = threeDaysFromToday.toLocaleDateString('en-US', options)
-console.log(subscriptionType)
+
   return (
     <div class="container">
       <div class="row justify-content-center">

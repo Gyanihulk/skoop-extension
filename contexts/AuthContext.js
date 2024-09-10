@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
   const [isPro, setIsPro] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   const { navigateToPage, activePage } = useContext(ScreenContext)
-  const { userSetting, setUserSetting, setEnableTutorialScreen, setLatestVideo, setLatestBlob } = useContext(GlobalStatesContext)
+  const { userSetting, setUserSetting, setEnableTutorialScreen, setLatestVideo, setLatestBlob ,setIsVideoContainer} = useContext(GlobalStatesContext)
   const [newUser, setNewUser] = useState(false)
   const [loadingAuthState, setLoadingAuthState] = useState(true)
   const [version, setVersion] = useState('0.0.0')
@@ -93,14 +93,16 @@ export const AuthProvider = ({ children }) => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+,\-.;:'"<>=?/\|[\]{}~])(.{8,})$/
     return passwordRegex.test(password)
   }
-  const handleSkoopLogin = async (username, password) => {
+  const handleSkoopLogin = async (email, password) => {
     const toastId = toast.success('Signing In...')
+    localStorage.setItem('userEmail', JSON.stringify(email))
+    
     setSocial(null)
     try {
       const response = await fetch(API_ENDPOINTS.signIn, {
         method: 'POST',
         body: JSON.stringify({
-          username: username.trim(),
+          username: email.trim(),
           password: password.trim(),
           rememberMe: rememberMe,
           version: version,
@@ -328,7 +330,10 @@ export const AuthProvider = ({ children }) => {
     }
   }
   const handleRegister = async (fullname, email, password, timezone) => {
+
     try {
+      localStorage.setItem('userEmail', JSON.stringify(email))
+      localStorage.setItem('displayName', JSON.stringify(fullname))
       if (!validatePassword(password) && !couponValid) {
         toast.error('Password should contain minimum 8 characters, at least one uppercase letter, and one special character')
         return
@@ -406,7 +411,7 @@ export const AuthProvider = ({ children }) => {
           id: toastId,
         })
     } catch (err) {
-      console.log(err)
+      console.error(err)
       toast.dismiss()
       toast.error('Something Went Wrong')
     }
@@ -711,7 +716,8 @@ export const AuthProvider = ({ children }) => {
     setNewUser(false)
     navigateToPage('SignInIntro')
     setLatestVideo(null);
-    setLatestBlob(null);
+    setLatestBlob({});
+    setIsVideoContainer(false);
   }
   const getMySubscription = async (videoId) => {
     try {
@@ -827,6 +833,29 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const recieveVerificationMail = async () => {
+    try {
+     
+      let response = await fetch(API_ENDPOINTS.recieveVerificationMail, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: JSON.stringify({
+          email:JSON.parse(localStorage.getItem('userEmail')),
+        }),
+      });
+
+      let jsonResponse = await response.json();
+      if (response.ok) {
+        toast.success(jsonResponse.message);
+      } else {
+        throw new Error(jsonResponse.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
   return (
     <AuthContext.Provider
       value={{
@@ -892,6 +921,7 @@ export const AuthProvider = ({ children }) => {
         setSubscriptionType,
         getAppConfig,
         appConfig,
+        recieveVerificationMail
       }}
     >
       {children}

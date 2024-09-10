@@ -6,10 +6,13 @@ import { TbMessage2Plus } from 'react-icons/tb'
 import { BiSolidVideoRecording } from 'react-icons/bi'
 import { FaCalendarDay } from 'react-icons/fa6'
 import Tutorial from '../SVG/Tutorial.jsx'
-import Tour from './Tour'
+
 import { sendMessageToBackgroundScript } from '../../lib/sendMessageToBackground.js'
 import { FaExpand } from 'react-icons/fa'
 import { useUserSettings } from '../../contexts/UserSettingsContext'
+import TourContext from '../../contexts/TourContext.js'
+import { useRecording } from '../../contexts/RecordingContext.js'
+import toast from 'react-hot-toast'
 
 const videoUrls = {
   messages: {
@@ -35,6 +38,8 @@ const TutorialDialog = () => {
   const [showTutorialVideo, setShowTutorialVideo] = useState(false)
   const { fetchMySettings, updateUserSettings, userSettings } = useUserSettings()
   const [reloadIframe, setReloadIframe] = useState(false);
+  let { latestBlob ,isLinkedin} = useContext(GlobalStatesContext)
+  const {  setIsToorActive } = useContext(TourContext);
   const handlePopUpChange = () => {
     setIsInitialState(false)
     setPopUp(!popUp)
@@ -45,11 +50,15 @@ const TutorialDialog = () => {
     setSelectedTutorial('')
     setIframeLoaded(false)
     setShowTutorialVideo(false)
+    setIsToorActive(false)
   }
 
   const handleSelectedTutorial = (tutorial) => {
     setShowTutorialVideo(true)
     setActiveTutorial(tutorial)
+    if(tutorial=="videos" && !isLinkedin){
+      toast.success("It would be better taking this tutorial on Linkedin")
+    }
   }
 
   const handleTourStart = () => {
@@ -117,8 +126,8 @@ const TutorialDialog = () => {
     }, 100);
     const src = videoUrls[activeTutorial]?.path
 
-    const height = 322 * 2
-    const width = 574 * 2
+    const height = 512 * 1.3
+    const width = 288 * 1.3
 
     sendMessageToBackgroundScript({
       action: 'startPlayingVideo',
@@ -130,7 +139,7 @@ const TutorialDialog = () => {
 
   return (
     <>
-      {toggleTutorial ? (
+      {toggleTutorial && !latestBlob ? (
         <div className="modal" style={{ display: 'block' }}>
           <div className="modal-overlay modal-dialog-centered" role="document">
             <div className="modal-content mx-4 justify-content-center align-items-center" ref={modalRef}>
@@ -197,7 +206,7 @@ const TutorialDialog = () => {
           </div>
         </div>
       ): null}
-      <Tour />
+      
     </>
   )
 }

@@ -22,7 +22,7 @@ import { appChromeWebStoreLink } from "../../constants.js"
 import { useUserSettings } from '../../contexts/UserSettingsContext.js'
 
 export default function Header() {
-  const { isAuthenticated, handleLogOut, isPro, gracePeriodCompletion, gracePeriod, showVersionNotification } = useContext(AuthContext)
+  const { isAuthenticated, handleLogOut, isPro, gracePeriodCompletion, gracePeriod, showVersionNotification,recieveVerificationMail } = useContext(AuthContext)
   const { navigateToPage, activePage } = useContext(ScreenContext)
   const { setScraperPage, scraperPage, isProfilePage, expand, expandMinimizeExtension } = useContext(GlobalStatesContext)
   const { isMessageTour, isToorActive } = useContext(TourContext);
@@ -243,7 +243,7 @@ export default function Header() {
       </nav>
       {isAuthenticated && gracePeriod > 0 && (
         <div class="notification-container">
-          <div class="notification-div">Please verify your email in next {gracePeriod} days to continue using the app</div>
+          <div class="notification-div"> Verify your email in {gracePeriod} days to continue. <span className="text-decoration-underline cursor-pointer" onClick={()=>recieveVerificationMail("email@gmail.com")}>Click here to resend email</span></div>
         </div>
       )}
       { showVersionNotification && <div className="version-notification">

@@ -130,7 +130,7 @@ const tourConfigs = [
             <div>
               <h6 className="tour-heading">In the “Enter description” text field add the words</h6>
               <p className="tour-para mt-1">
-                Hi [FIRST NAME], thank you for being connected. I see that you [ADD DETAILS ABOUT THEM OR HOW WHAT THEY DO CAN RELATE TO YOU AND CONTINUING A MEANINGFUL DISCUSION]. Feel free to reply if it's worth engaging further.
+                Hi [FIRST NAME], thank you for being connected. <br/> I see that you [ADD DETAILS ABOUT THEM OR HOW WHAT THEY DO CAN RELATE TO YOU AND CONTINUING A MEANINGFUL DISCUSSION].<br/> Feel free to reply if it's worth engaging further.
               </p>
             </div>
           </>
@@ -161,7 +161,7 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <h6 className="tour-heading">Look at the first entry at the top of the list. Then, click and drag the item using the 4-arrow icon to move it to the bottom of the list.</h6>
+              <h6 className="tour-heading">Look at the first entry at the top of the list. Then, click and drag the item using the 4-arrow icon to move it down so understand how to organize it for best availability.</h6>
               <p className="tour-para mt-1">That way it is easier to access repeatable messages that are used more often.</p>
             </div>
           </>
@@ -847,7 +847,7 @@ export const TourContextProvider = ({ children }) => {
         }
       }
     } catch (error) {
-      console.log('error', error)
+      console.error('error', error)
     }
   }
 

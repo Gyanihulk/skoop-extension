@@ -113,11 +113,11 @@ export const VideoRecording = () => {
         const message = { action: 'resizeIframe', width, height, hideResizer: true }
 
         chrome.runtime.sendMessage(message, function (response) {
-          // console.log(response)
+          // console.info(response)
         })
 
         chrome.runtime.sendMessage({ action: 'hideResizer' }, function (response) {
-          // console.log(response)
+          // console.info(response)
         })
         setTimeout(() => {
           mediaRecorderRef.current.start()
@@ -137,7 +137,7 @@ export const VideoRecording = () => {
       stopMediaStreams()
       const message = { action: 'resizeIframe', reset: true, showResizer: true }
       chrome.runtime.sendMessage(message, function (response) {
-        // console.log(response)
+        // console.info(response)
       })
       expandExtension()
     }
@@ -147,7 +147,7 @@ export const VideoRecording = () => {
 
     sendMessageToContentScript({action:"moveToPosition"})
     chrome.storage.sync.remove('recordingType', function() {
-      console.log('recordingType has been removed from Chrome storage');
+      console.info('recordingType has been removed from Chrome storage');
     })
 
     if(isVideoTour && activeTourStepIndex === 12) {
