@@ -33,6 +33,7 @@ import { useUserSettings } from '../contexts/UserSettingsContext'
 import WelcomeAppsumo from '../Screens/WelcomeAppsumo'
 import WelcomeStripe from '../Screens/WelcomeStripe'
 import API_ENDPOINTS from '../components/apiConfig'
+import {franc} from 'franc-min';
 export default function Home() {
   const { setTabId, expandExtension, tabId, setIsMatchingUrl, setExpand, expand, setIsLinkedin, setIsGmail, setIsProfilePage } = useContext(GlobalStatesContext)
   const {
@@ -256,6 +257,12 @@ if(isAuthenticated){
   // //   Log when data is being loaded
 
   const messageHandler = async (message, sender, sendResponse) => {
+    if(message.action === 'detectLanguage') {
+      const response = franc(message.query);
+      console.log('detected language ', response);
+      sendResponse(response);
+      return true;
+    }
     if (message.action === 'generateCommentCGPT') {
       const res = await verifyToken();
       // Check if accessToken is valid or not.

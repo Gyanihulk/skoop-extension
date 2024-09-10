@@ -11,9 +11,9 @@ const buttonsList = [
     {
         id: 2,
         title: "Bright Notion",
-        prompt: "The above is a post on LinkedIn. Reply to this LinkedIn post with a comment that offers a bright and positive idea that introduces a fresh, uplifting perspective to the discussion.\
-        Your reply should inspire and uplift, without repeating what's been mentioned.\
-        Focus on creativity and originality, keeping the comment optimistic and forward-thinking",
+        prompt: "The above is a post on LinkedIn. Reply to this LinkedIn post with a comment that offers a positive and encouraging idea while showing empathy towards the original message.\
+        Your response should introduce a fresh, uplifting perspective, showing understanding and support for the challenges mentioned.\
+        Keep the tone optimistic, respectful, and solution-oriented, focusing on creativity and originality, without repeating what's already been discussed.",
         length: "four lines",
         tone: "optimistic, innovative, and uplifting"  
     },
@@ -120,53 +120,146 @@ function addButtonWithType(button, commentBox) {
         let commentBox = parent.querySelector('.comments-comment-box--cr .comments-comment-box-comment__text-editor');
         if (commentBox) {
             let descriptionContainer = parent.querySelector('.feed-shared-update-v2__description-wrapper');
-            if (descriptionContainer) {
-                let content = descriptionContainer.textContent;
+            let pollContainer = parent.querySelector('.update-components-poll');
+            let query = '';
+            let entityContainer = parent.querySelector('.update-components-entity');
+            let eventContainer = parent.querySelector('.update-components-event');
+            let celebrationContainer = parent.querySelector('.update-components-celebration');
+            let articleContainer = parent.querySelector('.update-components-article');
+            let repostContainer = parent.querySelector('.feed-shared-update-v2__update-content-wrapper');
+            let postLanguage = 'en';
+            console.log('repost container ', repostContainer);
+            //let imageContainer = parent.querySelector('.update-components-image');
+            
+            if(repostContainer) {
+                let repostDescription = repostContainer.querySelector('.feed-shared-update-v2__description') ? repostContainer.querySelector('.feed-shared-update-v2__description').textContent : 'original post has no description' ;
 
-                 // Display initial loading message
-                 await addLoadingMessageToCommentBox(commentBox, "Reading the post...");
-
-                 // Create an AbortController
-                 const controller = new AbortController();
-                 const { signal } = controller;
- 
-                 // Set up a timeout to update the loading message after 5000ms -- 5 seconds
-                 const timeout5s = setTimeout(() => {
-                     addLoadingMessageToCommentBox(commentBox, "Taking more time than expected, please wait...");
-                 }, 5000);
- 
-                 // Set up a timeout to stop the request after 13000ms -- 13 seconds
-                 const timeout13s = setTimeout(() => {
-                     controller.abort();  // Abort the ChatGPT request
-                     addLoadingMessageToCommentBox(commentBox, "Something has happened, please try again. If it presists, please refresh the page.");
-                     console.error('ChatGPT request stopped due to timeout.');
-                 }, 13000);
- 
-                 if (content) {
-                    try {
-                        const processStartTime = Date.now();
-
-                        const query = `${content}\n\n${button.prompt}\nKeep it under ${button.length}. And use ${button.tone} tone`
-                         
-                        const response = await chatGpt(button.title, query, signal);
- 
-                        if (response) {
-                            const processEndTime = Date.now();
-                            console.log('Time taken to get the response from the backend:', processEndTime - processStartTime);
- 
-                            // Clear all timeouts if the response arrives before 13 seconds
-                            clearTimeout(timeout5s);
-                            clearTimeout(timeout13s);
-                        }
-
-                        // Add the generated response to the comment box
-                        await addGeneratedTextToCommentBox(response, commentBox);   
-                    } catch (error) {
-                        console.error("Error generating comment:", error);
-                        await addGeneratedTextToCommentBox("Please try again..", commentBox);
-                    }
+                if (descriptionContainer) {
+                    const content = descriptionContainer.textContent;
+                    query = `Use the repost description as context to craft a reply to the current post. Here’s the repost description: \n ${repostDescription} \n and here’s the current post description: \n ${content}.\
+                    Please create a response that connects both.`;
+                } else {
+                    query = `${repostDescription}`;
                 }
             }
+                    
+            // For main description
+            if (descriptionContainer && !repostContainer) {
+                const content = descriptionContainer.textContent;
+                postLanguage = await getPostLanguage(content);
+                query = `${content}`;
+            }
+
+            // For polls
+            if (pollContainer) {
+                const pollHeader = pollContainer.querySelector('.update-components-poll__header').textContent;
+                const pollOptions = [...pollContainer.querySelectorAll('.update-components-poll-option__text--justify-center')].map(option => option.textContent.trim());
+
+                query = query + `\n\n This post contains a poll, the poll header is ${pollHeader} and poll options is ${pollOptions}.\
+                So while generating the comment consider this post header and options`;
+            }
+            
+            // For entities like find an expert
+            if (entityContainer) {
+                const articleTitle = entityContainer.querySelector('.update-components-entity__title span').textContent;
+                const articleSubtitle = entityContainer.querySelector('.update-components-entity__subtitle') ? entityContainer.querySelector('.update-components-entity__subtitle').textContent : "this article has no subtitle so use title";
+                const articleDescription = entityContainer.querySelector('.update-components-entity__description') ? entityContainer.querySelector('.update-components-entity__description').textContent : "this article has no description so use title and subtitle";
+           
+                query = query + `\n\n This post includes an article titled "${articleTitle}" from ${articleSubtitle}. The description says: "${articleDescription}".\
+                So while generating the comment consider this article`;
+            }
+
+            //For events
+            if (eventContainer) {
+                const eventTitle = eventContainer.querySelector('.update-components-event__meta h2').textContent;
+                const eventContext = eventContainer.querySelector('.feed-shared-event__title-context') ? eventContainer.querySelector('.feed-shared-event__title-context').textContent : "hasn't mentioned the context";
+                const eventDescription = eventContainer.querySelector('.feed-shared-event__description') ? eventContainer.querySelector('.feed-shared-event__description').textContent : 'this event has no description so use title';
+                const eventAttendees = eventContainer.querySelector('.v-align-middle') ? eventContainer.querySelector('.v-align-middle').textContent : 'has no attendees';
+                const eventLink = eventContainer.querySelector('.update-components-event__banner-link').href;
+
+                query = query + `\n\n This post includes an event titled "${eventTitle}", event context "${eventContext}". The event is described as "${eventDescription}" and currently has ${eventAttendees}. You can view the event here: ${eventLink}.\
+                So while generating the comment consider this event`;
+            }
+
+            // For celebrations
+            if (celebrationContainer) {
+                let celebrationHeadline = celebrationContainer.querySelector('.update-components-celebration__headline').textContent;
+                let celebrationImage = celebrationContainer.querySelector('img').src;
+
+                query = query + `\n\n This post includes a celebration with the headline "${celebrationHeadline}". Here's the image link: ${celebrationImage}.\
+                So while generating the comment consider this celebration`;
+            }
+
+            // For articles
+            if (articleContainer) {
+                let articleTitle = articleContainer.querySelector('.update-components-article__title span').innerText;
+                let articleSubtitle = articleContainer.querySelector('.update-components-article__subtitle-ellipsis') ? articleContainer.querySelector('.update-components-article__subtitle-ellipsis').innerText : 'has no subtitle use title';
+                let articleDescription = articleContainer.querySelector('.update-components-article__description') ? articleContainer.querySelector('.update-components-article__description').innerText : 'it has no description so use title and subtitle';
+                let articleUrl = articleContainer.querySelector('a.update-components-article__meta') ? articleContainer.querySelector('a.update-components-article__meta').href : 'has no url';
+            
+                query = query + `\n\nThe post includes an article with the following details:\
+                Title: ${articleTitle}.\
+                Subtitle: ${articleSubtitle}.\
+                Description: ${articleDescription}.\
+                Article URL: ${articleUrl}.\
+                So while generating the comment consider this article`;
+            }
+
+            // For images -- not working
+            // if (imageContainer) {
+            //     let imageSrc = imageContainer.querySelector('img').src;
+            //     let imageAlt = imageContainer.querySelector('img').alt;
+            
+            //     query = query + `\n\nThe post includes an image with the following details: Image URL: ${imageSrc}. Alt text: ${imageAlt}.\
+            //     So while generating the comment consider this image`;
+            // }
+
+            if (query) {
+                query = query + `\n\n${button.prompt}\nKeep it under ${button.length}. And use ${button.tone} tone.\n You should reply in the ${postLanguage} language.`;
+                // Display initial loading message
+                await addLoadingMessageToCommentBox(commentBox, "Reading the post...");
+
+                // Create an AbortController
+                const controller = new AbortController();
+                const { signal } = controller;
+    
+                // Set up a timeout to update the loading message after 5000ms -- 5 seconds
+                const timeout5s = setTimeout(() => {
+                    addLoadingMessageToCommentBox(commentBox, "Taking more time than expected, please wait...");
+                }, 5000);
+    
+                // Set up a timeout to stop the request after 13000ms -- 13 seconds
+                const timeout13s = setTimeout(() => {
+                    controller.abort();  // Abort the ChatGPT request
+                    addLoadingMessageToCommentBox(commentBox, "Something has happened, please try again. If it presists, please refresh the page.");
+                    console.error('ChatGPT request stopped due to timeout.');
+                }, 13000);
+
+                try {
+                    const processStartTime = Date.now();
+                         
+                    const response = await chatGpt(button.title, query, signal);
+ 
+                    if (response) {
+                        const processEndTime = Date.now();
+                        console.log('Time taken to get the response from the backend:', processEndTime - processStartTime);
+
+                        // Clear all timeouts if the response arrives before 13 seconds
+                        clearTimeout(timeout5s);
+                        clearTimeout(timeout13s);
+                    }
+
+                    // Add the generated response to the comment box
+                    await addGeneratedTextToCommentBox(response, commentBox);   
+                } catch (error) {
+                    console.error("Error generating comment:", error);
+                    await addGeneratedTextToCommentBox("Please try again..", commentBox);
+                }
+            } else {
+                console.log('unabel to form a query ');
+                await addLoadingMessageToCommentBox(commentBox, 'Unable to generate comment due to insufficient data');
+            }
+   
         }
     });
     return newButton;
@@ -194,6 +287,29 @@ async function chatGpt(type, query, signal) {
             if (signal.aborted) {
                 reject(new DOMException('Request aborted', 'AbortError'));
             } else if (chrome.runtime.lastError) {
+                console.error(chrome.runtime.lastError);
+                reject(new Error('Failed to generate comment. Please try again'));
+            } else {
+                    console.log("Response from background:", response);
+                    if (response) {
+                        resolve(response);
+                    } else {
+                        reject(new Error('Encountered some issue. Please try again.'));
+                    }
+                }
+            });
+    });
+}
+
+async function getPostLanguage(postDescription) {
+    return new Promise((resolve, reject) => {
+        // Send message to background script, passing the signal to abort the request
+        chrome.runtime.sendMessage({
+            action: 'detectLanguage',
+            query: postDescription,
+        },
+        (response) => {
+            if (chrome.runtime.lastError) {
                 console.error(chrome.runtime.lastError);
                 reject(new Error('Failed to generate comment. Please try again'));
             } else {
