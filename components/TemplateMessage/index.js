@@ -15,6 +15,7 @@ import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy, s
 import { CSS } from '@dnd-kit/utilities'
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import TourContext from '../../contexts/TourContext'
+import GlobalStatesContext from '../../contexts/GlobalStates'
 
 const renderTooltip = (props) => (
   <Tooltip id="button-tooltip" {...props}>
@@ -22,7 +23,7 @@ const renderTooltip = (props) => (
   </Tooltip>
 )
 
-const SortableMessages = ({ message, orderId, heading, children, newMessage }) => {
+const SortableMessages = ({ message, orderId, heading, children, newMessage, disable }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: orderId,
   })
@@ -33,14 +34,16 @@ const SortableMessages = ({ message, orderId, heading, children, newMessage }) =
   }
 
   return (
-    <Dropdown.Item ref={setNodeRef} style={style} eventKey={message.id} className={`dropdown-item-hover ${newMessage? 'active' : ''}`} id={newMessage? 'new-template-message' : ''}>
+    <Dropdown.Item disabled={disable} ref={setNodeRef} style={style} eventKey={message.id} className={`dropdown-item-hover ${newMessage? 'active' : ''}`} id={newMessage? 'new-template-message' : ''}>
       <div className="dropdown-child">
         <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={renderTooltip}>
-          <button {...attributes} {...listeners} type="button" className="custom-close-button" aria-label="Close">
+          <button {...attributes} {...listeners} type="button" className="custom-close-button drop-down-btn" aria-label="Close">
             <RiDragMove2Fill className="drag-drop-icon" size={16} />
           </button>
         </OverlayTrigger>
+        <div className='d-inline'>
         {heading}
+        </div>
       </div>
       {children}
     </Dropdown.Item>
@@ -65,6 +68,7 @@ const SavedMessages = ({ appendToBody, close }) => {
   const [deleteTemplate, setDeleteTemplate] = useState()
   const [isDragging, setIsDragging] = useState(false)
   const [toggleSelect, setToggleSelect] = useState(false)
+  const { expand } = useContext(GlobalStatesContext)
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -73,8 +77,8 @@ const SavedMessages = ({ appendToBody, close }) => {
     })
   )
   const [isPromptAdded, setIsPromptAdded] = useState(false);
-  const { addMessageRef, tours, isVideoTour, setMessagesTemplateHeight, addNewClicked, setAddNewClicked, selectMessage, setSelectMessage,
-    setTours, showMessageModal, setShowMessageModal, isMessageTour, activeTourStepIndex, setStepIndex, openSelect, setOpenSelect, setIsNextDisabled, saveMessageRef, joyrideRef, saveMessagewithNext, componentsVisible, renderNext, setDisableBtnForDes, setIsAlreadySaved, isAlreadySaved, setIsSelectOpened, isSelectOpened  } = useContext(TourContext);
+  const { addMessageRef, isVideoTour, setMessagesTemplateHeight, addNewClicked, setAddNewClicked, selectMessage, setSelectMessage,
+    isToorActive, showMessageModal, setShowMessageModal, isMessageTour, activeTourStepIndex, setStepIndex, openSelect, setOpenSelect, setIsNextDisabled, saveMessageRef, saveMessagewithNext, componentsVisible, renderNext, setDisableBtnForDes, setIsAlreadySaved, isAlreadySaved, setIsSelectOpened, isSelectOpened  } = useContext(TourContext);
 
   const handleDropdownChange = (event) => {
     const value = event
@@ -136,13 +140,14 @@ const SavedMessages = ({ appendToBody, close }) => {
       if(isMessageTour && activeTourStepIndex === 9) {
         renderNext();
       }
+      if(isMessageTour && activeTourStepIndex === 7) {
+        setOpenSelect(true);
+      }
     } 
     else if(isVideoTour) {
- 
       setOpenSelect(!openSelect); 
       if(!openSelect) {
         if(activeTourStepIndex === 6) {
-
           renderNext();
         }
       }
@@ -226,15 +231,28 @@ const SavedMessages = ({ appendToBody, close }) => {
           'Content-type': 'application/json; charset=UTF-8',
         },
       })
-      const data = await response.json()
-      if((isMessageTour || isVideoTour) && data.length > 0) {
-        data[0].newMessage = true;
+      let data = await response.json()
+      if( isToorActive && data.length > 0) {
+        const newMessageId = localStorage.getItem('newMessageId');
+        if(newMessageId) {
+          const messagesData = data.map((item) => {
+            if (item.id == newMessageId) {
+              return { ...item, newMessage: true };
+            }
+            return item;
+          });
+          setMessageOptions(messagesData)
+        } else {
+          data[0].newMessage = true;
+          setMessageOptions(data);
+        }
         const lengthOfData = data.length;
         const heightOfMenu = lengthOfData <= 11 ? "100%" : parseInt(715 + ((lengthOfData - 11)*28)) + "px";
-
         setMessagesTemplateHeight(heightOfMenu);
       }
-      setMessageOptions(data)
+      else {
+        setMessageOptions(data);
+      }
     } catch (error) {
       toast.error('Error fetching Messages')
     }
@@ -248,7 +266,7 @@ const SavedMessages = ({ appendToBody, close }) => {
   const addNewPrompt = async () => {
     try {
       if (newPrompt.heading && newPrompt.description) {
-        await fetch(API_ENDPOINTS.skoopCrmAddPreloadedResponses, {
+        let response = await fetch(API_ENDPOINTS.skoopCrmAddPreloadedResponses, {
           method: 'POST',
           headers: {
             authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
@@ -259,11 +277,19 @@ const SavedMessages = ({ appendToBody, close }) => {
             description: newPrompt.description,
           }),
         })
+
+        let responseData = await response.json();
         setShowModal(false)
         setNewPrompt({ heading: '', description: '' })
-        setIsPromptAdded(true);
-        fetchPrompts()
-        toast.success('New Message added successfully!')
+        if(response.ok) {
+          localStorage.setItem('newMessageId', responseData.data.id)
+          setIsPromptAdded(true);
+          fetchPrompts()
+          toast.success('New Message added successfully!')
+        }
+        else {
+          throw new Error(responseData.message);
+        }
       } else {
         // Set validation errors if the fields are empty
         setTitleError(newPrompt.heading ? '' : 'Title is required')
@@ -461,7 +487,6 @@ const SavedMessages = ({ appendToBody, close }) => {
       }
   
       if(componentsVisible?.renderItem === 7) {
-
         setOpenSelect(true);
         if( !selectMessage) {
           renderNext();
@@ -473,9 +498,7 @@ const SavedMessages = ({ appendToBody, close }) => {
     }
 
     if(isVideoTour) {
-
       if(componentsVisible?.renderItem == 7 && !isSelectOpened) {
-
         setOpenSelect(true);
         setIsSelectOpened(true);
         setIsNextDisabled(true);
@@ -521,7 +544,7 @@ const SavedMessages = ({ appendToBody, close }) => {
                                     </option>
                                 ))}
                             </select> */}
-              <DropdownButton as={ButtonGroup} size="sm" title="Select Message" id="messages-dropdown" value={selectedOption} onSelect={handleDropdownChange} show={( isMessageTour|| isVideoTour ) ? openSelect : toggleSelect} onClick={handleOpenSelect}>
+              <DropdownButton as={ButtonGroup} size="sm" title="Select Message" id="messages-dropdown" value={selectedOption} onSelect={handleDropdownChange} show={ isToorActive ? openSelect : toggleSelect} onClick={handleOpenSelect}>
                 <Dropdown.Item eventKey="AddPrompt" id="add-message" >
                   {/* <TbArrowsDiagonal size={16} className='expand-icon' onClick= /> */}
                   <svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg" className="me-2 ml-0-7">
@@ -538,7 +561,7 @@ const SavedMessages = ({ appendToBody, close }) => {
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd} modifiers={[restrictToParentElement]}>
                   <SortableContext items={messageOptions} strategy={verticalListSortingStrategy}>
                     {messageOptions.map((option, index) => (
-                      <SortableMessages key={option.id} message={option} orderId={option?.id} heading={option.heading} newMessage={(option.newMessage) ? true : false}>
+                      <SortableMessages key={option.id} message={option} orderId={option?.id} heading={option.heading} newMessage={( isToorActive && option.newMessage) ? true : false} disable={(isMessageTour && activeTourStepIndex === 7) ? true : false}>
                         <div>
                           <svg
                             width="20"

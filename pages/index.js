@@ -34,7 +34,7 @@ import WelcomeAppsumo from '../Screens/WelcomeAppsumo'
 import WelcomeStripe from '../Screens/WelcomeStripe'
 import API_ENDPOINTS from '../components/apiConfig'
 export default function Home() {
-  const { setTabId, expandExtension, tabId, setIsMatchingUrl, setExpand, setIsLinkedin, setIsGmail, setIsProfilePage } = useContext(GlobalStatesContext)
+  const { setTabId, expandExtension, tabId, setIsMatchingUrl, setExpand, expand, setIsLinkedin, setIsGmail, setIsProfilePage } = useContext(GlobalStatesContext)
   const {
     height,
     setHeight,
@@ -176,6 +176,26 @@ export default function Home() {
             setIsLinkedin(isLinkedIn) // Update the LinkedIn state
             setIsProfilePage(isLinkedInProfilePage) // Update the LinkedIn profile page state
             setIsGmail(isGmail)
+
+            let skoopExtensionBody = document.getElementById('skoop-extension-body')
+            let body = document.body;
+            if (expand) {
+              skoopExtensionBody.style.setProperty('overflow-y', 'hidden', 'important');
+              body.style.overflow = 'initial';
+            } else {
+              skoopExtensionBody.style.removeProperty('overflow-y');
+              skoopExtensionBody.style.overflow = 'initial';
+
+                if(isRecordStart) {
+                  body.style.overflow = 'hidden';
+                  skoopExtensionBody.style.removeProperty('min-width');
+                }
+                else {
+                  body.style.overflow = 'auto';
+                  // skoopExtensionBody.style.removeProperty('min-width');
+                }
+            }
+
           } else {
             navigateToPage('CantUseScreen')
           } // Update the Gmail state
@@ -293,6 +313,7 @@ if(isAuthenticated){
         {activePage === 'RecordVideo' && <VideoRecording />}
         {isAuthenticated & isPro ? (
           <>
+           {!['Welcome', 'SignInIntro', 'Subscription','SignIn', 'ContactUs','ReportBug','PaymentScreen','SignUp', ' ', 'RecordVideo', 'ForgotPassword', 'CantUseScreen', 'Camera'].includes(activePage) && <TutorialDialog />}
             {activePage === 'Home' && <Homepage />}
             {activePage === 'RecordVideos' && <RecordVideos />}
             {activePage === 'HelperVideos' && <HelperVideos navigateTo={'Home'} />}
@@ -325,7 +346,8 @@ if(isAuthenticated){
             {activePage == 'SignInIntro' && <SignInWith />}
           </>
         )}
-      <TutorialDialog />
+        
+      
       </div>
     </>
   )

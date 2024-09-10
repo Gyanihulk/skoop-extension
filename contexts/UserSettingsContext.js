@@ -27,15 +27,22 @@ export const UserSettingsProvider = ({ children }) => {
           authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
         },
       })
-      response=await response.json()
-      console.log(response)
-      setUserSettings(response);
-      if(response?.show_tutorials) {
-        setEnableTutorialScreen(response?.show_tutorials)
+      let jsonResponse = await response.json();
+      if(response.ok) {
+          setUserSettings(jsonResponse);
+          if(jsonResponse?.show_tutorials) {
+            setEnableTutorialScreen(jsonResponse?.show_tutorials)
+          }
+
+          return jsonResponse;
+      } else {
+        return null;
       }
+      
     } catch (error) {
       console.error('Error fetching user settings:', error);
       // Handle error (e.g., show notification)
+      return null;
     }
   };
 
@@ -46,7 +53,7 @@ export const UserSettingsProvider = ({ children }) => {
       }
 
 
-      let res = await fetch(API_ENDPOINTS.updateUserSetting + `/${userSettings?.id}`, {
+      let res = await fetch(API_ENDPOINTS.updateUserSetting + `/${userSettings?.id}/show-tutorial`, {
         method: 'PUT',
         body: JSON.stringify(settingData),
         headers: {
@@ -56,7 +63,7 @@ export const UserSettingsProvider = ({ children }) => {
       })
       let response = await res.json()
       if (res.ok) {
-        toast.success(response);
+        toast.success(response.message);
         await fetchMySettings();
       } else {
         throw new Error(response.message);

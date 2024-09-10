@@ -34,7 +34,7 @@ const MessageComposer = () => {
   const { addToMessage } = useContext(MessageContext)
   const { navigateToPage, activePage } = useContext(ScreenContext)
   const { isRecordStart } = useRecording()
-  const { messageRef, isVideoTour, isMessageSended, setIsMessageSended, setSendMessages, isMessageTour, activeTourStep, activeTourStepIndex,componentsVisible, renderNext, activeTourName, sendMessages  } = useContext(TourContext);
+  const { messageRef, isToorActive, isVideoTour, isMessageSended, setIsMessageSended, setSendMessages, isMessageTour, activeTourStep, activeTourStepIndex,componentsVisible, renderNext, activeTourName, sendMessages  } = useContext(TourContext);
 
 
   const handleInsertion = (text) => {
@@ -53,8 +53,9 @@ const MessageComposer = () => {
 
     if(isVideoTour && [5, 6].includes(componentsVisible?.renderItem)) {
       setDisplayComp('Message');
-        renderNext();
+      renderNext();
     }
+
   }, [componentsVisible])
 
   useEffect(() => {
@@ -99,8 +100,6 @@ const MessageComposer = () => {
     else if( isVideoTour && activeTourStepIndex === 5 ) {
       renderNext();
     }
-
-   
 
     if (eventKey === 'CTA-Link') {
       if (await checkForUserPreferences()) {
@@ -217,8 +216,7 @@ const MessageComposer = () => {
       toast.error('Please add message!!')
       return
     }
-
-    if(isMessageTour && activeTourName === 'messages' && activeTourStep?.level === 13) {
+    if((isMessageTour && activeTourStep?.level === 13) || (isVideoTour && activeTourStep?.level === 16)) {
       setSendMessages(true);
       setIsMessageSended(true);
       renderNext();
@@ -330,12 +328,14 @@ const MessageComposer = () => {
   const uploadVideoHandler = async (event) => {
     const file = event.target.files[0]
     event.target.value = null
+    
     if (file) {
       let fileSizeInMB = file.size / (1024 * 1024)
       fileSizeInMB = fileSizeInMB.toFixed(2)
+      console.log(file,fileSizeInMB,"file size")
       if (fileSizeInMB > 80) {
         toast.error('Video size should not be more than 50 mb.')
-        return
+        // return
       }
       const videoTitle = 'MyVideoTitle'
       const directoryName = 'New'
@@ -384,13 +384,13 @@ const MessageComposer = () => {
     handleCopyToClipboard(message);
     toast.success('Message copied.');
     triggerFunction()
-    if(isMessageTour && activeTourName === 'messages' && activeTourStep?.level === 13) {
+    if((isMessageTour && activeTourStep?.level === 13) || (isVideoTour && activeTourStep?.level === 16)) {
       renderNext();
    }
   }
 
   useEffect(() => {
-      if(isMessageTour && sendMessages && !isMessageSended) {
+      if(isToorActive && sendMessages && !isMessageSended) {
         
         if( isMatchingUrl) {
           handleInsertionToWebsite();
@@ -470,7 +470,7 @@ const MessageComposer = () => {
         </nav>
       ) : null}
       <div className="container bg-white" >
-        {displayComp === 'Message' && <MessageTemplate appendToBody={handleInsertion} />}
+        {displayComp === 'Message' && <MessageTemplate appendToBody={handleInsertion} close={setDisplayComp} />}
         {displayComp === 'ChatGpt' && <ChatGpt appendToBody={handleInsertion} close={setDisplayComp} />}
         <div id="preview-uploaded-video">
         <VideoPreview />

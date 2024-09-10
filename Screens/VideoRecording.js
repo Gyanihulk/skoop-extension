@@ -20,15 +20,27 @@ export const VideoRecording = () => {
   const isRestartingRef = useRef(false)
   const [countdown, setCountdown] = useState(null)
   const {fetchMySettings}=useUserSettings();
-  const { recordVideoBtnRef, componentsVisible, isVideoTour, activeTourStepIndex, renderNext } = useContext(TourContext);
-  useEffect(()=>{console.log(captureCameraWithScreen,seconds,isRecording)
+  const { componentsVisible, isVideoTour, activeTourStepIndex, renderNext, setStepIndex, initializeTour, startTour } = useContext(TourContext);
+  const videoContainerRef = useRef(null);
+  const [isCountdownInitiated, setIsCountdownInitiated] = useState(false);
+  useEffect(()=>{
     if(seconds>=120 && isRecording){
       toggleStop();
       fetchMySettings()
   }})
+  
   useEffect(() => {
     if (countdown !== null) {
       const timer = countdown > 0 ? setTimeout(() => setCountdown(countdown - 1), 1000) : null
+
+       if(countdown==2 && !isCountdownInitiated){
+        initializeTour();
+        startTour("videos");
+        setIsCountdownInitiated(true);
+        setTimeout(() => {
+          setStepIndex(12); 
+        }, 0);
+       }
 
       // When countdown finishes, start recording
       if (countdown === 0) {
@@ -58,7 +70,7 @@ export const VideoRecording = () => {
 
         let audioDevice = savedAudioLabel ? audioDevices.find((device) => device.label === savedAudioLabel) : audioDevices[0] // Default to first audio device
 
-        const videoConstraints = videoDevice ? { deviceId: { exact: videoDevice.deviceId }, width: { ideal: width }, height: { ideal: height } } : { width: { ideal: width }, height: { ideal: height } }
+        const videoConstraints = videoDevice ? { deviceId: { exact: videoDevice.deviceId }, width: { ideal: width }, height: { ideal: height } } : true;
 
         const audioConstraints = audioDevice ? { deviceId: { exact: audioDevice.deviceId } } : true // Use the default audio device
 
@@ -66,7 +78,8 @@ export const VideoRecording = () => {
           video: videoConstraints,
           audio: audioConstraints,
         })
-        setVideoStream(stream), (mediaRecorderRef.current = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' }))
+        setVideoStream(stream)
+         mediaRecorderRef.current = new MediaRecorder(stream)
         initiateCountdown()
         mediaRecorderRef.current.ondataavailable = (event) => {
           if (event.data.size > 0) {
@@ -138,7 +151,6 @@ export const VideoRecording = () => {
     })
 
     if(isVideoTour && activeTourStepIndex === 12) {
-      console.log("icon is clicked form the video tour 12");
       renderNext();
     }
     
@@ -181,6 +193,14 @@ export const VideoRecording = () => {
     }, 0)
   }
 
+  useEffect(() => {
+    if (isVideoTour) {
+      if (componentsVisible?.renderItem === 13) {
+        toggleStop();
+      }
+    }
+  }, [componentsVisible])
+
   const videoElement = useMemo(
     () => (
       <video
@@ -196,7 +216,7 @@ export const VideoRecording = () => {
   )
 
   return (
-    <div className="video-container">
+    <div className="video-container" ref={videoContainerRef}>
       {videoElement}
       {countdown !== null && countdown > 0 && (
         <div className="countdown-overlay-container">

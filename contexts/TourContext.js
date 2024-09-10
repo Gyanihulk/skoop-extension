@@ -1,6 +1,8 @@
 import React, { createContext, useRef, useState, useContext, useEffect } from 'react'
 import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride'
 import GlobalStatesContext from './GlobalStates'
+import { sendMessageToBackgroundScript } from '../lib/sendMessageToBackground'
+import { useRecording } from './RecordingContext'
 
 const TourContext = createContext()
 
@@ -10,12 +12,12 @@ const dynamicMessages = [
     content: (
       <>
         <div>
-          <p className="toor-para">When you go to a person’s LinkedIn profile or have any person’s Messaging tabs visible at the bottom of LinkedIn - you will notice above the SKOOP text box there will be the associated names with checkboxes.</p>
-          <div className="toor-img mt-1">
-            <img src="#" alt="image related to linkedin message tab" />
+          <p className="tour-para">When you go to a person’s LinkedIn profile or have any person’s Messaging tabs visible at the bottom of LinkedIn - you will notice above the SKOOP text box there will be the associated names with checkboxes.</p>
+          <div className="tour-img mt-1">
+            <img src="/images/step 9.gif" alt="image related to linkedin message tab" />
           </div>
-          <h6 className="mt-1 toor-heading">Open the LinkedIn Messaging tab and select a person you want to send a message to.</h6>
-          <p className="toor-para mt-1">That will add a checkbox and their names above the SKOOP text box.</p>
+          <h6 className="mt-1 tour-heading">Open the LinkedIn Messaging tab and select a person you want to send a message to.</h6>
+          <p className="tour-para mt-1">That will add a checkbox and their names above the SKOOP text box.</p>
         </div>
       </>
     ),
@@ -27,9 +29,9 @@ const dynamicMessages = [
     content: (
       <>
         <div>
-          <h6 className="toor-heading">Click the checkbox next to the name you want to send the message to.</h6>
-          <p className="toor-para mt-1">Don’t worry after you send it you can delete it from the LinkedIn message.</p>
-          <p className="toor-para mt-1">if you are seeing no chat windows please drag the extension to left to open one chat window from the linkedin to see the name here.</p>
+          <h6 className="tour-heading">Click the checkbox next to the name you want to send the message to.</h6>
+          <p className="tour-para mt-1">Don’t worry after you send it you can delete it from the LinkedIn message.</p>
+          <p className="tour-para mt-1">if you are seeing no chat windows please drag the extension to left to open one chat window from the linkedin to see the name here.</p>
         </div>
       </>
     ),
@@ -42,7 +44,7 @@ const gmailMessages = {
     content: (
       <>
         <div>
-          <h6 className="toor-heading">Click where you want to insert the message, then click "Send" to insert it into the target location.</h6>
+          <h6 className="tour-heading">Click where you want to insert the message, then click "Send" to insert it into the target location.</h6>
         </div>
       </>
     ),
@@ -56,8 +58,8 @@ const linkedInMessages = {
     content: (
       <>
         <div>
-          <h6 className="toor-heading">Click the “Send button.”</h6>
-          <p className="toor-para mt-1">You will see that the message was sent to that particular person.</p>
+          <h6 className="tour-heading">Click the “Send button.”</h6>
+          <p className="tour-para mt-1">You will see that the message was sent to that particular person.</p>
         </div>
       </>
     ),
@@ -71,7 +73,7 @@ const linkedInMessages = {
     content: (
       <>
           <div>
-              <h6 className="toor-heading">Copy the message and paste it into the required location.</h6>
+              <h6 className="tour-heading">Copy the message and paste it into the required location.</h6>
           </div>
       </>
     ),
@@ -100,8 +102,8 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <p className="toor-para">You will notice that there are some preformatted messages already in there. Ignore them for now.</p>
-              <h6 className="mt-1 toor-heading">Click the “+ Add New Message” option.</h6>
+              <p className="tour-para">You will notice that there are some preformatted messages already in there. Ignore them for now.</p>
+              <h6 className="mt-1 tour-heading">Click the “+ Add New Message” option.</h6>
             </div>
           </>
         ),
@@ -113,8 +115,8 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <p className="toor-para">We will add a title and details.</p>
-              <h6 className="mt-1 toor-heading">In the “Enter title” text field add the words</h6>
+              <p className="tour-para">We will add a title and details.</p>
+              <h6 className="mt-1 tour-heading">In the “Enter title” text field add the words</h6>
               <span className="mt-1 toor-span">“Welcome message”</span>
             </div>
           </>
@@ -126,8 +128,8 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <h6 className="toor-heading">In the “Enter description” text field add the words</h6>
-              <p className="toor-para mt-1">
+              <h6 className="tour-heading">In the “Enter description” text field add the words</h6>
+              <p className="tour-para mt-1">
                 Hi [FIRST NAME], thank you for being connected. I see that you [ADD DETAILS ABOUT THEM OR HOW WHAT THEY DO CAN RELATE TO YOU AND CONTINUING A MEANINGFUL DISCUSION]. Feel free to reply if it's worth engaging further.
               </p>
             </div>
@@ -146,8 +148,8 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <p className="toor-para">Congratulations! You just made your first Reusable Message!</p>
-              <h6 className="mt-1 toor-heading">Go back to the ”Select Message” and click it to open.</h6>
+              <p className="tour-para">Congratulations! You just made your first Reusable Message!</p>
+              <h6 className="mt-1 tour-heading">Go back to the ”Select Message” and click it to open.</h6>
             </div>
           </>
         ),
@@ -159,8 +161,8 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <h6 className="toor-heading">Look at the first entry at the top of the list. Then, click and drag the item using the 4-arrow icon to move it to the bottom of the list.</h6>
-              <p className="toor-para mt-1">That way it is easier to access repeatable messages that are used more often.</p>
+              <h6 className="tour-heading">Look at the first entry at the top of the list. Then, click and drag the item using the 4-arrow icon to move it to the bottom of the list.</h6>
+              <p className="tour-para mt-1">That way it is easier to access repeatable messages that are used more often.</p>
             </div>
           </>
         ),
@@ -173,7 +175,7 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <h6 className="toor-heading">Now simply click on the “Select Message” again”</h6>
+              <h6 className="tour-heading">Now simply click on the “Select Message” again”</h6>
             </div>
           </>
         ),
@@ -184,8 +186,8 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <h6 className="toor-heading">Click on the “Welcome Message.”</h6>
-              <p className="toor-para mt-1">You will notice it copied the content you just created in the text box at the bottom of SKOOP.</p>
+              <h6 className="tour-heading">Click on the “Welcome Message.”</h6>
+              <p className="tour-para mt-1">You will notice it copied the content you just created in the text box at the bottom of SKOOP.</p>
             </div>
           </>
         ),
@@ -197,7 +199,7 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <h6 className="toor-heading">Copy the message and paste it into the required location.</h6>
+              <h6 className="tour-heading">Copy the message and paste it into the required location.</h6>
             </div>
           </>
         ),
@@ -223,11 +225,14 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <p className="toor-para">So you know, you will be starting with the reusable welcome message you created in tutorial 1.</p>
-              <p className="toor-para mt-1">But first, we need to find who you want to send a welcome message to.</p>
-              <p className="toor-para mt-1">Most likely a new LinkedIn connection.</p>
-              <p className="toor-para mt-1">If you do have not new connections then you can adjust the content appropriately.</p>
-              <h6 className="mt-1 toor-heading">On LinkedIn, click on the “My Network” Icon (top center of the screen).</h6>
+              <p className="tour-para">So you know, you will be starting with the reusable welcome message you created in tutorial 1.</p>
+              <p className="tour-para mt-1">But first, we need to find who you want to send a welcome message to.</p>
+              <p className="tour-para mt-1">Most likely a new LinkedIn connection.</p>
+              <p className="tour-para mt-1">If you do have not new connections then you can adjust the content appropriately.</p>
+              <div className="tour-img mt-1">
+                <img src="/images/step 1.gif" alt="image related to linkedin message tab" />
+              </div>
+              <h6 className="mt-1 tour-heading">On LinkedIn, click on the “My Network” Icon (top center of the screen).</h6>
             </div>
           </>
         ),
@@ -240,58 +245,74 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <h6 className="toor-heading">Click “Manage my network” (left of the screen).</h6>
-              <p className="toor-para mt-1">The LinkedIn interface is always changing so if you do not see “Manage my network,” then skip to the next step.</p>
+              <h6 className="tour-heading">Click “Manage my network” (left of the screen).</h6>
+              <div className="tour-img mt-1">
+                <img src="/images/step 2.gif" alt="image related to linkedin message tab" />
+              </div>
+              <p className="tour-para mt-1">The LinkedIn interface is always changing so if you do not see “Manage my network,” then skip to the next step.</p>
             </div>
           </>
         ),
         disableBeacon: true,
         level: 2,
+        placement: 'center',
       },
       {
         target: '#skoop-extension-body',
         content: (
           <>
             <div>
-              <h6 className="toor-heading">Click “Connections” to view your recent new connections.</h6>
-              <p className="toor-para mt-1">You will notice that LinkedIn is showing you your connections in order of connection date. The most recent connections first.</p>
+              <div className="tour-img">
+                <img src="/images/step 3.gif" alt="image related to linkedin message tab" />
+              </div>
+              <h6 className="tour-heading mt-1">Click “Connections” to view your recent new connections.</h6>
+              <p className="tour-para mt-1">You will notice that LinkedIn is showing you your connections in order of connection date. The most recent connections first.</p>
             </div>
           </>
         ),
         disableBeacon: true,
         level: 3,
+        placement: 'center',
       },
       {
         target: '#skoop-extension-body',
         content: (
           <>
             <div>
-              <h6 className="toor-heading">Scroll down to find connections at least a day or older.</h6>
-              <p className="toor-para mt-1">Generally, you do not want to reply right after you connect. It is best to give them some room to breathe. So wait at least 1 to 3 days before sending a message.</p>
+            <div className="tour-img">
+                <img src="/images/step 4.gif" alt="image related to linkedin message tab" />
+              </div>
+              <h6 className="tour-heading mt-1">Scroll down to find connections at least 1 day or older.</h6>
+              <p className="tour-para mt-1">Generally, you do not want to reply right after you connect. It is best to give them some room to breathe. So wait at least 1 to 3 days before sending a message.</p>
             </div>
           </>
         ),
         disableBeacon: true,
         level: 4,
+        placement: 'center',
       },
       {
         target: '#skoop-extension-body',
         content: (
           <>
             <div>
-              <h6 className="toor-heading">Click the message button so the SKOOP App can see who you want to send a video message to.</h6>
+              <div className="tour-img">
+                <img src="/images/step 5.gif" alt="image related to linkedin message tab" />
+              </div>
+              <h6 className="tour-heading mt-1">From LinkedIn click the message button so the SKOOP App can see who you want to send a video message to.</h6>
             </div>
           </>
         ),
         disableBeacon: true,
         level: 5,
+        placement: 'center',
       },
       {
         target: '#Message',
         content: (
           <>
             <div>
-              <h6 className="toor-heading">Open the SKOOP app and click the “Message” Icon.</h6>
+              <h6 className="tour-heading">Open the SKOOP app and click the “Message” Icon.</h6>
             </div>
           </>
         ),
@@ -303,7 +324,7 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <h6 className="toor-heading">Click “Select Message”</h6>
+              <h6 className="tour-heading">Click “Select Message”</h6>
             </div>
           </>
         ),
@@ -315,7 +336,7 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <h6 className="toor-heading">Select “Welcome message”</h6>
+              <h6 className="tour-heading">Select “Welcome message”</h6>
             </div>
           </>
         ),
@@ -327,7 +348,7 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <p className="toor-para">You will notice that the welcome message content was added to the SKOOP App text area at the bottom.</p>
+              <p className="tour-para">You will notice that the welcome message content was added to the SKOOP App text area at the bottom.</p>
             </div>
           </>
         ),
@@ -339,7 +360,7 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <h6 className="toor-heading">Confirm the correct text was auto-generated and inserted in the SKOOP app text area.</h6>
+              <h6 className="tour-heading">Confirm the correct text was auto-generated and inserted in the SKOOP app text area.</h6>
             </div>
           </>
         ),
@@ -351,8 +372,11 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <p className="toor-para">Look at the picture and title of the person you are having a conversation with. And sometimes you want to view their profile (open in a new tab) for more details if needed.</p>
-              <h6 className="mt-1 toor-heading">Replace any test in the brackets “[]” with the correct information and make adjustments that are appropriate.</h6>
+              <div className="tour-img">
+                <img src="/images/linkedin-profile.gif" alt="image related to linkedin message tab" />
+              </div>
+              <p className="tour-para mt-1">Look at the picture and title of the person you are having a conversation with. And sometimes you want to view their profile (open in a new tab) for more details if needed.</p>
+              <h6 className="mt-1 tour-heading">Replace any test in the brackets “[]” with the correct information and make adjustments that are appropriate.</h6>
             </div>
           </>
         ),
@@ -365,7 +389,7 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <h6 className="toor-heading">Click the large “Record Video” button and create a 20 to 40-second welcome video.</h6>
+              <h6 className="tour-heading">Click the large “Record Video” button and create a 20 to 40-second welcome video.</h6>
             </div>
           </>
         ),
@@ -377,7 +401,7 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <h6 className="toor-heading">Click the center graphic on the video interface to stop and save the video.</h6>
+              <h6 className="tour-heading">Click the center graphic on the video interface to stop and save the video.</h6>
             </div>
           </>
         ),
@@ -389,20 +413,21 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <h6 className="toor-heading">In the Skoop App interface the video will be animated. Click the 3 dots to the right of the video animation and “Rename the video”.</h6>
-              <p className='toor-para mt-1'>Make sure you add the name of the person you are talking to.</p>
+              <h6 className="tour-heading">In the Skoop App interface the video will be animated. Click the 3 dots to the right of the video animation and “Rename the video”.</h6>
+              <p className='tour-para mt-1'>Make sure you add the name of the person you are talking to.</p>
             </div>
           </>
         ),
         disableBeacon: true,
         level: 14,
+        spotlightPadding: 25,
       },
       {
         target: '#chatWindowsList',
         content: (
           <>
             <div>
-              <h6 className="toor-heading">Click the Check Box for the person you are sending the message to.</h6>
+              <h6 className="tour-heading">Click the Check Box for the person you are sending the message to.</h6>
             </div>
           </>
         ),
@@ -414,7 +439,7 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <h6 className="toor-heading">Click the “Send” button.</h6>
+              <h6 className="tour-heading">Click the “Send” button.</h6>
             </div>
           </>
         ),
@@ -426,7 +451,8 @@ const tourConfigs = [
         content: (
           <>
             <div>
-              <p className="toor-para">Great job! You just sent a video to a new connection!</p>
+              <h6 className="tour-heading">Great job!</h6>
+              <h6 className='tour-heading mt-1'> You just sent a video to a new connection!</h6>
             </div>
           </>
         ),
@@ -534,13 +560,13 @@ export const TourContextProvider = ({ children }) => {
   const [isMessageTour, setIsMessageTour] = useState(false)
   const [activeTourAction, setActiveTourAction] = useState('')
   const [activeTourType, SetActiveTourType] = useState('')
-  const [activeTourStepIndex, setActiveTourStepIndex] = useState(0)
+  const [activeTourStepIndex, setActiveTourStepIndex] = useState(null)
   const [openSelect, setOpenSelect] = useState(false)
   const [isNextDisabled, setIsNextDisabled] = useState(false)
   const [saveMessagewithNext, setSaveMessagewithNext] = useState(false)
   const [disableBtnForDes, setDisableBtnForDes] = useState(true)
   const [isAlreadySaved, setIsAlreadySaved] = useState(false)
-  const { isLinkedin, isGmail } = useContext(GlobalStatesContext)
+  const { isLinkedin, isGmail, expand } = useContext(GlobalStatesContext)
   const [disableRecipientSelect, setDisableRecipientSelect] = useState(false)
   const [disableCheckbox, setDisableCheckbox] = useState(false)
   const [sendMessages, setSendMessages] = useState(false)
@@ -549,14 +575,48 @@ export const TourContextProvider = ({ children }) => {
   const [addNewClicked, setAddNewClicked] = useState(false);
   const [isMessageSended, setIsMessageSended] = useState(false)
   const [selectMessage, setSelectMessage] = useState(false)
+  const [reInitiateTour, setReInitiateTour] = useState(false)
 
   const [componentsVisible, setComponentsVisible] = useState({
     renderItem: null,
     nextButtonVisible: false,
   })
 
+  const {
+    isRecordStart,
+  } = useRecording()
+
   // videos state
   const [isVideoTour, setIsVideoTour] = useState(false);
+
+  useEffect(() => {
+
+    const handleOpenImageModal = (e) => {
+      e.preventDefault()
+      const src = e.target.getAttribute('src');
+  
+      const height = 322 * 2
+      const width = 574 * 2
+  
+      sendMessageToBackgroundScript({
+        action: 'showImagePreview',
+        height,
+        width,
+        src,
+      })
+    }
+
+    let tourImg = document.querySelector('.tour-img');
+    if(tourImg) {
+         tourImg.addEventListener('click', handleOpenImageModal);
+    }
+
+    return () => {
+      if(tourImg) {
+        tourImg.removeEventListener('click', handleOpenImageModal);
+      }
+    }
+  }, [activeTourStepIndex]);
 
   useEffect(() => {
     if (tours) {
@@ -643,7 +703,50 @@ export const TourContextProvider = ({ children }) => {
     setMessagesTemplateHeight(null);
     setIsMessageSended(false);
     setSelectMessage(false);
+    setDisableBtnForDes(false);
   }
+
+  useEffect(() => {
+    const skoopExtensionBody = document.getElementById('skoop-extension-body');
+    const body = document.body;
+    let timeoutId;
+  
+    if (skoopExtensionBody && isToorActive) {
+      const updateBodyStyles = () => {
+        if (expand) {
+          skoopExtensionBody.style.removeProperty('min-width');
+          timeoutId = setTimeout(() => {
+            body.style.overflow = 'hidden';
+          }, 300);
+        } else {
+          if(!isRecordStart) {
+            skoopExtensionBody.style.setProperty('min-width', '355px');
+          timeoutId = setTimeout(() => {
+            body.style.overflow = 'auto';
+          }, 300);
+          }
+        }
+      };
+  
+      updateBodyStyles();
+    } else if(!isToorActive) {
+      skoopExtensionBody.style.removeProperty('min-width');
+    }
+  
+    // Cleanup function to clear timeout on unmount or dependency change
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [expand, isToorActive]);
+
+  useEffect(() => {
+    const skoopExtensionBody = document.getElementById('skoop-extension-body');
+    if (skoopExtensionBody && isVideoTour && activeTourStepIndex === 13 && !isRecordStart) {
+      skoopExtensionBody.style.setProperty('min-width', '355px');
+    }
+  }, [activeTourStepIndex]);
 
   const handleJoyrideCallback = (data) => {
     try {
@@ -653,6 +756,12 @@ export const TourContextProvider = ({ children }) => {
         let step = activeTour[index]
         setActiveTourStep(step)
       }
+
+      if( (index === 12 || index === 13) && action === ACTIONS.PREV) {
+        setStepIndex(index);
+        return
+      }
+
       if ((index === activeTour?.length && type === 'tooltip') || action === ACTIONS.CLOSE || action === ACTIONS.SKIP) {
         initializeTour();
         return
@@ -680,6 +789,9 @@ export const TourContextProvider = ({ children }) => {
                 }
                 if (index === 2) {
                   setComponentsVisible({ ...componentsVisible, renderItem: 3 })
+                  setIsNextDisabled(true);
+                } else if(index === 3) {
+                  setDisableBtnForDes(true);
                 } else if (index === 5 && !isAlreadySaved) {
                   setIsAlreadySaved(true)
                   setOpenSelect(false)
@@ -710,19 +822,24 @@ export const TourContextProvider = ({ children }) => {
                   setIsNextDisabled(true);
                   setComponentsVisible({ ...componentsVisible, renderItem: 7 })
                 }
-
                 if(index === 7) {
                   setIsNextDisabled(false);
                   setOpenSelect(false);
                   setIsSelectOpened(false);
                 }
-
                 if(index === 11) {
-                  recordVideoBtnRef?.current?.click();
                   setComponentsVisible({ ...componentsVisible, renderItem: 12 })
                 }
-
-                if (action !== ACTIONS.CLOSE && action !== ACTIONS.SKIP && (index!==5 && index !==6 && index !==11 && index !==12)) {
+                if(index === 12) {
+                  setComponentsVisible({ ...componentsVisible, renderItem: 13 })
+                }
+                if (activeTourStep?.level === 16 && !sendMessages) {
+                  setSendMessages(true);
+                }
+                if (activeTourStep?.level === 17) {
+                  initializeTour();
+                }
+                if (action !== ACTIONS.CLOSE && action !== ACTIONS.SKIP && (index!==5 && index !==6 && index !==11 && index !==12 && activeTourStep?.level !== 16)) {
                   setStepIndex(index + 1)
                 }
               }
@@ -797,7 +914,10 @@ export const TourContextProvider = ({ children }) => {
         isMessageSended, 
         setIsMessageSended,
         selectMessage, 
-        setSelectMessage
+        setSelectMessage,
+        initializeTour,
+        reInitiateTour, 
+        setReInitiateTour
       }}
     >
       {children}

@@ -9,23 +9,22 @@ import { FaCheckCircle } from 'react-icons/fa'
 import RemoveSessions from '../components/Auth/RemoveSessions'
 
 const WelcomeAppsumo = () => {
-  const { handleRegister, coupon, setSocial,deleteMyAllJwtSessionsBySocial ,showClearSessionDialog} = useContext(AuthContext)
+  const { handleRegister, coupon, setSocial, deleteMyAllJwtSessionsBySocial, subscriptionType, showClearSessionDialog } = useContext(AuthContext)
 
-  const [showEmailInput, setShowEmailInput] = useState(false);
-  const [email, setEmail] = useState('');
+  const [showEmailInput, setShowEmailInput] = useState(false)
+  const [email, setEmail] = useState('')
 
   const handleEmailButtonClick = async () => {
     if (!showEmailInput) {
       // If the input box is not shown yet, show it
-      setShowEmailInput(true);
+      setShowEmailInput(true)
     } else {
       // If the input box is shown and email is entered, call the API
       if (email) {
-       await handleRegister(   email.split('@')[0],email,null,Intl.DateTimeFormat().resolvedOptions().timeZone); 
+        await handleRegister(email.split('@')[0], email, null, Intl.DateTimeFormat().resolvedOptions().timeZone)
       }
     }
-  };
-
+  }
 
   return (
     <div className="welcome-main">
@@ -34,13 +33,15 @@ const WelcomeAppsumo = () => {
           <img src="/screens/logo.png" alt="Skoop" />
 
           <h3 className="welcome-title">Skoop</h3>
-        
-           <h4 className="coupon-text" >{coupon} {' '}<FaCheckCircle className="check-icon" color='#ffc107' /></h4>
-           <p> Appsumo Coupon Valid </p>
-           <h3> Welcome Appsumo User</h3>
-           <p>Please activate your lifetime access account.</p>
+
+          <h4 className="coupon-text">
+            {coupon} <FaCheckCircle className="check-icon" color="#ffc107" />
+          </h4>
+          <p className='mb-2'>{subscriptionType == 'appsumo' ? 'Appsumo' : 'Lifetime'} Coupon Valid </p>
+          <h3 className="mt-4"> Welcome {subscriptionType == 'appsumo' ? 'Appsumo' : ''} User</h3>
+          <p>Please activate your lifetime access account.</p>
         </div>
-        {showClearSessionDialog  && <RemoveSessions onDelete={()=>deleteMyAllJwtSessionsBySocial()} />}
+        {showClearSessionDialog && <RemoveSessions onDelete={() => deleteMyAllJwtSessionsBySocial()} />}
         <div className="mt-4">
           <ContinueWithGoogleButton setSocial={setSocial} message="Continue with Google" />
           <ContinueWithLinkedInButton setSocial={setSocial} message="Continue with LinkedIn" />

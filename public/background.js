@@ -252,6 +252,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }
       )
     }
+
+    if (request.action === 'showImagePreview') {
+      chrome.tabs.sendMessage(
+        sender.tab.id,
+        {
+          action: 'showImagePreview',
+          width: request.width ? request.width : '589',
+          height: request.height ? request.height : '322',
+          src: request.src ? request.src : '',
+        },
+        (response) => {
+          if (!response) {
+            console.error('Error resizing iframe:', chrome.runtime.lastError)
+          }
+        }
+      )
+    }
    
     if (request.action === 'resizeIframe') {
       

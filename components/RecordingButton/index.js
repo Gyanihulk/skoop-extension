@@ -60,7 +60,7 @@ const RecordingButton = () => {
     handleVideoBlob,
   } = useRecording()
   const { setGlobalRefresh, setLatestVideo, setLatestBlob, expandMinimizeExtension, setExpand, tabId } = useContext(GlobalStatesContext)
-  const { recordVideoBtnRef, componentsVisible, isVideoTour, activeTourStepIndex, renderNext } = useContext(TourContext)
+  const { recordVideoBtnRef, componentsVisible, isVideoTour, activeTourStepIndex, renderNext} = useContext(TourContext)
   const { addToMessage } = useContext(MessageContext)
   const [videoDevices, setVideoDevices] = useState([])
   const [audioDevices, setAudioDevices] = useState([])
@@ -250,9 +250,7 @@ const RecordingButton = () => {
   useEffect(() => {
     if (isVideoTour) {
       if (componentsVisible?.renderItem === 12) {
-
         recordVideoBtnRef.current.click()
-        renderNext()
       }
     }
   }, [componentsVisible])
@@ -303,8 +301,7 @@ const RecordingButton = () => {
     }
 
     if (isVideoTour && activeTourStepIndex === 11) {
-
-      renderNext()
+        renderNext()
     }
     setIsRecordStart(true)
     setIsVideo(true)

@@ -14,7 +14,7 @@ const Welcome = () => {
     localStorage.setItem('welcomePageShown', true)
   }
   const validateCoupon = async() => {
-   console.log(coupon)
+
    if (coupon.length <= 4) {
     toast.error('Please Enter Valid coupon Code')
     return
@@ -35,6 +35,9 @@ const Welcome = () => {
       navigateToPage("WelcomeAppsumo")
     }else if(response?.stripeCoupon){
       navigateToPage("WelcomeStripe")
+    }else if(response?.lifeTimeCoupon){
+      setSubscriptionType("lifetime")
+      navigateToPage("WelcomeAppsumo")
     }
   } 
  

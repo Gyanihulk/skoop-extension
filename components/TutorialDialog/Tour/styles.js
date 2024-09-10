@@ -11,7 +11,7 @@ const defaultOptions = {
   }
 
   const overlay = {
-    position: 'absolute',
+    position: 'fixed',
     top: 0,
     left: 0,
     width: '100%',
@@ -63,6 +63,8 @@ const defaultOptions = {
   const tooltip =  {
     maxWidth: '100%',
     padding: 12,
+    left: '50%',
+    transform: 'translateX(-50%)',
   };
 
   const tooltipFooter = {

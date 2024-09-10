@@ -17,6 +17,7 @@ import { TbArrowsDiagonalMinimize2 } from 'react-icons/tb'
 import { TbArrowsDiagonal } from 'react-icons/tb'
 import { RiDashboard2Line } from 'react-icons/ri'
 import { useRecording } from '../../contexts/RecordingContext.js'
+import TourContext from '../../contexts/TourContext.js'
 import { appChromeWebStoreLink } from "../../constants.js"
 import { useUserSettings } from '../../contexts/UserSettingsContext.js'
 
@@ -24,6 +25,8 @@ export default function Header() {
   const { isAuthenticated, handleLogOut, isPro, gracePeriodCompletion, gracePeriod, showVersionNotification } = useContext(AuthContext)
   const { navigateToPage, activePage } = useContext(ScreenContext)
   const { setScraperPage, scraperPage, isProfilePage, expand, expandMinimizeExtension } = useContext(GlobalStatesContext)
+  const { isMessageTour, isToorActive } = useContext(TourContext);
+
 
   const [profileOpen, setProfileOpen] = useState(false)
   const [showHelpMenu, setShowHelpMenu] = useState(false)
@@ -127,6 +130,7 @@ export default function Header() {
               {isProfilePage && (
                 <button
                   className="btn btn-link header-icon d-flex align-items-center justify-content-center"
+                  disabled={isToorActive}
                   data-mdb-toggle="tooltip"
                   data-mdb-placement="bottom"
                   title="Save Profile Info "
@@ -141,6 +145,7 @@ export default function Header() {
               <div className={`nav-item dropdown custom`}>
                 <button
                   className="btn btn-link header-icon d-flex align-items-center justify-content-center"
+                  disabled={isToorActive}
                   data-mdb-toggle="tooltip"
                   data-mdb-placement="bottom"
                   title="Helper Videos"
@@ -184,14 +189,14 @@ export default function Header() {
                 </div>
               </div>
               {!['Subscription', 'PaymentScreen'].includes(activePage) && (
-                <button className="btn btn-link header-icon d-flex align-items-center justify-content-center" onClick={openCalendarWindow} data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="Go to your Meeting Calendar Schedular">
+                <button className="btn btn-link header-icon d-flex align-items-center justify-content-center" disabled={isToorActive} onClick={openCalendarWindow} data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="Go to your Meeting Calendar Schedular">
                   <RiDashboard2Line size={16} />
                 </button>
               )}
 
               {/* Profile Dropdown */}
               <div className={`nav-item dropdown custom`}>
-                <button className="btn btn-link header-icon dropstart d-flex align-items-center justify-content-center" onClick={toggleProfileDropdown} data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="User Profile">
+                <button className="btn btn-link header-icon dropstart d-flex align-items-center justify-content-center" disabled={isToorActive} onClick={toggleProfileDropdown} data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="User Profile">
                   <IoMdPerson size={16} />
                 </button>
                 <div className={`ddstyle dropdown-menu ${profileOpen ? 'show' : ''}`} style={{ marginLeft: '-120px' }}>
@@ -231,7 +236,7 @@ export default function Header() {
             </>
           )}
 
-          <button className="btn btn-link header-icon d-flex align-items-center justify-content-center" data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="Close" onClick={closeExtension}>
+          <button className="btn btn-link header-icon d-flex align-items-center justify-content-center" disabled={isToorActive} data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="Close" onClick={closeExtension}>
             <IoClose size={18} />
           </button>
         </div>
@@ -246,7 +251,7 @@ export default function Header() {
         <h6>New version available, please <span className='text-decoration-underline mx-1 text-decoration-thickness'>click here</span> to update</h6>
         </a>
       </div>}
-      { !userSettings?.fullAccess && <div className="notification-container">
+      { userSettings && !userSettings.fullAccess && <div className="notification-container">
         
         <div class="notification-div">Trial days remaining : {userSettings?.remainingDays}</div>
 
