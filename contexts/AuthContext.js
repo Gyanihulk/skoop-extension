@@ -93,7 +93,7 @@ export const AuthProvider = ({ children }) => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+,\-.;:'"<>=?/\|[\]{}~])(.{8,})$/
     return passwordRegex.test(password)
   }
-  const handleSkoopLogin = async (username, password) => {
+  const handleSkoopLogin = async (email, password) => {
     const toastId = toast.success('Signing In...')
     localStorage.setItem('userEmail', JSON.stringify(email))
     
@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }) => {
       const response = await fetch(API_ENDPOINTS.signIn, {
         method: 'POST',
         body: JSON.stringify({
-          username: username.trim(),
+          username: email.trim(),
           password: password.trim(),
           rememberMe: rememberMe,
           version: version,
@@ -716,7 +716,7 @@ export const AuthProvider = ({ children }) => {
     setNewUser(false)
     navigateToPage('SignInIntro')
     setLatestVideo(null);
-    setLatestBlob(null);
+    setLatestBlob({});
     setIsVideoContainer(false);
   }
   const getMySubscription = async (videoId) => {

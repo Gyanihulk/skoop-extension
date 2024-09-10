@@ -512,7 +512,30 @@ const SavedMessages = ({ appendToBody, close }) => {
       handleSaveMessage();
     }
   }, [saveMessagewithNext])
-
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Check if the tour is not active
+      console.log(isToorActive ,isVideoTour)
+      if (!isToorActive && !isMessageTour && !isVideoTour) {
+        // Check if the click is inside the select dropdown
+        const isSelectDropdownClick = event.target.closest('#messages-dropdown');
+        // Close the dropdown only if the click is not inside the dropdown
+        if (toggleSelect && !isSelectDropdownClick) {
+          setToggleSelect(false);
+        }
+      }
+    };
+  
+    // Only attach the event listener if the dropdown is open and the tour is not active
+    if (toggleSelect && !isToorActive && !isMessageTour && !isVideoTour) {
+      document.addEventListener('click', handleClickOutside);
+    }
+  
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [toggleSelect, isToorActive, isMessageTour, isVideoTour]); // Add tour status variables to the dependency array
+  
   return (
     <div>
       <div className="message-container">
@@ -529,21 +552,6 @@ const SavedMessages = ({ appendToBody, close }) => {
         <div className="form-group mt-2">
           <div className="row">
             <div id="messages-select-box">
-              {/* <select
-                                className="form-select"
-                                value={selectedOption}
-                                onChange={handleDropdownChange}
-                                size="lg"
-                                placeholder="Select Saved Response"
-                            >
-                                <option value="Select Prompt">Select prompt</option>
-                                <option value="AddEditPrompt">Add New Prompt</option>
-                                {messageOptions.map((option) => (
-                                    <option key={option.id} value={option.id}>
-                                        {option.heading}
-                                    </option>
-                                ))}
-                            </select> */}
               <DropdownButton as={ButtonGroup} size="sm" title="Select Message" id="messages-dropdown" value={selectedOption} onSelect={handleDropdownChange} show={ isToorActive ? openSelect : toggleSelect} onClick={handleOpenSelect}>
                 <Dropdown.Item eventKey="AddPrompt" id="add-message" >
                   {/* <TbArrowsDiagonal size={16} className='expand-icon' onClick= /> */}

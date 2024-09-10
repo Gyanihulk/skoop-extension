@@ -32,6 +32,7 @@ import TutorialDialog from "../components/TutorialDialog"
 import { useUserSettings } from '../contexts/UserSettingsContext'
 import WelcomeAppsumo from '../Screens/WelcomeAppsumo'
 import WelcomeStripe from '../Screens/WelcomeStripe'
+import AppTour from '../components/TutorialDialog/Tour'
 export default function Home() {
   const { setTabId, expandExtension, tabId, setIsMatchingUrl, setExpand, expand, setIsLinkedin, setIsGmail, setIsProfilePage } = useContext(GlobalStatesContext)
   const {
@@ -264,7 +265,7 @@ if(isAuthenticated){
         {activePage === 'RecordVideo' && <VideoRecording />}
         {isAuthenticated & isPro ? (
           <>
-           {!['Welcome', 'CalendarSync','SignInIntro', 'Subscription','SignIn', 'ContactUs','ReportBug','PaymentScreen','SignUp', ' ', 'RecordVideo', 'ForgotPassword', 'CantUseScreen', 'Camera',"ThankYouScreen"].includes(activePage) && !isRecordStart && <TutorialDialog />}
+           {!['Welcome', 'CalendarSync','SignInIntro', 'Subscription','SignIn', 'ContactUs','ReportBug','PaymentScreen','SignUp', ' ',  'ForgotPassword', 'CantUseScreen',"ThankYouScreen"].includes(activePage) && !isRecordStart && <TutorialDialog />}
             {activePage === 'Home' && <Homepage />}
             {activePage === 'RecordVideos' && <RecordVideos />}
             {activePage === 'HelperVideos' && <HelperVideos navigateTo={'Home'} />}
@@ -277,6 +278,7 @@ if(isAuthenticated){
             {activePage == 'CalendarSync' && <CalendarSync />}
             {activePage == 'DevicesList' && <DevicesList />}
             {activePage == 'ThankYouScreen' && <ThankYouScreen />}
+            <AppTour />
           </>
         ) : isAuthenticated ? (
           <>

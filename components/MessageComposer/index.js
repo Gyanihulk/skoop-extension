@@ -90,7 +90,7 @@ const MessageComposer = () => {
   }
 
   const handleIconClick = async (eventKey) => {
-    setLatestBlob()
+    setLatestBlob({})
     setLatestVideo()
     if( isMessageTour && [0, 6].includes(activeTourStepIndex)) {
         renderNext();
