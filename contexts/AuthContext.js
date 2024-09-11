@@ -276,6 +276,12 @@ export const AuthProvider = ({ children }) => {
       }
     } else if (userProfileDetail?.calendar_info === type) {
       return
+    } else if(userProfileDetail && userProfileDetail?.calendar_info?.length > 0 && type?.length === 0) {
+      handleCalendarAuthCode("", 'initialize');
+      return;
+    }
+    else if( type === "" || type?.length === 0) {
+      return;
     }
 
     navigateToPage(' ')
