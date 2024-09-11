@@ -34,11 +34,8 @@ import WelcomeAppsumo from '../Screens/WelcomeAppsumo'
 import WelcomeStripe from '../Screens/WelcomeStripe'
 import AppTour from '../components/TutorialDialog/Tour'
 import API_ENDPOINTS from '../components/apiConfig'
-//import {franc} from 'franc-min';
-import { franc, francAll } from 'franc';
-//import langdetect from 'langdetect';
 import DetectLanguage from 'detectlanguage';
-//import {cld3} from 'cld3-asm';
+
 export default function Home() {
   const { setTabId, expandExtension, tabId, setIsMatchingUrl, setExpand, expand, setIsLinkedin, setIsGmail, setIsProfilePage } = useContext(GlobalStatesContext)
   const {
@@ -265,23 +262,14 @@ if(isAuthenticated){
 
   const messageHandler = async (message, sender, sendResponse) => {
     if(message.action === 'detectLanguage') {
-      // console.log('post description is ', message.query)
-      // console.log('franc detection ', franc(message.query));
-      // console.log('francAll detection ', francAll(message.query));
-      // cld3.load().then((detector) => {
-      //   console.log(detector.findLanguage('Hello 123'));
-      // });
-      //console.log('langdetect detection ', langdetect.detectOne(message.query));
+      
       detectlanguage.detectCode(message.query).then(function(result) {
         console.log('result in detection ', result);
         const response = result //JSON.stringify(result);
         sendResponse(response);
         return true;
       });
-      // const response = franc(message.query);
-      // console.log('detected language ', response);
-      // sendResponse(response);
-      // return true;
+      
     }
     if (message.action === 'generateCommentCGPT') {
       const res = await verifyToken();

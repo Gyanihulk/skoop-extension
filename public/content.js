@@ -64,7 +64,7 @@ function processCommentBoxes() {
             commentButton.addEventListener('click', async () => {
                 processReplyCommentBoxes();
                 let parent = commentButton.parentElement.parentElement.parentElement.parentElement
-                let commentBox = parent.querySelector('.feed-shared-update-v2__comments-container').querySelector('.comments-comment-box__form')
+                let commentBox = parent.querySelector('.feed-shared-update-v2__comments-container').querySelector('.comments-comment-texteditor')
                 if (commentBox) {
                     const buttonSection = commentBox.parentElement.querySelector('.skoop-comment-section');
                     if (!buttonSection) {
@@ -184,7 +184,7 @@ async function createQueryForPostDescription(parent) {
     return {query, postLanguage};
 }
 
-async function makeChatGptCall(button, query, commentBox, language, replieeNames = '') {
+async function makeChatGptCall(button, query, commentBox, language, anchorTags = []) {
     language = new Intl.DisplayNames(['en'], { type: 'language' }).of(language); // getFullLanguageName(postLanguage);
     query = query + `\n\n${button.prompt}\nKeep it under ${button.length}. And use ${button.tone} tone.\n You should reply in ${language} language. Please follow language requirement strictly. The comment should be in ${language} language.`;
     // Display initial loading message
@@ -213,12 +213,9 @@ async function makeChatGptCall(button, query, commentBox, language, replieeNames
         let message = '';
 
         if (response) {
-            message = response;
+            //message = response;
             const processEndTime = Date.now();
             console.log('Time taken to get the response from the backend:', processEndTime - processStartTime);
-            if(replieeNames) {
-                message = `${replieeNames}` + ' ' + `${response}`;
-            }
 
             // Clear all timeouts if the response arrives before 13 seconds
             clearTimeout(timeout5s);
@@ -226,7 +223,7 @@ async function makeChatGptCall(button, query, commentBox, language, replieeNames
         }
 
         // Add the generated response to the comment box
-        await addGeneratedTextToCommentBox(message, commentBox);
+        await addGeneratedTextToCommentBox(response, commentBox, anchorTags);
     } catch (error) {
         console.error("Error generating comment:", error);
         await addGeneratedTextToCommentBox("Please try again..", commentBox);
@@ -253,10 +250,17 @@ function getPreviousCommentsOfTheUser(parent, replieeNames) {
     return previousComments;
 }
 
+function getMentionedUsers(commentBox) {
+    const anchorTags = commentBox.querySelectorAll('.ql-mention');
+    console.log('anchorTags in get ', anchorTags) // Find all the anchor tags with ql-mention class
+    return Array.from(anchorTags); // Convert NodeList to an array and return it
+}
+
 function addSectionWithButton(commentBox, forReply = false) {
     const newSection = document.createElement('div');
     newSection.className = 'skoop-comment-section';
-    newSection.style.margin = '5px 20px 10px 55px';
+    newSection.style.margin = '0px';
+    newSection.style.marginTop = '10px';
     newSection.style.display = 'flex';
     newSection.style.flexWrap = 'wrap';
     newSection.style.gap = '10px';
@@ -345,6 +349,9 @@ function addButtonWithTypeToReply(button, commnetBox) {
         }
         if (replyCommentBox) {
             let query = '';
+            // Extract all the anchor tags (mentioned users)
+            const anchorTags = getMentionedUsers(replyCommentBox);
+            console.log('anchorTags in add ', anchorTags);
             const replieeNames = replyCommentBox.textContent.trim();
             console.log('repliee names ', replieeNames);
             const previousCommentsOfTheUser = getPreviousCommentsOfTheUser(parent, replieeNames);
@@ -353,7 +360,7 @@ function addButtonWithTypeToReply(button, commnetBox) {
                 let commentLanguage = await getPostLanguage(commentDescription);
                 query = `This is the description of the post: ${postQuery}\n and this is the main comment to that post: ${commentDescription}\n and this are the thread comments of the users to which you are replying: ${previousCommentsOfTheUser}. If there are no thread comments reply to the main comment but if thread comments are present consider those when replying.\n Now generate reply to the comment.`;
                 console.log('comment description ', commentDescription);
-                await makeChatGptCall(button, query, replyCommentBox, commentLanguage, replieeNames);
+                await makeChatGptCall(button, query, replyCommentBox, commentLanguage, anchorTags);
             }
         }
     });
@@ -436,9 +443,9 @@ async function getPostLanguage(postDescription) {
 //     });
 // }
 
-async function addGeneratedTextToCommentBox(response, commentBox) {
+async function addGeneratedTextToCommentBox(response, commentBox, anchorTags = []) {
     console.log('generated text printing')
-    await addTextToCommentBox(response, commentBox);
+    await addTextToCommentBox(response, commentBox, anchorTags);
     return;
 }
 
@@ -460,12 +467,18 @@ async function addLoadingMessageToCommentBox(commentBox, message) {
 // }
 
 // Function to type text into the comment box
-async function addTextToCommentBox(response, commentBox) {
+async function addTextToCommentBox(response, commentBox, anchorTags = []) {
     if (commentBox) {
         let editor = commentBox.querySelector('.ql-editor');
         if (editor) {
             let index = 0;
             editor.textContent = ''; // Clear the editor content before typing starts
+            console.log('anchor tags in add text ', anchorTags);
+            // Append anchor tags (names) first before the response text
+            anchorTags.forEach(anchor => {
+                editor.appendChild(anchor.cloneNode(true)); // Clone the anchor element and append it to the editor
+                editor.appendChild(document.createTextNode(' ')); // Add a space after each anchor
+            });
 
             // Typing simulation
             const typeEffect = () => {
@@ -531,7 +544,7 @@ function processReplyCommentBoxes() {
             const commentContainer = replyButton.closest('.comments-comment-list__container');
 
             // Find the corresponding reply box
-            const replyBox = commentContainer.querySelector('.comments-comment-box__form');
+            const replyBox = commentContainer.querySelector('.comments-comment-texteditor');
             if (replyBox) {
                 // Check if buttons have already been added to avoid duplication
                 if (!replyBox.parentElement.querySelector('.skoop-comment-section')) {
