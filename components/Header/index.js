@@ -26,6 +26,7 @@ export default function Header() {
   const { navigateToPage, activePage } = useContext(ScreenContext)
   const { setScraperPage, scraperPage, isProfilePage, expand, expandMinimizeExtension } = useContext(GlobalStatesContext)
   const { isMessageTour, isToorActive } = useContext(TourContext);
+  const [disableIcons, setDisableIcons] = useState(false);
 
 
   const [profileOpen, setProfileOpen] = useState(false)
@@ -61,6 +62,18 @@ export default function Header() {
       skoopExtensionBody.style.overflowY = 'auto'
     }
   }, [expand])
+
+  useEffect(() => {
+console.log(isToorActive,expand,"header test")
+    if(isToorActive) {
+      setDisableIcons(true)
+    } else if(expand) {
+      setDisableIcons(true);
+    }
+    else {
+      setDisableIcons(false);
+    }
+  }, [isToorActive, expand])
 
   const toggleProfileDropdown = () => {
     setProfileOpen(!profileOpen)
@@ -130,7 +143,7 @@ export default function Header() {
               {isProfilePage && (
                 <button
                   className="btn btn-link header-icon d-flex align-items-center justify-content-center"
-                  disabled={isToorActive}
+                  disabled={disableIcons}
                   data-mdb-toggle="tooltip"
                   data-mdb-placement="bottom"
                   title="Save Profile Info "
@@ -145,7 +158,7 @@ export default function Header() {
               <div className={`nav-item dropdown custom`}>
                 <button
                   className="btn btn-link header-icon d-flex align-items-center justify-content-center"
-                  disabled={isToorActive}
+                  disabled={disableIcons}
                   data-mdb-toggle="tooltip"
                   data-mdb-placement="bottom"
                   title="Helper Videos"
@@ -189,14 +202,14 @@ export default function Header() {
                 </div>
               </div>
               {!['Subscription', 'PaymentScreen'].includes(activePage) && (
-                <button className="btn btn-link header-icon d-flex align-items-center justify-content-center" disabled={isToorActive} onClick={openCalendarWindow} data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="Go to your Meeting Calendar Schedular">
+                <button className="btn btn-link header-icon d-flex align-items-center justify-content-center" disabled={disableIcons} onClick={openCalendarWindow} data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="Go to your Meeting Calendar Schedular">
                   <RiDashboard2Line size={16} />
                 </button>
               )}
 
               {/* Profile Dropdown */}
               <div className={`nav-item dropdown custom`}>
-                <button className="btn btn-link header-icon dropstart d-flex align-items-center justify-content-center" disabled={isToorActive} onClick={toggleProfileDropdown} data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="User Profile">
+                <button className="btn btn-link header-icon dropstart d-flex align-items-center justify-content-center" disabled={disableIcons} onClick={toggleProfileDropdown} data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="User Profile">
                   <IoMdPerson size={16} />
                 </button>
                 <div className={`ddstyle dropdown-menu ${profileOpen ? 'show' : ''}`} style={{ marginLeft: '-120px' }}>
@@ -236,7 +249,7 @@ export default function Header() {
             </>
           )}
 
-          <button className="btn btn-link header-icon d-flex align-items-center justify-content-center" disabled={isToorActive} data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="Close" onClick={closeExtension}>
+          <button className="btn btn-link header-icon d-flex align-items-center justify-content-center" disabled={disableIcons} data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="Close" onClick={closeExtension}>
             <IoClose size={18} />
           </button>
         </div>

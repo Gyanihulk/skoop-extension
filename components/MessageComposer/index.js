@@ -58,7 +58,7 @@ const MessageComposer = () => {
   }, [componentsVisible])
 
   useEffect(() => {
-    if (latestBlob) {
+    if (latestBlob && Object.keys(latestBlob).length > 0) {
       setDisplayComp('DefaultCard')
     }
   }, [message, latestBlob])

@@ -16,7 +16,7 @@
   to {
     visibility: visible;
     opacity: 1;
-    top: 30%;
+    top: 25%;
     width: 15rem;
   }
 }
@@ -37,7 +37,7 @@
 }
 
 .welcome-image-container img {
-  width: 100% !important;
+  width: 80% !important;
 }
 
 .logo-image-container {
@@ -67,13 +67,12 @@
     margin-top: -10rem;
   }
   to {
-    margin-top: 0rem;
-    height: 75%;
+    margin-top: -5rem;
+    height: 50%;
   }
 }
 
 .logo-content img {
-  margin-top: -10rem;
   height: 100%;
   animation: animateLogoImage 2s ease-out forwards;
   animation-delay: 1500ms;
@@ -164,7 +163,7 @@
   text-align: center;
 }
 .welcome-content .top-header img {
-  height: 120px;
+  height: 60px;
 }
 
 @keyframes animateVersion {
