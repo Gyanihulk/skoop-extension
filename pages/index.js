@@ -265,15 +265,16 @@ if(isAuthenticated){
 
   const messageHandler = async (message, sender, sendResponse) => {
     if(message.action === 'detectLanguage') {
-      console.log('post description is ', message.query)
-      console.log('franc detection ', franc(message.query));
-      console.log('francAll detection ', francAll(message.query));
+      // console.log('post description is ', message.query)
+      // console.log('franc detection ', franc(message.query));
+      // console.log('francAll detection ', francAll(message.query));
       // cld3.load().then((detector) => {
       //   console.log(detector.findLanguage('Hello 123'));
       // });
       //console.log('langdetect detection ', langdetect.detectOne(message.query));
       detectlanguage.detectCode(message.query).then(function(result) {
-        const response = JSON.stringify(result);
+        console.log('result in detection ', result);
+        const response = result //JSON.stringify(result);
         sendResponse(response);
         return true;
       });
