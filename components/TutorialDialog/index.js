@@ -37,9 +37,9 @@ const TutorialDialog = () => {
   const [activeTutorial, setActiveTutorial] = useState(null)
   const [showTutorialVideo, setShowTutorialVideo] = useState(false)
   const { fetchMySettings, updateUserSettings, userSettings } = useUserSettings()
-  const [reloadIframe, setReloadIframe] = useState(false);
-  let { latestBlob ,isLinkedin} = useContext(GlobalStatesContext)
-  const {  setIsToorActive } = useContext(TourContext);
+  const [reloadIframe, setReloadIframe] = useState(false)
+  let { latestBlob, isLinkedin } = useContext(GlobalStatesContext)
+  const { setIsToorActive } = useContext(TourContext)
   const handlePopUpChange = () => {
     setIsInitialState(false)
     setPopUp(!popUp)
@@ -56,8 +56,8 @@ const TutorialDialog = () => {
   const handleSelectedTutorial = (tutorial) => {
     setShowTutorialVideo(true)
     setActiveTutorial(tutorial)
-    if(tutorial=="videos" && !isLinkedin){
-      toast.success("It would be better taking this tutorial on Linkedin")
+    if (tutorial == 'videos' && !isLinkedin) {
+      toast.success('It would be better taking this tutorial on Linkedin')
     }
   }
 
@@ -75,17 +75,17 @@ const TutorialDialog = () => {
 
   useEffect(() => {
     if (userSettings) {
-      setEnableTutorialScreen(userSettings?.show_tutorials);
+      setEnableTutorialScreen(userSettings?.show_tutorials)
       setToggleTutorial(userSettings?.show_tutorials)
     }
   }, [userSettings])
 
   useEffect(() => {
     if (isSignupOrLogin && isPro) {
-      (async () => { 
-        let userSettingsData = await fetchMySettings();
+      ;(async () => {
+        let userSettingsData = await fetchMySettings()
         if (userSettingsData) {
-          const { show_tutorials } = userSettingsData;
+          const { show_tutorials } = userSettingsData
           setToggleTutorial(show_tutorials)
           setEnableTutorialScreen(show_tutorials)
           setPopUp(!show_tutorials)
@@ -102,15 +102,15 @@ const TutorialDialog = () => {
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
-        handleClose();
+        handleClose()
       }
     }
 
-    document.addEventListener('keydown', handleKeyDown);
-    return ()=> {
-      document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
     }
-   }, [])
+  }, [])
 
   useEffect(() => {
     if (!isInitialState) {
@@ -120,10 +120,10 @@ const TutorialDialog = () => {
 
   const handleExpandVideo = (e) => {
     e.preventDefault()
-    setReloadIframe(true);
-    setTimeout(()=>{
-      setReloadIframe(false);
-    }, 100);
+    setReloadIframe(true)
+    setTimeout(() => {
+      setReloadIframe(false)
+    }, 100)
     const src = videoUrls[activeTutorial]?.path
 
     const height = 512 * 1.3
@@ -145,52 +145,41 @@ const TutorialDialog = () => {
             <div className="modal-content mx-4 justify-content-center align-items-center" ref={modalRef}>
               <div className="modal-header d-flex justify-content-between align-items-start fw-500 mt--7 w-100 px-3 pt-3 pb-2">
                 {showTutorialVideo ? videoUrls[activeTutorial]?.title : 'Get Started - with Step-by-Step Guides'}
-                <button
-                  type="button" title="Close"
-                  className="custom-close-button px-0 mx-0 mt-0-2 d-flex align-items-center justify-content-center"
-                  onClick={handleClose}
-                  aria-label="Close"
-                >
+                <button type="button" title="Close" className="custom-close-button px-0 mx-0 mt-0-2 d-flex align-items-center justify-content-center" onClick={handleClose} aria-label="Close">
                   <IoMdClose size={16} />
                 </button>
               </div>
               <div className="modal-content mx-4 justify-content-center align-items-center">
-              <div className="modal-body align-items-center justify-content-center w-100">
-                <div className="flex">
-                  {!showTutorialVideo ? (
-                    <div className="d-flex flex-column align-items-center gap-2">
-                      <div
-                        className={`cursor-pointer d-flex align-items-center justify-content-center tutorial-image-container ${selectedTutorial == 'messages' ? 'bg-selected-videoMode' : ''}`}
-                        onClick={() => handleSelectedTutorial('messages')}
-                      >
-                        <img src="/images/tutorial1.png" alt="messages" className='tutorial-image' />
+                <div className="modal-body align-items-center justify-content-center w-100">
+                  <div className="flex">
+                    {!showTutorialVideo ? (
+                      <div className="d-flex flex-column align-items-center gap-2">
+                        <div className={`cursor-pointer d-flex align-items-center justify-content-center tutorial-image-container ${selectedTutorial == 'messages' ? 'bg-selected-videoMode' : ''}`} onClick={() => handleSelectedTutorial('messages')}>
+                          <img src="/images/tutorial1.png" alt="messages" className="tutorial-image" />
+                        </div>
+                        <div className={`cursor-pointer d-flex align-items-center justify-content-center tutorial-image-container ${selectedTutorial == 'videos' ? 'bg-selected-videoMode' : ''}`} onClick={() => handleSelectedTutorial('videos')}>
+                          <img src="/images/tutorial2.png" alt="messages" className="tutorial-image" />
+                        </div>
                       </div>
-                      <div
-                        className={`cursor-pointer d-flex align-items-center justify-content-center tutorial-image-container ${selectedTutorial == 'videos' ? 'bg-selected-videoMode' : ''}`}
-                        onClick={() => handleSelectedTutorial('videos')}
-                      >
-                        <img src="/images/tutorial2.png" alt="messages" className='tutorial-image' />
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="embed-responsive embed-responsive-16by9">
-                        {!reloadIframe  && (<iframe className="embed-responsive-item tutorial-video-frame" src={videoUrls[activeTutorial]?.path} ref={iframeRef} allow="autoplay; fullscreen; picture-in-picture" onLoad={handleIframeLoad} />)}
-                        {iframeLoaded && (
-                          <div className="expand-video-button d-flex justify-content-center align-items-center" onClick={handleExpandVideo}>
-                            <FaExpand className="expand-icon" size={18} />
-                          </div>
-                        )}
-                      </div>
-                      <div class="mt-2 d-flex justify-content-center">
-                        <button type="button" class="card-btn" onClick={handleTourStart}>
-                          Start
-                        </button>
-                      </div>
-                    </>
-                  )}
+                    ) : (
+                      <>
+                        <div className="embed-responsive embed-responsive-16by9">
+                          {!reloadIframe && <iframe className="embed-responsive-item tutorial-video-frame" src={videoUrls[activeTutorial]?.path} ref={iframeRef} allow="autoplay; fullscreen; picture-in-picture" onLoad={handleIframeLoad} />}
+                          {iframeLoaded && (
+                            <div className="expand-video-button d-flex justify-content-center align-items-center" onClick={handleExpandVideo}>
+                              <FaExpand className="expand-icon" size={18} />
+                            </div>
+                          )}
+                        </div>
+                        <div class="mt-2 d-flex justify-content-center">
+                          <button type="button" class="card-btn" onClick={handleTourStart}>
+                            Start
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
               </div>
               <div className="modal-footer">
                 <div className="d-flex">
@@ -199,14 +188,17 @@ const TutorialDialog = () => {
                       <input className="form-check-input custom-switch switch-sm" name="toggle-modal" type="checkbox" role="switch" checked={!popUp} onChange={handlePopUpChange} />
                     </div>
                   </div>
-                  <p className="tutorial-dialog-text mt-0 mb-0 fw-500">Keep enabled to show the guides on next login or refresh. You can change this setting from the top of the helper section.</p>
+                  {!popUp ? (
+                    <p className="tutorial-dialog-text mt-0 mb-0 fw-500">Keep enabled to show the guides on next login or refresh. You can change this setting from the top of the helper section.</p>
+                  ) : (
+                    <p className="tutorial-dialog-text mt-0 mb-0 fw-500">The guides are now off. You can re-enable this setting from the top of the helper section.</p>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
-      ): null}
-      
+      ) : null}
     </>
   )
 }

@@ -73,7 +73,6 @@
 }
 
 .logo-content img {
-  margin-top: -10rem;
   height: 100%;
   animation: animateLogoImage 2s ease-out forwards;
   animation-delay: 1500ms;

@@ -64,6 +64,7 @@ export default function Header() {
   }, [expand])
 
   useEffect(() => {
+console.log(isToorActive,expand,"header test")
     if(isToorActive) {
       setDisableIcons(true)
     } else if(expand) {
