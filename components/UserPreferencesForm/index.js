@@ -32,8 +32,6 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
   const [toggleInfo, setToggleInfo] = collapse ? useState(collapse) : useState(false)
   const [isTimezoneEmpty, setIsTimezoneEmpty] = useState(false)
   const [selectedTimezone, setSelectedTimezone] = useState('')
-  const [google, setGoogle] = useState(false)
-  const [microsoft, setMicrosoft] = useState(false)
   const [preferredStartTime, setPreferredStartTime] = useState('08:00:00')
   const [preferredEndTime, setPreferredEndTime] = useState('17:00:00')
   const [breakStartTime, setBreakStartTime] = useState('12:00:00')
@@ -45,7 +43,8 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
   const [toggleBreakTimes, setToggleBreakTimes] = useState(true)
   const [toggleAdditionalDetails, setToggleAdditionalDetails] = useState(true)
   const { getUserPreferences, calendarSync, setNewUser, userProfileDetail, getUserProfileDetail } = useContext(AuthContext)
-  const inputRef = useRef()
+  const [syncedCalendar, setSyncedCalendar] = useState("")
+  const inputRef = useRef();
 
   const { isTimezoneScreen, setIsTimezoneScreen } = useContext(GlobalStatesContext)
   const { navigateToPage, activePage } = useContext(ScreenContext)
@@ -74,17 +73,15 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
   const handleCalendarSync = (e) => {
     if (e.target.name === 'google') {
       if (e.target.checked) {
-        setGoogle(true)
-        setMicrosoft(false)
+        setSyncedCalendar('google')
       } else {
-        setGoogle(false)
+        setSyncedCalendar('')
       }
     } else {
       if (e.target.checked) {
-        setGoogle(false)
-        setMicrosoft(true)
+        setSyncedCalendar('microsoft')
       } else {
-        setMicrosoft(false)
+        setSyncedCalendar('');
       }
     }
   }
@@ -155,14 +152,9 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
 
   useEffect(() => {
     if (userProfileDetail?.calendar_info) {
-      if (userProfileDetail.calendar_info == 'google') {
-        setGoogle(true)
-        setMicrosoft(false)
-      }
-      if (userProfileDetail.calendar_info == 'microsoft') {
-        setMicrosoft(true)
-        setGoogle(false)
-      }
+      setSyncedCalendar(userProfileDetail?.calendar_info);
+    } else {
+      setSyncedCalendar('');
     }
   }, [userProfileDetail])
 
@@ -206,11 +198,13 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
   }
 
   const handleFormSubmit = async () => {
-    if (google) {
-      calendarSync('google')
-    } else if (microsoft) {
-      calendarSync('microsoft')
-    }
+    // if (google) {
+    //   calendarSync('google')
+    // } else if (microsoft) {
+    //   calendarSync('microsoft')
+    // }
+
+    calendarSync(syncedCalendar); 
   }
 
   const handleSubmit = async (event) => {
@@ -422,26 +416,31 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
                       <div class="d-flex flex-column align-items-center justify-content-start mt-3">
                         <div class="d-flex align-items-center w-100 justify-content-between">
                           <div class="d-flex align-items-center">
-                            <input class="form-check-input mt-0 pt-0 ml-0-4" type="checkbox" value="" name="google" checked={google} onChange={handleCalendarSync} id="google"></input>
+                            <input class="form-check-input mt-0 pt-0 ml-0-4" type="checkbox" value="" name="google" checked={syncedCalendar === 'google'} onChange={handleCalendarSync} id="google"></input>
                             <label class="d-flex align-items-center ms-2" for="google">
                               <FcGoogle />
                               <h5 class="card-title mb-0 pb-0 ms-1">Google Calendar</h5>
                             </label>
                           </div>
-                          {userProfileDetail?.calendar_info && (
+                          {userProfileDetail?.calendar_info === 'google' && (
                             <div className="d-flex justify-content-end align-items-center">
                               <span className="badge badge-pill badge-primary">Synced</span>
                             </div>
                           )}
                         </div>
-                        <div class="d-flex align-items-center w-100 mt-3">
+                        <div class="d-flex align-items-center w-100 mt-3 justify-content-between">
                           <div class="d-flex align-items-center">
-                            <input class="form-check-input mt-0 pt-0 ml-0-4" type="checkbox" value="" name="microsoft" checked={microsoft} onChange={handleCalendarSync} id="microsoft"></input>
+                            <input class="form-check-input mt-0 pt-0 ml-0-4" type="checkbox" value="" name="microsoft" checked={syncedCalendar === 'microsoft'} onChange={handleCalendarSync} id="microsoft"></input>
                             <label class="d-flex align-items-center ms-2" for="microsoft">
                               <FaMicrosoft />
-                            </label>
                             <h5 class="card-title mb-0 pb-0 ms-1">Outlook Calendar</h5>
+                            </label>
                           </div>
+                          {userProfileDetail?.calendar_info === 'microsoft' && (
+                            <div className="d-flex justify-content-end align-items-center">
+                              <span className="badge badge-pill badge-primary">Synced</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
