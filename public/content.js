@@ -136,7 +136,7 @@ function addButtonWithType(button, commentBox) {
 
                 if (descriptionContainer) {
                     const content = descriptionContainer.textContent;
-                    query = `Use the repost description as context to craft a reply to the current post. Here’s the repost description: \n ${repostDescription} \n and here’s the current post description: \n ${content}.\
+                    query = `Use the repost description as context to craft a reply to the current post. Here's the repost description: \n ${repostDescription} \n and here's the current post description: \n ${content}.\
                     Please create a response that connects both.`;
                 } else {
                     query = `${repostDescription}`;
@@ -215,7 +215,7 @@ function addButtonWithType(button, commentBox) {
             // }
 
             if (query) {
-                query = query + `\n\n${button.prompt}\nKeep it under ${button.length}. And use ${button.tone} tone.\n You should reply in the ${postLanguage} language.`;
+                query = query + `\n\n${button.prompt}\nKeep it under ${button.length}. And use ${button.tone} tone.\n You should reply in this ${postLanguage} language. Please follow language requirement strictly. Your reply should be in ${postLanguage} language.`;
                 // Display initial loading message
                 await addLoadingMessageToCommentBox(commentBox, "Reading the post...");
 
@@ -223,17 +223,17 @@ function addButtonWithType(button, commentBox) {
                 const controller = new AbortController();
                 const { signal } = controller;
     
-                // Set up a timeout to update the loading message after 5000ms -- 5 seconds
+                // Set up a timeout to update the loading message after 5000ms -- 7 seconds
                 const timeout5s = setTimeout(() => {
                     addLoadingMessageToCommentBox(commentBox, "Taking more time than expected, please wait...");
-                }, 5000);
+                }, 7000);
     
-                // Set up a timeout to stop the request after 13000ms -- 13 seconds
+                // Set up a timeout to stop the request after 13000ms -- 16 seconds
                 const timeout13s = setTimeout(() => {
                     controller.abort();  // Abort the ChatGPT request
                     addLoadingMessageToCommentBox(commentBox, "Something has happened, please try again. If it presists, please refresh the page.");
                     console.error('ChatGPT request stopped due to timeout.');
-                }, 13000);
+                }, 16000);
 
                 try {
                     const processStartTime = Date.now();
