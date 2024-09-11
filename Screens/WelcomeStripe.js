@@ -89,16 +89,16 @@ const WelcomeStripe = () => {
           </div>
         </div>
         {showClearSessionDialog  && <RemoveSessions onDelete={()=>deleteMyAllJwtSessionsBySocial()} />}
-        <div className="mt-4">
+        <div className="mt-2">
           <ContinueWithGoogleButton setSocial={setSocial} message="Continue with Google" />
           <ContinueWithLinkedInButton setSocial={setSocial} message="Continue with LinkedIn" />
         </div>
-        <div className="text-center or-with-label mt-3">
-          <p>OR</p>
+        <div className="text-center ">
+          <p className='mb-1 mt-1'>OR</p>
         </div>
-        <div className="mt-3">
+        <div className="mt-1">
           {showEmailInput && <CustomInputBox type="text" placeholder="Enter Email" name="email" onChange={(e) => setEmail(e.target.value)} value={email} isEmpty={''} />}
-          <div className={showEmailInput && 'mt-3'}>
+          <div className={showEmailInput && 'mt-1'}>
             <CustomButton child={showEmailInput ? 'Activate with Email' : 'Continue with Email'} onClick={handleEmailButtonClick} />
           </div>
         </div>

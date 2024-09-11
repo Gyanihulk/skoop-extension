@@ -65,6 +65,7 @@ const defaultOptions = {
     padding: 12,
     left: '50%',
     transform: 'translateX(-50%)',
+    zIndex: 100100,
   };
 
   const tooltipFooter = {

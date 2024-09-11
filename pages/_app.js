@@ -38,8 +38,8 @@ export default function App({ Component, pageProps }) {
                             className: 'custom-toast',
                             duration: 3000,
                           }}
+                          containerClassName="custom-toast-container"
                         />
-
                         <Component {...pageProps} />
                       </TourContextProvider>
                     </RecordingProvider>

@@ -470,14 +470,14 @@ const UserSubscriptions = () => {
                   )}
                   <li class="d-flex justify-content-end align-items-center mt-1">
                     {/* <div className="cancel-subscription">View Payment</div> */}
-                    <div
+                    {subsriptionInfo?.current_plan_status!="lifetime" && <div
                       className="cancel-subscription"
                       onClick={() => {
                         handleCancel()
                       }}
                     >
                       Cancel Subscription
-                    </div>
+                    </div>}
                   </li>
                 </ul>
               </>
