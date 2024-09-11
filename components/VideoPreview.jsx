@@ -26,7 +26,7 @@ export const VideoPreview = () => {
   const [isDeleteModal, setIsDeleteModal] = useState(false)
   const { activePage } = useContext(ScreenContext)
   const { getDownloadLink, getThumbnail } = useContext(MediaUtilsContext)
-  const { componentsVisible, isVideoTour, activeTourStepIndex, initializeTour, startTour, setStepIndex} = useContext(TourContext)
+  const { componentsVisible, isVideoTour, activeTourStepIndex, initializeTour, startTour, setStepIndex } = useContext(TourContext)
   useEffect(() => {
     if (latestVideo?.urlForThumbnail) {
       setThumbnailImage(latestVideo?.urlForThumbnail)
@@ -38,25 +38,22 @@ export const VideoPreview = () => {
   }, [latestVideo])
 
   useEffect(() => {
-    let timer;
-  
-    if (isVideoTour && latestVideo) {
-  
-      if (activeTourStepIndex === 13) {
+    let timer
 
-        initializeTour();
-  
-        startTour("videos");
+    if (isVideoTour && latestVideo) {
+      if (activeTourStepIndex === 13) {
+        initializeTour()
+
+        startTour('videos')
         timer = setTimeout(() => {
-          setStepIndex(13);
-        }, 300);
+          setStepIndex(13)
+        }, 300)
       }
     }
     return () => {
-      if (timer) clearTimeout(timer);
-    };
-  }, [latestVideo]);
-  
+      if (timer) clearTimeout(timer)
+    }
+  }, [latestVideo])
 
   useEffect(() => {}, [latestBlob, thumbnailImage, , showRenamePopup, showVideoOptionsDialog])
   const UpdateThumbnail = async (event) => {
@@ -195,7 +192,7 @@ export const VideoPreview = () => {
       )}
       <input id="file-upload" type="file" style={{ display: 'none' }} onChange={UpdateThumbnail} accept="image/*" />
 
-      {latestVideo && (latestBlob instanceof Blob && latestBlob) && (
+      {latestVideo && latestBlob instanceof Blob && latestBlob && (
         <div className="container" id="video-Preview">
           <div className="card d-flex flex-row align-items-center">
             <div className="d-flex justify-content-between px-2" id="video-preview-top-content">

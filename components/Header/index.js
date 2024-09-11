@@ -24,8 +24,8 @@ import { useUserSettings } from '../../contexts/UserSettingsContext.js'
 export default function Header() {
   const { isAuthenticated, handleLogOut, isPro, gracePeriodCompletion, gracePeriod, showVersionNotification,recieveVerificationMail } = useContext(AuthContext)
   const { navigateToPage, activePage } = useContext(ScreenContext)
-  const { setScraperPage, scraperPage, isProfilePage, expand, expandMinimizeExtension } = useContext(GlobalStatesContext)
-  const { isMessageTour, isToorActive } = useContext(TourContext);
+  const { setScraperPage, scraperPage, isProfilePage, expand, expandMinimizeExtension ,isTourStarted} = useContext(GlobalStatesContext)
+  const { isMessageTour, isToorActive,activeTourName } = useContext(TourContext);
   const [disableIcons, setDisableIcons] = useState(false);
 
 
@@ -64,8 +64,8 @@ export default function Header() {
   }, [expand])
 
   useEffect(() => {
-console.log(isToorActive,expand,"header test")
-    if(isToorActive) {
+
+    if(isTourStarted) {
       setDisableIcons(true)
     } else if(expand) {
       setDisableIcons(true);
@@ -73,7 +73,7 @@ console.log(isToorActive,expand,"header test")
     else {
       setDisableIcons(false);
     }
-  }, [isToorActive, expand])
+  }, [isTourStarted, expand])
 
   const toggleProfileDropdown = () => {
     setProfileOpen(!profileOpen)

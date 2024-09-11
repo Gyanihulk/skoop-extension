@@ -26,7 +26,7 @@ const videoUrls = {
 }
 
 const TutorialDialog = () => {
-  const { selectedTutorial, setSelectedTutorial, setEnableTutorialScreen, enableTutorialScreen } = useContext(GlobalStatesContext)
+  const { selectedTutorial, setSelectedTutorial, setEnableTutorialScreen, enableTutorialScreen ,isTourStarted,setTourStarted} = useContext(GlobalStatesContext)
   const { isPro, isSignupOrLogin } = useContext(AuthContext)
   const iframeRef = useRef(null)
   const [iframeLoaded, setIframeLoaded] = useState(false) // Track iframe loading
@@ -62,6 +62,7 @@ const TutorialDialog = () => {
   }
 
   const handleTourStart = () => {
+    setTourStarted(true)
     setSelectedTutorial(activeTutorial)
     setToggleTutorial(false)
     setShowTutorialVideo(false)
