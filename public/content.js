@@ -47,7 +47,7 @@ const callback = function (mutationsList, observer) {
             mutation.addedNodes.forEach(node => {
                 if (node.nodeType === 1 && node.classList.contains('feed-shared-update-v2')) {
                     processCommentBoxes();
-                    processReplyCommentBoxes();
+                    //processReplyCommentBoxes();
                 }
             });
         }
@@ -62,10 +62,11 @@ function processCommentBoxes() {
     Array.from(comments).forEach((commentButton) => {
         if (!commentButton.hasAttribute('data-has-event-listener')) {
             commentButton.addEventListener('click', async () => {
-                processReplyCommentBoxes();
+                //processReplyCommentBoxes();
                 let parent = commentButton.parentElement.parentElement.parentElement.parentElement
                 let commentBox = parent.querySelector('.feed-shared-update-v2__comments-container').querySelector('.comments-comment-texteditor')
                 if (commentBox) {
+                    processReplyCommentBoxes();
                     const buttonSection = commentBox.parentElement.querySelector('.skoop-comment-section');
                     if (!buttonSection) {
                         addSectionWithButton(commentBox);
@@ -233,8 +234,8 @@ async function makeChatGptCall(button, query, commentBox, language, anchorTags =
 function getPreviousCommentsOfTheUser(parent, replieeNames) {
     const commentsRepliesList = parent.querySelector('.comments-replies-list');
     if (!commentsRepliesList) {
-        console.error('comments-replies-list not found');
-        return;
+        console.log('comments-replies-list not found');
+        return [];
     }
     console.log('comments list ', commentsRepliesList);
 
@@ -257,6 +258,12 @@ function getMentionedUsers(commentBox) {
 }
 
 function addSectionWithButton(commentBox, forReply = false) {
+    // First, remove any existing section in the commentBox
+    const existingSection = commentBox.parentElement.querySelector('.skoop-comment-section');
+    if (existingSection) {
+        existingSection.remove(); // Remove the existing buttons section
+    }
+
     const newSection = document.createElement('div');
     newSection.className = 'skoop-comment-section';
     newSection.style.margin = '0px';
@@ -509,52 +516,124 @@ async function addTextToCommentBox(response, commentBox, anchorTags = []) {
     }
 }
 
-processReplyCommentBoxes();
+//processReplyCommentBoxes();
 
+function resetAndAddButtonsToAllReplyBoxes(parent) {
+    // Get all reply comment boxes in the document
+    const replyBoxes = parent.querySelectorAll('.comments-comment-texteditor');
+
+    // Loop through each reply box and add buttons
+    replyBoxes.forEach((replyBox) => {
+        addSectionWithButton(replyBox, true); // true means for reply
+    });
+}
+
+
+// Process reply buttons dynamically
 function processReplyCommentBoxes() {
-    console.log('processReplyCommentBoxes got called');
-    // let replies = document.getElementsByClassName('comments-comment-social-bar__reply-action-button--cr');
-    // console.log('replies are ', replies);
-    // Array.from(replies).forEach((replyButton) => {
-    //     console.log('reply button before if ', replyButton);
-
-    //         replyButton.addEventListener('click', async () => {
-    //             console.log('reply button ', replyButton);
-    //             const commentContainer = replyButton.querySelector('.comments-comment-list__container');
-
-    //             // Find the corresponding reply box
-    //             const replyBox = commentContainer.querySelector('.comments-comment-box__form');
-    //             if (replyBox) {
-    //                 // Check if buttons have already been added to avoid duplication
-    //                 if (!replyBox.parentElement.querySelector('.skoop-comment-section')) {
-    //                     addSectionWithButton(replyBox);
-
-    //                     // Generate text based on the current comment content
-    //                     const commentContent = commentContainer.querySelector('.comments-comment-item__main-content').textContent.trim();
-    //                     //generateTextInReplyBox(replyBox, commentContent);
-    //                 }
-    //             } else {
-    //                 console.error('comments-comment-box not found');
-    //             }
-    //         });
-    // });
+    console.log('process replies');
     document.body.addEventListener('click', function (event) {
-        if (event.target.closest('.comments-comment-social-bar__reply-action-button--cr')) {
-            let replyButton = event.target.closest('.comments-comment-social-bar__reply-action-button--cr');
+        // Check if the clicked element is a reply button
+        const replyButton = event.target.closest('.comments-comment-social-bar__reply-action-button--cr');
+        if (replyButton) {
             const commentContainer = replyButton.closest('.comments-comment-list__container');
-
-            // Find the corresponding reply box
             const replyBox = commentContainer.querySelector('.comments-comment-texteditor');
+            console.log('reply box ', replyBox);
+            console.log('comment container ', commentContainer);
+    
             if (replyBox) {
-                // Check if buttons have already been added to avoid duplication
-                if (!replyBox.parentElement.querySelector('.skoop-comment-section')) {
-                    addSectionWithButton(replyBox, true);
-
-                    // Generate text based on the current comment content
+                // Check if the section has already been added
+                // Call function to reset and re-add buttons for all reply boxes
+                resetAndAddButtonsToAllReplyBoxes(commentContainer);
+                let existingSection = replyBox.parentElement.querySelector('.skoop-comment-section');
+                console.log('existing section ', existingSection);
+    
+                if (!existingSection) {
+                    // Add section and generate the initial content for the first time
+                    //addSectionWithButton(replyBox, true);
+    
+                    // Get the comment content for text generation
                     const commentContent = commentContainer.querySelector('.comments-comment-item__main-content').textContent.trim();
-                    //generateTextInReplyBox(replyBox, commentContent);
+                    console.log("Generating text for the first time:", commentContent);
+                    
+                    // You can call your function here to generate and insert text in the reply box
+                    // generateTextInReplyBox(replyBox, commentContent);
+                } else {
+                    // If the section already exists, handle the behavior for subsequent clicks
+                    console.log("Section already exists, updating or reusing as needed");
+    
+                    // Example: If you want to generate new text every time the reply button is clicked
+                    const commentContent = commentContainer.querySelector('.comments-comment-item__main-content').textContent.trim();
+                    console.log("Generating text again:", commentContent);
+    
+                    // Optionally, update the reply box with the new text
+                    // generateTextInReplyBox(replyBox, commentContent);
                 }
+            } else {
+                console.error('Reply box not found');
             }
         }
-    });
+    });    
+    // const container = document.body; // Or any specific container
+    // function handleReplyButtons() {
+    //     console.log('handle reply ');
+    //     const replyButtons = container.getElementsByClassName('comments-comment-social-bar__reply-action-button--cr');
+    //     // console.log('replyButtons are ', replyButtons);
+    //     // console.log('replyButton to array ', Array.from(replyButtons));
+
+    //     Array.from(replyButtons).forEach((replyButton) => {
+    //         console.log('reply button from array ', replyButton);
+    //         //if (!replyButton.hasAttribute('data-has-event-listener')) {
+    //             console.log('adding event listener')
+    //             replyButton.addEventListener('click', async () => {
+    //                 const commentContainer = replyButton.closest('.comments-comment-list__container');
+    //                 const replyBox = commentContainer?.querySelector('.comments-comment-texteditor');
+    //                 if (replyBox) {
+    //                    // Check if buttons have already been added to avoid duplication
+    //                     if (!replyBox.parentElement.querySelector('.skoop-comment-section')) {
+    //                         addSectionWithButton(replyBox, true);
+    //                         console.log('buttons added to reply');
+    //                     }
+    //                     console.log('reply box ', replyBox);
+                        
+    //                 } else {
+    //                     console.error('comments-comment-texteditor not found for reply');
+    //                 }
+    //             });
+    //             replyButton.setAttribute('data-has-event-listener', 'true');
+    //         //}
+    //     });
+    // }
+
+    // // MutationObserver to watch for DOM changes
+    // const observer = new MutationObserver(() => {
+    //     console.log('DOM changed, updating reply buttons');
+    //     handleReplyButtons(); // Re-query the buttons
+    // });
+
+    // observer.observe(container, {
+    //     childList: true,
+    //     subtree: true,
+    // });
+
+    // handleReplyButtons(); // Initial call
+    // document.body.addEventListener('click', function (event) {
+    //     if (event.target.closest('.comments-comment-social-bar__reply-action-button--cr')) {
+    //         let replyButton = event.target.closest('.comments-comment-social-bar__reply-action-button--cr');
+    //         const commentContainer = replyButton.closest('.comments-comment-list__container');
+    //         // console.log('reply button ', replyButton);
+    //         // Find the corresponding reply box
+    //         const replyBox = commentContainer.querySelector('.comments-comment-texteditor');
+    //         if (replyBox) {
+    //             // Check if buttons have already been added to avoid duplication
+    //             if (!replyBox.parentElement.querySelector('.skoop-comment-section')) {
+    //                 addSectionWithButton(replyBox, true);
+
+    //                 // Generate text based on the current comment content
+    //                 const commentContent = commentContainer.querySelector('.comments-comment-item__main-content').textContent.trim();
+    //                 //generateTextInReplyBox(replyBox, commentContent);
+    //             }
+    //         }
+    //     }
+    // });
 }
