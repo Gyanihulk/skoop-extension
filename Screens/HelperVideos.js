@@ -155,8 +155,10 @@ const HelperVideos = ({ navigateTo }) => {
   const [switchUpdated, setSwitchUpdated] = useState(false);
 
   const handleSwitchChange = (event) => {
+    const isChecked = event.target.checked;
     setSwitchUpdated(true);
     setEnableTutorialScreen(!enableTutorialScreen);
+
   }
   const openPopUp = (src, event) => {
     if (event) {
@@ -187,6 +189,10 @@ const HelperVideos = ({ navigateTo }) => {
     if(switchUpdated) {
       updateUserSettings({show_tutorials: enableTutorialScreen});
       toggleSwitch();
+      if(enableTutorialScreen){
+        navigateToPage("Home")
+      }
+      
     }
  }, [switchUpdated])
   

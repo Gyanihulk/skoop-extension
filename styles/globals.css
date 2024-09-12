@@ -1436,9 +1436,9 @@ select.form-control {
     min-width: 165px !important;
 } */
 .bg-selected-videoMode {
-  background-color: rgba(45, 104, 196, 0.15) !important;
+  background-color: rgba(45, 104, 196, 0.35) !important;
   border-color: #000000 !important;
-  border: 1px solid;
+  border: 1px solid !important;
 }
 .border-video-selector {
   border-radius: 10%;

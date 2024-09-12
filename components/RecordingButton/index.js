@@ -165,7 +165,7 @@ const RecordingButton = () => {
         // Enumerate devices after permission has been granted
         return navigator.mediaDevices.enumerateDevices()
       })
-      localStorage.setItem('permissionsNotificationShown',true)
+      localStorage.setItem('permissionsNotificationShown', true)
     }
   }, [])
 
@@ -188,40 +188,56 @@ const RecordingButton = () => {
     saveSelectedDevice('audio', label)
   }
 
-  const handleVideoStyleSelect = (style) => {
-    setSelectedVideoStyle(style)
-    if (style === 'Square') {
-      setHeight(10 * videoResizeConstant)
-      setWidth(10 * videoResizeConstant)
-    } else if (style === 'Vertical Mode') {
-      setHeight(16 * videoResizeConstant)
-      setWidth(9 * videoResizeConstant)
-    } else {
-      setWidth(16 * videoResizeConstant)
-      setHeight(9 * videoResizeConstant)
-    }
-    localStorage.setItem('videoStyleSelect', style)
-  }
   const toggleVideoSettings = () => {
     setVideoSettingsOpen(!videoSettingsOpen)
   }
 
-  useEffect(() => {
-    let currentVideoStyleSelect = localStorage.getItem('videoStyleSelect')
-    if (currentVideoStyleSelect) {
-      setSelectedVideoStyle(currentVideoStyleSelect)
-      if (currentVideoStyleSelect === 'Square') {
-        setHeight(10 * videoResizeConstant)
-        setWidth(10 * videoResizeConstant)
-      } else if (currentVideoStyleSelect === 'Vertical Mode') {
-        setHeight(16 * videoResizeConstant)
-        setWidth(9 * videoResizeConstant)
-      } else {
-        setWidth(16 * videoResizeConstant)
-        setHeight(9 * videoResizeConstant)
-      }
+  const handleVideoStyleSelect = (style) => {
+    setSelectedVideoStyle(style);
+    let newHeight, newWidth;
+    if (style === 'Square') {
+      newHeight = 10 * videoResizeConstant;
+      newWidth = 10 * videoResizeConstant;
+    } else if (style === 'Vertical Mode') {
+      newHeight = 16 * videoResizeConstant;
+      newWidth = 9 * videoResizeConstant;
+    } else {
+      newWidth = 16 * videoResizeConstant;
+      newHeight = 9 * videoResizeConstant;
     }
-  }, [])
+    setHeight(newHeight);
+    setWidth(newWidth);
+    toast.success("Video Orientation Changed");
+    chrome.storage.sync.set({ videoStyleSelect: style });
+  
+    // Broadcast the new orientation to all tabs
+    chrome.tabs.query({}, (tabs) => {
+      for (let tab of tabs) {
+        chrome.tabs.sendMessage(tab.id, {
+          action: 'updateOrientation',
+          videoStyleSelect: style,
+          height: newHeight,
+          width: newWidth,
+        });
+      }
+    });
+  };
+  
+  useEffect(() => {
+    const messageHandler = (request, sender, sendResponse) => {
+      if (request.action === 'updateOrientation') {
+        setSelectedVideoStyle(request.videoStyleSelect);
+        setHeight(request.height);
+        setWidth(request.width);
+      }
+    };
+  
+    chrome.runtime.onMessage.addListener(messageHandler);
+  
+    return () => {
+      chrome.runtime.onMessage.removeListener(messageHandler);
+    };
+  }, [setSelectedVideoStyle, setHeight, setWidth]);
 
   useEffect(() => {
     if (isVideoTour) {
