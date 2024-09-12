@@ -4,7 +4,7 @@ const buttonsList = [
         title: "New Insight",
         prompt: "The above is a post on LinkedIn. I want to be an authoritative and insightful LinkedIn user who is friendly in response to the post.\
         Write and add brand new insights in response to the post and make sure not to repeat what has already been said in the post.\
-        Use new words, phrases, ideas and insights. Keep it short and professional.",
+        Use new words, phrases, ideas and insights. Keep it short and professional. Plase give response in the language of the above LinkedIn post.",
         length: "four lines",
         tone: "friendly"
     },
@@ -13,7 +13,7 @@ const buttonsList = [
         title: "Bright Notion",
         prompt: "The above is a post on LinkedIn. Reply to this LinkedIn post with a comment that offers a positive and encouraging idea while showing empathy towards the original message.\
         Your response should introduce a fresh, uplifting perspective, showing understanding and support for the challenges mentioned.\
-        Keep the tone optimistic, respectful, and solution-oriented, focusing on creativity and originality, without repeating what's already been discussed.",
+        Keep the tone optimistic, respectful, and solution-oriented, focusing on creativity and originality, without repeating what's already been discussed. Plase give response in the language of the above LinkedIn post.",
         length: "four lines",
         tone: "optimistic, innovative, and uplifting"
     },
@@ -21,7 +21,7 @@ const buttonsList = [
         id: 3,
         title: "Quick Thought",
         prompt: "The above is a post on LinkedIn. Reply with a concise, thoughtful observation that sparks engagement or deeper reflection.\
-        Keep the comment brief and impactful, adding a fresh angle to the conversation. Stay informative and focused, aiming for a short but meaningful contribution",
+        Keep the comment brief and impactful, adding a fresh angle to the conversation. Stay informative and focused, aiming for a short but meaningful contribution. Plase give response in the language of the above LinkedIn post.",
         length: "three lines",
         tone: "concise, reflective"
     },
@@ -32,7 +32,7 @@ const buttonsList = [
         Reply to this LinkedIn post with a comment that contains a touch of humor or amusement, while still being respectful and relevant.\
         For every time I request you to write a comment using a funny tone, you must augment a brand-new comment with a new angle. \
         Do not repeat what you previously generated. Make the funny comment with around 50 words.\
-        Include appropriate hashtags and emoji.",
+        Include appropriate hashtags and emoji. Plase give response in the language of the above LinkedIn post.",
         length: "fifty words",
         tone: "cheerful, witty, and playful"
     }
@@ -47,7 +47,7 @@ const callback = function (mutationsList, observer) {
             mutation.addedNodes.forEach(node => {
                 if (node.nodeType === 1 && node.classList.contains('feed-shared-update-v2')) {
                     processCommentBoxes();
-                    //processReplyCommentBoxes();
+                    processReplyCommentBoxes();
                 }
             });
         }
@@ -59,19 +59,32 @@ postNode.observe(targetNode, config);
 
 function processCommentBoxes() {
     let comments = document.getElementsByClassName('comment-button');
+    const addButtons = (commentBox) => {
+        processReplyCommentBoxes();
+        const buttonSection = commentBox.parentElement.querySelector('.skoop-comment-section');
+        
+        if (!buttonSection) {
+            addSectionWithButton(commentBox);
+        }
+        console.log('added section to the button');
+    }
     Array.from(comments).forEach((commentButton) => {
+        let parent = commentButton.closest('.update-v2-social-activity') //.parentElement.parentElement.parentElement.parentElement;
+        console.log('parent of normal commnetbox ', parent);
+        let commentBox = parent ? parent.querySelector('.feed-shared-update-v2__comments-container').querySelector('.comments-comment-box__form') : '';
+        if (commentBox) {
+            addButtons(commentBox);
+        } else {
+            console.error('comments-comment-box not found');
+        }
+
         if (!commentButton.hasAttribute('data-has-event-listener')) {
-            commentButton.addEventListener('click', async () => {
-                //processReplyCommentBoxes();
-                let parent = commentButton.parentElement.parentElement.parentElement.parentElement
-                let commentBox = parent.querySelector('.feed-shared-update-v2__comments-container').querySelector('.comments-comment-texteditor')
+            commentButton.addEventListener('click', async (event) => {
+                let parent = event.target.closest('.update-v2-social-activity') //commentButton.parentElement.parentElement.parentElement.parentElement
+                
+                let commentBox = parent ? parent.querySelector('.feed-shared-update-v2__comments-container').querySelector('.comments-comment-box__form') : '';
                 if (commentBox) {
-                    processReplyCommentBoxes();
-                    const buttonSection = commentBox.parentElement.querySelector('.skoop-comment-section');
-                    if (!buttonSection) {
-                        addSectionWithButton(commentBox);
-                    }
-                    console.log('added section to the button');
+                    addButtons(commentBox);
                 } else {
                     console.error('comments-comment-box not found');
                 }
@@ -92,7 +105,7 @@ async function createQueryForPostDescription(parent) {
     let articleContainer = parent.querySelector('.update-components-article');
     let repostContainer = parent.querySelector('.feed-shared-update-v2__update-content-wrapper');
     let announcementContainer = parent.querySelector('.update-components-announcement');
-    let postLanguage = 'English';
+    //let postLanguage = 'English';
     console.log('repost container ', repostContainer);
     //let imageContainer = parent.querySelector('.update-components-image');
 
@@ -101,20 +114,20 @@ async function createQueryForPostDescription(parent) {
 
         if (descriptionContainer) {
             const content = descriptionContainer.textContent;
-            postLanguage = await getPostLanguage(content);
+            //postLanguage = await getPostLanguage(content);
             query = `Use the repost description as context to craft a reply to the current post. Here's the repost description: \n ${repostDescription} \n and here's the current post description: \n ${content}.\
-                    Please create a response that connects both.`;
+                    Please create a response that connects both. Please generate reply for this in the same language`;
         } else {
-            postLanguage = await getPostLanguage(repostDescription);
-            query = `${repostDescription}`;
+           // postLanguage = await getPostLanguage(repostDescription);
+            query = `${repostDescription}.\n Please generate reply for this in the same language.`;
         }
     }
 
     // For main description
     if (descriptionContainer && !repostContainer) {
         const content = descriptionContainer.textContent;
-        postLanguage = await getPostLanguage(content);
-        query = `${content}`;
+       // postLanguage = await getPostLanguage(content);
+        query = `${content}.\n Please generate reply for this in the same language.`;
     }
 
     // For polls
@@ -123,7 +136,7 @@ async function createQueryForPostDescription(parent) {
         const pollOptions = [...pollContainer.querySelectorAll('.update-components-poll-option__text--justify-center')].map(option => option.textContent.trim());
 
         query = query + `\n\n This post contains a poll, the poll header is ${pollHeader} and poll options is ${pollOptions}.\
-                So while generating the comment consider this post header and options`;
+                So while generating the comment consider this post header and options.\n Please generate reply for this in the same language`;
     }
 
     // For entities like find an expert
@@ -133,7 +146,7 @@ async function createQueryForPostDescription(parent) {
         const articleDescription = entityContainer.querySelector('.update-components-entity__description') ? entityContainer.querySelector('.update-components-entity__description').textContent : "this article has no description so use title and subtitle";
 
         query = query + `\n\n This post includes an article titled "${articleTitle}" from ${articleSubtitle}. The description says: "${articleDescription}".\
-                So while generating the comment consider this article`;
+                So while generating the comment consider this article. \n Please generate reply for this in the same language`;
     }
 
     //For events
@@ -145,7 +158,7 @@ async function createQueryForPostDescription(parent) {
         const eventLink = eventContainer.querySelector('.update-components-event__banner-link').href;
 
         query = query + `\n\n This post includes an event titled "${eventTitle}", event context "${eventContext}". The event is described as "${eventDescription}" and currently has ${eventAttendees}. You can view the event here: ${eventLink}.\
-                So while generating the comment consider this event`;
+                So while generating the comment consider this event. \n Please generate reply for this in the same language`;
     }
 
     // For celebrations
@@ -154,7 +167,7 @@ async function createQueryForPostDescription(parent) {
         let celebrationImage = celebrationContainer.querySelector('img').src;
 
         query = query + `\n\n This post includes a celebration with the headline "${celebrationHeadline}". Here's the image link: ${celebrationImage}.\
-                So while generating the comment consider this celebration`;
+                So while generating the comment consider this celebration.\n Please generate reply for this in the same language`;
     }
 
     // For articles
@@ -169,7 +182,7 @@ async function createQueryForPostDescription(parent) {
                 Subtitle: ${articleSubtitle}.\
                 Description: ${articleDescription}.\
                 Article URL: ${articleUrl}.\
-                So while generating the comment consider this article`;
+                So while generating the comment consider this article. \n Please generate reply for this in the same language`;
     }
     
     // For announcements
@@ -178,16 +191,16 @@ async function createQueryForPostDescription(parent) {
         
         query = query + `\n\nThe post include an announcement with the following details:\
         Title: ${announcementTitle}\
-        So while generating the comment consider this announcement`;
+        So while generating the comment consider this announcement. \n Please generate reply for this in the same language`;
     }
 
 
-    return {query, postLanguage};
+    return {query};
 }
 
-async function makeChatGptCall(button, query, commentBox, language, anchorTags = []) {
-    language = new Intl.DisplayNames(['en'], { type: 'language' }).of(language); // getFullLanguageName(postLanguage);
-    query = query + `\n\n${button.prompt}\nKeep it under ${button.length}. And use ${button.tone} tone.\n You should reply in ${language} language. Please follow language requirement strictly. The comment should be in ${language} language.`;
+async function makeChatGptCall(button, query, commentBox, anchorTags = []) {
+    // language = new Intl.DisplayNames(['en'], { type: 'language' }).of(language); // getFullLanguageName(postLanguage);
+    query = query + `\n\n${button.prompt}\nKeep it under ${button.length}. And use ${button.tone} tone.`;
     // Display initial loading message
     await addLoadingMessageToCommentBox(commentBox, "Reading the post...");
 
@@ -227,7 +240,9 @@ async function makeChatGptCall(button, query, commentBox, language, anchorTags =
         await addGeneratedTextToCommentBox(response, commentBox, anchorTags);
     } catch (error) {
         console.error("Error generating comment:", error);
-        await addGeneratedTextToCommentBox("Please try again..", commentBox);
+        clearTimeout(timeout5s);
+        clearTimeout(timeout13s);
+        await addGeneratedTextToCommentBox("Something has happened, please try again. If it presists, please refresh the page.", commentBox);
     }
 }
 
@@ -266,8 +281,8 @@ function addSectionWithButton(commentBox, forReply = false) {
 
     const newSection = document.createElement('div');
     newSection.className = 'skoop-comment-section';
-    newSection.style.margin = '0px';
-    newSection.style.marginTop = '10px';
+    newSection.style.margin = '10px 0px';
+    // newSection.style.marginTop = '10px';
     newSection.style.display = 'flex';
     newSection.style.flexWrap = 'wrap';
     newSection.style.gap = '10px';
@@ -282,8 +297,8 @@ function addSectionWithButton(commentBox, forReply = false) {
             newSection.appendChild(newButton);
         }
     });
-
-    commentBox.insertAdjacentElement('afterend', newSection);
+    commentBox.appendChild(newSection);
+    //commentBox.insertAdjacentElement('afterend', newSection);
 }
 
 function addButtonWithType(button, commentBox) {
@@ -301,15 +316,16 @@ function addButtonWithType(button, commentBox) {
     newButton.style.fontSize = '12px';
     newButton.style.whiteSpace = 'nowrap';
 
-    newButton.addEventListener('click', async () => {
+    newButton.addEventListener('click', async (event) => {
+        event.preventDefault();
         // Ensure we use the correct comment box for this button
         let parent = newButton.closest('.feed-shared-update-v2');
         let commentBox = parent.querySelector('.comments-comment-box--cr .comments-comment-box-comment__text-editor');
         if (commentBox) {
-            let {query, postLanguage} = await createQueryForPostDescription(parent);
+            let {query} = await createQueryForPostDescription(parent);
 
             if (query) {
-                await makeChatGptCall(button, query, commentBox, postLanguage);
+                await makeChatGptCall(button, query, commentBox);
             } else {
                 console.log('unabel to form a query ');
                 await addLoadingMessageToCommentBox(commentBox, 'Unable to generate comment due to insufficient data');
@@ -337,11 +353,12 @@ function addButtonWithTypeToReply(button, commnetBox) {
 
     console.log('new button ', newButton);
 
-    newButton.addEventListener('click', async () => {
+    newButton.addEventListener('click', async (event) => {
         // Ensure we use the correct comment box for this button
-        let parent = newButton.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
-        let postContainer = parent.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
-        let commentContainer = parent.querySelector('.update-components-text');
+        event.preventDefault();
+        let parent = event.target.closest('.comments-comment-entity');// newButton.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+        let postContainer = event.target.closest('.feed-shared-update-v2'); // parent.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+        let commentContainer = parent.querySelector('.update-components-text') //parent.querySelector('.update-components-text');
         let replyCommentBox = parent.querySelector('.comments-comment-box-comment__text-editor');
         console.log('reply comment box ', replyCommentBox);
         console.log('parent ', parent);
@@ -350,7 +367,7 @@ function addButtonWithTypeToReply(button, commnetBox) {
         
         let postQuery = ''
         if (postContainer) {
-            const {query, postLanguage} = await createQueryForPostDescription(postContainer);
+            const {query} = await createQueryForPostDescription(postContainer);
             console.log('query for post ', query);
             postQuery = query;
         }
@@ -363,11 +380,16 @@ function addButtonWithTypeToReply(button, commnetBox) {
             console.log('repliee names ', replieeNames);
             const previousCommentsOfTheUser = getPreviousCommentsOfTheUser(parent, replieeNames);
             if (commentContainer) {
-                const commentDescription = commentContainer.textContent;
-                let commentLanguage = await getPostLanguage(commentDescription);
-                query = `This is the description of the post: ${postQuery}\n and this is the main comment to that post: ${commentDescription}\n and this are the thread comments of the users to which you are replying: ${previousCommentsOfTheUser}. If there are no thread comments reply to the main comment but if thread comments are present consider those when replying.\n Now generate reply to the comment.`;
+                const commentDescription = commentContainer.textContent.trim();
+                // let commentLanguage = await getPostLanguage(commentDescription);
+                query = `This is the post description: ${postQuery}\
+                This is the main comment on the post: ${commentDescription}\
+                These are the thread comments from the user you are replying to: ${previousCommentsOfTheUser}\
+                If thread comments are available, prioritize replying to those. If no thread comments are present, reply to the main comment.\
+                Generate the reply in the language of the thread comments, or if they are unavailable, use the language of the main comment.\
+                Now generate an appropriate reply based on this context.`;
                 console.log('comment description ', commentDescription);
-                await makeChatGptCall(button, query, replyCommentBox, commentLanguage, anchorTags);
+                await makeChatGptCall(button, query, replyCommentBox, anchorTags);
             }
         }
     });
@@ -410,45 +432,30 @@ async function chatGpt(type, query, signal) {
     });
 }
 
-async function getPostLanguage(postDescription) {
-    return new Promise((resolve, reject) => {
-        // Send message to background script, passing the signal to abort the request
-        chrome.runtime.sendMessage({
-            action: 'detectLanguage',
-            query: postDescription,
-        },
-            (response) => {
-                if (chrome.runtime.lastError) {
-                    console.error(chrome.runtime.lastError);
-                    reject(new Error('Failed to generate comment. Please try again'));
-                } else {
-                    console.log("Response from background:", response);
-                    if (response) {
-                        resolve(response);
-                    } else {
-                        reject(new Error('Encountered some issue. Please try again.'));
-                    }
-                }
-            });
-    });
-}
-
-// async function verifyUser() {
+// async function getPostLanguage(postDescription) {
 //     return new Promise((resolve, reject) => {
+//         // Send message to background script, passing the signal to abort the request
 //         chrome.runtime.sendMessage({
-//             action: 'verifyToken',
+//             action: 'detectLanguage',
+//             query: postDescription,
 //         },
 //             (response) => {
 //                 if (chrome.runtime.lastError) {
 //                     console.error(chrome.runtime.lastError);
-//                     reject(new Error('Failed to verify token. Please try again'));
+//                     reject(new Error('Failed to generate comment. Please try again'));
 //                 } else {
 //                     console.log("Response from background:", response);
-//                     resolve(response);
+//                     if (response) {
+//                         resolve(response);
+//                     } else {
+//                         reject(new Error('Encountered some issue. Please try again.'));
+//                     }
 //                 }
 //             });
 //     });
 // }
+
+
 
 async function addGeneratedTextToCommentBox(response, commentBox, anchorTags = []) {
     console.log('generated text printing')
@@ -463,15 +470,6 @@ async function addLoadingMessageToCommentBox(commentBox, message) {
 
 }
 
-// function getFullLanguageName(name) {
-//     console.log('language name in getFull ', name);
-//     switch(name) {
-//         case `"hi"`:
-//             return 'Hindi';
-//         default:
-//             return name;
-//     }
-// }
 
 // Function to type text into the comment box
 async function addTextToCommentBox(response, commentBox, anchorTags = []) {
@@ -479,18 +477,18 @@ async function addTextToCommentBox(response, commentBox, anchorTags = []) {
         let editor = commentBox.querySelector('.ql-editor');
         if (editor) {
             let index = 0;
-            editor.textContent = ''; // Clear the editor content before typing starts
+            // Clear the editor content
+            editor.innerHTML = ''; 
+           // editor.textContent = ''; // Clear the editor content before typing starts
             console.log('anchor tags in add text ', anchorTags);
             // Append anchor tags (names) first before the response text
-            anchorTags.forEach(anchor => {
-                editor.appendChild(anchor.cloneNode(true)); // Clone the anchor element and append it to the editor
-                editor.appendChild(document.createTextNode(' ')); // Add a space after each anchor
-            });
+            
 
+            
             // Typing simulation
             const typeEffect = () => {
                 if (index < response.length) {
-                    editor.textContent += response.charAt(index); // Append each character to the editor's textContent
+                    editor.textContent += response.charAt(index);// Append each character to the editor's textContent
                     index++;
                     setTimeout(typeEffect, 20); // Adjust typing speed here
                 }
@@ -500,6 +498,13 @@ async function addTextToCommentBox(response, commentBox, anchorTags = []) {
                 const finishTyping = () => {
                     if (index >= response.length) {
                         resolve(); // Resolve the promise when typing finishes
+                        
+                        anchorTags.forEach(anchor => {
+                            console.log('anchor ', anchor);
+                            editor.appendChild(anchor.cloneNode(true)); // Clone the anchor element and append it to the editor
+                            editor.appendChild(document.createTextNode(' ')); // Add a space after each anchor
+                            console.log('editor ', editor);
+                        });
                     } else {
                         setTimeout(finishTyping, 20);
                     }
@@ -508,6 +513,7 @@ async function addTextToCommentBox(response, commentBox, anchorTags = []) {
                 typeEffect(); // Start typing effect
                 finishTyping(); // Monitor when typing finishes
             });
+            
         } else {
             console.log('Editor not found inside the comment box');
         }
@@ -520,7 +526,7 @@ async function addTextToCommentBox(response, commentBox, anchorTags = []) {
 
 function resetAndAddButtonsToAllReplyBoxes(parent) {
     // Get all reply comment boxes in the document
-    const replyBoxes = parent.querySelectorAll('.comments-comment-texteditor');
+    const replyBoxes = parent.querySelectorAll('.comments-comment-box__form');
 
     // Loop through each reply box and add buttons
     replyBoxes.forEach((replyBox) => {
@@ -537,7 +543,7 @@ function processReplyCommentBoxes() {
         const replyButton = event.target.closest('.comments-comment-social-bar__reply-action-button--cr');
         if (replyButton) {
             const commentContainer = replyButton.closest('.comments-comment-list__container');
-            const replyBox = commentContainer.querySelector('.comments-comment-texteditor');
+            const replyBox = commentContainer.querySelector('.comments-comment-box__form');
             console.log('reply box ', replyBox);
             console.log('comment container ', commentContainer);
     
@@ -574,66 +580,5 @@ function processReplyCommentBoxes() {
             }
         }
     });    
-    // const container = document.body; // Or any specific container
-    // function handleReplyButtons() {
-    //     console.log('handle reply ');
-    //     const replyButtons = container.getElementsByClassName('comments-comment-social-bar__reply-action-button--cr');
-    //     // console.log('replyButtons are ', replyButtons);
-    //     // console.log('replyButton to array ', Array.from(replyButtons));
-
-    //     Array.from(replyButtons).forEach((replyButton) => {
-    //         console.log('reply button from array ', replyButton);
-    //         //if (!replyButton.hasAttribute('data-has-event-listener')) {
-    //             console.log('adding event listener')
-    //             replyButton.addEventListener('click', async () => {
-    //                 const commentContainer = replyButton.closest('.comments-comment-list__container');
-    //                 const replyBox = commentContainer?.querySelector('.comments-comment-texteditor');
-    //                 if (replyBox) {
-    //                    // Check if buttons have already been added to avoid duplication
-    //                     if (!replyBox.parentElement.querySelector('.skoop-comment-section')) {
-    //                         addSectionWithButton(replyBox, true);
-    //                         console.log('buttons added to reply');
-    //                     }
-    //                     console.log('reply box ', replyBox);
-                        
-    //                 } else {
-    //                     console.error('comments-comment-texteditor not found for reply');
-    //                 }
-    //             });
-    //             replyButton.setAttribute('data-has-event-listener', 'true');
-    //         //}
-    //     });
-    // }
-
-    // // MutationObserver to watch for DOM changes
-    // const observer = new MutationObserver(() => {
-    //     console.log('DOM changed, updating reply buttons');
-    //     handleReplyButtons(); // Re-query the buttons
-    // });
-
-    // observer.observe(container, {
-    //     childList: true,
-    //     subtree: true,
-    // });
-
-    // handleReplyButtons(); // Initial call
-    // document.body.addEventListener('click', function (event) {
-    //     if (event.target.closest('.comments-comment-social-bar__reply-action-button--cr')) {
-    //         let replyButton = event.target.closest('.comments-comment-social-bar__reply-action-button--cr');
-    //         const commentContainer = replyButton.closest('.comments-comment-list__container');
-    //         // console.log('reply button ', replyButton);
-    //         // Find the corresponding reply box
-    //         const replyBox = commentContainer.querySelector('.comments-comment-texteditor');
-    //         if (replyBox) {
-    //             // Check if buttons have already been added to avoid duplication
-    //             if (!replyBox.parentElement.querySelector('.skoop-comment-section')) {
-    //                 addSectionWithButton(replyBox, true);
-
-    //                 // Generate text based on the current comment content
-    //                 const commentContent = commentContainer.querySelector('.comments-comment-item__main-content').textContent.trim();
-    //                 //generateTextInReplyBox(replyBox, commentContent);
-    //             }
-    //         }
-    //     }
-    // });
+   
 }

@@ -34,7 +34,7 @@ import WelcomeAppsumo from '../Screens/WelcomeAppsumo'
 import WelcomeStripe from '../Screens/WelcomeStripe'
 import AppTour from '../components/TutorialDialog/Tour'
 import API_ENDPOINTS from '../components/apiConfig'
-import DetectLanguage from 'detectlanguage';
+// import DetectLanguage from 'detectlanguage';
 
 export default function Home() {
   const { setTabId, expandExtension, tabId, setIsMatchingUrl, setExpand, expand, setIsLinkedin, setIsGmail, setIsProfilePage } = useContext(GlobalStatesContext)
@@ -61,7 +61,7 @@ export default function Home() {
   const { activePage, navigateToPage } = useContext(ScreenContext)
   const [isWebPage, setIsWebPage] = useState(false)
   const {fetchMySettings}=useUserSettings();
-  const detectlanguage = new DetectLanguage('f6ccfa95de4308525ad86a833e031ea9');
+  // const detectlanguage = new DetectLanguage('f6ccfa95de4308525ad86a833e031ea9');
   useEffect(() => {
     // Define the handler inside the useEffect hook so it has access to the latest tabId
     const messageHandler = (request, sender, sendResponse) => {
@@ -261,16 +261,16 @@ if(isAuthenticated){
   // //   Log when data is being loaded
 
   const messageHandler = async (message, sender, sendResponse) => {
-    if(message.action === 'detectLanguage') {
+    // if(message.action === 'detectLanguage') {
       
-      detectlanguage.detectCode(message.query).then(function(result) {
-        console.log('result in detection ', result);
-        const response = result //JSON.stringify(result);
-        sendResponse(response);
-        return true;
-      });
+    //   detectlanguage.detectCode(message.query).then(function(result) {
+    //     console.log('result in detection ', result);
+    //     const response = result //JSON.stringify(result);
+    //     sendResponse(response);
+    //     return true;
+    //   });
       
-    }
+    // }
     if (message.action === 'generateCommentCGPT') {
       const res = await verifyToken();
       // Check if accessToken is valid or not.
