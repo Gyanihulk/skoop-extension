@@ -305,6 +305,7 @@ export const AuthProvider = ({ children }) => {
       })
       if (Number(response.status) === 200) {
         navigateToPage('Home')
+        getProfileDetails();
       } else {
         toast.error('Could not sign in.')
       }

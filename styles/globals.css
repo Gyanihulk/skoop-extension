@@ -3087,9 +3087,6 @@ img.icon-style-normal {
 #user-preference-collapse .form-check-input[type=checkbox]:focus {
   box-shadow: none !important;
 }
-.custom-input-global.disabled-text {
-  color: #9898a3 !important;
-}
-#appointment-collapse .card-btn.disable-btn {
-  opacity: 0.7 !important;
+.orange-warning-badge {
+  background-color: #ff8210 !important;
 }
