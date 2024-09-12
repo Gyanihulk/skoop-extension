@@ -585,7 +585,7 @@ export const TourContextProvider = ({ children }) => {
   const {
     isRecordStart,
   } = useRecording()
-
+const {setTourStarted}=useContext(GlobalStatesContext)
   // videos state
   const [isVideoTour, setIsVideoTour] = useState(false);
 
@@ -762,8 +762,12 @@ export const TourContextProvider = ({ children }) => {
         return
       }
 
+      if(status=='paused'){
+        setTourStarted(false)  
+      }
       if ((index === activeTour?.length && type === 'tooltip') || action === ACTIONS.CLOSE || action === ACTIONS.SKIP) {
         initializeTour();
+        
         return
       }
 
