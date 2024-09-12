@@ -1,9 +1,24 @@
+let enableButton=true
+const messageHandler = (request, sender, sendResponse) => {
+  if (request.action === 'disableButton') {
+   enableButton=false
+  }
+  if (request.action === 'enableButton') {
+    enableButton=true
+   }
+};
+
+chrome.runtime.onMessage.addListener(messageHandler);
+
 function injectIframe() {
   const existingContainer = document.getElementById('skoop-extension-container')
   if (existingContainer) {
+    if(enableButton){
+      existingContainer.style.display = existingContainer.style.display === 'none' ? 'block' : 'none'
+      return
+    }
     // Toggle visibility if container exists
-    existingContainer.style.display = existingContainer.style.display === 'none' ? 'block' : 'none'
-    return
+  
   }
   // Create the container
   const container = document.createElement('div')
@@ -45,7 +60,7 @@ function injectIframe() {
   dragButtonIcon.style.backgroundImage = 'url("' + chrome.runtime.getURL('/icons/move.png') + '")';
   dragButtonIcon.style.backgroundSize = 'cover';
   dragButton.appendChild(dragButtonIcon)
-  dragButton.style.backgroundColor = 'rgba(65, 65, 65, 0.2)';
+  // dragButton.style.backgroundColor = 'rgba(65, 65, 65, 0.2)';
   dragButton.style.borderRadius = '4px';
   // Drag functionality
   let isDragging = false;

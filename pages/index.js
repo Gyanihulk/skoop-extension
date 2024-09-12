@@ -48,6 +48,7 @@ export default function Home() {
     isRecordStart,
     setIsRecordStart,
     setIsVideo,
+    isScreenRecording,
     setIsScreenRecording,
     setCaptureCameraWithScreen,
     handleScreenVideoBlob,
@@ -265,7 +266,7 @@ if(isAuthenticated){
         {activePage === 'RecordVideo' && <VideoRecording />}
         {isAuthenticated & isPro ? (
           <>
-           {!['Welcome', 'CalendarSync','SignInIntro', 'Subscription','SignIn', 'ContactUs','ReportBug','PaymentScreen','SignUp', ' ',  'ForgotPassword', 'CantUseScreen',"ThankYouScreen"].includes(activePage) && !isRecordStart && <TutorialDialog />}
+           {!['Welcome', 'CalendarSync','SignInIntro','RecordVideo','Camera', 'Subscription','SignIn', 'ContactUs','ReportBug','PaymentScreen','SignUp', ' ',  'ForgotPassword', 'CantUseScreen',"ThankYouScreen"].includes(activePage) && !isRecordStart  && !isScreenRecording && <TutorialDialog />}
             {activePage === 'Home' && <Homepage />}
             {activePage === 'RecordVideos' && <RecordVideos />}
             {activePage === 'HelperVideos' && <HelperVideos navigateTo={'Home'} />}

@@ -287,6 +287,7 @@ const RecordingButton = () => {
   //useable functions
 
   const startVideoCapture = async (event) => {
+    sendMessageToContentScript({ action: 'disableButton'})
     if (!userSettings?.fullAccess && userSettings?.remainingVideos <= 0) {
       toast.error('You have reached the limit of free videos.')
       return

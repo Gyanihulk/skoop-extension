@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import CustomInputBox from '../components/Auth/CustomInputBox'
 import AuthContext from '../contexts/AuthContext'
 import ContinueWithGoogleButton from '../components/Auth/button/ContinueWithGoogleButton'
@@ -8,11 +8,17 @@ import { FaCheckCircle } from 'react-icons/fa'
 import RemoveSessions from '../components/Auth/RemoveSessions'
 
 const WelcomeStripe = () => {
-  const { subscriptionType, setSubscriptionType,  coupon,  handleRegister, setSocial, couponInfo,  couponValid ,showClearSessionDialog,deleteMyAllJwtSessionsBySocial} = useContext(AuthContext)
+  const { subscriptionType, setSubscriptionType,  coupon,products,  handleRegister, setSocial, couponInfo,  couponValid ,showClearSessionDialog,deleteMyAllJwtSessionsBySocial,getProducts} = useContext(AuthContext)
   const handleSubscriptionChange = (type) => {
     setSubscriptionType(type)
   }
+  useEffect(() => {
+    ;(async () => {
 
+      const products =await getProducts();
+     
+    })()
+  }, [])
   const [showEmailInput, setShowEmailInput] = useState(false)
   const [email, setEmail] = useState('')
 
@@ -28,8 +34,11 @@ const WelcomeStripe = () => {
     }
   }
 
-  const monthlyPrice = 47 // Original monthly price
-  const yearlyPrice = 451
+  const monthlyProduct = products.length>0 && products.find(product => product.name === 'monthly');
+  const yearlyProduct = products.length>0 && products.find(product => product.name === 'yearly');
+  
+  const monthlyPrice = monthlyProduct?.price || 47;
+  const yearlyPrice = yearlyProduct?.price ||  451;
   // Calculate discounted prices
   const discountedMonthlyPrice = couponInfo?.discount?.percent_off
     ? ((monthlyPrice * (100 - couponInfo?.discount?.percent_off)) / 100).toFixed(2)
