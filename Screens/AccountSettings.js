@@ -394,7 +394,7 @@ const CalendarUrlForm = ({ userProfileData }) => {
                   </label>
                   {showResetButton && <GrPowerReset className="ms-1" title="Reset to Skoop Calendar Booking Link" onClick={resetAppointmentLink} />}
                 </div>
-                <input type="text" className={`form-control  custom-input-global ${userProfileData?.calendar_info === null ? 'disabled-text' : ''}`} id="calendarUrl" name="calendarUrl" value={calendarUrl} onChange={handleChange} placeholder="Enter your calendar link" required />
+                <input type="text" className="form-control custom-input-global" id="calendarUrl" name="calendarUrl" value={calendarUrl} onChange={handleChange} placeholder="Enter your calendar link" required />
 
                 <div className={`mt-1 d-flex ${preferences?.length == 0 ? 'justify-content-between' : 'justify-content-end'}`}>
                   {preferences?.length == 0 && calendarUrl.startsWith(API_ENDPOINTS.skoopCalendarUrl) && (
@@ -406,11 +406,11 @@ const CalendarUrlForm = ({ userProfileData }) => {
                 <div className={`mt-2 d-flex ${!userProfileData?.calendar_info ? 'justify-content-between' : 'justify-content-end'} align-items-center`}>
                 { !userProfileData?.calendar_info && (
                             <div className="d-flex justify-content-end align-items-center">
-                              <span className="badge badge-pill badge-primary">Calendar is not synced</span>
+                              <span className="badge badge-pill orange-warning-badge">Calendar is not synced</span>
                             </div>
                           )}
                 <div class="d-flex justify-content-end">
-                  <button type="submit" class={`card-btn ${userProfileData?.calendar_info === null ? 'disable-btn' : ''}`}  disabled={userProfileData?.calendar_info === null}>
+                  <button type="submit" class="card-btn">
                     Save
                   </button>
                 </div>

@@ -28,7 +28,7 @@ const MessageComposer = () => {
   const { isGmail, isLinkedin, selectedChatWindows, focusedElementId, isProfilePage, isVideoContainer, setIsVideoContainer, expand, setLatestBlob, setLatestVideo, latestBlob, postCommentSelected, postCommentElement, isMatchingUrl } =
     useContext(GlobalStatesContext)
   const { message, addMessage, setMessage } = useContext(MessageContext)
-  const { getCalendarUrl, getUserPreferences } = useContext(AuthContext)
+  const { getCalendarUrl, getUserPreferences, getProfileDetails, userProfileDetail } = useContext(AuthContext)
   const { uploadVideo } = useContext(MediaUtilsContext)
   const { addToMessage } = useContext(MessageContext)
   const { navigateToPage, activePage } = useContext(ScreenContext)
@@ -77,9 +77,19 @@ const MessageComposer = () => {
   const checkForUserPreferences = async () => {
     const userPreferences = await getUserPreferences()
     const url = await getCalendarUrl()
+    let user = userProfileDetail;
+    if(!user) {
+      user = await getProfileDetails();
+    }
+
     if (url.startsWith(API_ENDPOINTS.skoopCalendarUrl)) {
       if (userPreferences && userPreferences.length > 0) {
-        return true
+        if(user && user?.calendar_info) {
+          return true;
+        } else {
+          toast.error('Please sync your calendar from account settings page.')
+          return false
+        }
       } else {
         toast.error('User preference is not set')
         return false
