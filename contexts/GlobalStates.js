@@ -29,7 +29,7 @@ export const GlobalStatesProvider = ({ children }) => {
   const [enableTutorialScreen, setEnableTutorialScreen] = useState(false)
   const [userSetting, setUserSetting] = useState(null)
   const [targetedTourElement, setTargetedTourElement] = useState(null);
-  
+  const [isTourStarted,setTourStarted]=useState(false)
   useEffect(() => {}, [globalRefresh])
   const getToggleButton = () => {
     try {
@@ -132,7 +132,7 @@ export const GlobalStatesProvider = ({ children }) => {
         userSetting, 
         setUserSetting,
         targetedTourElement, 
-        setTargetedTourElement
+        setTargetedTourElement,isTourStarted,setTourStarted
       }}
     >
       {children}
