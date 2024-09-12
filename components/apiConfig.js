@@ -68,6 +68,7 @@ const API_ENDPOINTS = {
   getMyUserSettings: `${backendUrl}/user-settings/mysettings`,
   appSettings: `${backendUrl}/app-config`,
   recieveVerificationMail:`${backendUrl}/user/send-verify-email`,
+  getProducts: `${backendUrl}/product`, //GET
 }
 
 // with POST or PATCH apis body is sent in JSON

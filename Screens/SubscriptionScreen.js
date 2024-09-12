@@ -9,7 +9,7 @@ import ConfirmationModal from '../components/ConfirmationModal'
 
 const SubscriptionScreen = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
-  const { createSubscription, verifyCoupon, getMySubscription, subscriptionType, setSubscriptionType, appConfig, getAppConfig } = useContext(AuthContext)
+  const { createSubscription, verifyCoupon, getMySubscription, subscriptionType, setSubscriptionType,products,getProducts, appConfig, getAppConfig } = useContext(AuthContext)
   const { navigateToPage } = useContext(ScreenContext)
   const [sessionUrl, setSessionUrl] = useState('')
   const handleSubscriptionChange = (type) => {
@@ -37,7 +37,8 @@ const SubscriptionScreen = () => {
     ;(async () => {
       await getAppConfig()
 
-      const subcription = await getMySubscription()
+      const subcription = await getMySubscription();
+      const products =await getProducts();
       // if (subcription) {
       //   navigateToPage('PaymentScreen')
       // }
@@ -65,8 +66,11 @@ const SubscriptionScreen = () => {
     // Update the 'couponCode' state with the input's current value
     setCouponCode(event.target.value)
   }
-  const monthlyPrice = 47 // Original monthly price
-  const yearlyPrice = 451
+  const monthlyProduct = products.length>0 && products.find(product => product.name === 'monthly');
+  const yearlyProduct = products.length>0 && products.find(product => product.name === 'yearly');
+  
+  const monthlyPrice = monthlyProduct?.price || 47;
+  const yearlyPrice = yearlyProduct?.price ||  451;
   // Calculate discounted prices
   const discountedMonthlyPrice = couponInfo?.discount?.percent_off
     ? ((monthlyPrice * (100 - couponInfo?.discount?.percent_off)) / 100).toFixed(2)
@@ -79,7 +83,6 @@ const SubscriptionScreen = () => {
     : couponInfo?.discount?.amount_off
       ? (yearlyPrice - couponInfo?.discount?.amount_off).toFixed(2)
       : yearlyPrice
-
 
   return (
     <>
@@ -164,8 +167,8 @@ const SubscriptionScreen = () => {
             </span>
           </div>
           {couponInfo && couponValid && <span className="badge rounded-pill bg-warning text-dark ">Coupon Applied.</span>}
+{couponValid && couponInfo?.discount?.trial_period  && <span className="badge rounded-pill bg-warning text-dark mt-1">Free trial For {couponInfo?.discount?.trial_period} days.</span>}
         </div>
-
         <div className="subscription-button d-grid gap-2 my-2">
           <button
             className="btn btn-primary btn-trial"
