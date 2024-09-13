@@ -23,7 +23,7 @@ const ChatWindowSelection = () => {
       const allChatWindows = Array.from(document.getElementsByClassName('msg-convo-wrapper'))
       const validChatWindows = allChatWindows.filter((element) => checkForExistenceOfMessageWindow(element))
 
-      const profileUserName = document.querySelector('a>h1')?.innerText
+      const profileUserName = document.querySelector('a>h1')?.innerText || ""
 
       var combinedArray = validChatWindows?.map((item, index) => {
         var nameOfRecipient
@@ -54,7 +54,11 @@ const ChatWindowSelection = () => {
         combinedArray[0].name = name
       }
 
-      const listItemElements = document.querySelectorAll('.artdeco-dropdown__content-inner li')
+     if(profileUserName.length>5){ const listItemElements = document.querySelectorAll('.artdeco-dropdown__content-inner li')
+      const profileCards = document.querySelectorAll('.artdeco-card');
+      const buttons = profileCards[0].querySelectorAll('.artdeco-button .artdeco-button__text');
+   
+      
       const headingsArray = Array.from(listItemElements)
         .map((li) => {
           const spanElement = li.querySelector('span')
@@ -62,9 +66,9 @@ const ChatWindowSelection = () => {
         })
         .filter((text) => text) 
 
-      const buttons = document.querySelectorAll('.artdeco-button .artdeco-button__text')
+      
       const buttonsTextArray = Array.from(buttons).map((span) => span.innerText.trim())
-     
+      console.log(buttonsTextArray,headingsArray,profileUserName)
       if (!buttonsTextArray.includes('Connect') && !headingsArray.includes('Connect')) {
         // Extract the first name from profileUserName
         const profileFirstName = profileUserName.split(' ')[0]
@@ -84,7 +88,7 @@ const ChatWindowSelection = () => {
           link: windowUrl,
           ...errorProperty, // Spread the errorProperty into the new object
         })
-      }
+      }}
 
       return combinedArray
     } catch (error) {

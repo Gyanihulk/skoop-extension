@@ -54,7 +54,7 @@ function createButton() {
   buttonContainer.style.cursor = 'pointer'
   buttonContainer.setAttribute('tabindex', '0');
   buttonContainer.style.transition = 'all 0.3s ease';
-
+  buttonContainer.style.transform = 'translateX(20px)';
   // Add click event listener to the button
   buttonContainer.addEventListener('click', handleInjectIframe)
   let isDragging = false;
@@ -87,10 +87,12 @@ function createButton() {
 
   const handleFocus = () => {
        buttonContainer.style.backgroundImage = 'url("' + chrome.runtime.getURL('/icons/HoverExtensionIcon.png') + '")'
+       buttonContainer.style.transform = 'translateX(0px)';
   };
   
   const handleBlur = () => {
       buttonContainer.style.backgroundImage = 'url("' + chrome.runtime.getURL('/icons/RegularExtensionIcon.png') + '")';
+      buttonContainer.style.transform = 'translateX(20px)';
   };
 
   // Add hover effect using pointer events
