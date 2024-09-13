@@ -1,6 +1,20 @@
 const targetNode = document.body;
 const config = { childList: true, subtree: true };
 
+let buttonsList = {};
+
+fetch(chrome.runtime.getURL('button-data.json'))
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then((buttonsListResponse) => {
+        buttonsList = buttonsListResponse;
+    })
+    .catch((error) => console.error('Error loading JSON:', error));
+
 const callback = function (mutationsList, observer) {
     for (const mutation of mutationsList) {
         if (mutation.type === 'childList') {
@@ -26,11 +40,10 @@ function processCommentBoxes() {
         if (!buttonSection) {
             addSectionWithButton(commentBox);
         }
-        console.log('added section to the button');
     }
     Array.from(comments).forEach((commentButton) => {
-        let parent = commentButton.closest('.update-v2-social-activity') //.parentElement.parentElement.parentElement.parentElement;
-        console.log('parent of normal commnetbox ', parent);
+        let parent = commentButton.closest('.update-v2-social-activity');
+       
         let commentBox = parent ? parent.querySelector('.feed-shared-update-v2__comments-container').querySelector('.comments-comment-box__form') : '';
         if (commentBox) {
             addButtons(commentBox);
@@ -40,7 +53,7 @@ function processCommentBoxes() {
 
         if (!commentButton.hasAttribute('data-has-event-listener')) {
             commentButton.addEventListener('click', async (event) => {
-                let parent = event.target.closest('.update-v2-social-activity') //commentButton.parentElement.parentElement.parentElement.parentElement
+                let parent = event.target.closest('.update-v2-social-activity');
                 
                 let commentBox = parent ? parent.querySelector('.feed-shared-update-v2__comments-container').querySelector('.comments-comment-box__form') : '';
                 if (commentBox) {
@@ -65,37 +78,34 @@ async function createQueryForPostDescription(parent) {
     let articleContainer = parent.querySelector('.update-components-article');
     let repostContainer = parent.querySelector('.feed-shared-update-v2__update-content-wrapper');
     let announcementContainer = parent.querySelector('.update-components-announcement');
-    //let postLanguage = 'English';
-    console.log('repost container ', repostContainer);
-    //let imageContainer = parent.querySelector('.update-components-image');
+   
 
     if (repostContainer) {
-        let repostDescription = repostContainer.querySelector('.feed-shared-update-v2__description') ? repostContainer.querySelector('.feed-shared-update-v2__description').textContent : 'original post has no description';
+        let repostDescription = repostContainer.querySelector('.feed-shared-update-v2__description') ? repostContainer.querySelector('.feed-shared-update-v2__description').textContent.trim() : 'original post has no description';
 
         if (descriptionContainer) {
-            const content = descriptionContainer.textContent;
-            //postLanguage = await getPostLanguage(content);
+            const content = descriptionContainer.textContent.trim();
+            
             query = `Use the repost description as context to craft a reply to the current post. Here's the repost description: \n ${repostDescription} \n and here's the current post description: \n ${content}.\
                     Please create a response that connects both. Please generate reply for this in the same language`;
         } else {
-           // postLanguage = await getPostLanguage(repostDescription);
+           
             query = `${repostDescription}.\n Please generate reply for this in the same language.`;
         }
     }
 
     // For main description
     if (descriptionContainer && !repostContainer) {
-        const content = descriptionContainer.textContent;
-       // postLanguage = await getPostLanguage(content);
+        const content = descriptionContainer.textContent.trim();
         query = `${content}.\n Please generate reply for this in the same language.`;
     }
 
     // For polls
     if (pollContainer) {
-        const pollHeader = pollContainer.querySelector('.update-components-poll__header').textContent;
+        const pollHeader = pollContainer.querySelector('.update-components-poll__header').textContent.trim();
         const pollOptions = [...pollContainer.querySelectorAll('.update-components-poll-option__text--justify-center')].map(option => option.textContent.trim());
 
-        query = query + `\n\n This post contains a poll, the poll header is ${pollHeader} and poll options is ${pollOptions}.\
+        query = query + `\n\n This post contains a poll, the poll header is ${pollHeader}\n and poll options are ${pollOptions}.\n
                 So while generating the comment consider this post header and options.\n Please generate reply for this in the same language`;
     }
 
@@ -105,7 +115,7 @@ async function createQueryForPostDescription(parent) {
         const articleSubtitle = entityContainer.querySelector('.update-components-entity__subtitle') ? entityContainer.querySelector('.update-components-entity__subtitle').textContent : "this article has no subtitle so use title";
         const articleDescription = entityContainer.querySelector('.update-components-entity__description') ? entityContainer.querySelector('.update-components-entity__description').textContent : "this article has no description so use title and subtitle";
 
-        query = query + `\n\n This post includes an article titled "${articleTitle}" from ${articleSubtitle}. The description says: "${articleDescription}".\
+        query = query + `\n\n This post includes an article titled "${articleTitle}" from ${articleSubtitle}. The description says: "${articleDescription}".\n
                 So while generating the comment consider this article. \n Please generate reply for this in the same language`;
     }
 
@@ -137,11 +147,11 @@ async function createQueryForPostDescription(parent) {
         let articleDescription = articleContainer.querySelector('.update-components-article__description') ? articleContainer.querySelector('.update-components-article__description').innerText : 'it has no description so use title and subtitle';
         let articleUrl = articleContainer.querySelector('a.update-components-article__meta') ? articleContainer.querySelector('a.update-components-article__meta').href : 'has no url';
 
-        query = query + `\n\nThe post includes an article with the following details:\
+        query = query + `\n\nThe post includes an article with the following details:\n
                 Title: ${articleTitle}.\
                 Subtitle: ${articleSubtitle}.\
                 Description: ${articleDescription}.\
-                Article URL: ${articleUrl}.\
+                Article URL: ${articleUrl}.\n
                 So while generating the comment consider this article. \n Please generate reply for this in the same language`;
     }
     
@@ -149,8 +159,8 @@ async function createQueryForPostDescription(parent) {
     if(announcementContainer) {
         let announcementTitle = announcementContainer.querySelector('.update-components-announcement__title') ? announcementContainer.querySelector('.update-components-announcement__title').textContent : 'this announcement has no title';
         
-        query = query + `\n\nThe post include an announcement with the following details:\
-        Title: ${announcementTitle}\
+        query = query + `\n\nThe post include an announcement with the following details:\n
+        Title: ${announcementTitle}\n
         So while generating the comment consider this announcement. \n Please generate reply for this in the same language`;
     }
 
@@ -158,9 +168,9 @@ async function createQueryForPostDescription(parent) {
     return {query};
 }
 
-async function makeChatGptCall(button, query, commentBox, anchorTags = []) {
-    // language = new Intl.DisplayNames(['en'], { type: 'language' }).of(language); // getFullLanguageName(postLanguage);
-    query = query + `\n\n${button.prompt}\nKeep it under ${button.length}. And use ${button.tone} tone.`;
+async function makeAIInteractionsCall(button, query, commentBox, anchorTags = []) {
+    query = `${buttonsList?.mainPrompt}\n` + query + `\n\n${button.prompt}\nKeep it under ${button.length}. And use ${button.tone} tone.`;
+
     // Display initial loading message
     await addLoadingMessageToCommentBox(commentBox, "Reading the post...");
 
@@ -168,29 +178,23 @@ async function makeChatGptCall(button, query, commentBox, anchorTags = []) {
     const controller = new AbortController();
     const { signal } = controller;
 
-    // Set up a timeout to update the loading message after 5000ms -- 7 seconds
+    // Set up a timeout to update the loading message after 7000ms -- 7 seconds
     const timeout5s = setTimeout(() => {
         addLoadingMessageToCommentBox(commentBox, "Taking more time than expected, please wait...");
     }, 7000);
 
     // Set up a timeout to stop the request after 13000ms -- 16 seconds
     const timeout13s = setTimeout(() => {
-        controller.abort();  // Abort the ChatGPT request
+        controller.abort();  // Abort the aiInteractions request
         addLoadingMessageToCommentBox(commentBox, "Something has happened, please try again. If it presists, please refresh the page.");
-        console.error('ChatGPT request stopped due to timeout.');
+        console.error('aiInteractions request stopped due to timeout.');
     }, 16000);
 
     try {
-        const processStartTime = Date.now();
 
-        const response = await chatGpt(button.title, query, signal);
-        let message = '';
-
+        const response = await aiInteractions(button.title, query, signal);
+        
         if (response) {
-            //message = response;
-            const processEndTime = Date.now();
-            console.log('Time taken to get the response from the backend:', processEndTime - processStartTime);
-
             // Clear all timeouts if the response arrives before 13 seconds
             clearTimeout(timeout5s);
             clearTimeout(timeout13s);
@@ -209,34 +213,32 @@ async function makeChatGptCall(button, query, commentBox, anchorTags = []) {
 function getPreviousCommentsOfTheUser(parent, replieeNames) {
     const commentsRepliesList = parent.querySelector('.comments-replies-list');
     if (!commentsRepliesList) {
-        console.log('comments-replies-list not found');
+       
         return [];
     }
-    console.log('comments list ', commentsRepliesList);
+   
 
     const previousComments = [...commentsRepliesList.querySelectorAll('.comments-comment-entity')]
         .filter(option => {
             const replieeElement = option.querySelector('.comments-comment-meta__description-title');
-            console.log('name ', replieeElement.textContent.trim());
             return replieeElement &&  replieeNames.includes(replieeElement.textContent.trim());
         })
         .map(option => option.querySelector('.comments-comment-item__main-content').textContent.trim());
 
-    console.log('previous comments content ', previousComments);
+    
     return previousComments;
 }
 
 function getMentionedUsers(commentBox) {
     const anchorTags = commentBox.querySelectorAll('.ql-mention');
-    console.log('anchorTags in get ', anchorTags) // Find all the anchor tags with ql-mention class
-    return Array.from(anchorTags); // Convert NodeList to an array and return it
+    return Array.from(anchorTags); 
 }
 
 function addSectionWithButton(commentBox, forReply = false) {
     // First, remove any existing section in the commentBox
     const existingSection = commentBox.parentElement.querySelector('.skoop-comment-section');
     if (existingSection) {
-        existingSection.remove(); // Remove the existing buttons section
+        existingSection.remove(); 
     }
 
     const newSection = document.createElement('div');
@@ -247,28 +249,16 @@ function addSectionWithButton(commentBox, forReply = false) {
     newSection.style.flexWrap = 'wrap';
     newSection.style.gap = '10px';
 
-    
-    fetch(chrome.runtime.getURL('button-data.json'))
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then((buttonsList) => {
-            buttonsList.forEach((button) => {
-                if (forReply) {
-                    const newButton = addButtonWithTypeToReply(button, commentBox);
-                    newSection.appendChild(newButton);
-                } else {
-                    const newButton = addButtonWithType(button, commentBox);
-                    newSection.appendChild(newButton);
-                }
-            });
-        })
-        .catch((error) => console.error('Error loading JSON:', error));
-
-    
+    buttonsList.buttonsData.forEach((button) => {
+        if (forReply) {
+            const newButton = addButtonWithTypeToReply(button, commentBox);
+            newSection.appendChild(newButton);
+        } else {
+            const newButton = addButtonWithType(button, commentBox);
+            newSection.appendChild(newButton);
+        }
+    });
+ 
     commentBox.appendChild(newSection);
     
 }
@@ -297,10 +287,10 @@ function addButtonWithType(button, commentBox) {
             let {query} = await createQueryForPostDescription(parent);
 
             if (query) {
-                await makeChatGptCall(button, query, commentBox);
+                await makeAIInteractionsCall(button, query, commentBox);
             } else {
-                console.log('unabel to form a query ');
-                await addLoadingMessageToCommentBox(commentBox, 'Unable to generate comment due to insufficient data');
+                console.log('unable to form a query ');
+                await addLoadingMessageToCommentBox(commentBox, 'Unable to generate comment as there is no description.');
             }
 
         }
@@ -323,45 +313,41 @@ function addButtonWithTypeToReply(button, commnetBox) {
     newButton.style.fontSize = '12px';
     newButton.style.whiteSpace = 'nowrap';
 
-    console.log('new button ', newButton);
+   
 
     newButton.addEventListener('click', async (event) => {
         // Ensure we use the correct comment box for this button
         event.preventDefault();
-        let parent = event.target.closest('.comments-comment-entity');// newButton.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
-        let postContainer = event.target.closest('.feed-shared-update-v2'); // parent.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
-        let commentContainer = parent.querySelector('.update-components-text') //parent.querySelector('.update-components-text');
+        let parent = event.target.closest('.comments-comment-entity');
+        let postContainer = event.target.closest('.feed-shared-update-v2'); 
+        let commentContainer = parent.querySelector('.update-components-text');
         let replyCommentBox = parent.querySelector('.comments-comment-box-comment__text-editor');
-        console.log('reply comment box ', replyCommentBox);
-        console.log('parent ', parent);
-        console.log('comment container ', commentContainer);
-        console.log('post container ', postContainer);
+        
         
         let postQuery = ''
         if (postContainer) {
             const {query} = await createQueryForPostDescription(postContainer);
-            console.log('query for post ', query);
             postQuery = query;
         }
         if (replyCommentBox) {
             let query = '';
             // Extract all the anchor tags (mentioned users)
             const anchorTags = getMentionedUsers(replyCommentBox);
-            console.log('anchorTags in add ', anchorTags);
             const replieeNames = replyCommentBox.textContent.trim();
-            console.log('repliee names ', replieeNames);
+            const replieeNamesFromAnchorTags = [...replyCommentBox.querySelectorAll('.ql-mention')].map(mention => mention.textContent);
             const previousCommentsOfTheUser = getPreviousCommentsOfTheUser(parent, replieeNames);
             if (commentContainer) {
                 const commentDescription = commentContainer.textContent.trim();
                 // let commentLanguage = await getPostLanguage(commentDescription);
-                query = `This is the post description: ${postQuery}\
-                This is the main comment on the post: ${commentDescription}\
-                These are the thread comments from the user you are replying to: ${previousCommentsOfTheUser}\
-                If thread comments are available, prioritize replying to those. If no thread comments are present, reply to the main comment.\
+                query = `This is the post description:\n ${postQuery}\n
+                This is the main comment on the post:\n ${commentDescription}\n
+                Here are the mentioned names to whom you have to reply ${replieeNamesFromAnchorTags}. Consider comments of this mentioned names while replying.\
+                These are the thread comments from the users you are replying to:\n ${previousCommentsOfTheUser}\n (ignore names that are not present in the mentioned names in this thread comments)\n
+                If thread comments are available, prioritize replying to those. If no thread comments are present, reply to the main comment.\n
                 Generate the reply in the language of the thread comments, or if they are unavailable, use the language of the main comment.\
                 Now generate an appropriate reply based on this context.`;
-                console.log('comment description ', commentDescription);
-                await makeChatGptCall(button, query, replyCommentBox, anchorTags);
+               
+                await makeAIInteractionsCall(button, query, replyCommentBox, anchorTags);
             }
         }
     });
@@ -373,8 +359,8 @@ function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// chatGpt function modified to accept the AbortSignal and handle abortion
-async function chatGpt(type, query, signal) {
+// aiInteractions function modified to accept the AbortSignal and handle abortion
+async function aiInteractions(type, query, signal) {
 
     // Simulate a 15-second delay before making the request for testing
     // await delay(15000);
@@ -393,7 +379,6 @@ async function chatGpt(type, query, signal) {
                     console.error(chrome.runtime.lastError);
                     reject(new Error('Failed to generate comment. Please try again'));
                 } else {
-                    console.log("Response from background:", response);
                     if (response) {
                         resolve(response);
                     } else {
@@ -408,13 +393,11 @@ async function chatGpt(type, query, signal) {
 
 
 async function addGeneratedTextToCommentBox(response, commentBox, anchorTags = []) {
-    console.log('generated text printing')
     await addTextToCommentBox(response, commentBox, anchorTags);
     return;
 }
 
 async function addLoadingMessageToCommentBox(commentBox, message) {
-    console.log('loading message printing ');
     await addTextToCommentBox(message, commentBox);
     return;
 
@@ -429,15 +412,11 @@ async function addTextToCommentBox(response, commentBox, anchorTags = []) {
             let index = 0;
             // Clear the editor content
             editor.innerHTML = ''; 
-           // editor.textContent = ''; // Clear the editor content before typing starts
-            console.log('anchor tags in add text ', anchorTags);
-            // Append anchor tags (names) first before the response text
             
             const p = document.createElement('p');
             p.className = 'append-text';
             editor.appendChild(p);
             let appendText = editor.querySelector('.append-text');
-
             
             // Typing simulation
             const typeEffect = () => {
@@ -451,21 +430,19 @@ async function addTextToCommentBox(response, commentBox, anchorTags = []) {
             return new Promise(resolve => {
                 const finishTyping = () => {
                     if (index >= response.length) {
-                        resolve(); // Resolve the promise when typing finishes
-                        
-                        anchorTags.forEach(anchor => {
-                           
-                            editor.appendChild(anchor.cloneNode(true)); // Clone the anchor element and append it to the editor
-                            //editor.appendChild(document.createTextNode('')); // Add a space after each anchor
-                            
-                        });
+                        resolve(); 
+                        if(anchorTags.length >= 1) {
+                            anchorTags.forEach(anchor => {
+                                editor.appendChild(anchor.cloneNode(true));
+                            });
+                        }
                     } else {
                         setTimeout(finishTyping, 20);
                     }
                 };
 
-                typeEffect(); // Start typing effect
-                finishTyping(); // Monitor when typing finishes
+                typeEffect(); 
+                finishTyping(); 
             });
             
         } else {
@@ -476,7 +453,7 @@ async function addTextToCommentBox(response, commentBox, anchorTags = []) {
     }
 }
 
-//processReplyCommentBoxes();
+
 
 function resetAndAddButtonsToAllReplyBoxes(parent) {
     // Get all reply comment boxes in the document
@@ -491,15 +468,14 @@ function resetAndAddButtonsToAllReplyBoxes(parent) {
 
 // Process reply buttons dynamically
 function processReplyCommentBoxes() {
-    console.log('process replies');
+    
     document.body.addEventListener('click', function (event) {
         // Check if the clicked element is a reply button
         const replyButton = event.target.closest('.comments-comment-social-bar__reply-action-button--cr');
         if (replyButton) {
             const commentContainer = replyButton.closest('.comments-comment-list__container');
             const replyBox = commentContainer.querySelector('.comments-comment-box__form');
-            console.log('reply box ', replyBox);
-            console.log('comment container ', commentContainer);
+           
     
             if (replyBox) {
                 // Call function to reset and re-add buttons for all reply boxes

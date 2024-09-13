@@ -1,6 +1,5 @@
 const backendUrl = "https://skoop.sumits.in"; //test
 // const backendUrl = 'http://localhost:4000' //local
-// const backendUrl = 'http://localhost:4000' //local
 // const backendUrl = "https://api.skoopapp.com"; //prod
 const API_ENDPOINTS = {
   backendUrl,
@@ -70,7 +69,7 @@ const API_ENDPOINTS = {
   appSettings: `${backendUrl}/app-config`,
   recieveVerificationMail:`${backendUrl}/user/send-verify-email`,
   getProducts: `${backendUrl}/product`, //GET
-  aiInteractions: `${backendUrl}/prompt/generate`, //Post
+  aiInteractions: `${backendUrl}/prompts/generate`, //Post
 }
 
 // with POST or PATCH apis body is sent in JSON
