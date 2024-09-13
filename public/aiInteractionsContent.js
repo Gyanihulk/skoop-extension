@@ -1,19 +1,41 @@
 const targetNode = document.body;
 const config = { childList: true, subtree: true };
 
-let buttonsList = {};
+const buttonsList = {
+    "mainPrompt": "I am an Artificial Intelligence tool helping the LinkedIn users to make comments on various LinkedIn posts and their replies. Now generate replies according to the given instructions.",
+    "buttonsData": [
+     {
+         "id": 1,
+         "title": "Discovery",
+         "prompt": "The above is a post on LinkedIn. I want to be an authoritative and insightful LinkedIn user who is friendly in response to the post. Write and add brand new insights in response to the post and make sure not to repeat what has already been said in the post. Use new words, phrases, ideas, and insights. Keep it short and professional. For every response use new starting sentence, new words, and phrases. Give precise response. Please give a response in the language of the above LinkedIn post.",
+         "length": "four lines to eight lines",
+         "tone": "friendly"
+     },
+     {
+         "id": 2,
+         "title": "Inspiration",
+         "prompt": "The above is a post on LinkedIn. Reply to this LinkedIn post with a comment that offers a positive and encouraging idea while showing empathy towards the original message. Your response should introduce a fresh, uplifting perspective, showing understanding and support for the challenges mentioned. Keep the tone optimistic, respectful, and solution-oriented, focusing on creativity and originality, without repeating what's already been discussed. Please don't repeat the previous response sentences. Everytime the response sentences should not be similar to the previous response sentences. Please give a response in the language of the above LinkedIn post.",
+         "length": "four lines to eight lines",
+         "tone": "optimistic, innovative, and uplifting"
+     },
+     {
+         "id": 3,
+         "title": "Thoughtful",
+         "prompt": "The above is a post on LinkedIn. Reply with a concise, thoughtful observation that sparks engagement or deeper reflection. Keep the comment brief and impactful, adding a fresh angle to the conversation. Stay informative and focused, aiming for a short but meaningful contribution. Please don't repeat the previous responses. Everytime the response should not be similar to the previous response. Please give a response in the language of the above LinkedIn post.",
+         "length": "three lines to eight lines",
+         "tone": "concise, reflective"
+     },
+     {
+         "id": 4,
+         "title": "Cheerful",
+         "prompt": "Be a cheerful and light-hearted LinkedIn user. Reply to this LinkedIn post with a comment that contains a touch of humor or amusement, while still being respectful and relevant. For every time I request you to write a comment using a funny tone, you must augment a brand-new comment with a new angle. Do not repeat what you previously generated. Make the funny comment with around 50 words. Include appropriate hashtags and emojis. Please don't repeat the previous responses. Everytime the response should not be similar to the previous response. Please give a response in the language of the above LinkedIn post.",
+         "length": "fifty words to six lines",
+         "tone": "cheerful, witty, and playful"
+     }
+     ]
+ }
 
-fetch(chrome.runtime.getURL('button-data.json'))
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then((buttonsListResponse) => {
-        buttonsList = buttonsListResponse;
-    })
-    .catch((error) => console.error('Error loading JSON:', error));
+
 
 const callback = function (mutationsList, observer) {
     for (const mutation of mutationsList) {
