@@ -30,7 +30,7 @@
   "content_scripts": [
     {
       "matches": ["*://*/*"],
-      "js": ["showScreenRecordingTimer.js","injectIframe.js","gmailContentScript.js","helperfunctions.js","createWebCamContainer.js", "content.js"],
+      "js": ["showScreenRecordingTimer.js","injectIframe.js","gmailContentScript.js","helperfunctions.js","createWebCamContainer.js", "aiInteractionsContent.js"],
       "css": ["styles.css"]
     },
     {
