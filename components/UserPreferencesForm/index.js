@@ -304,6 +304,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
       toast.error('Character limit exceeded (Max: 230 characters)')
     }
   }
+  console.log(userProfileDetail)
   return (
     <>
       {!isTimezoneScreen && (
@@ -408,7 +409,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
                       <p className="card-title">Connect your calendar to auto-check for busy times and add new events as they are scheduled.</p>
 
                       <div class="d-flex flex-column align-items-center justify-content-start mt-3">
-                        <div class="d-flex align-items-center w-100 justify-content-between">
+                        {userProfileDetail?.calendar_info!=null && userProfileDetail?.calendar_info === 'google' && <div class="d-flex align-items-center w-100 justify-content-between">
                           <div class="d-flex align-items-center">
                             <input class="form-check-input mt-0 pt-0 ml-0-4" type="checkbox" value="" name="google" checked={syncedCalendar === 'google'} onChange={handleCalendarSync} id="google"></input>
                             <label class="d-flex align-items-center ms-2" for="google">
@@ -421,7 +422,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
                               <span className="badge badge-pill badge-primary">Synced</span>
                             </div>
                           )}
-                        </div>
+                        </div>}
                         <div class="d-flex align-items-center w-100 mt-3 justify-content-between">
                           <div class="d-flex align-items-center">
                             <input class="form-check-input mt-0 pt-0 ml-0-4" type="checkbox" value="" name="microsoft" checked={syncedCalendar === 'microsoft'} onChange={handleCalendarSync} id="microsoft"></input>

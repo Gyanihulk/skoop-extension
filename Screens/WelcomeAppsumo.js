@@ -3,7 +3,6 @@ import CustomInputBox from '../components/Auth/CustomInputBox'
 import AuthContext from '../contexts/AuthContext'
 import ContinueWithGoogleButton from '../components/Auth/button/ContinueWithGoogleButton'
 import ContinueWithLinkedInButton from '../components/Auth/button/ContinueWithLinkedInButton'
-import GlobalStatesContext from '../contexts/GlobalStates'
 import CustomButton from '../components/Auth/button/CustomButton'
 import { FaCheckCircle } from 'react-icons/fa'
 import RemoveSessions from '../components/Auth/RemoveSessions'
@@ -30,10 +29,8 @@ const WelcomeAppsumo = () => {
   return (
     <div className="welcome-main">
       <div className="welcome-content">
-        <div className="w-100 top-header mt-5 pt-5">
-          <img src="/screens/logo.png" alt="Skoop" />
-
-          <h3 className="welcome-title">Skoop</h3>
+        <div className="w-100 top-header mt-5">
+         
 
           <h4 className="coupon-text">
             {coupon} <FaCheckCircle className="check-icon" color="#ffc107" />
@@ -43,7 +40,7 @@ const WelcomeAppsumo = () => {
           <p>Please activate your lifetime access account.</p>
         </div>
         {showClearSessionDialog && <RemoveSessions onDelete={() => deleteMyAllJwtSessionsBySocial()} />}
-        <div className="mt-4">
+        <div className="mt-5">
           <ContinueWithGoogleButton setSocial={setSocial} message="Continue with Google" />
           <ContinueWithLinkedInButton setSocial={setSocial} message="Continue with LinkedIn" />
         </div>
