@@ -1,43 +1,3 @@
-const buttonsList = [
-    {
-        id: 1,
-        title: "New Insight",
-        prompt: "The above is a post on LinkedIn. I want to be an authoritative and insightful LinkedIn user who is friendly in response to the post.\
-        Write and add brand new insights in response to the post and make sure not to repeat what has already been said in the post.\
-        Use new words, phrases, ideas and insights. Keep it short and professional. Plase give response in the language of the above LinkedIn post.",
-        length: "four lines",
-        tone: "friendly"
-    },
-    {
-        id: 2,
-        title: "Bright Notion",
-        prompt: "The above is a post on LinkedIn. Reply to this LinkedIn post with a comment that offers a positive and encouraging idea while showing empathy towards the original message.\
-        Your response should introduce a fresh, uplifting perspective, showing understanding and support for the challenges mentioned.\
-        Keep the tone optimistic, respectful, and solution-oriented, focusing on creativity and originality, without repeating what's already been discussed. Plase give response in the language of the above LinkedIn post.",
-        length: "four lines",
-        tone: "optimistic, innovative, and uplifting"
-    },
-    {
-        id: 3,
-        title: "Quick Thought",
-        prompt: "The above is a post on LinkedIn. Reply with a concise, thoughtful observation that sparks engagement or deeper reflection.\
-        Keep the comment brief and impactful, adding a fresh angle to the conversation. Stay informative and focused, aiming for a short but meaningful contribution. Plase give response in the language of the above LinkedIn post.",
-        length: "three lines",
-        tone: "concise, reflective"
-    },
-    {
-        id: 4,
-        title: "Lighthearted",
-        prompt: "Be a cheerful and light-hearted LinkedIn user.\
-        Reply to this LinkedIn post with a comment that contains a touch of humor or amusement, while still being respectful and relevant.\
-        For every time I request you to write a comment using a funny tone, you must augment a brand-new comment with a new angle. \
-        Do not repeat what you previously generated. Make the funny comment with around 50 words.\
-        Include appropriate hashtags and emoji. Plase give response in the language of the above LinkedIn post.",
-        length: "fifty words",
-        tone: "cheerful, witty, and playful"
-    }
-];
-
 const targetNode = document.body;
 const config = { childList: true, subtree: true };
 
@@ -282,23 +242,35 @@ function addSectionWithButton(commentBox, forReply = false) {
     const newSection = document.createElement('div');
     newSection.className = 'skoop-comment-section';
     newSection.style.margin = '10px 0px';
-    // newSection.style.marginTop = '10px';
+    
     newSection.style.display = 'flex';
     newSection.style.flexWrap = 'wrap';
     newSection.style.gap = '10px';
 
+    
+    fetch(chrome.runtime.getURL('button-data.json'))
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then((buttonsList) => {
+            buttonsList.forEach((button) => {
+                if (forReply) {
+                    const newButton = addButtonWithTypeToReply(button, commentBox);
+                    newSection.appendChild(newButton);
+                } else {
+                    const newButton = addButtonWithType(button, commentBox);
+                    newSection.appendChild(newButton);
+                }
+            });
+        })
+        .catch((error) => console.error('Error loading JSON:', error));
 
-    buttonsList.forEach(button => {
-        if (forReply) {
-            const newButton = addButtonWithTypeToReply(button, commentBox);
-            newSection.appendChild(newButton);
-        } else {
-            const newButton = addButtonWithType(button, commentBox);
-            newSection.appendChild(newButton);
-        }
-    });
+    
     commentBox.appendChild(newSection);
-    //commentBox.insertAdjacentElement('afterend', newSection);
+    
 }
 
 function addButtonWithType(button, commentBox) {
@@ -432,28 +404,6 @@ async function chatGpt(type, query, signal) {
     });
 }
 
-// async function getPostLanguage(postDescription) {
-//     return new Promise((resolve, reject) => {
-//         // Send message to background script, passing the signal to abort the request
-//         chrome.runtime.sendMessage({
-//             action: 'detectLanguage',
-//             query: postDescription,
-//         },
-//             (response) => {
-//                 if (chrome.runtime.lastError) {
-//                     console.error(chrome.runtime.lastError);
-//                     reject(new Error('Failed to generate comment. Please try again'));
-//                 } else {
-//                     console.log("Response from background:", response);
-//                     if (response) {
-//                         resolve(response);
-//                     } else {
-//                         reject(new Error('Encountered some issue. Please try again.'));
-//                     }
-//                 }
-//             });
-//     });
-// }
 
 
 
@@ -483,12 +433,16 @@ async function addTextToCommentBox(response, commentBox, anchorTags = []) {
             console.log('anchor tags in add text ', anchorTags);
             // Append anchor tags (names) first before the response text
             
+            const p = document.createElement('p');
+            p.className = 'append-text';
+            editor.appendChild(p);
+            let appendText = editor.querySelector('.append-text');
 
             
             // Typing simulation
             const typeEffect = () => {
                 if (index < response.length) {
-                    editor.textContent += response.charAt(index);// Append each character to the editor's textContent
+                    appendText.textContent += response.charAt(index);// Append each character to the editor's textContent
                     index++;
                     setTimeout(typeEffect, 20); // Adjust typing speed here
                 }
@@ -500,10 +454,10 @@ async function addTextToCommentBox(response, commentBox, anchorTags = []) {
                         resolve(); // Resolve the promise when typing finishes
                         
                         anchorTags.forEach(anchor => {
-                            console.log('anchor ', anchor);
+                           
                             editor.appendChild(anchor.cloneNode(true)); // Clone the anchor element and append it to the editor
-                            editor.appendChild(document.createTextNode(' ')); // Add a space after each anchor
-                            console.log('editor ', editor);
+                            //editor.appendChild(document.createTextNode('')); // Add a space after each anchor
+                            
                         });
                     } else {
                         setTimeout(finishTyping, 20);
@@ -548,33 +502,9 @@ function processReplyCommentBoxes() {
             console.log('comment container ', commentContainer);
     
             if (replyBox) {
-                // Check if the section has already been added
                 // Call function to reset and re-add buttons for all reply boxes
                 resetAndAddButtonsToAllReplyBoxes(commentContainer);
-                let existingSection = replyBox.parentElement.querySelector('.skoop-comment-section');
-                console.log('existing section ', existingSection);
     
-                if (!existingSection) {
-                    // Add section and generate the initial content for the first time
-                    //addSectionWithButton(replyBox, true);
-    
-                    // Get the comment content for text generation
-                    const commentContent = commentContainer.querySelector('.comments-comment-item__main-content').textContent.trim();
-                    console.log("Generating text for the first time:", commentContent);
-                    
-                    // You can call your function here to generate and insert text in the reply box
-                    // generateTextInReplyBox(replyBox, commentContent);
-                } else {
-                    // If the section already exists, handle the behavior for subsequent clicks
-                    console.log("Section already exists, updating or reusing as needed");
-    
-                    // Example: If you want to generate new text every time the reply button is clicked
-                    const commentContent = commentContainer.querySelector('.comments-comment-item__main-content').textContent.trim();
-                    console.log("Generating text again:", commentContent);
-    
-                    // Optionally, update the reply box with the new text
-                    // generateTextInReplyBox(replyBox, commentContent);
-                }
             } else {
                 console.error('Reply box not found');
             }

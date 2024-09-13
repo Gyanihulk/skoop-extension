@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "title": "New Insight",
+        "prompt": "The above is a post on LinkedIn. I want to be an authoritative and insightful LinkedIn user who is friendly in response to the post. Write and add brand new insights in response to the post and make sure not to repeat what has already been said in the post. Use new words, phrases, ideas, and insights. Keep it short and professional. Please give a response in the language of the above LinkedIn post.",
+        "length": "four lines",
+        "tone": "friendly"
+    },
+    {
+        "id": 2,
+        "title": "Bright Notion",
+        "prompt": "The above is a post on LinkedIn. Reply to this LinkedIn post with a comment that offers a positive and encouraging idea while showing empathy towards the original message. Your response should introduce a fresh, uplifting perspective, showing understanding and support for the challenges mentioned. Keep the tone optimistic, respectful, and solution-oriented, focusing on creativity and originality, without repeating what's already been discussed. Please give a response in the language of the above LinkedIn post.",
+        "length": "four lines",
+        "tone": "optimistic, innovative, and uplifting"
+    },
+    {
+        "id": 3,
+        "title": "Quick Thought",
+        "prompt": "The above is a post on LinkedIn. Reply with a concise, thoughtful observation that sparks engagement or deeper reflection. Keep the comment brief and impactful, adding a fresh angle to the conversation. Stay informative and focused, aiming for a short but meaningful contribution. Please give a response in the language of the above LinkedIn post.",
+        "length": "three lines",
+        "tone": "concise, reflective"
+    },
+    {
+        "id": 4,
+        "title": "Lighthearted",
+        "prompt": "Be a cheerful and light-hearted LinkedIn user. Reply to this LinkedIn post with a comment that contains a touch of humor or amusement, while still being respectful and relevant. For every time I request you to write a comment using a funny tone, you must augment a brand-new comment with a new angle. Do not repeat what you previously generated. Make the funny comment with around 50 words. Include appropriate hashtags and emojis. Please give a response in the language of the above LinkedIn post.",
+        "length": "fifty words",
+        "tone": "cheerful, witty, and playful"
+    }
+]

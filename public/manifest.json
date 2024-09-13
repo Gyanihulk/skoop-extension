@@ -23,7 +23,7 @@
   
   "web_accessible_resources": [
     {
-      "resources": ["index.html","icons/icon.png","icons/move.png","icons/resize.png","icons/minimize.png","icons/maximize.png", "icons/RegularExtensionIcon.png", "icons/HoverExtensionIcon.png", "images/linkedin-profile.gif","images/*"],
+      "resources": ["index.html","icons/icon.png","icons/move.png","icons/resize.png","icons/minimize.png","icons/maximize.png", "icons/RegularExtensionIcon.png", "icons/HoverExtensionIcon.png", "images/linkedin-profile.gif","images/*","button-data.json"],
       "matches": ["<all_urls>"]
     }
   ],
