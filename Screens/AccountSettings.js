@@ -404,8 +404,8 @@ const CalendarUrlForm = ({ userProfileData }) => {
                   )}
                 </div>
                 <div className={`mt-2 d-flex ${!userProfileData?.calendar_info ? 'justify-content-between' : 'justify-content-end'} align-items-center`}>
-                { !userProfileData?.calendar_info && (
-                            <div className="d-flex justify-content-end align-items-center">
+                { calendarUrl!=null && calendarUrl!=undefined && !userProfileData?.calendar_info && calendarUrl?.startsWith(API_ENDPOINTS.skoopCalendarUrl) && (
+                            <div className="d-flex justify-content-end align-items-center"> 
                               <span className="badge badge-pill orange-warning-badge">Calendar is not synced</span>
                             </div>
                           )}
@@ -536,6 +536,7 @@ function AccountSettings(props) {
     document.body.style.overflow = 'auto'
     window.open(url, '_blank')
   }
+  
   return (
     <>
       {!expand && (
