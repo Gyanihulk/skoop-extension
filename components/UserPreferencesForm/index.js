@@ -198,12 +198,6 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
   }
 
   const handleFormSubmit = async () => {
-    // if (google) {
-    //   calendarSync('google')
-    // } else if (microsoft) {
-    //   calendarSync('microsoft')
-    // }
-
     calendarSync(syncedCalendar); 
   }
 

@@ -39,6 +39,53 @@ export const AuthProvider = ({ children }) => {
     max_videos: '15',
     trial_period_days: '30',
   })
+  const [products, setProducts] = useState([]);
+  const getProducts = async () => {
+    try {
+      var response = await fetch(API_ENDPOINTS.getProducts, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          authorization: `Bearer ${JSON.parse(
+            localStorage.getItem('skoopCrmAccessToken')
+          )}`,
+        },
+      });
+
+      if (response.ok) {
+        let responseData = await response.json();
+        if (responseData && responseData?.length >= 2) {
+
+          let seen = new Set();
+          let filteredProducts = responseData
+            .filter((product) => {
+              const productName = product.name.toLowerCase();
+              if ((productName === 'monthly' || productName === 'yearly' || productName === 'weekly') && !seen.has(productName)) {
+                seen.add(productName);
+                return true;
+              }
+              return false;
+            })
+            .sort((a, b) => {
+              const nameA = a.name.toLowerCase();
+              const nameB = b.name.toLowerCase();
+              if (nameA === 'monthly') return -1;
+              if (nameB === 'monthly') return 1;
+              return 0;
+            });
+          setProducts(filteredProducts);
+          return filteredProducts
+        }
+        else if (responseData && responseData?.length > 0 && responseData?.length < 2) {
+          setProducts(responseData);
+          return responseData
+        }
+      }
+
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  }
   const getProfileDetails = async () => {
     try {
       const response = await fetch(API_ENDPOINTS.profileDetails, {
@@ -258,6 +305,7 @@ export const AuthProvider = ({ children }) => {
       })
       if (Number(response.status) === 200) {
         navigateToPage('Home')
+        getProfileDetails();
       } else {
         toast.error('Could not sign in.')
       }
@@ -927,7 +975,7 @@ export const AuthProvider = ({ children }) => {
         setSubscriptionType,
         getAppConfig,
         appConfig,
-        recieveVerificationMail
+        recieveVerificationMail,products, setProducts,getProducts
       }}
     >
       {children}

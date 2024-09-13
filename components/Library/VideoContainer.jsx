@@ -12,7 +12,7 @@ const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFa
   const [totalPages, setTotalPages] = useState()
   const [videos, setVideos] = useState([])
   const {appConfig}=useContext(AuthContext);
-  const { userSettings } = useUserSettings()
+  const { userSettings ,fetchMySettings} = useUserSettings()
   const fetchVideos = async () => {
     try {
       const response = await fetch(`${API_ENDPOINTS.linkData}directory=${folderName}&page=${currentPage}&limit=${4}`, {
@@ -38,6 +38,7 @@ const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFa
 
   useEffect(() => {
     fetchVideos()
+    fetchMySettings()
   }, [folderName, currentPage])
   return (
     <div className="container mt-1">
@@ -55,7 +56,7 @@ const VideoContainer = ({ folderName, handleLinkInsertion, deleteVideo, toggleFa
       <div className="d-flex justify-content-center my-2">
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
       </div>
-      <div className="mx-1 media-count">{userSettings.fullAccess?"":`Remaining Videos:${appConfig.max_videos-totalMediaCount}`}</div>
+      <div className="mx-1 media-count">{userSettings.fullAccess?"":`Remaining Videos:${userSettings.remainingVideos}`}</div>
     </div>
   )
 }

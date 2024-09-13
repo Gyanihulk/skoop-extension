@@ -1,9 +1,11 @@
 const backendUrl = "https://skoop.sumits.in"; //test
 // const backendUrl = 'http://localhost:4000' //local
+//const backendUrl = "https://skoop.sumits.in"; //test
+// const backendUrl = 'http://localhost:4000' //local
 // const backendUrl = "https://api.skoopapp.com"; //prod
 const API_ENDPOINTS = {
   backendUrl,
-  skoopCalendarUrl: 'https://crm.skoopapp.com', //https://skoopcrm.sumits.in
+  skoopCalendarUrl: backendUrl == "https://api.skoopapp.com"?'https://crm.skoopapp.com':'https://skoopcrm.sumits.in', //https://skoopcrm.sumits.in
   changePassword: `${backendUrl}/changePassword`, // PATCH
   profileDetails: `${backendUrl}/userDetails`, // GET
   updateUserDetails: `${backendUrl}/updateUserDetails`, // PATCH
@@ -68,6 +70,7 @@ const API_ENDPOINTS = {
   getMyUserSettings: `${backendUrl}/user-settings/mysettings`,
   appSettings: `${backendUrl}/app-config`,
   recieveVerificationMail:`${backendUrl}/user/send-verify-email`,
+  getProducts: `${backendUrl}/product`, //GET
   aiInteractions: `${backendUrl}/prompt/generate`, //Post
 }
 

@@ -56,6 +56,7 @@ export const RecordingProvider = ({ children }) => {
     setTime(0)
   }
   const startRecordingAudio = async () => {
+   
     try {
       if (!userSettings?.fullAccess && userSettings?.remainingVideos <= 0) {
         toast.error('You have reached the limit of free videos.')
@@ -101,6 +102,7 @@ export const RecordingProvider = ({ children }) => {
   }
 
   const handleShareAudio = async (audioTitle, directoryName) => {
+    sendMessageToContentScript({ action: 'enableButton'})
     try {
       setIsUploading(true)
       var title1 = audioTitle
@@ -164,6 +166,7 @@ export const RecordingProvider = ({ children }) => {
   }
 
   function handleVideoBlob(response) {
+    sendMessageToContentScript({ action: 'enableButton'})
     if (response.error) {
       setIsUploading(false)
       setCapturing(false)
@@ -186,6 +189,7 @@ export const RecordingProvider = ({ children }) => {
     }
   }
   function handleScreenVideoBlob(response) {
+    sendMessageToContentScript({ action: 'enableButton'})
     if (response.error) {
       setIsUploading(false)
       setCapturing(false)
