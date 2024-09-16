@@ -280,6 +280,40 @@ function addSectionWithButton(commentBox, forReply = false) {
     newSection.style.flexWrap = 'wrap';
     newSection.style.gap = '10px';
 
+    newSection.style.position = 'relative';
+
+    // Create the tooltip
+    const tooltip = document.createElement('div');
+    tooltip.textContent = "Comment cannot be generated without a description.";
+    tooltip.style.position = 'absolute';
+    tooltip.style.backgroundColor = '#41b1d6';
+    tooltip.style.color = '#ffffff';
+    tooltip.style.padding = '5px';
+    tooltip.style.borderRadius = '5px';
+    tooltip.style.fontSize = '12px';
+    tooltip.style.display = 'none';
+    tooltip.style.bottom = '35px';
+    tooltip.style.left = '50%';
+    tooltip.style.transform = 'translateX(-60%)';
+    tooltip.style.whiteSpace = 'nowrap';
+    tooltip.style.zIndex = '1000';
+
+    newSection.appendChild(tooltip);
+
+    // Show tooltip on hover
+    newSection.addEventListener('mouseover', async (event) => {
+        const postContainer = event.target.closest('.feed-shared-update-v2');
+        let {query} = await createQueryForPostDescription(postContainer);
+        if (!query) {
+        tooltip.style.display = 'block';
+        }
+    })
+
+    // Hide tooltip when not hovering
+    newSection.addEventListener('mouseout', () => {
+        tooltip.style.display = 'none';
+    })
+
     buttonsList.buttonsData.forEach((button) => {
         if (forReply) {
             const newButton = addButtonWithTypeToReply(button, commentBox);
@@ -322,7 +356,6 @@ function addButtonWithType(button, commentBox) {
                 await makeAIInteractionsCall(button, queryForPost, commentBox);
             } else {
                 console.log('unable to form a query ');
-                await addLoadingMessageToCommentBox(commentBox, 'Unable to generate comment as there is no description.');
             }
 
         } else {
