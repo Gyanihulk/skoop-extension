@@ -5,7 +5,7 @@ import UserPreferencesForm from '../components/UserPreferencesForm'
 import { toast } from 'react-hot-toast'
 import AuthContext from '../contexts/AuthContext'
 import ScreenContext from '../contexts/ScreenContext'
-
+import Form from 'react-bootstrap/Form'
 import { GrPowerReset } from 'react-icons/gr'
 import BackButton from '../components/BackButton'
 import Collapse from 'react-bootstrap/Collapse'
@@ -281,12 +281,11 @@ const SettingsPassword = () => {
 }
 
 const CalendarUrlForm = ({ userProfileData }) => {
-  const [calendarUrl, setCalendarUrl] = useState('')
-  const [ctaText, setCTAText] = useState('')
+
   const [toggleInfo, setToggleInfo] = useState(false)
   const [preferences, setPreferences] = useState([])
   const [showResetButton, setshowResetButton] = useState(false)
-  const { getCalendarUrl, getUserPreferences, getCtaInfo } = useContext(AuthContext)
+  const { getCalendarUrl, getUserPreferences, getCtaInfo ,updateCtaStatus,calendarUrl, setCalendarUrl,ctaText, setCTAText,ctaStatus, setCtaStatus} = useContext(AuthContext)
 
   const checkForDefaultUrl = async (url) => {
     if (userProfileData && userProfileData.email && url) {
@@ -305,9 +304,7 @@ const CalendarUrlForm = ({ userProfileData }) => {
   const getData = async () => {
     const preference = await getUserPreferences()
     setPreferences(preference)
-    const info = await getCtaInfo()
-    setCalendarUrl(info.url)
-    setCTAText(info.text)
+
     checkForDefaultUrl(info.url)
   }
 
@@ -369,7 +366,10 @@ const CalendarUrlForm = ({ userProfileData }) => {
       toast.error(err.message || 'Failed to reset calendar url. Please try again.')
     }
   }
-
+  const handleSwitchChange = async (e) => {
+    setCtaStatus(e.target.checked)
+    await updateCtaStatus(e.target.checked)
+  }
   return (
     <div className="card border-radius-12 overflow-hidden">
       <div className="light-pink card-header-custom d-flex justify-content-between align-items-center" onClick={() => setToggleInfo(!toggleInfo)} aria-expanded={toggleInfo} aria-controls="appointment-collapse">
@@ -384,7 +384,12 @@ const CalendarUrlForm = ({ userProfileData }) => {
             <div className="card-body p-0">
               <div className="container my-3">
                 <div className="d-flex justify-content-between align-items-center mt-3 mt-1">
-                  <label className="form-label profile-text">Call To Action Text</label>
+                  <label className="form-label profile-text">Call To Action Text</label>{' '}
+                  <div id="booking-switch">
+                    <Form title="Show Cta Link">
+                      <Form.Check type="switch" checked={ctaStatus} onChange={handleSwitchChange} className="small-switch video-preview-icon" id="video-container-switch" />
+                    </Form>
+                  </div>
                 </div>
                 <input type="text" className="form-control custom-input-global" id="calendarUrl" name="calendarUrl" value={ctaText} onChange={handleCtaTextChange} placeholder="Enter Text For Button." required />
 
@@ -404,16 +409,16 @@ const CalendarUrlForm = ({ userProfileData }) => {
                   )}
                 </div>
                 <div className={`mt-2 d-flex ${!userProfileData?.calendar_info ? 'justify-content-between' : 'justify-content-end'} align-items-center`}>
-                { !userProfileData?.calendar_info && (
-                            <div className="d-flex justify-content-end align-items-center">
-                              <span className="badge badge-pill orange-warning-badge">Calendar is not synced</span>
-                            </div>
-                          )}
-                <div class="d-flex justify-content-end">
-                  <button type="submit" class="card-btn">
-                    Save
-                  </button>
-                </div>
+                  {calendarUrl != null && calendarUrl != undefined && !userProfileData?.calendar_info && calendarUrl?.startsWith(API_ENDPOINTS.skoopCalendarUrl) && (
+                    <div className="d-flex justify-content-end align-items-center">
+                      <span className="badge badge-pill orange-warning-badge">Calendar is not synced</span>
+                    </div>
+                  )}
+                  <div class="d-flex justify-content-end">
+                    <button type="submit" class="card-btn">
+                      Save
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -474,14 +479,16 @@ const UserSubscriptions = () => {
                   )}
                   <li class="d-flex justify-content-end align-items-center mt-1">
                     {/* <div className="cancel-subscription">View Payment</div> */}
-                    {subsriptionInfo?.current_plan_status!="lifetime" && <div
-                      className="cancel-subscription"
-                      onClick={() => {
-                        handleCancel()
-                      }}
-                    >
-                      Cancel Subscription
-                    </div>}
+                    {subsriptionInfo?.current_plan_status != 'lifetime' && (
+                      <div
+                        className="cancel-subscription"
+                        onClick={() => {
+                          handleCancel()
+                        }}
+                      >
+                        Cancel Subscription
+                      </div>
+                    )}
                   </li>
                 </ul>
               </>
@@ -536,6 +543,7 @@ function AccountSettings(props) {
     document.body.style.overflow = 'auto'
     window.open(url, '_blank')
   }
+
   return (
     <>
       {!expand && (

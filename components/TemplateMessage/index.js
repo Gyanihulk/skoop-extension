@@ -512,30 +512,7 @@ const SavedMessages = ({ appendToBody, close }) => {
       handleSaveMessage();
     }
   }, [saveMessagewithNext])
-  // useEffect(() => {
-  //   const handleClickOutside = (event) => {
-  //     event.stopPropagation();
-  //     // Check if the tour is not active
-  //     console.log(isToorActive ,isVideoTour)
-  //     if (!isToorActive && !isMessageTour && !isVideoTour) {
-  //       // Check if the click is inside the select dropdown
-  //       const isSelectDropdownClick = event.target.closest('#messages-dropdown');
-  //       // Close the dropdown only if the click is not inside the dropdown
-  //       if (toggleSelect && !isSelectDropdownClick) {
-  //         setToggleSelect(false);
-  //       }
-  //     }
-  //   };
-  
-  //   // Only attach the event listener if the dropdown is open and the tour is not active
-  //   if (toggleSelect && !isToorActive && !isMessageTour && !isVideoTour) {
-  //     document.addEventListener('click', handleClickOutside);
-  //   }
-  
-  //   return () => {
-  //     document.removeEventListener('click', handleClickOutside);
-  //   };
-  // }, [toggleSelect, isToorActive, isMessageTour, isVideoTour]); // Add tour status variables to the dependency array
+ 
   
   return (
     <div>

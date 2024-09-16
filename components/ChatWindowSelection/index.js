@@ -23,8 +23,8 @@ const ChatWindowSelection = () => {
       const allChatWindows = Array.from(document.getElementsByClassName('msg-convo-wrapper'))
       const validChatWindows = allChatWindows.filter((element) => checkForExistenceOfMessageWindow(element))
 
-      const profileUserName = document.querySelector('a>h1')?.innerText
-    
+      const profileUserName = document.querySelector('a>h1')?.innerText || ""
+
       var combinedArray = validChatWindows?.map((item, index) => {
         var nameOfRecipient
         if (item.querySelector('h2').innerText == 'New message') {
@@ -53,37 +53,42 @@ const ChatWindowSelection = () => {
         const name = document.querySelector('#thread-detail-jump-target').innerText
         combinedArray[0].name = name
       }
-      const buttons = document.querySelectorAll('.artdeco-button .artdeco-button__text');
-let addProfileName=false
-      // Iterate over the buttons and log their text content
-      buttons.forEach((span, index) => {
-        const buttonText = span.innerText.trim();
-        if (buttonText === 'Message') {
-          addProfileName=true
-        }
-      });
 
-      if (profileUserName && addProfileName) {
+     if(profileUserName.length>5){ const listItemElements = document.querySelectorAll('.artdeco-dropdown__content-inner li')
+      const profileCards = document.querySelectorAll('.artdeco-card');
+      const buttons = profileCards[0].querySelectorAll('.artdeco-button .artdeco-button__text');
+   
+      
+      const headingsArray = Array.from(listItemElements)
+        .map((li) => {
+          const spanElement = li.querySelector('span')
+          return spanElement ? spanElement.textContent.trim() : ''
+        })
+        .filter((text) => text) 
+
+      
+      const buttonsTextArray = Array.from(buttons).map((span) => span.innerText.trim())
+ 
+      if (!buttonsTextArray.includes('Connect') && !headingsArray.includes('Connect')) {
         // Extract the first name from profileUserName
-        const profileFirstName = profileUserName.split(' ')[0];
-  
+        const profileFirstName = profileUserName.split(' ')[0]
+
         // Check if any name in combinedArray starts with the profileFirstName
         const hasMatchingFirstName = combinedArray.some((element) => {
-          return element.name.startsWith(profileFirstName);
-        });
-  
+          return element.name.startsWith(profileFirstName)
+        })
+
         // Add error property if a matching first name is found
-        let errorProperty = hasMatchingFirstName ? { error: 'First name matches with an existing name' } : {};
+        let errorProperty = hasMatchingFirstName ? { error: 'First name matches with an existing name' } : {}
 
         combinedArray.unshift({
           name: profileUserName,
           index: 0,
           dataset: { type: 'profileCheckbox' },
           link: windowUrl,
-          ...errorProperty // Spread the errorProperty into the new object
-        });
-      }
-  
+          ...errorProperty, // Spread the errorProperty into the new object
+        })
+      }}
 
       return combinedArray
     } catch (error) {
@@ -109,7 +114,7 @@ let addProfileName=false
               .then(async (response) => {
                 if (!chrome.runtime.lastError) {
                   var combinedArray = response[0].result
-           
+
                   const seen = new Set()
                   const filteredArray = combinedArray.filter((element) => {
                     if (element.hasOwnProperty('dataset')) {
@@ -123,7 +128,7 @@ let addProfileName=false
                       return true
                     }
                   })
-               
+
                   setInitialItems(combinedArray)
 
                   const filtered = filteredArray.filter((item) => selectedChatWindows.some((secondItems) => secondItems.name === item.name))

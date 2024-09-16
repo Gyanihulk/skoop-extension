@@ -55,13 +55,11 @@ const WelcomeStripe = () => {
     <div className="welcome-main">
       <div className="welcome-content">
         <div className="w-100 top-header">
-          <img src="/screens/logo.png" alt="Skoop" />
-
-          <h3 className="welcome-title">Skoop</h3>
+        
           <h4 className="coupon-text">
             {coupon} <FaCheckCircle className="check-icon" color="#ffc107" />
           </h4>
-          <p> Coupon Applied .Please select your plan.</p>
+          <p> Coupon applied. Please select your plan.</p>
           {couponInfo && couponValid && (
             <div className="my-1 mx-0 px-0">
               {couponInfo?.discount && (
@@ -71,7 +69,7 @@ const WelcomeStripe = () => {
                 </span>
               )}
               {couponInfo?.discount?.trial_period && (
-                <span className="badge bg-warning text-dark fw-bold w-100" style={{ fontSize: '0.9rem', height: '24px' }}>
+                <span className="mt-1 badge bg-warning text-dark fw-bold w-100" style={{ fontSize: '0.9rem', height: '24px' }}>
                   Extended Trial period to {couponInfo?.discount.trial_period} days.
                 </span>
               )}
@@ -98,14 +96,14 @@ const WelcomeStripe = () => {
           </div>
         </div>
         {showClearSessionDialog  && <RemoveSessions onDelete={()=>deleteMyAllJwtSessionsBySocial()} />}
-        <div className="mt-2">
+        <div className="mt-5">
           <ContinueWithGoogleButton setSocial={setSocial} message="Continue with Google" />
           <ContinueWithLinkedInButton setSocial={setSocial} message="Continue with LinkedIn" />
         </div>
         <div className="text-center ">
-          <p className='mb-1 mt-1'>OR</p>
+          <p className='mb-1 mt-4'>OR</p>
         </div>
-        <div className="mt-1">
+        <div className="mt-4">
           {showEmailInput && <CustomInputBox type="text" placeholder="Enter Email" name="email" onChange={(e) => setEmail(e.target.value)} value={email} isEmpty={''} />}
           <div className={showEmailInput && 'mt-1'}>
             <CustomButton child={showEmailInput ? 'Activate with Email' : 'Continue with Email'} onClick={handleEmailButtonClick} />

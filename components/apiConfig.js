@@ -70,6 +70,7 @@ const API_ENDPOINTS = {
   recieveVerificationMail:`${backendUrl}/user/send-verify-email`,
   getProducts: `${backendUrl}/product`, //GET
   aiInteractions: `${backendUrl}/prompts/generate`, //Post
+  updateCtaStatus: `${backendUrl}/user/update-cta-link-status` //Put
 }
 
 // with POST or PATCH apis body is sent in JSON
