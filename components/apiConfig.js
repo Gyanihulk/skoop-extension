@@ -1,6 +1,6 @@
-// const backendUrl = "https://skoop.sumits.in"; //test
+const backendUrl = "https://skoop.sumits.in"; //test
 // const backendUrl = 'http://localhost:4000' //local
-const backendUrl = "https://api.skoopapp.com"; //prod
+// const backendUrl = "https://api.skoopapp.com"; //prod
 const API_ENDPOINTS = {
   backendUrl,
   skoopCalendarUrl: backendUrl == "https://api.skoopapp.com"?'https://crm.skoopapp.com':'https://skoopcrm.sumits.in', //https://skoopcrm.sumits.in
@@ -69,6 +69,7 @@ const API_ENDPOINTS = {
   appSettings: `${backendUrl}/app-config`,
   recieveVerificationMail:`${backendUrl}/user/send-verify-email`,
   getProducts: `${backendUrl}/product`, //GET
+  updateCtaStatus: `${backendUrl}/user/update-cta-link-status` //Put
 }
 
 // with POST or PATCH apis body is sent in JSON

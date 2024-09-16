@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
   const [isPro, setIsPro] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
   const { navigateToPage, activePage } = useContext(ScreenContext)
-  const { userSetting, setUserSetting, setEnableTutorialScreen, setLatestVideo, setLatestBlob ,setIsVideoContainer} = useContext(GlobalStatesContext)
+  const { userSetting, setUserSetting, setEnableTutorialScreen, setLatestVideo, setLatestBlob, setIsVideoContainer } = useContext(GlobalStatesContext)
   const [newUser, setNewUser] = useState(false)
   const [loadingAuthState, setLoadingAuthState] = useState(true)
   const [version, setVersion] = useState('0.0.0')
@@ -39,51 +39,46 @@ export const AuthProvider = ({ children }) => {
     max_videos: '15',
     trial_period_days: '30',
   })
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([])
   const getProducts = async () => {
     try {
       var response = await fetch(API_ENDPOINTS.getProducts, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          authorization: `Bearer ${JSON.parse(
-            localStorage.getItem('skoopCrmAccessToken')
-          )}`,
+          authorization: `Bearer ${JSON.parse(localStorage.getItem('skoopCrmAccessToken'))}`,
         },
-      });
+      })
 
       if (response.ok) {
-        let responseData = await response.json();
+        let responseData = await response.json()
         if (responseData && responseData?.length >= 2) {
-
-          let seen = new Set();
+          let seen = new Set()
           let filteredProducts = responseData
             .filter((product) => {
-              const productName = product.name.toLowerCase();
+              const productName = product.name.toLowerCase()
               if ((productName === 'monthly' || productName === 'yearly' || productName === 'weekly') && !seen.has(productName)) {
-                seen.add(productName);
-                return true;
+                seen.add(productName)
+                return true
               }
-              return false;
+              return false
             })
             .sort((a, b) => {
-              const nameA = a.name.toLowerCase();
-              const nameB = b.name.toLowerCase();
-              if (nameA === 'monthly') return -1;
-              if (nameB === 'monthly') return 1;
-              return 0;
-            });
-          setProducts(filteredProducts);
+              const nameA = a.name.toLowerCase()
+              const nameB = b.name.toLowerCase()
+              if (nameA === 'monthly') return -1
+              if (nameB === 'monthly') return 1
+              return 0
+            })
+          setProducts(filteredProducts)
           return filteredProducts
-        }
-        else if (responseData && responseData?.length > 0 && responseData?.length < 2) {
-          setProducts(responseData);
+        } else if (responseData && responseData?.length > 0 && responseData?.length < 2) {
+          setProducts(responseData)
           return responseData
         }
       }
-
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error('Error fetching products:', error)
     }
   }
   const getProfileDetails = async () => {
@@ -143,7 +138,7 @@ export const AuthProvider = ({ children }) => {
   const handleSkoopLogin = async (email, password) => {
     const toastId = toast.success('Signing In...')
     localStorage.setItem('userEmail', JSON.stringify(email))
-    
+
     setSocial(null)
     try {
       const response = await fetch(API_ENDPOINTS.signIn, {
@@ -305,7 +300,7 @@ export const AuthProvider = ({ children }) => {
       })
       if (Number(response.status) === 200) {
         navigateToPage('Home')
-        getProfileDetails();
+        getProfileDetails()
       } else {
         toast.error('Could not sign in.')
       }
@@ -324,12 +319,11 @@ export const AuthProvider = ({ children }) => {
       }
     } else if (userProfileDetail?.calendar_info === type) {
       return
-    } else if(userProfileDetail && userProfileDetail?.calendar_info?.length > 0 && type?.length === 0) {
-      handleCalendarAuthCode("", 'initialize');
-      return;
-    }
-    else if( type === "" || type?.length === 0) {
-      return;
+    } else if (userProfileDetail && userProfileDetail?.calendar_info?.length > 0 && type?.length === 0) {
+      handleCalendarAuthCode('', 'initialize')
+      return
+    } else if (type === '' || type?.length === 0) {
+      return
     }
 
     navigateToPage(' ')
@@ -384,7 +378,6 @@ export const AuthProvider = ({ children }) => {
     }
   }
   const handleRegister = async (fullname, email, password, timezone) => {
-
     try {
       localStorage.setItem('userEmail', JSON.stringify(email))
       localStorage.setItem('displayName', JSON.stringify(fullname))
@@ -606,7 +599,7 @@ export const AuthProvider = ({ children }) => {
   }
   const createSubscription = async (subscriptionData) => {
     const toastId = toast.loading('Processing Subscription...')
-    if (subscriptionType == 'monthly'|| subscriptionType == 'yearly') {
+    if (subscriptionType == 'monthly' || subscriptionType == 'yearly') {
       navigateToPage('PaymentScreen')
     }
     try {
@@ -623,10 +616,10 @@ export const AuthProvider = ({ children }) => {
         if (subscriptionType === 'freeTrial') {
           setIsPro(true)
           navigateToPage('ThankYouScreen')
-        } else if(response?.lifeTimeDealActivated){
+        } else if (response?.lifeTimeDealActivated) {
           setIsPro(true)
           navigateToPage('Home')
-        }else {
+        } else {
           chrome.identity.launchWebAuthFlow({ url: response.url, interactive: true }, async function (redirectUrl) {
             if (chrome.runtime.lastError || !redirectUrl) {
               // Handle errors or user cancellation here
@@ -769,9 +762,9 @@ export const AuthProvider = ({ children }) => {
     setIsPro(false)
     setNewUser(false)
     navigateToPage('SignInIntro')
-    setLatestVideo(null);
-    setLatestBlob({});
-    setIsVideoContainer(false);
+    setLatestVideo(null)
+    setLatestBlob({})
+    setIsVideoContainer(false)
   }
   const getMySubscription = async (videoId) => {
     try {
@@ -889,27 +882,48 @@ export const AuthProvider = ({ children }) => {
 
   const recieveVerificationMail = async () => {
     try {
-     
       let response = await fetch(API_ENDPOINTS.recieveVerificationMail, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json; charset=UTF-8",
+          'Content-Type': 'application/json; charset=UTF-8',
         },
         body: JSON.stringify({
-          email:JSON.parse(localStorage.getItem('userEmail')),
+          email: JSON.parse(localStorage.getItem('userEmail')),
         }),
-      });
+      })
 
-      let jsonResponse = await response.json();
+      let jsonResponse = await response.json()
       if (response.ok) {
-        toast.success(jsonResponse.message);
+        toast.success(jsonResponse.message)
       } else {
-        throw new Error(jsonResponse.message);
+        throw new Error(jsonResponse.message)
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message)
     }
-  };
+  }
+
+  const updateCtaStatus = async (status) => {
+    try {
+      const res = await fetch(API_ENDPOINTS.updateCtaStatus, {
+        method: 'PUT',
+        body: JSON.stringify({ ctaStatus: status }),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+        },
+      })
+      const data = await res.text()
+      if (res.ok) {
+        toast.success('Call to action information updated successfully')
+      } else {
+        throw new Error(data.message || 'Error Updating CTA Status')
+      }
+    } catch (err) {
+      toast.error(err.message || 'Failed to update calendar link. Please try again.')
+    }
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -975,7 +989,11 @@ export const AuthProvider = ({ children }) => {
         setSubscriptionType,
         getAppConfig,
         appConfig,
-        recieveVerificationMail,products, setProducts,getProducts
+        recieveVerificationMail,
+        products,
+        setProducts,
+        getProducts,
+        updateCtaStatus,
       }}
     >
       {children}
