@@ -233,7 +233,8 @@ async function makeAIInteractionsCall(button, query, commentBox, anchorTags = []
 }
 
 function getPreviousCommentsOfTheUser(parent, replieeNames) {
-    const commentsRepliesList = parent.querySelector('.comments-replies-list');
+    const commentsRepliesList = parent.querySelector('.comments-replies-list') ? parent.querySelector('.comments-replies-list') : parent.querySelector('.comments-comment-item__replies-list') ;
+
     if (!commentsRepliesList) {
        
         return [];
@@ -246,7 +247,6 @@ function getPreviousCommentsOfTheUser(parent, replieeNames) {
             return replieeElement &&  replieeNames.includes(replieeElement.textContent.trim());
         })
         .map(option => option.querySelector('.comments-comment-item__main-content').textContent.trim());
-
     
     return previousComments;
 }
@@ -304,7 +304,8 @@ function addButtonWithType(button, commentBox) {
         event.preventDefault();
         // Ensure we use the correct comment box for this button
         let parent = newButton.closest('.feed-shared-update-v2');
-        let commentBox = parent.querySelector('.comments-comment-box--cr .comments-comment-box-comment__text-editor');
+        let commentBox = parent.querySelector('.comments-comment-box-comment__text-editor');
+        
         if (commentBox) {
             let {query} = await createQueryForPostDescription(parent);
             if (query) {
@@ -341,10 +342,12 @@ function addButtonWithTypeToReply(button, commnetBox) {
     newButton.addEventListener('click', async (event) => {
         // Ensure we use the correct comment box for this button
         event.preventDefault();
-        let parent = event.target.closest('.comments-comment-entity');
-        let postContainer = event.target.closest('.feed-shared-update-v2'); 
-        let commentContainer = parent.querySelector('.update-components-text');
-        let replyCommentBox = parent.querySelector('.comments-comment-box-comment__text-editor');
+        let parent = event.target.closest('.comments-comment-entity') ? event.target.closest('.comments-comment-entity') : event.target.closest('.comments-comment-item');
+        let postContainer = event.target.closest('.feed-shared-update-v2');
+        
+        let commentContainer = parent ? parent.querySelector('.update-components-text') : '';
+        
+        let replyCommentBox = parent ? parent.querySelector('.comments-comment-box-comment__text-editor') : '';
         
         
         let postQuery = ''
@@ -491,14 +494,17 @@ function resetAndAddButtonsToAllReplyBoxes(parent) {
 
 // Process reply buttons dynamically
 function processReplyCommentBoxes() {
-    
+    console.log('reply is called ')
     document.body.addEventListener('click', function (event) {
         // Check if the clicked element is a reply button
-        const replyButton = event.target.closest('.comments-comment-social-bar__reply-action-button--cr');
+        const replyButton = event.target.closest('.reply');
+        
         if (replyButton) {
-            const commentContainer = replyButton.closest('.comments-comment-list__container');
-            const replyBox = commentContainer.querySelector('.comments-comment-box__form');
-           
+            const commentContainer = replyButton.closest('.comments-comments-list');
+            
+
+            const replyBox = commentContainer ? commentContainer.querySelector('.comments-comment-box__form') : '';
+            
     
             if (replyBox) {
                 // Call function to reset and re-add buttons for all reply boxes
@@ -507,6 +513,8 @@ function processReplyCommentBoxes() {
             } else {
                 console.log('Reply box not found');
             }
+        } else {
+            console.log('Reply button not found ');
         }
     });    
    
