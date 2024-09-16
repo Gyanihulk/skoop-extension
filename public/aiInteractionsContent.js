@@ -70,7 +70,7 @@ function processCommentBoxes() {
         if (commentBox) {
             addButtons(commentBox);
         } else {
-            console.error('comments-comment-box not found');
+            console.log('comments-comment-box not found');
         }
 
         if (!commentButton.hasAttribute('data-has-event-listener')) {
@@ -81,7 +81,7 @@ function processCommentBoxes() {
                 if (commentBox) {
                     addButtons(commentBox);
                 } else {
-                    console.error('comments-comment-box not found');
+                    console.log('comments-comment-box not found');
                 }
             });
             commentButton.setAttribute('data-has-event-listener', 'true');
@@ -209,7 +209,7 @@ async function makeAIInteractionsCall(button, query, commentBox, anchorTags = []
     const timeout13s = setTimeout(() => {
         controller.abort();  // Abort the aiInteractions request
         addLoadingMessageToCommentBox(commentBox, "Something has happened, please try again. If it presists, please refresh the page.");
-        console.error('aiInteractions request stopped due to timeout.');
+        console.log('aiInteractions request stopped due to timeout.');
     }, 16000);
 
     try {
@@ -225,7 +225,7 @@ async function makeAIInteractionsCall(button, query, commentBox, anchorTags = []
         // Add the generated response to the comment box
         await addGeneratedTextToCommentBox(response, commentBox, anchorTags);
     } catch (error) {
-        console.error("Error generating comment:", error);
+        console.log("Error generating comment:", error);
         clearTimeout(timeout5s);
         clearTimeout(timeout13s);
         await addGeneratedTextToCommentBox("Something has happened, please try again. If it presists, please refresh the page.", commentBox);
@@ -307,7 +307,6 @@ function addButtonWithType(button, commentBox) {
         let commentBox = parent.querySelector('.comments-comment-box--cr .comments-comment-box-comment__text-editor');
         if (commentBox) {
             let {query} = await createQueryForPostDescription(parent);
-
             if (query) {
                 await makeAIInteractionsCall(button, query, commentBox);
             } else {
@@ -315,6 +314,8 @@ function addButtonWithType(button, commentBox) {
                 await addLoadingMessageToCommentBox(commentBox, 'Unable to generate comment as there is no description.');
             }
 
+        } else {
+            console.log('comment box not found to add generated text');
         }
     });
     return newButton;
@@ -398,7 +399,7 @@ async function aiInteractions(type, query, signal) {
                 if (signal.aborted) {
                     reject(new DOMException('Request aborted', 'AbortError'));
                 } else if (chrome.runtime.lastError) {
-                    console.error(chrome.runtime.lastError);
+                    console.log(chrome.runtime.lastError);
                     reject(new Error('Failed to generate comment. Please try again'));
                 } else {
                     if (response) {
@@ -504,7 +505,7 @@ function processReplyCommentBoxes() {
                 resetAndAddButtonsToAllReplyBoxes(commentContainer);
     
             } else {
-                console.error('Reply box not found');
+                console.log('Reply box not found');
             }
         }
     });    
