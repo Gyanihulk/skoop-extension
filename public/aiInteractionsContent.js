@@ -191,8 +191,7 @@ async function createQueryForPostDescription(parent) {
 }
 
 async function makeAIInteractionsCall(button, query, commentBox, anchorTags = []) {
-    query = `${buttonsList?.mainPrompt}\n` + query + `\n\n${button.prompt}\nKeep it under ${button.length}. And use ${button.tone} tone.`;
-
+    
     // Display initial loading message
     await addLoadingMessageToCommentBox(commentBox, "Reading the post...");
 
@@ -209,7 +208,7 @@ async function makeAIInteractionsCall(button, query, commentBox, anchorTags = []
     const timeout13s = setTimeout(() => {
         controller.abort();  // Abort the aiInteractions request
         addLoadingMessageToCommentBox(commentBox, "Something has happened, please try again. If it presists, please refresh the page.");
-        console.log('aiInteractions request stopped due to timeout.');
+       
     }, 16000);
 
     try {
@@ -319,7 +318,8 @@ function addButtonWithType(button, commentBox) {
         if (commentBox) {
             let {query} = await createQueryForPostDescription(parent);
             if (query) {
-                await makeAIInteractionsCall(button, query, commentBox);
+                const queryForPost = `${buttonsList?.mainPrompt}\n` + query + `\n\n${button.prompt}\nKeep it under ${button.length}. And use ${button.tone} tone.`;
+                await makeAIInteractionsCall(button, queryForPost, commentBox);
             } else {
                 console.log('unable to form a query ');
                 await addLoadingMessageToCommentBox(commentBox, 'Unable to generate comment as there is no description.');
@@ -377,13 +377,17 @@ function addButtonWithTypeToReply(button, commnetBox) {
                 // let commentLanguage = await getPostLanguage(commentDescription);
                 query = `This is the post description:\n ${postQuery}\n
                 This is the main comment on the post:\n ${commentDescription}\n
-                Here are the mentioned names to whom you have to reply ${replieeNamesFromAnchorTags}. Consider comments of this mentioned names while replying.\
-                These are the thread comments from the users you are replying to:\n ${previousCommentsOfTheUser}\n (ignore names that are not present in the mentioned names in this thread comments)\n
-                If thread comments are available, prioritize replying to those. If no thread comments are present, reply to the main comment.\n
-                Generate the reply in the language of the thread comments, or if they are unavailable, use the language of the main comment.\
+                Here are the mentioned names to whom you need to reply: ${replieeNamesFromAnchorTags}. Please consider comments from these mentioned names while generating your reply.\n
+                These are the thread comments from the users you are replying to: \n${previousCommentsOfTheUser}\n (ignore any names that are not part of the mentioned names in these thread comments).\n
+                If thread comments are available, prioritize replying to them. If no thread comments are present, reply to the main comment instead.\n
+                Ensure the generated reply aligns with the context and is relatable to the thread comments (if available) or the main comment. The reply length should not exceed the length of the comment by more than 2 lines (e.g., if a comment is 1 line, your reply should be no more than 3 lines).\
+                Additionally, only reply to the mentioned names provided, excluding any others.\n
+                Generate the reply in the same language as the thread comments. If thread comments are unavailable, use the language of the main comment.\
                 Now generate an appropriate reply based on this context.`;
+
+                const queryForReply = `${buttonsList?.mainPrompt}\n` + query + `\n\n${button.prompt}\n. And use ${button.tone} tone.`;
                
-                await makeAIInteractionsCall(button, query, replyCommentBox, anchorTags);
+                await makeAIInteractionsCall(button, queryForReply, replyCommentBox, anchorTags);
             }
         }
     });
@@ -504,7 +508,6 @@ function resetAndAddButtonsToAllReplyBoxes(parent) {
 
 // Process reply buttons dynamically
 function processReplyCommentBoxes() {
-    console.log('reply is called ')
     document.body.addEventListener('click', function (event) {
         // Check if the clicked element is a reply button
         const replyButton = event.target.closest('.reply');
