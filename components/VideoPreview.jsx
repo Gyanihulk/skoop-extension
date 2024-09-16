@@ -13,6 +13,7 @@ import MessageContext from '../contexts/MessageContext'
 import DeleteModal from './DeleteModal'
 import ScreenContext from '../contexts/ScreenContext'
 import TourContext from '../contexts/TourContext.js'
+import AuthContext from '../contexts/AuthContext.js'
 
 export const VideoPreview = () => {
   const [thumbnailImage, setThumbnailImage] = useState('/images/videoProcessing.png')
@@ -26,6 +27,8 @@ export const VideoPreview = () => {
   const [isDeleteModal, setIsDeleteModal] = useState(false)
   const { activePage } = useContext(ScreenContext)
   const { getDownloadLink, getThumbnail } = useContext(MediaUtilsContext)
+  const { ctaStatus } = useContext(AuthContext)
+  
   const { componentsVisible, isVideoTour, activeTourStepIndex, initializeTour, startTour, setStepIndex } = useContext(TourContext)
   useEffect(() => {
     if (latestVideo?.urlForThumbnail) {
@@ -178,6 +181,7 @@ export const VideoPreview = () => {
     setShowBookingLink(e.target.checked)
     await updateBookingLinkOfVideo(latestVideo.facade_player_uuid, e.target.checked)
   }
+
   return (
     <>
       {showRenamePopup && (
@@ -207,8 +211,8 @@ export const VideoPreview = () => {
               </div>
               <div className="d-flex align-items-center">
                 <div id="booking-switch">
-                  <Form title="Show Booking Link">
-                    <Form.Check type="switch" checked={showBookingLink} onChange={handleSwitchChange} className="small-switch video-preview-icon" id="video-container-switch" />
+                  <Form title={!ctaStatus? "Please switch on CTA Link from Account Settings":"Show Booking Link"}>
+                    <Form.Check disabled={!ctaStatus} type="switch" checked={!ctaStatus ?false:showBookingLink} onChange={handleSwitchChange} className="small-switch video-preview-icon" id="video-container-switch" />
                   </Form>
                 </div>
                 <BsThreeDotsVertical id="video-menu" title="Menu" className="video-preview-icon" size={12} onClick={() => setShowVideoOptionsDialog(!showVideoOptionsDialog)} color="white" />

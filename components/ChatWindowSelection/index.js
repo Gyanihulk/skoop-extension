@@ -68,7 +68,7 @@ const ChatWindowSelection = () => {
 
       
       const buttonsTextArray = Array.from(buttons).map((span) => span.innerText.trim())
-      console.log(buttonsTextArray,headingsArray,profileUserName)
+ 
       if (!buttonsTextArray.includes('Connect') && !headingsArray.includes('Connect')) {
         // Extract the first name from profileUserName
         const profileFirstName = profileUserName.split(' ')[0]

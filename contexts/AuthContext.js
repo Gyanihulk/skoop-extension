@@ -40,6 +40,21 @@ export const AuthProvider = ({ children }) => {
     trial_period_days: '30',
   })
   const [products, setProducts] = useState([])
+  const [calendarUrl, setCalendarUrl] = useState('')
+  const [ctaText, setCTAText] = useState('')
+  const [ctaStatus, setCtaStatus] = useState(false)
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const result = await getCtaInfo()
+        // Do something with the result
+      } catch (error) {
+        // Handle errors if any
+        console.error(error)
+      }
+    })()
+  }, [])
   const getProducts = async () => {
     try {
       var response = await fetch(API_ENDPOINTS.getProducts, {
@@ -568,6 +583,10 @@ export const AuthProvider = ({ children }) => {
       })
       if (Number(response.status) === 200) {
         const data = await response.json()
+
+        setCalendarUrl(data.url)
+        setCTAText(data.text)
+        setCtaStatus(data.status)
         return data
       } else {
         toast.error('Could not cta info.')
@@ -994,6 +1013,12 @@ export const AuthProvider = ({ children }) => {
         setProducts,
         getProducts,
         updateCtaStatus,
+        calendarUrl,
+        setCalendarUrl,
+        ctaText,
+        setCTAText,
+        ctaStatus,
+        setCtaStatus,
       }}
     >
       {children}

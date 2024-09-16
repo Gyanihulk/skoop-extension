@@ -281,13 +281,11 @@ const SettingsPassword = () => {
 }
 
 const CalendarUrlForm = ({ userProfileData }) => {
-  const [calendarUrl, setCalendarUrl] = useState('')
-  const [ctaText, setCTAText] = useState('')
-  const [ctaStatus, setCtaStatus] = useState(false)
+
   const [toggleInfo, setToggleInfo] = useState(false)
   const [preferences, setPreferences] = useState([])
   const [showResetButton, setshowResetButton] = useState(false)
-  const { getCalendarUrl, getUserPreferences, getCtaInfo ,updateCtaStatus} = useContext(AuthContext)
+  const { getCalendarUrl, getUserPreferences, getCtaInfo ,updateCtaStatus,calendarUrl, setCalendarUrl,ctaText, setCTAText,ctaStatus, setCtaStatus} = useContext(AuthContext)
 
   const checkForDefaultUrl = async (url) => {
     if (userProfileData && userProfileData.email && url) {
@@ -306,11 +304,7 @@ const CalendarUrlForm = ({ userProfileData }) => {
   const getData = async () => {
     const preference = await getUserPreferences()
     setPreferences(preference)
-    const info = await getCtaInfo()
-    console.log(info)
-    setCalendarUrl(info.url)
-    setCTAText(info.text)
-    setCtaStatus(info.status)
+
     checkForDefaultUrl(info.url)
   }
 

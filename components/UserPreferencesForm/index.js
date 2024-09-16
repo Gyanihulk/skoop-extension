@@ -304,7 +304,7 @@ const UserPreferencesForm = ({ heading, collapse = false, showSkip }) => {
       toast.error('Character limit exceeded (Max: 230 characters)')
     }
   }
-  console.log(userProfileDetail)
+
   return (
     <>
       {!isTimezoneScreen && (
