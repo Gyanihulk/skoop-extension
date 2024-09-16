@@ -233,21 +233,31 @@ async function makeAIInteractionsCall(button, query, commentBox, anchorTags = []
 }
 
 function getPreviousCommentsOfTheUser(parent, replieeNames) {
-    const commentsRepliesList = parent.querySelector('.comments-replies-list') ? parent.querySelector('.comments-replies-list') : parent.querySelector('.comments-comment-item__replies-list') ;
+    // Select the replies list container
+    const commentsRepliesList = parent.querySelector('.comments-replies-list') || parent.querySelector('.comments-comment-item__replies-list');
 
     if (!commentsRepliesList) {
-       
-        return [];
+        return []; 
     }
-   
 
-    const previousComments = [...commentsRepliesList.querySelectorAll('.comments-comment-entity')]
-        .filter(option => {
-            const replieeElement = option.querySelector('.comments-comment-meta__description-title');
-            return replieeElement &&  replieeNames.includes(replieeElement.textContent.trim());
-        })
-        .map(option => option.querySelector('.comments-comment-item__main-content').textContent.trim());
-    
+    // Helper function to get comments from different class structures
+    const getComments = (selector, replieeSelector) => {
+        return [...commentsRepliesList.querySelectorAll(selector)]
+            .filter(option => {
+                const replieeElement = option.querySelector(replieeSelector);
+                return replieeElement && replieeNames.includes(replieeElement.textContent.trim());
+            })
+            .map(option => option.querySelector('.comments-comment-item__main-content').textContent.trim());
+    };
+
+    // Try first class names, then fallback if no comments are found
+    const previousComments = getComments('.comments-comment-entity', '.comments-comment-meta__description-title');
+
+    // If no comments are found, try the alternate class names
+    if (previousComments.length === 0) {
+        return getComments('.comments-comment-item', '.comments-post-meta__name-text');
+    }
+
     return previousComments;
 }
 
