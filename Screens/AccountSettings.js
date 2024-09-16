@@ -281,11 +281,10 @@ const SettingsPassword = () => {
 }
 
 const CalendarUrlForm = ({ userProfileData }) => {
-
   const [toggleInfo, setToggleInfo] = useState(false)
   const [preferences, setPreferences] = useState([])
   const [showResetButton, setshowResetButton] = useState(false)
-  const { getCalendarUrl, getUserPreferences, getCtaInfo ,updateCtaStatus,calendarUrl, setCalendarUrl,ctaText, setCTAText,ctaStatus, setCtaStatus} = useContext(AuthContext)
+  const { getCalendarUrl, getUserPreferences, getCtaInfo, updateCtaStatus, calendarUrl, setCalendarUrl, ctaText, setCTAText, ctaStatus, setCtaStatus } = useContext(AuthContext)
 
   const checkForDefaultUrl = async (url) => {
     if (userProfileData && userProfileData.email && url) {
@@ -304,7 +303,7 @@ const CalendarUrlForm = ({ userProfileData }) => {
   const getData = async () => {
     const preference = await getUserPreferences()
     setPreferences(preference)
-
+    const info =getCtaInfo()
     checkForDefaultUrl(info.url)
   }
 
@@ -372,10 +371,17 @@ const CalendarUrlForm = ({ userProfileData }) => {
   }
   return (
     <div className="card border-radius-12 overflow-hidden">
-      <div className="light-pink card-header-custom d-flex justify-content-between align-items-center" onClick={() => setToggleInfo(!toggleInfo)} aria-expanded={toggleInfo} aria-controls="appointment-collapse">
-        <h6 className="mb-0 card-title">Call To Action</h6>
-        <div>
-          <FaAngleDown style={toggleInfo ? { transform: 'rotate(180deg)' } : { transform: 'rotate(0deg)' }} />
+      <div className="light-pink card-header-custom d-flex justify-content-between align-items-center" aria-expanded={toggleInfo} aria-controls="appointment-collapse">
+        <h6 className="mb-0 card-title" onClick={() => setToggleInfo(!toggleInfo)}>
+          Call To Action
+        </h6>
+        <div className="d-flex">
+          <div id="booking-switch" >
+            <Form title="Show Cta Link">
+              <Form.Check type="switch" checked={ctaStatus} onChange={handleSwitchChange} className="small-switch video-preview-icon" id="video-container-switch" />
+            </Form>
+          </div>
+          {ctaStatus && <FaAngleDown onClick={() => setToggleInfo(!toggleInfo)} style={toggleInfo ? { transform: 'rotate(180deg)' } : { transform: 'rotate(0deg)' }} />}
         </div>
       </div>
       <Collapse in={toggleInfo}>
@@ -385,13 +391,8 @@ const CalendarUrlForm = ({ userProfileData }) => {
               <div className="container my-3">
                 <div className="d-flex justify-content-between align-items-center mt-3 mt-1">
                   <label className="form-label profile-text">Call To Action Text</label>{' '}
-                  <div id="booking-switch">
-                    <Form title="Show Cta Link">
-                      <Form.Check type="switch" checked={ctaStatus} onChange={handleSwitchChange} className="small-switch video-preview-icon" id="video-container-switch" />
-                    </Form>
-                  </div>
                 </div>
-                <input type="text" className="form-control custom-input-global" id="calendarUrl" name="calendarUrl" value={ctaText} onChange={handleCtaTextChange} placeholder="Enter Text For Button." required />
+                <input type="text" disabled={!ctaStatus} className="form-control custom-input-global" id="calendarUrl" name="calendarUrl" value={ctaText} onChange={handleCtaTextChange} placeholder="Enter Text For Button." required />
 
                 <div className="d-flex justify-content-between align-items-center mt-2 mt-1">
                   <label htmlFor="calendarUrl" className="form-label profile-text ">
@@ -399,7 +400,7 @@ const CalendarUrlForm = ({ userProfileData }) => {
                   </label>
                   {showResetButton && <GrPowerReset className="ms-1" title="Reset to Skoop Calendar Booking Link" onClick={resetAppointmentLink} />}
                 </div>
-                <input type="text" className="form-control custom-input-global" id="calendarUrl" name="calendarUrl" value={calendarUrl} onChange={handleChange} placeholder="Enter your calendar link" required />
+                <input type="text" disabled={!ctaStatus} className="form-control custom-input-global" id="calendarUrl" name="calendarUrl" value={calendarUrl} onChange={handleChange} placeholder="Enter your calendar link" required />
 
                 <div className={`mt-1 d-flex ${preferences?.length == 0 ? 'justify-content-between' : 'justify-content-end'}`}>
                   {preferences?.length == 0 && calendarUrl.startsWith(API_ENDPOINTS.skoopCalendarUrl) && (
