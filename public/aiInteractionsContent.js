@@ -9,7 +9,7 @@ const buttonsList = {
          "title": "Discovery",
          "prompt": "The above is a post on LinkedIn. I want to be an authoritative and insightful LinkedIn user who is friendly in response to the post. Write and add brand new insights in response to the post and make sure not to repeat what has already been said in the post. Use new words, phrases, ideas, and insights. Keep it short and professional. For every response use new starting sentence, new words, and phrases. Give precise response. Please give a response in the language of the above LinkedIn post.",
          "length": "four lines to eight lines",
-         "tone": "friendly"
+         "tone": "friendly, concise"
      },
      {
          "id": 2,
@@ -64,7 +64,7 @@ function processCommentBoxes() {
         }
     }
     Array.from(comments).forEach((commentButton) => {
-        let parent = commentButton.closest('.update-v2-social-activity');
+        let parent = commentButton.closest('.feed-shared-update-v2');
        
         let commentBox = parent ? parent.querySelector('.feed-shared-update-v2__comments-container').querySelector('.comments-comment-box__form') : '';
         if (commentBox) {
@@ -75,7 +75,7 @@ function processCommentBoxes() {
 
         if (!commentButton.hasAttribute('data-has-event-listener')) {
             commentButton.addEventListener('click', async (event) => {
-                let parent = event.target.closest('.update-v2-social-activity');
+                let parent = event.target.closest('.feed-shared-update-v2');
                 
                 let commentBox = parent ? parent.querySelector('.feed-shared-update-v2__comments-container').querySelector('.comments-comment-box__form') : '';
                 if (commentBox) {
@@ -278,7 +278,7 @@ function addSectionWithButton(commentBox, forReply = false) {
     
     newSection.style.display = 'flex';
     newSection.style.flexWrap = 'wrap';
-    newSection.style.gap = '10px';
+    newSection.style.gap = '3px';
 
     newSection.style.position = 'relative';
 
@@ -328,7 +328,7 @@ function addSectionWithButton(commentBox, forReply = false) {
     
 }
 
-function addButtonWithType(button, commentBox) {
+function createButton(button) {
     const newButton = document.createElement('button');
     newButton.className = 'rounded-button';
     newButton.textContent = button.title;
@@ -336,12 +336,18 @@ function addButtonWithType(button, commentBox) {
     newButton.style.height = '30px';
     newButton.style.padding = '0 15px';
     newButton.style.border = '1px solid';
-    newButton.style.backgroundColor = '#089cf5';
+    newButton.style.backgroundColor = '#2d68c4';
     newButton.style.cursor = 'pointer';
     newButton.style.outline = 'none';
     newButton.style.color = 'white';
     newButton.style.fontSize = '12px';
     newButton.style.whiteSpace = 'nowrap';
+
+    return newButton;
+}
+
+function addButtonWithType(button, commentBox) {
+    const newButton = createButton(button);
 
     newButton.addEventListener('click', async (event) => {
         event.preventDefault();
@@ -366,21 +372,7 @@ function addButtonWithType(button, commentBox) {
 }
 
 function addButtonWithTypeToReply(button, commnetBox) {
-    const newButton = document.createElement('button');
-    newButton.className = 'rounded-button';
-    newButton.textContent = button.title;
-    newButton.style.borderRadius = '15px';
-    newButton.style.height = '30px';
-    newButton.style.padding = '0 15px';
-    newButton.style.border = '1px solid';
-    newButton.style.backgroundColor = '#089cf5';
-    newButton.style.cursor = 'pointer';
-    newButton.style.outline = 'none';
-    newButton.style.color = 'white';
-    newButton.style.fontSize = '12px';
-    newButton.style.whiteSpace = 'nowrap';
-
-   
+    const newButton = createButton(button);
 
     newButton.addEventListener('click', async (event) => {
         // Ensure we use the correct comment box for this button
