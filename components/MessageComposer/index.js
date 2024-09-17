@@ -19,6 +19,7 @@ import ScreenContext from '../../contexts/ScreenContext.js'
 import { MdOutlineFileUpload } from 'react-icons/md'
 import { useRecording } from '../../contexts/RecordingContext.js'
 import { FaRegClipboard } from 'react-icons/fa'
+import { TbCut } from "react-icons/tb";
 import { MdCallToAction } from 'react-icons/md'
 import TourContext from '../../contexts/TourContext.js'
 const MessageComposer = () => {
@@ -28,13 +29,12 @@ const MessageComposer = () => {
   const { isGmail, isLinkedin, selectedChatWindows, focusedElementId, isProfilePage, isVideoContainer, setIsVideoContainer, expand, setLatestBlob, setLatestVideo, latestBlob, postCommentSelected, postCommentElement, isMatchingUrl } =
     useContext(GlobalStatesContext)
   const { message, addMessage, setMessage } = useContext(MessageContext)
-  const { getCalendarUrl, getUserPreferences, getProfileDetails, userProfileDetail } = useContext(AuthContext)
+  const { getCalendarUrl, getUserPreferences, getProfileDetails, userProfileDetail, ctaStatus } = useContext(AuthContext)
   const { uploadVideo } = useContext(MediaUtilsContext)
   const { addToMessage } = useContext(MessageContext)
   const { navigateToPage, activePage } = useContext(ScreenContext)
   const { isRecordStart } = useRecording()
-  const { messageRef, isToorActive, isVideoTour, isMessageSended, setIsMessageSended, setSendMessages, isMessageTour, activeTourStep, activeTourStepIndex,componentsVisible, renderNext, activeTourName, sendMessages  } = useContext(TourContext);
-
+  const { messageRef, isToorActive, isVideoTour, isMessageSended, setIsMessageSended, setSendMessages, isMessageTour, activeTourStep, activeTourStepIndex, componentsVisible, renderNext, activeTourName, sendMessages } = useContext(TourContext)
 
   const handleInsertion = (text) => {
     const newText = text + ' \n '
@@ -43,18 +43,17 @@ const MessageComposer = () => {
   }
 
   useEffect(() => {
-    if(isMessageTour) {
-      if([0, 1].includes(componentsVisible?.renderItem)) {
-        setDisplayComp('Message');
-        renderNext();
+    if (isMessageTour) {
+      if ([0, 1].includes(componentsVisible?.renderItem)) {
+        setDisplayComp('Message')
+        renderNext()
       }
     }
 
-    if(isVideoTour && [5, 6].includes(componentsVisible?.renderItem)) {
-      setDisplayComp('Message');
-      renderNext();
+    if (isVideoTour && [5, 6].includes(componentsVisible?.renderItem)) {
+      setDisplayComp('Message')
+      renderNext()
     }
-
   }, [componentsVisible])
 
   useEffect(() => {
@@ -77,15 +76,15 @@ const MessageComposer = () => {
   const checkForUserPreferences = async () => {
     const userPreferences = await getUserPreferences()
     const url = await getCalendarUrl()
-    let user = userProfileDetail;
-    if(!user) {
-      user = await getProfileDetails();
+    let user = userProfileDetail
+    if (!user) {
+      user = await getProfileDetails()
     }
 
     if (url.startsWith(API_ENDPOINTS.skoopCalendarUrl)) {
       if (userPreferences && userPreferences.length > 0) {
-        if(user && user?.calendar_info) {
-          return true;
+        if (user && user?.calendar_info) {
+          return true
         } else {
           toast.error('Please sync your calendar from account settings page.')
           return false
@@ -102,16 +101,14 @@ const MessageComposer = () => {
   const handleIconClick = async (eventKey) => {
     setLatestBlob({})
     setLatestVideo()
-    if( isMessageTour && [0, 6].includes(activeTourStepIndex)) {
-        renderNext();
-    }
-
-    else if( isVideoTour && activeTourStepIndex === 5 ) {
-      renderNext();
+    if (isMessageTour && [0, 6].includes(activeTourStepIndex)) {
+      renderNext()
+    } else if (isVideoTour && activeTourStepIndex === 5) {
+      renderNext()
     }
 
     if (eventKey === 'CTA-Link') {
-      if (await checkForUserPreferences()) {
+      if ((await checkForUserPreferences()) && ctaStatus) {
         setDisplayComp(eventKey)
         addMeetSchedulingLink()
         return
@@ -138,11 +135,11 @@ const MessageComposer = () => {
   const renderNavItem = (eventKey, icon, tooltipText) => {
     return (
       <li key={eventKey} className="cursor-pointer">
-      <a className={`px-1 ${displayComp === eventKey ? 'text-black' : 'text-white'}`} onClick={() => handleIconClick(eventKey)} data-bs-toggle="tooltip" data-bs-placement="bottom" title={tooltipText}>
-        {React.cloneElement(icon, { size: 20 })}
-        <span className="d-none d-sm-inline">{tooltipText}</span>
-      </a>
-    </li>
+        <a className={`px-1 ${displayComp === eventKey ? 'text-black' : 'text-white'}`} onClick={() => handleIconClick(eventKey)} data-bs-toggle="tooltip" data-bs-placement="bottom" title={tooltipText}>
+          {React.cloneElement(icon, { size: 20 })}
+          <span className="d-none d-sm-inline">{tooltipText}</span>
+        </a>
+      </li>
     )
   }
 
@@ -220,16 +217,15 @@ const MessageComposer = () => {
   }
 
   const handleInsertionToWebsite = async () => {
-
     if (message === null || message === undefined) {
       toast.error('Please add message!!')
       return
     }
-    if((isMessageTour && activeTourStep?.level === 13) || (isVideoTour && activeTourStep?.level === 16)) {
-      setSendMessages(true);
-      setIsMessageSended(true);
-      renderNext();
-   }
+    if ((isMessageTour && activeTourStep?.level === 13) || (isVideoTour && activeTourStep?.level === 16)) {
+      setSendMessages(true)
+      setIsMessageSended(true)
+      renderNext()
+    }
 
     if (isLinkedin) {
       if (!postCommentSelected && selectedChatWindows?.length === 0) {
@@ -311,17 +307,19 @@ const MessageComposer = () => {
       toast.error('Failed to add as template message. Please try again.')
     }
   }
-  const renderNavButtonItem = (eventKey, icon, tooltipText, itemReference=null) => (
-    <li id={eventKey} key={eventKey} className={`rounded-1 p-1 ${displayComp === eventKey ? 'bg-active active ' : ''}`}>
-      <a ref={itemReference} className={`text-decoration-none ${displayComp === eventKey ? 'text-white' : 'text-black'}`} onClick={() => handleIconClick(eventKey)} data-bs-toggle="tooltip" data-bs-placement="bottom" title={tooltipText}>
-        <div className="d-flex flex-column align-items-center justify-content-center">
-          {React.cloneElement(icon, {
-            className: `svg-icon ${displayComp === eventKey ? 'active-path' : 'default-path'}`,
-          })}
-          <span className="nav-item-label">{eventKey}</span>
-        </div>
-      </a>
-    </li>
+  const renderNavButtonItem = (eventKey, icon, tooltipText, itemReference = null, disabled = false, disableText = false) => (
+    <div class={disabled && 'tooltip-wrapper'} data-bs-toggle="tooltip" data-bs-placement="bottom" title={disableText}>
+      <li disabled={disabled} id={eventKey} key={eventKey} className={`rounded-1 p-1 ${displayComp === eventKey ? 'bg-active active' : ''} ${disabled ? 'disabled-class' : ''}`}>
+        <a disaref={itemReference} className={`text-decoration-none ${displayComp === eventKey ? 'text-white' : 'text-black'}`} onClick={() => handleIconClick(eventKey)} data-bs-toggle="tooltip" data-bs-placement="bottom" title={tooltipText}>
+          <div className="d-flex flex-column align-items-center justify-content-center">
+            {React.cloneElement(icon, {
+              className: `svg-icon ${displayComp === eventKey ? 'active-path' : 'default-path'}`,
+            })}
+            <span className="nav-item-label">{eventKey}</span>
+          </div>
+        </a>
+      </li>
+    </div>
   )
   function dataURLtoBlob(dataurl) {
     var arr = dataurl.split(','),
@@ -337,11 +335,11 @@ const MessageComposer = () => {
   const uploadVideoHandler = async (event) => {
     const file = event.target.files[0]
     event.target.value = null
-    
+
     if (file) {
       let fileSizeInMB = file.size / (1024 * 1024)
       fileSizeInMB = fileSizeInMB.toFixed(2)
-      
+
       if (fileSizeInMB > 80) {
         toast.error('Video size should not be more than 50 mb.')
         // return
@@ -383,30 +381,33 @@ const MessageComposer = () => {
     addMessage('' + event.emoji)
   }
 
-  const triggerFunction = () => {
-    // Your function logic here...
 
-    // Trigger the flash effect
-    setFlashTrigger((prevCount) => prevCount + 1)
-  }
   function handleCopy() {
-    handleCopyToClipboard(message);
-    toast.success('Message copied.');
-    triggerFunction()
-    if((isMessageTour && activeTourStep?.level === 13) || (isVideoTour && activeTourStep?.level === 16)) {
-      renderNext();
-   }
+    handleCopyToClipboard(message)
+    toast.success('Message copied.')
+    setFlashTrigger((prevCount) => prevCount + 1)
+    if ((isMessageTour && activeTourStep?.level === 13) || (isVideoTour && activeTourStep?.level === 16)) {
+      renderNext()
+    }
   }
+  function handleCut() {
+    handleCopyToClipboard(message)
+    toast.success('Message cut.')
+    setFlashTrigger((prevCount) => prevCount + 1)
+    setMessage()
+    if ((isMessageTour && activeTourStep?.level === 13) || (isVideoTour && activeTourStep?.level === 16)) {
+      renderNext()
+    }
 
+  }
   useEffect(() => {
-      if(isToorActive && sendMessages && !isMessageSended) {
-        
-        if( isMatchingUrl) {
-          handleInsertionToWebsite();
-        } else {
-          handleCopy();
-        }
+    if (isToorActive && sendMessages && !isMessageSended) {
+      if (isMatchingUrl) {
+        handleInsertionToWebsite()
+      } else {
+        handleCopy()
       }
+    }
   }, [sendMessages])
 
   return (
@@ -472,17 +473,20 @@ const MessageComposer = () => {
                     <path d="M29.35,6.88,25.11,2.63a3,3,0,0,0-4.23,0L14.64,8.81a3,3,0,0,0,0,4.25l1.44,1.45-1.54,1.54-1.42-1.42a3,3,0,0,0-4.24,0L2.65,20.8a3,3,0,0,0,0,4.26L6.88,29.3A3,3,0,0,0,9,30.17a3,3,0,0,0,2.11-.86l6.23-6.19A3,3,0,0,0,18.24,21a3,3,0,0,0-.88-2.13L16,17.46l1.54-1.54,1.39,1.38a3,3,0,0,0,4.23,0l6.23-6.18A2.94,2.94,0,0,0,30.23,9,3,3,0,0,0,29.35,6.88ZM15.94,20.29a1,1,0,0,1,.3.71,1,1,0,0,1-.3.7L9.71,27.89a1,1,0,0,1-1.41,0L4.06,23.64a1,1,0,0,1-.3-.71,1,1,0,0,1,.3-.71L10.29,16a1,1,0,0,1,1.41,0l1.42,1.42-2.83,2.83,1.42,1.42,2.83-2.83Zm12-10.58L21.7,15.89a1,1,0,0,1-1.41,0l-1.38-1.38,2.8-2.8-1.42-1.42-2.8,2.8-1.44-1.44a1,1,0,0,1,0-1.42l6.23-6.18A1,1,0,0,1,23,3.76a1,1,0,0,1,.71.29l4.24,4.24a1,1,0,0,1,0,1.42Z" />
                   </g>
                 </svg>,
-                'Call to action link.'
+                'Call to action link.',
+                null,
+                !ctaStatus,
+                'Please switch on the CTA link from Account Settings'
               )}
             </ul>
           </div>
         </nav>
       ) : null}
-      <div className="container bg-white" >
+      <div className="container bg-white">
         {displayComp === 'Message' && <MessageTemplate appendToBody={handleInsertion} close={setDisplayComp} />}
         {displayComp === 'ChatGpt' && <ChatGpt appendToBody={handleInsertion} close={setDisplayComp} />}
         <div id="preview-uploaded-video">
-        <VideoPreview />
+          <VideoPreview />
         </div>
       </div>
       {!expand && (
@@ -501,7 +505,8 @@ const MessageComposer = () => {
                 {renderNavItem(
                   'Emoji',
                   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path id="emoji"
+                    <path
+                      id="emoji"
                       d="M11.625 8.25C11.9375 8.25 12.2031 8.14063 12.4219 7.92188C12.6406 7.70312 12.75 7.4375 12.75 7.125C12.75 6.8125 12.6406 6.54688 12.4219 6.32812C12.2031 6.10937 11.9375 6 11.625 6C11.3125 6 11.0469 6.10937 10.8281 6.32812C10.6094 6.54688 10.5 6.8125 10.5 7.125C10.5 7.4375 10.6094 7.70312 10.8281 7.92188C11.0469 8.14063 11.3125 8.25 11.625 8.25ZM6.375 8.25C6.6875 8.25 6.95312 8.14063 7.17188 7.92188C7.39063 7.70312 7.5 7.4375 7.5 7.125C7.5 6.8125 7.39063 6.54688 7.17188 6.32812C6.95312 6.10937 6.6875 6 6.375 6C6.0625 6 5.79688 6.10937 5.57812 6.32812C5.35937 6.54688 5.25 6.8125 5.25 7.125C5.25 7.4375 5.35937 7.70312 5.57812 7.92188C5.79688 8.14063 6.0625 8.25 6.375 8.25ZM9 13.125C9.85 13.125 10.6219 12.8844 11.3156 12.4031C12.0094 11.9219 12.5125 11.2875 12.825 10.5H5.175C5.4875 11.2875 5.99062 11.9219 6.68437 12.4031C7.37812 12.8844 8.15 13.125 9 13.125ZM9 16.5C7.9625 16.5 6.9875 16.3031 6.075 15.9094C5.1625 15.5156 4.36875 14.9813 3.69375 14.3063C3.01875 13.6313 2.48438 12.8375 2.09063 11.925C1.69687 11.0125 1.5 10.0375 1.5 9C1.5 7.9625 1.69687 6.9875 2.09063 6.075C2.48438 5.1625 3.01875 4.36875 3.69375 3.69375C4.36875 3.01875 5.1625 2.48438 6.075 2.09063C6.9875 1.69687 7.9625 1.5 9 1.5C10.0375 1.5 11.0125 1.69687 11.925 2.09063C12.8375 2.48438 13.6313 3.01875 14.3063 3.69375C14.9813 4.36875 15.5156 5.1625 15.9094 6.075C16.3031 6.9875 16.5 7.9625 16.5 9C16.5 10.0375 16.3031 11.0125 15.9094 11.925C15.5156 12.8375 14.9813 13.6313 14.3063 14.3063C13.6313 14.9813 12.8375 15.5156 11.925 15.9094C11.0125 16.3031 10.0375 16.5 9 16.5ZM9 15C10.675 15 12.0938 14.4188 13.2563 13.2563C14.4188 12.0938 15 10.675 15 9C15 7.325 14.4188 5.90625 13.2563 4.74375C12.0938 3.58125 10.675 3 9 3C7.325 3 5.90625 3.58125 4.74375 4.74375C3.58125 5.90625 3 7.325 3 9C3 10.675 3.58125 12.0938 4.74375 13.2563C5.90625 14.4188 7.325 15 9 15Z"
                       fill="white"
                     />
@@ -523,6 +528,9 @@ const MessageComposer = () => {
               </ul>
             </div>
             <div className="d-flex flex-row  align-items-right me-2">
+              <button id="copy-message" className="copy-icon" onClick={handleCut} title="Cut the message">
+                <TbCut title="Cut the message" />
+              </button>
               {isMatchingUrl && (
                 <button id="copy-message" className="copy-icon" onClick={handleCopy} title="Copy the message">
                   <FaRegClipboard title="Copy the message" />

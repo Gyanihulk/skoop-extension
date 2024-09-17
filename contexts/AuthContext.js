@@ -586,7 +586,7 @@ export const AuthProvider = ({ children }) => {
 
         setCalendarUrl(data.url)
         setCTAText(data.text)
-        setCtaStatus(data.status)
+        setCtaStatus(Boolean(data.status))
         return data
       } else {
         toast.error('Could not cta info.')
