@@ -992,6 +992,7 @@ document.addEventListener('focusin', (event) => {
     // Determine which identifier is present on the parentElement
     let identifierType
     let identifierValue
+    let isCommentGenerated
 
     if (parentElement.hasAttribute('data-id')) {
       identifierType = 'data-id'
@@ -1004,6 +1005,11 @@ document.addEventListener('focusin', (event) => {
       identifierValue = parentElement.getAttribute('data-chameleon-result-urn')
     }
 
+    // to append the text from "post comment" to generated comment
+    if(targetElement.hasAttribute('is-comment-generated')) {
+      isCommentGenerated = targetElement.getAttribute('is-comment-generated')
+    }
+
     // If an identifier was found, collect element information
     if (identifierType && identifierValue) {
       const elementInfo = {
@@ -1011,6 +1017,7 @@ document.addEventListener('focusin', (event) => {
         placeholder: targetElement.ariaPlaceholder,
         postId: identifierValue, // Use the value of the found identifier
         identifierType: identifierType, // Specify which identifier was found
+        isCommentGenerated: isCommentGenerated,
       }
       chrome.runtime.sendMessage({ action: 'getTabId' }, function (response) {
         if (response.tabId) {
