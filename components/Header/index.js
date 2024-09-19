@@ -33,7 +33,6 @@ export default function Header() {
   const [showHelpMenu, setShowHelpMenu] = useState(false)
   const {
     isRecordStart,
-
     isScreenRecording,
   } = useRecording()
   const { userSettings } = useUserSettings()
