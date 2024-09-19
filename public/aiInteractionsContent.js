@@ -501,6 +501,10 @@ async function addTextToCommentBox(response, commentBox, anchorTags = []) {
                                 editor.appendChild(anchor.cloneNode(true));
                             });
                         }
+                        // to append the text from "post comment" functionality
+                        if(!editor.hasAttribute('is-comment-generated')) {
+                            editor.setAttribute('is-comment-generated', 'true');
+                        }
                     } else {
                         setTimeout(finishTyping, 20);
                     }

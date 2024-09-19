@@ -30,6 +30,8 @@ export const insertIntoLinkedInMessageWindow = async (html, selectedChatWindows,
         }
         if (postCommentElement && postCommentElement.postId && postCommentElement.postId.startsWith('urn:li:comment')) {
           commentElement.innerHTML += htmlToInsert
+        } else if (postCommentElement && postCommentElement.isCommentGenerated) {
+          commentElement.innerHTML += htmlToInsert
         } else {
           commentElement.innerHTML = htmlToInsert
         }
