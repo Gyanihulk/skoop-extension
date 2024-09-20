@@ -1356,7 +1356,7 @@ select.form-control {
 #Header {
   height: 44px;
   background-color: var(--main-color);
-  z-index: 100000;
+  z-index: 1000000;
 }
 
 #messageFooter {
@@ -3103,4 +3103,8 @@ img.icon-style-normal {
 
 .tooltip-wrapper {
   display: inline-block; /* or another display property that suits your layout */
+}
+
+.ddstyle.dropdown-menu {
+  z-index: 10000000
 }

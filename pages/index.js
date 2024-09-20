@@ -34,6 +34,7 @@ import WelcomeAppsumo from '../Screens/WelcomeAppsumo'
 import WelcomeStripe from '../Screens/WelcomeStripe'
 import AppTour from '../components/TutorialDialog/Tour'
 import API_ENDPOINTS from '../components/apiConfig'
+import { appDefaultVersion } from "../constants"
 
 
 export default function Home() {
@@ -58,10 +59,18 @@ export default function Home() {
     stopMediaStreams,isRecording
   } = useRecording()
   const { startCountdown } = useTimer()
-  const { verifyToken, isAuthenticated, newUser, isPro, setVersion, createUserDevice, ipAddress, operatingSystem, fingerPrint } = useContext(AuthContext)
+  const { verifyToken, isAuthenticated, newUser, isPro, version, setVersion, createUserDevice, ipAddress, operatingSystem, fingerPrint } = useContext(AuthContext)
   const { activePage, navigateToPage } = useContext(ScreenContext)
   const [isWebPage, setIsWebPage] = useState(false)
   const {fetchMySettings}=useUserSettings();
+
+  const getManifestVersion = () => {
+    if (chrome && chrome.runtime && chrome.runtime.getManifest) {
+      const manifest = chrome.runtime.getManifest()
+      return manifest.version;
+    }
+    return null;
+  }
   
   useEffect(() => {
     // Define the handler inside the useEffect hook so it has access to the latest tabId
@@ -210,9 +219,34 @@ export default function Home() {
     }
   }, [])
 
+  
+  useEffect(()=>{
+    let skoopExtensionBody = document.getElementById('skoop-extension-body')
+    let body = document.body;
+    if (expand) {
+      skoopExtensionBody.style.setProperty('overflow-y', 'hidden', 'important');
+      body.style.overflow = 'hidden';
+    } else {
+      skoopExtensionBody.style.removeProperty('overflow-y');
+      skoopExtensionBody.style.overflow = 'initial';
+
+        if(isRecordStart) {
+          body.style.overflow = 'hidden';
+          skoopExtensionBody.style.removeProperty('min-width');
+        }
+        else {
+          body.style.overflow = 'auto';
+          // skoopExtensionBody.style.removeProperty('min-width');
+        }
+    }
+
+}, [expand, isRecordStart])
+
   useEffect(() => {
     ;(async () => {
-      const res = await verifyToken()
+      if(version !== appDefaultVersion) {
+        const res = await verifyToken();
+      }
       const showWelcomePage = localStorage.getItem('welcomePageShown')
 if(isAuthenticated){
   fetchMySettings()
@@ -263,7 +297,8 @@ if(isAuthenticated){
 
   const messageHandler = async (message, sender, sendResponse) => {
     if (message.action === 'generateCommentCGPT') {
-      const res = await verifyToken();
+      let manifestVersion = getManifestVersion();
+      const res = await verifyToken(manifestVersion);
       // Check if accessToken is valid or not.
       if (!res.ok) {
         sendResponse('Please login or register to use Skoop extension.');

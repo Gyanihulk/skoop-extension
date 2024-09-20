@@ -522,7 +522,7 @@ const SavedMessages = ({ appendToBody, close }) => {
             <div className="heading">Select saved methods to send instantly.</div>
           </div>
           <div className="justify-content-end" onClick={() => close('DefaultCard')}>
-            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="14px" width="14x" xmlns="http://www.w3.org/2000/svg">
+            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="14px" width="14px" xmlns="http://www.w3.org/2000/svg">
               <path d="M405 136.798L375.202 107 256 226.202 136.798 107 107 136.798 226.202 256 107 375.202 136.798 405 256 285.798 375.202 405 405 375.202 285.798 256z"></path>
             </svg>
           </div>

@@ -7,12 +7,16 @@ import AuthContext from '../contexts/AuthContext'
 
 export const ThankYouScreen = () => {
   const { navigateToPage } = useContext(ScreenContext)
-  const { subscriptionType } = useContext(AuthContext)
+  const { subscriptionType, couponInfo } = useContext(AuthContext)
   const today = new Date()
 
   const threeDaysFromToday = new Date(today.setDate(today.getDate() + 3))
   const options = { day: 'numeric', month: 'long', year: 'numeric' }
   const startDate = threeDaysFromToday.toLocaleDateString('en-US', options)
+
+  const handlePageNavigation = () => {
+    navigateToPage("Home");
+  }
 
   return (
     <div class="container">
@@ -23,7 +27,7 @@ export const ThankYouScreen = () => {
             <div class="confirmation-title">Subscription Confirmed!</div>
             <p>Congratulations! You have successfully activated your account.</p>
             {/* <p>Subscription starts charging from {startDate}</p> */}
-            <button onClick={() => navigateToPage('CalendarSync')} class="btn btn-primary btn-trial w-100">
+            <button onClick={handlePageNavigation} class="btn btn-primary btn-trial w-100">
               CONTINUE
             </button>
           </div>

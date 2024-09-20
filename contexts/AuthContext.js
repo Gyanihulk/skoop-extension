@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import { sendMessageToBackgroundScript } from '../lib/sendMessageToBackground'
 import { constants } from '../lib/constants'
 import { useUserSettings } from '../contexts/UserSettingsContext'
+import { appDefaultVersion } from "../constants"
 
 const AuthContext = createContext()
 
@@ -44,17 +45,6 @@ export const AuthProvider = ({ children }) => {
   const [ctaText, setCTAText] = useState('')
   const [ctaStatus, setCtaStatus] = useState(false)
 
-  useEffect(() => {
-    ;(async () => {
-      try {
-        const result = await getCtaInfo()
-        // Do something with the result
-      } catch (error) {
-        // Handle errors if any
-        console.error(error)
-      }
-    })()
-  }, [])
   const getProducts = async () => {
     try {
       var response = await fetch(API_ENDPOINTS.getProducts, {
@@ -479,9 +469,15 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const verifyToken = async () => {
+  const verifyToken = async (appVersion = null) => {
     try {
-      const res = await fetch(API_ENDPOINTS.tokenStatus + '/' + version, {
+      let versionParams = version;
+      if(version === appDefaultVersion && appVersion) {
+         versionParams = appVersion;
+         setVersion(appVersion);
+      }
+
+      const res = await fetch(API_ENDPOINTS.tokenStatus + '/' + versionParams, {
         method: 'GET',
         headers: {
           authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
@@ -570,30 +566,6 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.error(err)
       toast.error('Could not get calendar url')
-    }
-  }
-  const getCtaInfo = async (authCode, type) => {
-    try {
-      var response = await fetch(API_ENDPOINTS.getCtaInfo, {
-        method: 'GET',
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-          authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
-        },
-      })
-      if (Number(response.status) === 200) {
-        const data = await response.json()
-
-        setCalendarUrl(data.url)
-        setCTAText(data.text)
-        setCtaStatus(Boolean(data.status))
-        return data
-      } else {
-        toast.error('Could not cta info.')
-      }
-    } catch (err) {
-      console.error(err)
-      toast.error('Could not cta info')
     }
   }
   const getUserPreferences = async () => {
@@ -965,6 +937,7 @@ export const AuthProvider = ({ children }) => {
         loadingAuthState,
         isPro,
         createSubscription,
+        version,
         setVersion,
         setIpAddress,
         setOperatingSystem,
@@ -993,7 +966,6 @@ export const AuthProvider = ({ children }) => {
         userProfileDetail,
         setUserProfileDetail,
         getProfileDetails,
-        getCtaInfo,
         isSignupOrLogin,
         setIsSignupOrLogin,
         coupon,

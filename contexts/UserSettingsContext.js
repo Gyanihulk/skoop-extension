@@ -3,6 +3,7 @@ import axios from 'axios';
 import API_ENDPOINTS from '../components/apiConfig';
 import { toast } from 'react-hot-toast';
 import GlobalStatesContext from './GlobalStates'
+import AuthContext from './AuthContext';
 
 const UserSettingsContext = createContext();
 
@@ -17,6 +18,7 @@ export const useUserSettings = () => {
 export const UserSettingsProvider = ({ children }) => {
   const [userSettings, setUserSettings] = useState(null);
   const { setEnableTutorialScreen } = useContext(GlobalStatesContext)
+  const {setCalendarUrl, setCTAText, setCtaStatus} = useContext(AuthContext);
 
   const fetchMySettings = async () => {
     try {
@@ -33,6 +35,9 @@ export const UserSettingsProvider = ({ children }) => {
           if(jsonResponse?.show_tutorials) {
             setEnableTutorialScreen(jsonResponse?.show_tutorials)
           }
+          setCalendarUrl(jsonResponse?.ctainfo?.url)
+          setCTAText(jsonResponse?.ctainfo?.text)
+          setCtaStatus(Boolean(jsonResponse?.ctainfo?.status))
 
           return jsonResponse;
       } else {

@@ -576,6 +576,7 @@ export const TourContextProvider = ({ children }) => {
   const [isMessageSended, setIsMessageSended] = useState(false)
   const [selectMessage, setSelectMessage] = useState(false)
   const [reInitiateTour, setReInitiateTour] = useState(false)
+  const [toggleTourDialog, setToggleTourDialog] = useState(false);
 
   const [componentsVisible, setComponentsVisible] = useState({
     renderItem: null,
@@ -921,7 +922,9 @@ const {setTourStarted}=useContext(GlobalStatesContext)
         setSelectMessage,
         initializeTour,
         reInitiateTour, 
-        setReInitiateTour
+        setReInitiateTour,
+        toggleTourDialog, 
+        setToggleTourDialog
       }}
     >
       {children}

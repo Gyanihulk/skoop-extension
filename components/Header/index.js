@@ -25,7 +25,7 @@ export default function Header() {
   const { isAuthenticated, handleLogOut, isPro, gracePeriodCompletion, gracePeriod, showVersionNotification,recieveVerificationMail } = useContext(AuthContext)
   const { navigateToPage, activePage } = useContext(ScreenContext)
   const { setScraperPage, scraperPage, isProfilePage, expand, expandMinimizeExtension ,isTourStarted} = useContext(GlobalStatesContext)
-  const { isMessageTour, isToorActive,activeTourName } = useContext(TourContext);
+  const { isMessageTour, isToorActive,activeTourName, toggleTourDialog, setToggleTourDialog, initializeTour } = useContext(TourContext);
   const [disableIcons, setDisableIcons] = useState(false);
 
 
@@ -93,6 +93,12 @@ export default function Header() {
   }
 
   const closeExtension = () => {
+
+    if(isToorActive){
+      initializeTour();
+      setToggleTourDialog(true);
+    }
+
     try {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         const targetTab = tabs[0]
@@ -248,7 +254,7 @@ export default function Header() {
             </>
           )}
 
-          <button className="btn btn-link header-icon d-flex align-items-center justify-content-center" disabled={disableIcons} data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="Close" onClick={closeExtension}>
+          <button className="btn btn-link header-icon d-flex align-items-center justify-content-center" data-mdb-toggle="tooltip" data-mdb-placement="bottom" title="Close" onClick={closeExtension}>
             <IoClose size={18} />
           </button>
         </div>

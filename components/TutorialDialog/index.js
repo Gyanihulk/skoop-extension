@@ -39,7 +39,7 @@ const TutorialDialog = () => {
   const { fetchMySettings, updateUserSettings, userSettings } = useUserSettings()
   const [reloadIframe, setReloadIframe] = useState(false)
   let { latestBlob, isLinkedin } = useContext(GlobalStatesContext)
-  const { setIsToorActive } = useContext(TourContext)
+  const { setIsToorActive, toggleTourDialog, setToggleTourDialog, initializeTour } = useContext(TourContext)
   const handlePopUpChange = () => {
     setIsInitialState(false)
     setPopUp(!popUp)
@@ -51,9 +51,11 @@ const TutorialDialog = () => {
     setIframeLoaded(false)
     setShowTutorialVideo(false)
     setIsToorActive(false)
+    setToggleTourDialog(false);
   }
 
   const handleSelectedTutorial = (tutorial) => {
+    initializeTour();
     setShowTutorialVideo(true)
     setActiveTutorial(tutorial)
     if (tutorial == 'videos' && !isLinkedin) {
@@ -68,6 +70,7 @@ const TutorialDialog = () => {
     setShowTutorialVideo(false)
     setActiveTutorial(null)
     setIframeLoaded(false)
+    setToggleTourDialog(false);
   }
 
   const handleIframeLoad = () => {
@@ -118,6 +121,13 @@ const TutorialDialog = () => {
       updateUserSettings({ show_tutorials: !popUp })
     }
   }, [popUp])
+
+  useEffect(()=>{
+    if(toggleTourDialog) {
+      setToggleTutorial(true);
+    }
+    setSelectedTutorial("");
+  }, [toggleTourDialog])
 
   const handleExpandVideo = (e) => {
     e.preventDefault()

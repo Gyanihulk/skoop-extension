@@ -20,7 +20,7 @@ export const VideoRecording = () => {
   const isRestartingRef = useRef(false)
   const [countdown, setCountdown] = useState(null)
   const {fetchMySettings}=useUserSettings();
-  const { componentsVisible, isVideoTour, activeTourStepIndex, renderNext, setStepIndex, initializeTour, startTour } = useContext(TourContext);
+  const { componentsVisible, isVideoTour, activeTourStepIndex, renderNext, isToorActive, setStepIndex, initializeTour, startTour } = useContext(TourContext);
   const videoContainerRef = useRef(null);
   const [isCountdownInitiated, setIsCountdownInitiated] = useState(false);
   useEffect(()=>{
@@ -33,7 +33,7 @@ export const VideoRecording = () => {
     if (countdown !== null) {
       const timer = countdown > 0 ? setTimeout(() => setCountdown(countdown - 1), 1000) : null
 
-       if(countdown==2 && !isCountdownInitiated){
+       if(isToorActive && countdown==2 && !isCountdownInitiated){
         initializeTour();
         startTour("videos");
         setIsCountdownInitiated(true);
