@@ -4,36 +4,36 @@ const config = { childList: true, subtree: true };
 const buttonsList = {
     "mainPrompt": "I am an Artificial Intelligence tool helping the LinkedIn users to make comments on various LinkedIn posts and their replies. Now generate replies according to the given instructions.",
     "buttonsData": [
-     {
-         "id": 1,
-         "title": "Discovery",
-         "prompt": "The above is a post on LinkedIn. I want to be an authoritative and insightful LinkedIn user who is friendly in response to the post. Write and add brand new insights in response to the post and make sure not to repeat what has already been said in the post. Use new words, phrases, ideas, and insights. Keep it short and professional. For every response use new starting sentence, new words, and phrases. Give precise response. Please give a response in the language of the above LinkedIn post.",
-         "length": "four lines to eight lines",
-         "tone": "friendly, concise"
-     },
-     {
-         "id": 2,
-         "title": "Inspiration",
-         "prompt": "The above is a post on LinkedIn. Reply to this LinkedIn post with a comment that offers a positive and encouraging idea while showing empathy towards the original message. Your response should introduce a fresh, uplifting perspective, showing understanding and support for the challenges mentioned. Keep the tone optimistic, respectful, and solution-oriented, focusing on creativity and originality, without repeating what's already been discussed. Please don't repeat the previous response sentences. Everytime the response sentences should not be similar to the previous response sentences. Please give a response in the language of the above LinkedIn post.",
-         "length": "four lines to eight lines",
-         "tone": "optimistic, innovative, and uplifting"
-     },
-     {
-         "id": 3,
-         "title": "Thoughtful",
-         "prompt": "The above is a post on LinkedIn. Reply with a concise, thoughtful observation that sparks engagement or deeper reflection. Keep the comment brief and impactful, adding a fresh angle to the conversation. Stay informative and focused, aiming for a short but meaningful contribution. Please don't repeat the previous responses. Everytime the response should not be similar to the previous response. Please give a response in the language of the above LinkedIn post.",
-         "length": "three lines to eight lines",
-         "tone": "concise, reflective"
-     },
-     {
-         "id": 4,
-         "title": "Cheerful",
-         "prompt": "Be a cheerful and light-hearted LinkedIn user. Reply to this LinkedIn post with a comment that contains a touch of humor or amusement, while still being respectful and relevant. For every time I request you to write a comment using a funny tone, you must augment a brand-new comment with a new angle. Do not repeat what you previously generated. Make the funny comment with around 50 words. Include appropriate hashtags and emojis. Please don't repeat the previous responses. Everytime the response should not be similar to the previous response. Please give a response in the language of the above LinkedIn post.",
-         "length": "fifty words to six lines",
-         "tone": "cheerful, witty, and playful"
-     }
-     ]
- }
+        {
+            "id": 1,
+            "title": "Discovery",
+            "prompt": "The above is a post on LinkedIn. I want to be an authoritative and insightful LinkedIn user who is friendly in response to the post. Write and add brand new insights in response to the post and make sure not to repeat what has already been said in the post. Use new words, phrases, ideas, and insights. Keep it short and professional. For every response use new starting sentence, new words, and phrases. Give precise response. Please give a response in the language of the above LinkedIn post.",
+            "length": "four lines to eight lines",
+            "tone": "friendly, concise"
+        },
+        {
+            "id": 2,
+            "title": "Inspiration",
+            "prompt": "The above is a post on LinkedIn. Reply to this LinkedIn post with a comment that offers a positive and encouraging idea while showing empathy towards the original message. Your response should introduce a fresh, uplifting perspective, showing understanding and support for the challenges mentioned. Keep the tone optimistic, respectful, and solution-oriented, focusing on creativity and originality, without repeating what's already been discussed. Please don't repeat the previous response sentences. Everytime the response sentences should not be similar to the previous response sentences. Please give a response in the language of the above LinkedIn post.",
+            "length": "four lines to eight lines",
+            "tone": "optimistic, innovative, and uplifting"
+        },
+        {
+            "id": 3,
+            "title": "Thoughtful",
+            "prompt": "The above is a post on LinkedIn. Reply with a concise, thoughtful observation that sparks engagement or deeper reflection. Keep the comment brief and impactful, adding a fresh angle to the conversation. Stay informative and focused, aiming for a short but meaningful contribution. Please don't repeat the previous responses. Everytime the response should not be similar to the previous response. Please give a response in the language of the above LinkedIn post.",
+            "length": "three lines to eight lines",
+            "tone": "concise, reflective"
+        },
+        {
+            "id": 4,
+            "title": "Cheerful",
+            "prompt": "Be a cheerful and light-hearted LinkedIn user. Reply to this LinkedIn post with a comment that contains a touch of humor or amusement, while still being respectful and relevant. For every time I request you to write a comment using a funny tone, you must augment a brand-new comment with a new angle. Do not repeat what you previously generated. Make the funny comment with around 50 words. Include appropriate hashtags and emojis. Please don't repeat the previous responses. Everytime the response should not be similar to the previous response. Please give a response in the language of the above LinkedIn post.",
+            "length": "fifty words to six lines",
+            "tone": "cheerful, witty, and playful"
+        }
+    ]
+}
 
 
 
@@ -58,25 +58,25 @@ function processCommentBoxes() {
     const addButtons = (commentBox) => {
         processReplyCommentBoxes();
         const buttonSection = commentBox.parentElement.querySelector('.skoop-comment-section');
-        
+
         if (!buttonSection) {
             addSectionWithButton(commentBox);
         }
     }
     Array.from(comments).forEach((commentButton) => {
         let parent = commentButton.closest('.feed-shared-update-v2');
-       
+
         let commentBox = parent ? parent.querySelector('.feed-shared-update-v2__comments-container').querySelector('.comments-comment-box__form') : '';
         if (commentBox) {
             addButtons(commentBox);
         } else {
-            console.log('comments-comment-box not found');
+            console.error('comments-comment-box not found');
         }
 
         if (!commentButton.hasAttribute('data-has-event-listener')) {
             commentButton.addEventListener('click', async (event) => {
                 let parent = event.target.closest('.feed-shared-update-v2');
-                
+
                 let commentBox = parent ? parent.querySelector('.feed-shared-update-v2__comments-container').querySelector('.comments-comment-box__form') : '';
                 if (commentBox) {
                     addButtons(commentBox);
@@ -100,18 +100,18 @@ async function createQueryForPostDescription(parent) {
     let articleContainer = parent.querySelector('.update-components-article');
     let repostContainer = parent.querySelector('.feed-shared-update-v2__update-content-wrapper');
     let announcementContainer = parent.querySelector('.update-components-announcement');
-   
+
 
     if (repostContainer) {
         let repostDescription = repostContainer.querySelector('.feed-shared-update-v2__description') ? repostContainer.querySelector('.feed-shared-update-v2__description').textContent.trim() : 'original post has no description';
 
         if (descriptionContainer) {
             const content = descriptionContainer.textContent.trim();
-            
+
             query = `Use the repost description as context to craft a reply to the current post. Here's the repost description: \n ${repostDescription} \n and here's the current post description: \n ${content}.\
                     Please create a response that connects both. Please generate reply for this in the same language`;
         } else {
-           
+
             query = `${repostDescription}.\n Please generate reply for this in the same language.`;
         }
     }
@@ -176,22 +176,22 @@ async function createQueryForPostDescription(parent) {
                 Article URL: ${articleUrl}.\n
                 So while generating the comment consider this article. \n Please generate reply for this in the same language`;
     }
-    
+
     // For announcements
-    if(announcementContainer) {
+    if (announcementContainer) {
         let announcementTitle = announcementContainer.querySelector('.update-components-announcement__title') ? announcementContainer.querySelector('.update-components-announcement__title').textContent : 'this announcement has no title';
-        
+
         query = query + `\n\nThe post include an announcement with the following details:\n
         Title: ${announcementTitle}\n
         So while generating the comment consider this announcement. \n Please generate reply for this in the same language`;
     }
 
 
-    return {query};
+    return { query };
 }
 
 async function makeAIInteractionsCall(button, query, commentBox, anchorTags = []) {
-    
+
     // Display initial loading message
     await addLoadingMessageToCommentBox(commentBox, "Reading the post...");
 
@@ -208,13 +208,13 @@ async function makeAIInteractionsCall(button, query, commentBox, anchorTags = []
     const timeout13s = setTimeout(() => {
         controller.abort();  // Abort the aiInteractions request
         addLoadingMessageToCommentBox(commentBox, "Something has happened, please try again. If it presists, please refresh the page.");
-       
+
     }, 16000);
 
     try {
 
         const response = await aiInteractions(button.title, query, signal);
-        
+
         if (response) {
             // Clear all timeouts if the response arrives before 13 seconds
             clearTimeout(timeout5s);
@@ -236,7 +236,7 @@ function getPreviousCommentsOfTheUser(parent, replieeNames) {
     const commentsRepliesList = parent.querySelector('.comments-replies-list') || parent.querySelector('.comments-comment-item__replies-list');
 
     if (!commentsRepliesList) {
-        return []; 
+        return [];
     }
 
     // Helper function to get comments from different class structures
@@ -262,70 +262,202 @@ function getPreviousCommentsOfTheUser(parent, replieeNames) {
 
 function getMentionedUsers(commentBox) {
     const anchorTags = commentBox.querySelectorAll('.ql-mention');
-    return Array.from(anchorTags); 
+    return Array.from(anchorTags);
 }
 
 function addSectionWithButton(commentBox, forReply = false) {
-    // First, remove any existing section in the commentBox
-    const existingSection = commentBox.parentElement.querySelector('.skoop-comment-section');
-    if (existingSection) {
-        existingSection.remove(); 
-    }
 
-    const newSection = document.createElement('div');
-    newSection.className = 'skoop-comment-section';
-    newSection.style.margin = '10px 0px';
-    
-    newSection.style.display = 'flex';
-    newSection.style.flexWrap = 'wrap';
-    newSection.style.gap = '3px';
-
-    newSection.style.position = 'relative';
-
-    // Create the tooltip
-    const tooltip = document.createElement('div');
-    tooltip.textContent = "Comment cannot be generated without a description.";
-    tooltip.style.position = 'absolute';
-    tooltip.style.backgroundColor = '#41b1d6';
-    tooltip.style.color = '#ffffff';
-    tooltip.style.padding = '5px';
-    tooltip.style.borderRadius = '5px';
-    tooltip.style.fontSize = '12px';
-    tooltip.style.display = 'none';
-    tooltip.style.bottom = '35px';
-    tooltip.style.left = '50%';
-    tooltip.style.transform = 'translateX(-60%)';
-    tooltip.style.whiteSpace = 'nowrap';
-    tooltip.style.zIndex = '1000';
-
-    newSection.appendChild(tooltip);
-
-    // Show tooltip on hover
-    newSection.addEventListener('mouseover', async (event) => {
-        const postContainer = event.target.closest('.feed-shared-update-v2');
-        let {query} = await createQueryForPostDescription(postContainer);
-        if (!query) {
-        tooltip.style.display = 'block';
+    try {
+        // First, remove any existing section in the commentBox
+        const existingSection = commentBox.parentElement.querySelector('.skoop-comment-section');
+        if (existingSection) {
+            existingSection.remove();
         }
-    })
 
-    // Hide tooltip when not hovering
-    newSection.addEventListener('mouseout', () => {
+        const newSection = document.createElement('div');
+        newSection.className = 'skoop-comment-section';
+        newSection.style.margin = '10px 0px';
+
+        newSection.style.display = 'flex';
+        newSection.style.flexWrap = 'wrap';
+        newSection.style.gap = '3px';
+
+        newSection.style.position = 'relative';
+
+        // Create the tooltip
+        const tooltip = document.createElement('div');
+        tooltip.textContent = "Comment cannot be generated without a description.";
+        tooltip.style.position = 'absolute';
+        tooltip.style.backgroundColor = '#41b1d6';
+        tooltip.style.color = '#ffffff';
+        tooltip.style.padding = '5px';
+        tooltip.style.borderRadius = '5px';
+        tooltip.style.fontSize = '12px';
         tooltip.style.display = 'none';
-    })
+        tooltip.style.bottom = '35px';
+        tooltip.style.left = '50%';
+        tooltip.style.transform = 'translateX(-60%)';
+        tooltip.style.whiteSpace = 'nowrap';
+        tooltip.style.zIndex = '1000';
 
-    buttonsList.buttonsData.forEach((button) => {
-        if (forReply) {
-            const newButton = addButtonWithTypeToReply(button, commentBox);
-            newSection.appendChild(newButton);
-        } else {
-            const newButton = addButtonWithType(button, commentBox);
-            newSection.appendChild(newButton);
-        }
-    });
- 
-    commentBox.appendChild(newSection);
-    
+        newSection.appendChild(tooltip);
+
+        // Show tooltip on hover
+        newSection.addEventListener('mouseover', async (event) => {
+            const postContainer = event.target.closest('.feed-shared-update-v2');
+            let { query } = await createQueryForPostDescription(postContainer);
+            if (!query) {
+                tooltip.style.display = 'block';
+            }
+        })
+
+        // Hide tooltip when not hovering
+        newSection.addEventListener('mouseout', () => {
+            tooltip.style.display = 'none';
+        })
+
+        buttonsList.buttonsData.forEach((button) => {
+            if (forReply) {
+                const newButton = addButtonWithTypeToReply(button, commentBox);
+                newSection.appendChild(newButton);
+            } else {
+                const newButton = addButtonWithType(button, commentBox);
+                newSection.appendChild(newButton);
+            }
+        });
+
+
+        const moreOptionsButton = document.createElement('button');
+
+        moreOptionsButton.textContent = '⋮'; // Three dots
+        moreOptionsButton.style.cursor = 'pointer';
+        moreOptionsButton.style.background = 'none';
+        moreOptionsButton.style.border = 'none';
+        moreOptionsButton.style.fontSize = '24px'; // Increase the font size for larger dots
+        moreOptionsButton.style.padding = '5px'; // Add some padding for better click area
+        moreOptionsButton.style.margin = '-8px 0 0 3px';
+        newSection.appendChild(moreOptionsButton);
+        const moreOptionsContainer = document.createElement('div');
+        moreOptionsContainer.style.position = 'relative';
+        moreOptionsContainer.appendChild(moreOptionsButton);
+
+        // Create dialog
+        const dialog = document.createElement('div');
+        dialog.id = "skoop-dialog"
+        dialog.style.display = 'none'; // Initially hidden
+        dialog.style.position = 'absolute';
+        dialog.style.top = '30px';
+        dialog.style.right = '0';
+        dialog.style.background = '#fff';
+        dialog.style.border = '1px solid #ccc';
+        dialog.style.borderRadius = '5px';
+        dialog.style.padding = '10px';
+        dialog.style.zIndex = '2000';
+        dialog.style.width = '130px';
+
+        // Create "Get Pro" button
+        // Create "Get Pro" button
+        const getProButton = document.createElement('button');
+        getProButton.textContent = 'Get Pro';
+        getProButton.style.fontSize = '14px'; // Adjust font size
+        getProButton.style.fontWeight = 'bold'; // Make the text bold
+        getProButton.style.color = '#ffffff'; // White text color
+        getProButton.style.backgroundColor = 'rgb(45, 104, 196)';
+        getProButton.style.border = 'none'; // Remove border
+        getProButton.style.borderRadius = '5px'; // Rounded corners
+        getProButton.style.padding = '5px 10px'; // Add some padding
+        getProButton.style.cursor = 'pointer'; // Pointer cursor for interaction
+        getProButton.style.marginTop = '10px'; // Space between Get Pro and the separator
+        getProButton.style.display = 'block';
+        getProButton.style.width = '100%'; // Full-width button
+        getProButton.addEventListener('click', () => {
+            const container = document.getElementById('skoop-extension-container')
+            container.style.display = 'block'
+            chrome.runtime.sendMessage({
+                action: 'navigateToSubscriptionScreen',
+            },
+                (response) => {
+                    if (chrome.runtime.lastError) {
+                        console.log(chrome.runtime.lastError);
+                    } else {
+                        //    console.log(response)
+                    }
+                });
+            dialog.style.display = 'none';
+
+        });
+
+        // Create the remaining queries button
+        let userSettings
+
+        const remainingValueButton = document.createElement('button');
+
+        remainingValueButton.style.fontSize = '12px'; // Adjust the font size
+        remainingValueButton.style.color = '#000'; // Black text color
+        remainingValueButton.style.background = 'none'; // Remove button background
+        remainingValueButton.style.border = 'none'; // Remove button border
+        remainingValueButton.style.display = 'flex'; // Flex to align icon and text
+        remainingValueButton.style.alignItems = 'center'; // Vertically center text and icon
+        remainingValueButton.style.cursor = 'pointer'; // Pointer cursor for interaction
+
+        // Add lightning emoji before the text
+
+
+        // Create a separator
+        const separator = document.createElement('div');
+        separator.style.height = '1px'; // Height of the separator
+        separator.style.backgroundColor = '#e0e0e0'; // Light gray color for the separator
+        separator.style.margin = '10px 0'; // Space around the separator
+
+        // Append elements to the dialog
+        dialog.appendChild(remainingValueButton);
+        dialog.appendChild(separator); // Append separator between the buttons
+        dialog.appendChild(getProButton);
+        moreOptionsContainer.appendChild(dialog);
+        // Append the dialog to the section
+        newSection.appendChild(moreOptionsContainer);
+
+        // Toggle dialog on button click
+        moreOptionsButton.addEventListener('click', async () => {
+            try {
+                userSettings = await getUserSettings()
+                console.log(userSettings, "from getting usersetting")
+                if (userSettings?.fullAccess) { moreOptionsButton.style.display = 'none'; dialog.style.display = 'none'; } else{
+                    if(userSettings?.status!==401){
+                        remainingValueButton.style.display='flex'
+                        remainingValueButton.textContent = userSettings?.remainingComments + ' Queries Left';
+                        const icon = document.createElement('span');
+                        icon.textContent = '✨';
+                        icon.style.marginRight = '8px';
+                        icon.style.fontSize = '12px';
+                    
+                        remainingValueButton.prepend(icon);
+                    }else{
+                        remainingValueButton.style.display='none'
+                    }
+                    
+
+                    dialog.style.display = dialog.style.display === 'none' ? 'block' : 'none'; // Toggle visibility
+                };
+
+
+            } catch (error) {
+                console.error(error)
+            }
+
+
+        });
+        getUserSettings().then((response) => { if (response.fullAccess) (moreOptionsButton.style.display = 'none'); })
+        // Close the dialog when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!newSection.contains(event.target)) {
+                dialog.style.display = 'none';
+            }
+        });
+
+        commentBox.appendChild(newSection);
+    } catch (err) { console.error(err) }
+
 }
 
 function createButton(button) {
@@ -334,7 +466,8 @@ function createButton(button) {
     newButton.textContent = button.title;
     newButton.style.borderRadius = '15px';
     newButton.style.height = '30px';
-    newButton.style.padding = '0 15px';
+    newButton.style.width = '80';
+    newButton.style.padding = '0 7px';
     newButton.style.border = '1px solid';
     newButton.style.backgroundColor = '#2d68c4';
     newButton.style.cursor = 'pointer';
@@ -351,12 +484,16 @@ function addButtonWithType(button, commentBox) {
 
     newButton.addEventListener('click', async (event) => {
         event.preventDefault();
+        let dialog = document.getElementById("skoop-dialog")
+        if (dialog) {
+            dialog.style.display = 'none';
+        }
         // Ensure we use the correct comment box for this button
         let parent = newButton.closest('.feed-shared-update-v2');
         let commentBox = parent.querySelector('.comments-comment-box-comment__text-editor');
-        
+
         if (commentBox) {
-            let {query} = await createQueryForPostDescription(parent);
+            let { query } = await createQueryForPostDescription(parent);
             if (query) {
                 const queryForPost = `${buttonsList?.mainPrompt}\n` + query + `\n\n${button.prompt}\nKeep it under ${button.length}. And use ${button.tone} tone.`;
                 await makeAIInteractionsCall(button, queryForPost, commentBox);
@@ -379,15 +516,15 @@ function addButtonWithTypeToReply(button, commnetBox) {
         event.preventDefault();
         let parent = event.target.closest('.comments-comment-entity') ? event.target.closest('.comments-comment-entity') : event.target.closest('.comments-comment-item');
         let postContainer = event.target.closest('.feed-shared-update-v2');
-        
+
         let commentContainer = parent ? parent.querySelector('.update-components-text') : '';
-        
+
         let replyCommentBox = parent ? parent.querySelector('.comments-comment-box-comment__text-editor') : '';
-        
-        
+
+
         let postQuery = ''
         if (postContainer) {
-            const {query} = await createQueryForPostDescription(postContainer);
+            const { query } = await createQueryForPostDescription(postContainer);
             postQuery = query;
         }
         if (replyCommentBox) {
@@ -411,7 +548,7 @@ function addButtonWithTypeToReply(button, commnetBox) {
                 Now generate an appropriate reply based on this context.`;
 
                 const queryForReply = `${buttonsList?.mainPrompt}\n` + query + `\n\n${button.prompt}\n. And use ${button.tone} tone.`;
-               
+
                 await makeAIInteractionsCall(button, queryForReply, replyCommentBox, anchorTags);
             }
         }
@@ -438,6 +575,7 @@ async function aiInteractions(type, query, signal) {
             query: query,
         },
             (response) => {
+
                 if (signal.aborted) {
                     reject(new DOMException('Request aborted', 'AbortError'));
                 } else if (chrome.runtime.lastError) {
@@ -454,6 +592,28 @@ async function aiInteractions(type, query, signal) {
     });
 }
 
+async function getUserSettings() {
+    return new Promise((resolve, reject) => {
+        // Send message to background script, passing the signal to abort the request
+        chrome.runtime.sendMessage({
+            action: 'getUserSettings',
+        },
+            (response) => {
+                if (chrome.runtime.lastError) {
+                    console.log(chrome.runtime.lastError);
+                    reject(new Error('Failed to get user settings. Please try again'));
+                } else {
+                    if (response) {
+
+                        resolve(response);
+                    } else {
+
+                        reject(new Error('Encountered some issue. Please try again.'));
+                    }
+                }
+            });
+    });
+}
 
 
 
@@ -476,13 +636,13 @@ async function addTextToCommentBox(response, commentBox, anchorTags = []) {
         if (editor) {
             let index = 0;
             // Clear the editor content
-            editor.innerHTML = ''; 
-            
+            editor.innerHTML = '';
+
             const p = document.createElement('p');
             p.className = 'append-text';
             editor.appendChild(p);
             let appendText = editor.querySelector('.append-text');
-            
+
             // Typing simulation
             const typeEffect = () => {
                 if (index < response.length) {
@@ -495,14 +655,14 @@ async function addTextToCommentBox(response, commentBox, anchorTags = []) {
             return new Promise(resolve => {
                 const finishTyping = () => {
                     if (index >= response.length) {
-                        resolve(); 
-                        if(anchorTags.length >= 1) {
+                        resolve();
+                        if (anchorTags.length >= 1) {
                             anchorTags.forEach(anchor => {
                                 editor.appendChild(anchor.cloneNode(true));
                             });
                         }
                         // to append the text from "post comment" functionality
-                        if(!editor.hasAttribute('is-comment-generated')) {
+                        if (!editor.hasAttribute('is-comment-generated')) {
                             editor.setAttribute('is-comment-generated', 'true');
                         }
                     } else {
@@ -510,10 +670,10 @@ async function addTextToCommentBox(response, commentBox, anchorTags = []) {
                     }
                 };
 
-                typeEffect(); 
-                finishTyping(); 
+                typeEffect();
+                finishTyping();
             });
-            
+
         } else {
             console.log('Editor not found inside the comment box');
         }
@@ -540,24 +700,24 @@ function processReplyCommentBoxes() {
     document.body.addEventListener('click', function (event) {
         // Check if the clicked element is a reply button
         const replyButton = event.target.closest('.reply');
-        
+
         if (replyButton) {
             const commentContainer = replyButton.closest('.comments-comments-list');
-            
+
 
             const replyBox = commentContainer ? commentContainer.querySelector('.comments-comment-box__form') : '';
-            
-    
+
+
             if (replyBox) {
                 // Call function to reset and re-add buttons for all reply boxes
                 resetAndAddButtonsToAllReplyBoxes(commentContainer);
-    
+
             } else {
                 console.log('Reply box not found');
             }
         } else {
             console.log('Reply button not found ');
         }
-    });    
-   
+    });
+
 }

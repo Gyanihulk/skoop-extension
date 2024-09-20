@@ -34,8 +34,7 @@ import WelcomeAppsumo from '../Screens/WelcomeAppsumo'
 import WelcomeStripe from '../Screens/WelcomeStripe'
 import AppTour from '../components/TutorialDialog/Tour'
 import API_ENDPOINTS from '../components/apiConfig'
-import { appDefaultVersion } from "../constants"
-
+import { appDefaultVersion } from '../constants'
 
 export default function Home() {
   const { setTabId, expandExtension, tabId, setIsMatchingUrl, setExpand, expand, setIsLinkedin, setIsGmail, setIsProfilePage } = useContext(GlobalStatesContext)
@@ -56,22 +55,23 @@ export default function Home() {
     setIsScreenRecording,
     setCaptureCameraWithScreen,
     handleScreenVideoBlob,
-    stopMediaStreams,isRecording
+    stopMediaStreams,
+    isRecording,
   } = useRecording()
   const { startCountdown } = useTimer()
   const { verifyToken, isAuthenticated, newUser, isPro, version, setVersion, createUserDevice, ipAddress, operatingSystem, fingerPrint } = useContext(AuthContext)
   const { activePage, navigateToPage } = useContext(ScreenContext)
   const [isWebPage, setIsWebPage] = useState(false)
-  const {fetchMySettings}=useUserSettings();
+  const { fetchMySettings } = useUserSettings()
 
   const getManifestVersion = () => {
     if (chrome && chrome.runtime && chrome.runtime.getManifest) {
       const manifest = chrome.runtime.getManifest()
-      return manifest.version;
+      return manifest.version
     }
-    return null;
+    return null
   }
-  
+
   useEffect(() => {
     // Define the handler inside the useEffect hook so it has access to the latest tabId
     const messageHandler = (request, sender, sendResponse) => {
@@ -193,24 +193,22 @@ export default function Home() {
             setIsGmail(isGmail)
 
             let skoopExtensionBody = document.getElementById('skoop-extension-body')
-            let body = document.body;
+            let body = document.body
             if (expand) {
-              skoopExtensionBody.style.setProperty('overflow-y', 'hidden', 'important');
-              body.style.overflow = 'initial';
+              skoopExtensionBody.style.setProperty('overflow-y', 'hidden', 'important')
+              body.style.overflow = 'initial'
             } else {
-              skoopExtensionBody.style.removeProperty('overflow-y');
-              skoopExtensionBody.style.overflow = 'initial';
+              skoopExtensionBody.style.removeProperty('overflow-y')
+              skoopExtensionBody.style.overflow = 'initial'
 
-                if(isRecordStart) {
-                  body.style.overflow = 'hidden';
-                  skoopExtensionBody.style.removeProperty('min-width');
-                }
-                else {
-                  body.style.overflow = 'auto';
-                  // skoopExtensionBody.style.removeProperty('min-width');
-                }
+              if (isRecordStart) {
+                body.style.overflow = 'hidden'
+                skoopExtensionBody.style.removeProperty('min-width')
+              } else {
+                body.style.overflow = 'auto'
+                // skoopExtensionBody.style.removeProperty('min-width');
+              }
             }
-
           } else {
             navigateToPage('CantUseScreen')
           } // Update the Gmail state
@@ -219,53 +217,48 @@ export default function Home() {
     }
   }, [])
 
-  
-  useEffect(()=>{
+  useEffect(() => {
     let skoopExtensionBody = document.getElementById('skoop-extension-body')
-    let body = document.body;
+    let body = document.body
     if (expand) {
-      skoopExtensionBody.style.setProperty('overflow-y', 'hidden', 'important');
-      body.style.overflow = 'hidden';
+      skoopExtensionBody.style.setProperty('overflow-y', 'hidden', 'important')
+      body.style.overflow = 'hidden'
     } else {
-      skoopExtensionBody.style.removeProperty('overflow-y');
-      skoopExtensionBody.style.overflow = 'initial';
+      skoopExtensionBody.style.removeProperty('overflow-y')
+      skoopExtensionBody.style.overflow = 'initial'
 
-        if(isRecordStart) {
-          body.style.overflow = 'hidden';
-          skoopExtensionBody.style.removeProperty('min-width');
-        }
-        else {
-          body.style.overflow = 'auto';
-          // skoopExtensionBody.style.removeProperty('min-width');
-        }
+      if (isRecordStart) {
+        body.style.overflow = 'hidden'
+        skoopExtensionBody.style.removeProperty('min-width')
+      } else {
+        body.style.overflow = 'auto'
+        // skoopExtensionBody.style.removeProperty('min-width');
+      }
     }
-
-}, [expand, isRecordStart])
+  }, [expand, isRecordStart])
 
   useEffect(() => {
     ;(async () => {
-      if(version !== appDefaultVersion) {
-        const res = await verifyToken();
+      if (version !== appDefaultVersion) {
+        const res = await verifyToken()
       }
       const showWelcomePage = localStorage.getItem('welcomePageShown')
-if(isAuthenticated){
-  fetchMySettings()
-}
+      if (isAuthenticated) {
+        fetchMySettings()
+      }
       if (isWebPage && chrome.tabs) {
         // Query the tabs
 
         if (isAuthenticated && newUser && !isPro) {
           navigateToPage('Subscription')
-        } else if (isAuthenticated && newUser && isPro ) {
+        } else if (isAuthenticated && newUser && isPro) {
           navigateToPage('ThankYouScreen')
         } else if (isAuthenticated && !isPro) {
           navigateToPage('Subscription')
         } else if (isAuthenticated && isPro) {
           navigateToPage('Home')
         } else if (!showWelcomePage) {
-          
           navigateToPage('Welcome')
-
         } else if (!isAuthenticated) {
           navigateToPage('SignInIntro')
         }
@@ -297,12 +290,12 @@ if(isAuthenticated){
 
   const messageHandler = async (message, sender, sendResponse) => {
     if (message.action === 'generateCommentCGPT') {
-      let manifestVersion = getManifestVersion();
-      const res = await verifyToken(manifestVersion);
+      let manifestVersion = getManifestVersion()
+      const res = await verifyToken(manifestVersion)
       // Check if accessToken is valid or not.
       if (!res.ok) {
-        sendResponse('Please login or register to use Skoop extension.');
-        return true;
+        sendResponse('Please login or register to use Skoop extension.')
+        return true
       }
       try {
         const response = await getAIInteractionsResponse(message)
@@ -310,6 +303,27 @@ if(isAuthenticated){
       } catch (error) {
         console.error('Error processing message:', error)
         sendResponse(null)
+      }
+    }else if (message.action === 'getUserSettings') {
+      let manifestVersion = getManifestVersion()
+      const res = await verifyToken(manifestVersion)
+      // Check if accessToken is valid or not.
+      if (!res.ok) {
+        sendResponse({message:'Please login or register to use Skoop extension.',status:401})
+        return true
+      }
+      try {
+        const userSettings=await fetchMySettings();
+        sendResponse(userSettings)
+      } catch (error) {
+        console.error('Error processing message:', error)
+        sendResponse(null)
+      }
+    }else if (message.action === 'navigateToSubscriptionScreen') {
+      if(isAuthenticated){
+        navigateToPage("Subscription")
+      }else{
+        navigateToPage("SignUp")
       }
     }
     return true
@@ -330,8 +344,11 @@ if(isAuthenticated){
     })
 
     const data = await response.json()
+ 
     if (data?.data?.response?.candidates?.[0]?.content?.parts?.[0]?.text) {
       return data.data.response.candidates[0].content.parts[0].text
+    } else if (response.status == 402) {
+      return data.message
     } else {
       throw new Error('Invalid response format from AI service')
     }
@@ -354,7 +371,9 @@ if(isAuthenticated){
         {activePage === 'RecordVideo' && <VideoRecording />}
         {isAuthenticated & isPro ? (
           <>
-           {!['Welcome', 'CalendarSync','SignInIntro','RecordVideo','Camera', 'Subscription','SignIn', 'ContactUs','ReportBug','PaymentScreen','SignUp', ' ',  'ForgotPassword', 'CantUseScreen',"ThankYouScreen"].includes(activePage) && !isRecordStart  && !isScreenRecording && <TutorialDialog />}
+            {!['Welcome', 'CalendarSync', 'SignInIntro', 'RecordVideo', 'Camera', 'Subscription', 'SignIn', 'ContactUs', 'ReportBug', 'PaymentScreen', 'SignUp', ' ', 'ForgotPassword', 'CantUseScreen', 'ThankYouScreen'].includes(activePage) &&
+              !isRecordStart &&
+              !isScreenRecording && <TutorialDialog />}
             {activePage === 'Home' && <Homepage />}
             {activePage === 'RecordVideos' && <RecordVideos />}
             {activePage === 'HelperVideos' && <HelperVideos navigateTo={'Home'} />}
@@ -367,6 +386,7 @@ if(isAuthenticated){
             {activePage == 'CalendarSync' && <CalendarSync />}
             {activePage == 'DevicesList' && <DevicesList />}
             {activePage == 'ThankYouScreen' && <ThankYouScreen />}
+            {activePage === 'Subscription' && <SubscriptionScreen />}
             <AppTour />
           </>
         ) : isAuthenticated ? (
@@ -383,13 +403,11 @@ if(isAuthenticated){
             {activePage === 'SignUp' && <SignUp />}
             {activePage == 'ForgotPassword' && <ForgotPassword />}
             {activePage == 'Welcome' && <Welcome />}
-            {activePage == 'WelcomeStripe' && < WelcomeStripe/>}
+            {activePage == 'WelcomeStripe' && <WelcomeStripe />}
             {activePage == 'WelcomeAppsumo' && <WelcomeAppsumo />}
             {activePage == 'SignInIntro' && <SignInWith />}
           </>
         )}
-        
-      
       </div>
     </>
   )

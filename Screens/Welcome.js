@@ -57,7 +57,7 @@ const Welcome = () => {
          
           <h3 className="welcome-title">Skoop</h3>
           <div className="app-version">
-          <p>Version 1.1.0</p>
+          <p>Version 1.1.1</p>
         </div>
           <div className="welcome-content">
             <p className="welcome-desc">Increase your client engagement to gain more revenue</p>

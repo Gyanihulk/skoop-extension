@@ -6,16 +6,18 @@ import GlobalStatesContext from '../contexts/GlobalStates'
 import { LockIcon } from '../components/SVG/LockIcon'
 import ScreenContext from '../contexts/ScreenContext'
 import ConfirmationModal from '../components/ConfirmationModal'
+import { FaArrowLeft } from 'react-icons/fa6'
 
 const SubscriptionScreen = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
-  const { createSubscription, verifyCoupon, getMySubscription, subscriptionType, setSubscriptionType,products,getProducts, appConfig, getAppConfig } = useContext(AuthContext)
+  const { createSubscription, verifyCoupon, getMySubscription, subscriptionType, setSubscriptionType, products, getProducts, appConfig, getAppConfig } = useContext(AuthContext)
   const { navigateToPage } = useContext(ScreenContext)
   const [sessionUrl, setSessionUrl] = useState('')
   const handleSubscriptionChange = (type) => {
     setSubscriptionType(type)
   }
-
+  const [showFreeTrial, setShowFreeTrial] = useState(true)
+  const [showBackButton, setshowBackButton] = useState(false)
   const [couponCode, setCouponCode] = useState('')
   const [couponValid, setCouponValid] = useState(false)
   const [couponInfo, setCouponInfo] = useState()
@@ -37,11 +39,21 @@ const SubscriptionScreen = () => {
     ;(async () => {
       await getAppConfig()
 
-      const subcription = await getMySubscription();
-      const products =await getProducts();
-      // if (subcription) {
-      //   navigateToPage('PaymentScreen')
-      // }
+      const subcription = await getMySubscription()
+      const currentDate = new Date();
+      const endDate = new Date(subcription.end_date);
+
+      if (subcription?.plan_type == 'withoutCardTrial') {
+        setShowFreeTrial(false)
+        if (endDate > currentDate) {
+          setshowBackButton(true); 
+        } else {
+          setshowBackButton(false);
+        }
+      }
+
+      const products = await getProducts()
+      
     })()
   }, [])
   // A function to handle changes to the input field
@@ -66,11 +78,11 @@ const SubscriptionScreen = () => {
     // Update the 'couponCode' state with the input's current value
     setCouponCode(event.target.value)
   }
-  const monthlyProduct = products.length>0 && products.find(product => product.name === 'monthly');
-  const yearlyProduct = products.length>0 && products.find(product => product.name === 'yearly');
-  
-  const monthlyPrice = monthlyProduct?.price || 47;
-  const yearlyPrice = yearlyProduct?.price ||  451;
+  const monthlyProduct = products.length > 0 && products.find((product) => product.name === 'monthly')
+  const yearlyProduct = products.length > 0 && products.find((product) => product.name === 'yearly')
+
+  const monthlyPrice = monthlyProduct?.price || 47
+  const yearlyPrice = yearlyProduct?.price || 451
   // Calculate discounted prices
   const discountedMonthlyPrice = couponInfo?.discount?.percent_off
     ? ((monthlyPrice * (100 - couponInfo?.discount?.percent_off)) / 100).toFixed(2)
@@ -100,6 +112,12 @@ const SubscriptionScreen = () => {
         />
       )}
       <div className="subscription-container">
+        {showBackButton && <div class="back-button d-flex align-items-center cursor-pointer mb-2" onClick={() => navigateToPage('Home')}>
+          <div className="d-flex align-items-center">
+            <FaArrowLeft className="mini-icon" size={16} />
+          </div>
+          <h4 className="profile-name mb-0 pb-0 ms-2">Back</h4>
+        </div>}
         <div className="subscription-header">
           <h1>Select Your plan.</h1>
           <span>Enhance communication With Skoop.</span>
@@ -117,17 +135,19 @@ const SubscriptionScreen = () => {
           <></>
         ) : (
           <div className="subscription-options align-items-center">
-            {!couponValid && <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
-              <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'freeTrial'} onChange={() => handleSubscriptionChange('freeTrial')} />
-              <div className="ps-4">
-                <h5>{appConfig.trial_period_days}-day Free trial</h5>
-                <p>
-                  Limited to {appConfig.max_videos} videos and {appConfig.max_prompts} AI responses.
-                  <br />
-                  No credit card Required .
-                </p>
+            {!couponValid && showFreeTrial && (
+              <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
+                <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'freeTrial'} onChange={() => handleSubscriptionChange('freeTrial')} />
+                <div className="ps-4">
+                  <h5>{appConfig.trial_period_days}-day Free trial</h5>
+                  <p>
+                    Limited to {appConfig.max_videos} videos and {appConfig.max_prompts} AI responses.
+                    <br />
+                    No credit card Required .
+                  </p>
+                </div>
               </div>
-            </div>}
+            )}
 
             <div className="subscription-option d-flex flex-row align-items-center bg-monthly">
               <input class="form-check-input" type="checkbox" value="" id="circleCheckbox" checked={subscriptionType === 'monthly'} onChange={() => handleSubscriptionChange('monthly')} />
@@ -167,7 +187,7 @@ const SubscriptionScreen = () => {
             </span>
           </div>
           {couponInfo && couponValid && <span className="badge rounded-pill bg-warning text-dark ">Coupon Applied.</span>}
-{couponValid && couponInfo?.discount?.trial_period  && <span className="badge rounded-pill bg-warning text-dark mt-1">Free trial For {couponInfo?.discount?.trial_period} days.</span>}
+          {couponValid && couponInfo?.discount?.trial_period && <span className="badge rounded-pill bg-warning text-dark mt-1">Free trial For {couponInfo?.discount?.trial_period} days.</span>}
         </div>
         <div className="subscription-button d-grid gap-2 my-2">
           <button

@@ -152,11 +152,13 @@ const ChatGpt = ({ appendToBody, close }) => {
       }
       setLoading(true)
       toast.success('Generating response...')
-      const choices = await fetch(API_ENDPOINTS.cgpt + new URLSearchParams({ input: cgpt }), {
-        method: 'GET',
+      const choices = await fetch(API_ENDPOINTS.cgpt , {
+        method: 'POST',
         headers: {
           authorization: `Bearer ${JSON.parse(localStorage.getItem('accessToken'))}`,
+          'Content-type': 'application/json; charset=UTF-8',
         },
+        body:JSON.stringify({input:cgpt})
       })
 
       const response = await choices.json()
