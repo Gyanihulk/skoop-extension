@@ -1,4 +1,4 @@
-import React, { createContext, useRef, useState, useContext, useEffect } from 'react'
+import React, { createContext, useRef, useState, useContext, useEffect, useMemo } from 'react'
 import Joyride, { ACTIONS, EVENTS, STATUS } from 'react-joyride'
 import GlobalStatesContext from './GlobalStates'
 import { sendMessageToBackgroundScript } from '../lib/sendMessageToBackground'
@@ -40,47 +40,47 @@ const dynamicMessages = [
 ]
 
 const gmailMessages = {
-    target: '#send-button',
-    content: (
-      <>
-        <div>
-          <h6 className="tour-heading">Click where you want to insert the message, then click "Send" to insert it into the target location.</h6>
-        </div>
-      </>
-    ),
-    level: 13,
-    placement: 'auto',
-    spotlightPadding: 5,
-  };
+  target: '#send-button',
+  content: (
+    <>
+      <div>
+        <h6 className="tour-heading">Click where you want to insert the message, then click "Send" to insert it into the target location.</h6>
+      </div>
+    </>
+  ),
+  level: 13,
+  placement: 'auto',
+  spotlightPadding: 5,
+}
 
 const linkedInMessages = {
-    target: '#send-button',
-    content: (
-      <>
-        <div>
-          <h6 className="tour-heading">Click the “Send button.”</h6>
-          <p className="tour-para mt-1">You will see that the message was sent to that particular person.</p>
-        </div>
-      </>
-    ),
-    level: 13,
-    placement: 'auto',
-    spotlightPadding: 5,
-  };
+  target: '#send-button',
+  content: (
+    <>
+      <div>
+        <h6 className="tour-heading">Click the “Send button.”</h6>
+        <p className="tour-para mt-1">You will see that the message was sent to that particular person.</p>
+      </div>
+    </>
+  ),
+  level: 13,
+  placement: 'auto',
+  spotlightPadding: 5,
+}
 
-  const generalMessages = {
-    target: '#send-button',
-    content: (
-      <>
-          <div>
-              <h6 className="tour-heading">Copy the message and paste it into the required location.</h6>
-          </div>
-      </>
-    ),
-    level: 13,
-    placement: 'auto',
-    spotlightPadding: 5,
-  };
+const generalMessages = {
+  target: '#send-button',
+  content: (
+    <>
+      <div>
+        <h6 className="tour-heading">Copy the message and paste it into the required location.</h6>
+      </div>
+    </>
+  ),
+  level: 13,
+  placement: 'auto',
+  spotlightPadding: 5,
+}
 
 const tourConfigs = [
   {
@@ -130,7 +130,8 @@ const tourConfigs = [
             <div>
               <h6 className="tour-heading">In the “Enter description” text field add the words</h6>
               <p className="tour-para mt-1">
-                Hi [FIRST NAME], thank you for being connected. <br/> I see that you [ADD DETAILS ABOUT THEM OR HOW WHAT THEY DO CAN RELATE TO YOU AND CONTINUING A MEANINGFUL DISCUSSION].<br/> Feel free to reply if it's worth engaging further.
+                Hi [FIRST NAME], thank you for being connected. <br /> I see that you [ADD DETAILS ABOUT THEM OR HOW WHAT THEY DO CAN RELATE TO YOU AND CONTINUING A MEANINGFUL DISCUSSION].
+                <br /> Feel free to reply if it's worth engaging further.
               </p>
             </div>
           </>
@@ -167,7 +168,7 @@ const tourConfigs = [
           </>
         ),
         disableBeacon: true,
-        placement:"bottom",
+        placement: 'bottom',
         level: 8,
       },
       {
@@ -279,7 +280,7 @@ const tourConfigs = [
         content: (
           <>
             <div>
-            <div className="tour-img">
+              <div className="tour-img">
                 <img src="/images/step 4.gif" alt="image related to linkedin message tab" />
               </div>
               <h6 className="tour-heading mt-1">Scroll down to find connections at least 1 day or older.</h6>
@@ -414,7 +415,7 @@ const tourConfigs = [
           <>
             <div>
               <h6 className="tour-heading">In the Skoop App interface the video will be animated. Click the 3 dots to the right of the video animation and “Rename the video”.</h6>
-              <p className='tour-para mt-1'>Make sure you add the name of the person you are talking to.</p>
+              <p className="tour-para mt-1">Make sure you add the name of the person you are talking to.</p>
             </div>
           </>
         ),
@@ -452,7 +453,7 @@ const tourConfigs = [
           <>
             <div>
               <h6 className="tour-heading">Great job!</h6>
-              <h6 className='tour-heading mt-1'> You just sent a video to a new connection!</h6>
+              <h6 className="tour-heading mt-1"> You just sent a video to a new connection!</h6>
             </div>
           </>
         ),
@@ -543,7 +544,7 @@ const tourConfigs = [
 ]
 
 export const TourContextProvider = ({ children }) => {
-  const recordVideoBtnRef = useRef(null);
+  const recordVideoBtnRef = useRef(null)
   const messageRef = useRef(null)
   const selectMessageRef = useRef()
   const addMessageRef = useRef()
@@ -570,35 +571,32 @@ export const TourContextProvider = ({ children }) => {
   const [disableRecipientSelect, setDisableRecipientSelect] = useState(false)
   const [disableCheckbox, setDisableCheckbox] = useState(false)
   const [sendMessages, setSendMessages] = useState(false)
-  const [isSelectOpened, setIsSelectOpened] = useState(false);
-  const [messagesTemplateHeight, setMessagesTemplateHeight] = useState(null);
-  const [addNewClicked, setAddNewClicked] = useState(false);
+  const [isSelectOpened, setIsSelectOpened] = useState(false)
+  const [messagesTemplateHeight, setMessagesTemplateHeight] = useState(null)
+  const [addNewClicked, setAddNewClicked] = useState(false)
   const [isMessageSended, setIsMessageSended] = useState(false)
   const [selectMessage, setSelectMessage] = useState(false)
   const [reInitiateTour, setReInitiateTour] = useState(false)
-  const [toggleTourDialog, setToggleTourDialog] = useState(false);
+  const [toggleTourDialog, setToggleTourDialog] = useState(false)
 
   const [componentsVisible, setComponentsVisible] = useState({
     renderItem: null,
     nextButtonVisible: false,
   })
 
-  const {
-    isRecordStart,
-  } = useRecording()
-const {setTourStarted}=useContext(GlobalStatesContext)
+  const { isRecordStart } = useRecording()
+  const { setTourStarted } = useContext(GlobalStatesContext)
   // videos state
-  const [isVideoTour, setIsVideoTour] = useState(false);
+  const [isVideoTour, setIsVideoTour] = useState(false)
 
   useEffect(() => {
-
     const handleOpenImageModal = (e) => {
       e.preventDefault()
-      const src = e.target.getAttribute('src');
-  
+      const src = e.target.getAttribute('src')
+
       const height = 322 * 2
       const width = 574 * 2
-  
+
       sendMessageToBackgroundScript({
         action: 'showImagePreview',
         height,
@@ -607,51 +605,54 @@ const {setTourStarted}=useContext(GlobalStatesContext)
       })
     }
 
-    let tourImg = document.querySelector('.tour-img');
-    if(tourImg) {
-         tourImg.addEventListener('click', handleOpenImageModal);
+    let tourImg = document.querySelector('.tour-img')
+    if (tourImg) {
+      tourImg.addEventListener('click', handleOpenImageModal)
     }
 
     return () => {
-      if(tourImg) {
-        tourImg.removeEventListener('click', handleOpenImageModal);
+      if (tourImg) {
+        tourImg.removeEventListener('click', handleOpenImageModal)
       }
     }
-  }, [activeTourStepIndex]);
+  }, [activeTourStepIndex])
 
   useEffect(() => {
-    if (tours) {
-      const updatedTours = tours.map((tour) => {
-        if (tour.name === 'messages') {
-          let updatedSteps = tour.steps.filter(
-            (step) => step.level !== 11 && step.level !== 12 && step.level !== 13
-          );
-  
-          if (isLinkedin) {
-            const stepsToAdd = dynamicMessages;
-            const insertAfterStep = 10;
-            const insertIndex = updatedSteps.findIndex((step) => step.level === insertAfterStep) + 1;
-  
-            updatedSteps.splice(insertIndex, 0, ...stepsToAdd);
-            updatedSteps.splice(insertIndex + stepsToAdd.length, 0, linkedInMessages);
-          } else if (isGmail) {
-            updatedSteps.splice(10, 0, gmailMessages);
-          } else {
-            updatedSteps.splice(10, 0, generalMessages);
-          }
-  
-          return {
-            ...tour,
-            steps: updatedSteps,
-          };
-        }
-        return tour;
-      });
+    try {
+      if (!tours) return
 
-      setTours(updatedTours);
+      const updatedTours = tours.map((tour) => {
+        if (tour.name !== 'messages') return tour
+
+        // Filter steps only if necessary
+        const updatedSteps = tour.steps.filter((step) => ![11, 12, 13].includes(step.level))
+
+        // Directly compute the new steps based on conditions
+        let finalSteps
+        if (isLinkedin) {
+          const insertAfterStep = 10
+          const insertIndex = updatedSteps.findIndex((step) => step.level === insertAfterStep) + 1
+          finalSteps = [...updatedSteps.slice(0, insertIndex), ...dynamicMessages, linkedInMessages, ...updatedSteps.slice(insertIndex)]
+        } else if (isGmail) {
+          finalSteps = [...updatedSteps.slice(0, 10), gmailMessages, ...updatedSteps.slice(10)]
+        } else {
+          finalSteps = [...updatedSteps.slice(0, 10), generalMessages, ...updatedSteps.slice(10)]
+        }
+
+        return {
+          ...tour,
+          steps: finalSteps,
+        }
+      })
+
+      // Check if tours have actually changed before updating the state
+      if (JSON.stringify(tours) !== JSON.stringify(updatedTours)) {
+        setTours(updatedTours)
+      }
+    } catch (error) {
+      console.error('Error in dynamic useEffect:', error)
     }
-  }, [tours, isLinkedin, isGmail]);
-  
+  }, [tours, isLinkedin, isGmail, dynamicMessages])
 
   function renderNext() {
     setStepIndex(stepIndex + 1)
@@ -696,58 +697,58 @@ const {setTourStarted}=useContext(GlobalStatesContext)
       renderItem: null,
       nextButtonVisible: false,
     })
-    setSendMessages(false);
-    setIsSelectOpened(false);
-    setIsAlreadySaved(false);
-    setIsVideoTour(false);
-    setAddNewClicked(false);
-    setMessagesTemplateHeight(null);
-    setIsMessageSended(false);
-    setSelectMessage(false);
-    setDisableBtnForDes(false);
+    setSendMessages(false)
+    setIsSelectOpened(false)
+    setIsAlreadySaved(false)
+    setIsVideoTour(false)
+    setAddNewClicked(false)
+    setMessagesTemplateHeight(null)
+    setIsMessageSended(false)
+    setSelectMessage(false)
+    setDisableBtnForDes(false)
   }
 
   useEffect(() => {
-    const skoopExtensionBody = document.getElementById('skoop-extension-body');
-    const body = document.body;
-    let timeoutId;
-  
+    const skoopExtensionBody = document.getElementById('skoop-extension-body')
+    const body = document.body
+    let timeoutId
+
     if (skoopExtensionBody && isToorActive) {
       const updateBodyStyles = () => {
         if (expand) {
-          skoopExtensionBody.style.removeProperty('min-width');
+          skoopExtensionBody.style.removeProperty('min-width')
           timeoutId = setTimeout(() => {
-            body.style.overflow = 'hidden';
-          }, 300);
+            body.style.overflow = 'hidden'
+          }, 300)
         } else {
-          if(!isRecordStart) {
-            skoopExtensionBody.style.setProperty('min-width', '355px');
-          timeoutId = setTimeout(() => {
-            body.style.overflow = 'auto';
-          }, 300);
+          if (!isRecordStart) {
+            skoopExtensionBody.style.setProperty('min-width', '355px')
+            timeoutId = setTimeout(() => {
+              body.style.overflow = 'auto'
+            }, 300)
           }
         }
-      };
-  
-      updateBodyStyles();
-    } else if(!isToorActive) {
-      skoopExtensionBody.style.removeProperty('min-width');
+      }
+
+      updateBodyStyles()
+    } else if (!isToorActive) {
+      skoopExtensionBody.style.removeProperty('min-width')
     }
-  
+
     // Cleanup function to clear timeout on unmount or dependency change
     return () => {
       if (timeoutId) {
-        clearTimeout(timeoutId);
+        clearTimeout(timeoutId)
       }
-    };
-  }, [expand, isToorActive]);
+    }
+  }, [expand, isToorActive])
 
   useEffect(() => {
-    const skoopExtensionBody = document.getElementById('skoop-extension-body');
+    const skoopExtensionBody = document.getElementById('skoop-extension-body')
     if (skoopExtensionBody && isVideoTour && activeTourStepIndex === 13 && !isRecordStart) {
-      skoopExtensionBody.style.setProperty('min-width', '355px');
+      skoopExtensionBody.style.setProperty('min-width', '355px')
     }
-  }, [activeTourStepIndex]);
+  }, [activeTourStepIndex])
 
   const handleJoyrideCallback = (data) => {
     try {
@@ -758,17 +759,17 @@ const {setTourStarted}=useContext(GlobalStatesContext)
         setActiveTourStep(step)
       }
 
-      if( (index === 12 || index === 13) && action === ACTIONS.PREV) {
-        setStepIndex(index);
+      if ((index === 12 || index === 13) && action === ACTIONS.PREV) {
+        setStepIndex(index)
         return
       }
 
-      if(status=='paused'){
-        setTourStarted(false)  
+      if (status == 'paused') {
+        setTourStarted(false)
       }
       if ((index === activeTour?.length && type === 'tooltip') || action === ACTIONS.CLOSE || action === ACTIONS.SKIP) {
-        initializeTour();
-        
+        initializeTour()
+
         return
       }
 
@@ -777,8 +778,8 @@ const {setTourStarted}=useContext(GlobalStatesContext)
       }
 
       if (type === EVENTS.STEP_AFTER || (action === ACTIONS.CLICK && activeTour)) {
-        if(index + 1 === size) {
-          initializeTour();
+        if (index + 1 === size) {
+          initializeTour()
         }
         const nextStep = activeTour[index + 1]
         if (nextStep) {
@@ -786,68 +787,66 @@ const {setTourStarted}=useContext(GlobalStatesContext)
           if (!nextTarget) {
             setComponentsVisible({ ...componentsVisible, renderItem: index + 1 })
           } else {
-              if(isMessageTour) {
-                if(index == 1 && !isSelectOpened) {
-                  setOpenSelect(true);
-                  setIsSelectOpened(true);
-                  setComponentsVisible({ ...componentsVisible, renderItem: 2 })
-                }
-                if (index === 2) {
-                  setComponentsVisible({ ...componentsVisible, renderItem: 3 })
-                  setIsNextDisabled(true);
-                } else if(index === 3) {
-                  setDisableBtnForDes(true);
-                } else if (index === 5 && !isAlreadySaved) {
-                  setIsAlreadySaved(true)
-                  setOpenSelect(false)
-                  setSaveMessagewithNext(true)
-                } else if (index === 6) {
-                  setComponentsVisible({ ...componentsVisible, renderItem: 7 })
-                } else if (index === 7) {
-                  setOpenSelect(false)
-                } else if (index === 8) {
-                  setIsNextDisabled(true)
-                  setComponentsVisible({ ...componentsVisible, renderItem: 9 })
-                  setOpenSelect(true)
-                }
-                else if (activeTourStep?.level === 13 && !sendMessages) {
-                  setSendMessages(true);
-                }
-                else if (activeTourStep?.level === 14) {
-                  initializeTour();
-                }
-    
-                if (action !== ACTIONS.CLOSE && action !== ACTIONS.SKIP && activeTourStep?.level !== 13 && index !==2 && index !==6) {
-                    setStepIndex(index + 1);
-                }
-              } else if(isVideoTour) {
-                if(index === 6 && !isSelectOpened) {
-                  setOpenSelect(true);
-                  setIsSelectOpened(true);
-                  setIsNextDisabled(true);
-                  setComponentsVisible({ ...componentsVisible, renderItem: 7 })
-                }
-                if(index === 7) {
-                  setIsNextDisabled(false);
-                  setOpenSelect(false);
-                  setIsSelectOpened(false);
-                }
-                if(index === 11) {
-                  setComponentsVisible({ ...componentsVisible, renderItem: 12 })
-                }
-                if(index === 12) {
-                  setComponentsVisible({ ...componentsVisible, renderItem: 13 })
-                }
-                if (activeTourStep?.level === 16 && !sendMessages) {
-                  setSendMessages(true);
-                }
-                if (activeTourStep?.level === 17) {
-                  initializeTour();
-                }
-                if (action !== ACTIONS.CLOSE && action !== ACTIONS.SKIP && (index!==5 && index !==6 && index !==11 && index !==12 && activeTourStep?.level !== 16)) {
-                  setStepIndex(index + 1)
-                }
+            if (isMessageTour) {
+              if (index == 1 && !isSelectOpened) {
+                setOpenSelect(true)
+                setIsSelectOpened(true)
+                setComponentsVisible({ ...componentsVisible, renderItem: 2 })
               }
+              if (index === 2) {
+                setComponentsVisible({ ...componentsVisible, renderItem: 3 })
+                setIsNextDisabled(true)
+              } else if (index === 3) {
+                setDisableBtnForDes(true)
+              } else if (index === 5 && !isAlreadySaved) {
+                setIsAlreadySaved(true)
+                setOpenSelect(false)
+                setSaveMessagewithNext(true)
+              } else if (index === 6) {
+                setComponentsVisible({ ...componentsVisible, renderItem: 7 })
+              } else if (index === 7) {
+                setOpenSelect(false)
+              } else if (index === 8) {
+                setIsNextDisabled(true)
+                setComponentsVisible({ ...componentsVisible, renderItem: 9 })
+                setOpenSelect(true)
+              } else if (activeTourStep?.level === 13 && !sendMessages) {
+                setSendMessages(true)
+              } else if (activeTourStep?.level === 14) {
+                initializeTour()
+              }
+
+              if (action !== ACTIONS.CLOSE && action !== ACTIONS.SKIP && activeTourStep?.level !== 13 && index !== 2 && index !== 6) {
+                setStepIndex(index + 1)
+              }
+            } else if (isVideoTour) {
+              if (index === 6 && !isSelectOpened) {
+                setOpenSelect(true)
+                setIsSelectOpened(true)
+                setIsNextDisabled(true)
+                setComponentsVisible({ ...componentsVisible, renderItem: 7 })
+              }
+              if (index === 7) {
+                setIsNextDisabled(false)
+                setOpenSelect(false)
+                setIsSelectOpened(false)
+              }
+              if (index === 11) {
+                setComponentsVisible({ ...componentsVisible, renderItem: 12 })
+              }
+              if (index === 12) {
+                setComponentsVisible({ ...componentsVisible, renderItem: 13 })
+              }
+              if (activeTourStep?.level === 16 && !sendMessages) {
+                setSendMessages(true)
+              }
+              if (activeTourStep?.level === 17) {
+                initializeTour()
+              }
+              if (action !== ACTIONS.CLOSE && action !== ACTIONS.SKIP && index !== 5 && index !== 6 && index !== 11 && index !== 12 && activeTourStep?.level !== 16) {
+                setStepIndex(index + 1)
+              }
+            }
           }
         }
       }
@@ -908,23 +907,23 @@ const {setTourStarted}=useContext(GlobalStatesContext)
         setDisableCheckbox,
         sendMessages,
         setSendMessages,
-        isSelectOpened, 
+        isSelectOpened,
         setIsSelectOpened,
-        isVideoTour, 
+        isVideoTour,
         setIsVideoTour,
-        messagesTemplateHeight, 
+        messagesTemplateHeight,
         setMessagesTemplateHeight,
-        addNewClicked, 
+        addNewClicked,
         setAddNewClicked,
-        isMessageSended, 
+        isMessageSended,
         setIsMessageSended,
-        selectMessage, 
+        selectMessage,
         setSelectMessage,
         initializeTour,
-        reInitiateTour, 
+        reInitiateTour,
         setReInitiateTour,
-        toggleTourDialog, 
-        setToggleTourDialog
+        toggleTourDialog,
+        setToggleTourDialog,
       }}
     >
       {children}
